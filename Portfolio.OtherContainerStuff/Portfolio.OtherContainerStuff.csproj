@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Content Include="prometheus_and_grafana\.DS_Store" />
-    </ItemGroup>
-
 </Project>

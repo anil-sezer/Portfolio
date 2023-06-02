@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="PortfolioWebUi\assets\css\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Include="wwwroot\css\style.css" />
       <None Include="wwwroot\img\apple-touch-icon.png" />
       <None Include="wwwroot\img\favicon.png" />
@@ -128,6 +124,10 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="PortfolioWebUi\assets\vendor\bootstrap-icons\bootstrap-icons.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.5" />
     </ItemGroup>
 
 </Project>

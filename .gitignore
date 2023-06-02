@@ -4,7 +4,7 @@
 
 # Mine
 prometheus_and_grafana/.env
-
+.idea/
 
 # User-specific stuff
 .idea/**/workspace.xml

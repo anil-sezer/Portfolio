@@ -1,1 +1,1 @@
-# portfolio
+Hi! This will be my portfolio. It's currently on construction. I want to implement the Kafka, Prometheus, Domain Driven Design, Docker, Microcontrollers(Arduino), IOT, and other knowledge here to promote myself.

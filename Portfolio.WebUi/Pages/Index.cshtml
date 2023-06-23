@@ -3,10 +3,13 @@
 @{
     ViewData["Title"] = "Home page";
     Layout = "_Layout";
+    // todo: Do it dynamic
+    var backgroundImage = "https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN";
+    // var backgroundImage = "../img/wallpapers/perm/BiodiverseCostaRica.jpg";
 }
 
 <!-- ======= Hero Section ======= -->
-<section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+<section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url('@backgroundImage') top center; background-size: cover;">
     <div class="hero-container" data-aos="fade-in">
         <h1>Anıl Sezer</h1>
         <p>Back end developer with: <span class="typed" data-typed-items=".Net Core 7, MySQL, Kafka, Docker, Kubernetes"></span></p>

@@ -19,10 +19,11 @@ jobs:
           dotnet-version: '7.0.305'
 
       - name: Build and publish
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish -c Portfolio.WebUi.csproj -o ./publish --nologo
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: ./publish
+          folder: ./publish/wwwroot

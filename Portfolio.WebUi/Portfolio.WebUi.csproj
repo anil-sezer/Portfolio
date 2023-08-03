@@ -17,7 +17,6 @@
       <None Include="wwwroot\css\style.css" />
       <None Include="wwwroot\img\apple-touch-icon.png" />
       <None Include="wwwroot\img\favicon.png" />
-      <None Include="wwwroot\img\hero-bg.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-1.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-2.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-3.jpg" />
@@ -30,7 +29,6 @@
       <None Include="wwwroot\img\portfolio\portfolio-details-1.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-details-2.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-details-3.jpg" />
-      <None Include="wwwroot\img\profile-img.jpg" />
       <None Include="wwwroot\img\testimonials\testimonials-1.jpg" />
       <None Include="wwwroot\img\testimonials\testimonials-2.jpg" />
       <None Include="wwwroot\img\testimonials\testimonials-3.jpg" />

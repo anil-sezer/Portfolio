@@ -4,13 +4,33 @@ namespace Portfolio.WebUi.Services;
 
 public static class BackgroundImageFromBingService
 {
-    public static async Task<string> GetBackgroundImg(string savePath)
+    public static string GetBackgroundImg(string imgFolderPath)
     {
-        
-        var route = await DownloadImage.DownloadAndGiveImgRouteAsync(GetResolution(), savePath);
+        const string imgFilePrefix = "bingImgOfTheDay_";
+        var fileName = $"{imgFolderPath}/{imgFilePrefix}{DateTime.Now:dd-MM-yyyy}.bmp";
 
-        return route;
+        var fileInfo = new FileInfo(fileName);
+        if (fileInfo.Exists)
+            return ReturnImageAddressFromRoot(fileName);
+        
+        
+        RemoveOlderBingImages(Directory.GetFiles(imgFolderPath, $"*{imgFilePrefix}*")); // todo: Use async for this!
+        return ReturnImageAddressFromRoot(DownloadImage.DownloadAndGiveImgRouteAsync(GetResolution(), fileName).Result.FullName);
     }
+
+    private static string ReturnImageAddressFromRoot(string absoluteAddress)
+    {
+        return absoluteAddress.Split("wwwroot")[1];
+    }
+
+    private static void RemoveOlderBingImages(string[] matchingFiles)
+    {
+        foreach (var filePath in matchingFiles)
+        {
+            File.Delete(filePath);
+            Console.WriteLine($"Deleted: {filePath}");
+        }
+    } 
 
     // todo: Find a way to get resolution before page load
     private static string GetResolution()

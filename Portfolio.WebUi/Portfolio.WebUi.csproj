@@ -8,12 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <None Include="wwwroot\css\style.css" />
       <None Include="wwwroot\img\apple-touch-icon.png" />
       <None Include="wwwroot\img\favicon.png" />

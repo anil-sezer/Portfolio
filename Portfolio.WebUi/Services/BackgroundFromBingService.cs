@@ -20,7 +20,7 @@ public static class BackgroundImageFromBingService
 
     private static string ReturnImageAddressFromRoot(string absoluteAddress)
     {
-        return absoluteAddress.Split("wwwroot")[1];
+        return absoluteAddress.Split("wwwroot")[1].Replace('\\', '/');
     }
 
     private static void RemoveOlderBingImages(string[] matchingFiles)

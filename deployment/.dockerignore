@@ -1,0 +1,33 @@
+﻿# Ignore the build output directories
+bin/
+obj/
+
+# Ignore the version control directories
+.git/
+.gitignore
+.svn/
+
+# Ignore Visual Studio files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+
+# Ignore Rider files
+.idea/
+
+# Ignore user secrets
+*.secrets.json
+
+# Ignore temporary files
+*.swp
+*.swo
+*.sw?
+*.bak
+*.tmp
+*.temp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

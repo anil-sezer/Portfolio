@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ..
+          context: ./Portfolio.WebUi
           file: ./deployment/Dockerfile
           platforms: linux/arm64
           push: true

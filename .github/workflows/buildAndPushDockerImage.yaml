@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ..
-          file: ./Dockerfile
+          file: ./deployment/Dockerfile
           platforms: linux/arm64
           push: true
           tags: anilsezer/portfolio:latest

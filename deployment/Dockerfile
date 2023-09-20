@@ -8,13 +8,15 @@ EXPOSE 443
 # FROM mcr.microsoft.com/dotnet/sdk:7.0.401-bookworm-slim-arm64v8 AS build
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Portfolio.WebUi/Portfolio.WebUi.csproj", "Portfolio.WebUi/"]
-#RUN if [ ! -f Portfolio.WebUi/Portfolio.WebUi.csproj ]; then echo "File(s) missing for RESTORE! Check the paths."; exit 1; fi
+COPY ["Portfolio.WebUi.csproj", "Portfolio.WebUi/"]
+RUN if [ ! -f Portfolio.WebUi/Portfolio.WebUi.csproj ]; then echo "File(s) missing for RESTORE! Check the paths."; exit 1; fi
 RUN dotnet restore "Portfolio.WebUi/Portfolio.WebUi.csproj"
 
-COPY . .
+#COPY . .
+COPY . /src/Portfolio.WebUi/
 WORKDIR "/src/Portfolio.WebUi"
 RUN if [ ! -f Portfolio.WebUi.csproj ]; then echo "File(s) missing BUILD! Check the paths."; exit 1; fi
+RUN if [ ! -f Program.cs ]; then echo "File(s) missing PROGRAM.CS! Check the paths."; exit 1; fi
 RUN dotnet build "Portfolio.WebUi.csproj" -c Release -o /app/build
 
 FROM build AS publish

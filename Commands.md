@@ -4,7 +4,7 @@ docker buildx build --platform linux/arm64 -f ./Dockerfile -t anilsezer/portfoli
 
 
 #### Push the image:
-docker build -f ./Dockerfile -t anilsezer/portfolio:latest ..
+docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
 docker login
 docker push anilsezer/portfolio:latest
 

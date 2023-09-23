@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Portfolio.WebUi.Services;
+using Serilog;
 
 namespace Portfolio.WebUi.Pages;
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
     private readonly IWebHostEnvironment _webHostEnvironment;
     public string BackgroundImage { get; private set; }
     public string WallpaperFolder { get; private set; }
 
-    public IndexModel(ILogger<IndexModel> logger, IWebHostEnvironment webHostEnvironment)
+    public IndexModel(IWebHostEnvironment webHostEnvironment)
     {
-        _logger = logger;
         _webHostEnvironment = webHostEnvironment;
         WallpaperFolder = $"{_webHostEnvironment.WebRootPath}/img/wallpapers";
         BackgroundImage = $"{WallpaperFolder}/BiodiverseCostaRica.jpg";
@@ -24,6 +23,6 @@ public class IndexModel : PageModel
         // PhysicalFile(await BackgroundImageFromBingService.GetBackgroundImg($"{_webHostEnvironment.WebRootPath}\\img"), "image/bmp");
         BackgroundImage = BackgroundImageFromBingService.GetBackgroundImg(WallpaperFolder);
         
-        Console.WriteLine("Background Img Url: " + BackgroundImage);
+        Log.Information("Background Img Url: {BackgroundImage}", BackgroundImage);
     }
 }

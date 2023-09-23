@@ -1,4 +1,15 @@
+using Serilog;
+using Serilog.Events;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+using var log = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .WriteTo.Console()
+    .CreateLogger();
+builder.Host.UseSerilog(log);
 
 // Add services to the container.
 // todo: Add a development check to it?

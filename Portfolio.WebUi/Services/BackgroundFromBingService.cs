@@ -1,4 +1,5 @@
 ﻿using Portfolio.WebUi.Services.BingBackground;
+using Serilog;
 
 namespace Portfolio.WebUi.Services;
 
@@ -28,7 +29,7 @@ public static class BackgroundImageFromBingService
         foreach (var filePath in matchingFiles)
         {
             File.Delete(filePath);
-            Console.WriteLine($"Deleted: {filePath}");
+            Log.Information("Deleted: {FilePath}", filePath);
         }
     } 
 

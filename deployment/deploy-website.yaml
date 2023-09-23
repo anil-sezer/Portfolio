@@ -15,5 +15,8 @@ spec:
       containers:
         - name: portfolio
           image: anilsezer/portfolio:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
+      imagePullSecrets:
+        - name: dockerlogin

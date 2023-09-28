@@ -18,15 +18,4 @@ spec:
                 name: portfolio-service
                 port:
                   number: 80
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: anil-sezer-tls
-spec:
-  secretName: your-domain-tls
-  issuerRef:
-    name: letsencrypt-prod  # ClusterIssuer Name
-    kind: ClusterIssuer
-  dnsNames:
-    -  anil-sezer.com
+

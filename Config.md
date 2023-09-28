@@ -20,3 +20,6 @@ cert-manager jetstack/cert-manager \
 --version v1.7.1 \
 --create-namespace \
 --set installCRDs=true
+
+kubectl describe certificate anil-sezer-tls
+

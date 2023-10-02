@@ -2,11 +2,13 @@
 kind: Ingress
 metadata:
   name: portfolio-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:
     - hosts:
         - anil-sezer.com
-      secretName: anil-sezer-tls
+      secretName: anil-sezer-tls-vq82q
   rules:
     - host:  anil-sezer.com
       http:

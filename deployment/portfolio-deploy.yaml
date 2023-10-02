@@ -18,7 +18,10 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+#            - name: TZ
+#              value: "Europe/Istanbul"
       imagePullSecrets:
         - name: dockerlogin
-
-

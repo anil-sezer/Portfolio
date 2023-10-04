@@ -3,7 +3,6 @@ using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 using var log = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -11,11 +10,16 @@ using var log = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog(log);
 
-// Add services to the container.
-// todo: Add a development check to it?
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+}
+else if (app.Environment.IsProduction())
+{
+    builder.Services.AddRazorPages();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -25,7 +29,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

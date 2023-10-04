@@ -10,16 +10,9 @@ using var log = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog(log);
 
-var app = builder.Build();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
-if (app.Environment.IsDevelopment())
-{
-    builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-}
-else if (app.Environment.IsProduction())
-{
-    builder.Services.AddRazorPages();
-}
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

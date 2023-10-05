@@ -38,3 +38,14 @@ kubectl logs portfolio-deployment-7864bb7676-4lhvq
 
 kubectl describe certificaterequests.cert-manager.io anil-sezer-tls-qwp7c -n default
 
+
+### Etc:
+kubectl get orders.acme.cert-manager.io -n default
+kubectl describe orders.acme.cert-manager.io anil-sezer-tls-qwp7c-743662298 -n default
+
+kubectl get challenges.acme.cert-manager.io -n default
+kubectl describe challenges.acme.cert-manager.io anil-sezer-tls-qwp7c-743662298-579262875 -n default
+
+kubectl describe ingress [your-ingress-name] -n default
+
+kubectl get configmap -n ingress

@@ -1,0 +1,27 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+          env:
+            - name: discovery.type
+              value: single-node
+          volumeMounts:
+            - name: es-data
+              mountPath: /elastic
+      volumes:
+        - name: es-data
+          persistentVolumeClaim:
+            claimName: es-pvc

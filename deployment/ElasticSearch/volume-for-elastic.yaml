@@ -1,0 +1,26 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: es-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/elastic"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: es-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

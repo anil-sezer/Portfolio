@@ -1,3 +1,4 @@
+using Nest;
 using Serilog;
 using Serilog.Events;
 
@@ -12,6 +13,12 @@ builder.Host.UseSerilog(log);
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
+var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
+    .DefaultIndex("my_default_index");
+var client = new ElasticClient(settings);
+
+builder.Services.AddSingleton<IElasticClient>(client);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,7 +29,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

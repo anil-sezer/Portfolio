@@ -127,4 +127,8 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Portfolio.DataAccess\Portfolio.DataAccess.csproj" />
+    </ItemGroup>
+
 </Project>

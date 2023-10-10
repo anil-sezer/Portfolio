@@ -23,5 +23,12 @@ spec:
               value: "Production"
 #            - name: TZ
 #              value: "Europe/Istanbul"
+          volumeMounts:
+            - mountPath: /app/Data
+              name: sqlite-volume
+      volumes:
+        - name: sqlite-volume
+          persistentVolumeClaim:
+            claimName: sqlite-pvc
       imagePullSecrets:
         - name: dockerlogin

@@ -10,4 +10,5 @@ public class WebAppDbContext : DbContext
         // _httpContextAccessor = httpContextAccessor;
     }
     public DbSet<Request> Request { get; set; }
+    public DbSet<BingDailyBackground> BingDailyBackground { get; set; }
 }

@@ -1,41 +1,96 @@
-﻿using Portfolio.WebUi.Services.BingBackground;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Portfolio.DataAccess;
+using Portfolio.Domain.Constants;
+using Portfolio.Domain.Entities.WebAppEntities;
 using Serilog;
 
 namespace Portfolio.WebUi.Services;
 
-public static class BackgroundImageFromBingService
+public class BackgroundImageFromBingService
 {
-    public static string GetBackgroundImg(string imgFolderPath)
-    {
-        const string imgFilePrefix = "bingImgOfTheDay_";
-        var fileName = $"{imgFolderPath}/{imgFilePrefix}{DateTime.Now:dd-MM-yyyy}.bmp";
+    private readonly WebAppDbContext _dbContext;
 
-        var fileInfo = new FileInfo(fileName);
-        if (fileInfo.Exists)
-            return ReturnImageAddressFromRoot(fileName);
-        
-        
-        RemoveOlderBingImages(Directory.GetFiles(imgFolderPath, $"*{imgFilePrefix}*")); // todo: Use async for this!
-        return ReturnImageAddressFromRoot(DownloadImage.DownloadAndGiveImgRouteAsync(GetResolution(), fileName).Result.FullName);
+    public BackgroundImageFromBingService(WebAppDbContext dbContext)
+    {
+        _dbContext = dbContext;
     }
 
-    private static string ReturnImageAddressFromRoot(string absoluteAddress)
+    public async Task<string> GetBackgroundImg()
     {
-        return absoluteAddress.Split("wwwroot")[1].Replace('\\', '/');
-    }
+        var img = await _dbContext.BingDailyBackground.SingleOrDefaultAsync(x => x.CreationTime.Date == DateTime.Now.Date);
 
-    private static void RemoveOlderBingImages(string[] matchingFiles)
-    {
-        foreach (var filePath in matchingFiles)
+        if (img != null)
         {
-            File.Delete(filePath);
-            Log.Information("Deleted: {FilePath}", filePath);
-        }
-    } 
+            if (await IsValidImageUrlAsync(img.ImageUrl))
+                return img.ImageUrl;
 
-    // todo: Find a way to get resolution before page load
-    private static string GetResolution()
+            img.UrlWorks = false;
+            _dbContext.SaveChangesAsync();
+            return Etcetera.DefaultBackgroundImage;
+        }
+        
+        var url = await GetDailyImageUrlAsync();
+
+        var bg = new BingDailyBackground
+        {
+            ImageUrl = url,
+            UrlWorks = await IsValidImageUrlAsync(url)
+        };
+        await _dbContext.AddAsync(bg);
+        _dbContext.SaveChangesAsync();
+
+        return bg.UrlWorks ? bg.ImageUrl : Etcetera.DefaultBackgroundImage;
+    }
+    
+    private async Task<bool> IsValidImageUrlAsync(string imageUrl)
     {
-        return "_1920x1080.jpg";
+        using var httpClient = new HttpClient();
+        
+        try
+        {
+            var response = await httpClient.GetAsync(imageUrl);
+
+            if (response.StatusCode != HttpStatusCode.OK) 
+                return false;
+            
+            // Verify that the Content-Type is an image:
+            if (response.Content.Headers.ContentType != null && 
+                response.Content.Headers.ContentType.MediaType.StartsWith("image/"))
+            {
+                return true;
+            }
+
+            Log.Error("Background image Url is not valid: {ImageUrl}, HttpStatusCode: {StatusCode}", imageUrl, response.StatusCode);
+            return false;
+        }
+        catch
+        {
+            Log.Error("Background image Url is not valid: {ImageUrl}", imageUrl);
+            return false;
+        }
+    }
+
+    private static async Task<string> GetDailyImageUrlAsync() {
+        var jsonObject = await DownloadJsonAsync();
+        var urlBase =  "https://www.bing.com" + jsonObject.images[0].urlbase;
+
+        return urlBase + "_1920x1080.jpg";
+    }
+    
+    private static async Task<dynamic> DownloadJsonAsync()
+    {
+        const string locale = "tr-TR";
+        const string url = $"https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt={locale}";
+
+        using var httpClient = new HttpClient();
+    
+        Log.Information("Downloading JSON...");
+        var json = await httpClient.GetStringAsync(url);
+        Log.Information("Json string: {Json}", json);
+
+
+        return JsonConvert.DeserializeObject<dynamic>(json);
     }
 }

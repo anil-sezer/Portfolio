@@ -2,6 +2,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess;
 using Portfolio.Domain.Helpers;
+using Portfolio.WebUi.Services;
 using Serilog;
 using Serilog.Events;
 
@@ -16,7 +17,12 @@ builder.Host.UseSerilog(log);
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
-using var connection = new SqliteConnection("Data Source=mydb.db");
+builder.Services.AddScoped<BackgroundImageFromBingService>();
+
+const string connectionString = "Data Source=WebApp.db";
+// var connectionString = "Data Source=/app/Data/WebApp.db"; // todo: Get this from Kubernetes ENV values?
+
+using var connection = new SqliteConnection(connectionString);
 connection.Open();
 
 var command = connection.CreateCommand();
@@ -24,17 +30,24 @@ command.CommandText =
     @"
 CREATE TABLE IF NOT EXISTS Request (
     Id TEXT PRIMARY KEY,
+    CreationTime DATETIME NOT NULL,
     UserAgent TEXT NOT NULL,
     AcceptLanguage TEXT NOT NULL,
     ClientIp TEXT NOT NULL,
-    ClientResolution TEXT NOT NULL
+    DeviceType TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS BingDailyBackground (
+    Id TEXT PRIMARY KEY,
+    CreationTime DATETIME NOT NULL,
+    ImageUrl DATETIME NOT NULL,
+    UrlWorks BOOL NOT NULL
 );
 ";
 command.ExecuteNonQuery();
 
 builder.Services.AddDbContext<WebAppDbContext>(options =>
     {
-        options.UseSqlite("Data Source=mydb.db");
+        options.UseSqlite(connectionString);
         // .EnableDetailedErrors(); // todo: Add this up, trigger some errors & observe the difference. It should be nicer yea?
         if (EnvironmentHelper.IsDevelopment())
             options

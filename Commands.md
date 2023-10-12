@@ -19,7 +19,7 @@ todo: Add dockerignore file, and add daily bing image to it. Also add bin and ob
 
 ### From Root:
 docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
-docker run -p 8080:80 anilsezer/portfolio
+docker run -p 8080:80 anilsezer/portfolio:latest
 
 
 Search all namespaces: 

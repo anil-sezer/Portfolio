@@ -82,7 +82,28 @@ public class IndexModel : PageModel
             Devices.Unknown;
     }
     
-    public async Task OnPostAsync()
+    // public async Task OnPostAsync()
+    // {
+    //     try
+    //     {
+    //         var email = new Email
+    //         {
+    //             Name = Name,
+    //             Subject = Subject,
+    //             EmailAddress = Email,
+    //             Message = Message
+    //         };
+    //
+    //         await _dbContext.Email.AddAsync(email);
+    //         await _dbContext.SaveChangesAsync();
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Log.Warning(e, "Mail service had an exception. Probably caused by a invalid email address. Address provided: {Email}", Email);
+    //     }
+    // }
+    
+    public async Task<IActionResult> OnPostAsync()
     {
         try
         {
@@ -96,11 +117,14 @@ public class IndexModel : PageModel
 
             await _dbContext.Email.AddAsync(email);
             await _dbContext.SaveChangesAsync();
+            return new JsonResult(new { success = true });
         }
         catch (Exception e)
         {
-            Log.Warning(e, "Mail service had an exception. Probably caused by a invalid email address. Address provided: {Email}", Email);
+            Log.Warning(e, "Mail service had an exception. Probably caused by an invalid email address. Address provided: {Email}", Email);
+            return new JsonResult(new { success = false });
         }
     }
+
 
 }

@@ -11,4 +11,5 @@ public class WebAppDbContext : DbContext
     }
     public DbSet<Request> Request { get; set; }
     public DbSet<BingDailyBackground> BingDailyBackground { get; set; }
+    public DbSet<Email> Email { get; set; }
 }

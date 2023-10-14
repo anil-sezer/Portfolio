@@ -42,6 +42,14 @@ CREATE TABLE IF NOT EXISTS BingDailyBackground (
     ImageUrl DATETIME NOT NULL,
     UrlWorks BOOL NOT NULL
 );
+CREATE TABLE IF NOT EXISTS Email (
+    Id TEXT PRIMARY KEY,
+    CreationTime DATETIME NOT NULL,
+    Name TEXT NOT NULL,
+    EmailAddress TEXT NOT NULL,
+    Subject TEXT NOT NULL,
+    Message TEXT NOT NULL
+);
 ";
 command.ExecuteNonQuery();
 

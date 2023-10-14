@@ -1,4 +1,6 @@
-﻿using DeviceDetectorNET;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using DeviceDetectorNET;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Portfolio.DataAccess;
 using Portfolio.Domain.Constants;
@@ -10,6 +12,18 @@ namespace Portfolio.WebUi.Pages;
 
 public class IndexModel : PageModel
 {
+    [BindProperty]
+    public string Name { get; set; }
+
+    [BindProperty]
+    public string Email { get; set; }
+    
+    [BindProperty]
+    public string Subject { get; set; }
+
+    [BindProperty]
+    public string Message { get; set; }
+    
     private readonly BackgroundImageFromBingService _backgroundImageFromBing;
     public string BackgroundImage { get; private set; }
     private readonly WebAppDbContext _dbContext;
@@ -67,4 +81,26 @@ public class IndexModel : PageModel
             dd.IsBot() ? Devices.Bot :
             Devices.Unknown;
     }
+    
+    public async Task OnPostAsync()
+    {
+        try
+        {
+            var email = new Email
+            {
+                Name = Name,
+                Subject = Subject,
+                EmailAddress = Email,
+                Message = Message
+            };
+
+            await _dbContext.Email.AddAsync(email);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Log.Warning(e, "Mail service had an exception. Probably caused by a invalid email address. Address provided: {Email}", Email);
+        }
+    }
+
 }

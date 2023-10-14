@@ -6,6 +6,15 @@
 * License: https://bootstrapmade.com/license/
 */
 
+.bing-credit {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: white; /* or any color that contrasts with the background */
+  z-index: 1; /* to ensure it appears above other elements */
+}
+
+
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
@@ -707,7 +716,7 @@ section {
   justify-content: center;
   width: 54px;
   height: 54px;
-  background: #149ddd;
+  background: #fff;
   border-radius: 50%;
   transition: 0.5s;
   border: 1px solid #149ddd;
@@ -720,11 +729,11 @@ section {
 }
 
 .services .icon-box:hover .icon {
-  background: #fff;
+  background: #149ddd;
 }
 
 .services .icon-box:hover .icon i {
-  color: #149ddd;
+  color: #fff;
 }
 
 .services .title {

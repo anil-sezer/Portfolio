@@ -1,6 +1,10 @@
 ﻿@{
-var title = "Anil Sezer's Portfolio";
-var description = "Where I demonstrate my skills and prove how I work.";
+    const string title = "Anil Sezer's Portfolio";
+    const string description = "Made with love and skill!";
+
+    var request = Context.Request;
+    var host = request.Scheme + "://" + request.Host.Value;
+    var imageUrl = host + Url.Content("~/img/pp_pic.jpeg");
 }
 
 <!DOCTYPE html>
@@ -28,15 +32,14 @@ var description = "Where I demonstrate my skills and prove how I work.";
     <!-- Open Graph Tags -->
     <meta property="og:title" content="@title">
     <meta property="og:description" content="@description">
-    <meta property="og:image" content="@Url.Content("img/pp_pic.jpeg")">
-    <meta property="og:url" content="https://anil-sezer.com/">
+    <meta property="og:image" content="@imageUrl">
+    <meta property="og:url" content="@host">
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@title">
     <meta name="twitter:description" content="@description">
-    <meta name="twitter:image" content="https://anil-sezer.com/@Url.Content("img/pp_pic.jpeg")">
-
+    <meta name="twitter:image" content="@imageUrl">
 
 </head>
 

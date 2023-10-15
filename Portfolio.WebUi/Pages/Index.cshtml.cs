@@ -53,7 +53,7 @@ public class IndexModel : PageModel
             AcceptLanguage = Request.Headers.AcceptLanguage.ToString(),
             UserAgent = Request.Headers.UserAgent.ToString(),
             ClientIp = TryToGetIp(),
-            DeviceType = Enum.GetName(TryToGetDeviceType())
+            DeviceType = Enum.GetName(TryToGetDeviceType())!
         });
         await _dbContext.SaveChangesAsync();
     }

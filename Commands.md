@@ -9,7 +9,7 @@ docker login
 docker push anilsezer/portfolio:latest
 
 **One liner:**
-docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/. && docker push anilsezer/portfolio:latest
+docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest
 
 docker build -f ./Dockerfile -t anilsezer/portfolio ..
 

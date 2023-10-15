@@ -31,7 +31,6 @@
       <None Include="wwwroot\img\techStack\github.png" />
       <None Include="wwwroot\img\techStack\kafka.png" />
       <None Include="wwwroot\img\techStack\kubernetes.png" />
-      <None Include="wwwroot\img\techStack\notUsed\raspberrypi.png" />
       <None Include="wwwroot\img\techStack\rclone.png" />
       <None Include="wwwroot\img\techStack\sqlite.png" />
       <None Include="wwwroot\img\testimonials\testimonials-1.jpg" />

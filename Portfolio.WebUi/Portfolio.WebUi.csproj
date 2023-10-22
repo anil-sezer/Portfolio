@@ -23,6 +23,16 @@
       <None Include="wwwroot\img\portfolio\portfolio-details-1.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-details-2.jpg" />
       <None Include="wwwroot\img\portfolio\portfolio-details-3.jpg" />
+      <None Include="wwwroot\img\techStack\bootstrap.png" />
+      <None Include="wwwroot\img\techStack\docker.png" />
+      <None Include="wwwroot\img\techStack\dotnet.png" />
+      <None Include="wwwroot\img\techStack\elastic.png" />
+      <None Include="wwwroot\img\techStack\fail2ban.png" />
+      <None Include="wwwroot\img\techStack\github.png" />
+      <None Include="wwwroot\img\techStack\kafka.png" />
+      <None Include="wwwroot\img\techStack\kubernetes.png" />
+      <None Include="wwwroot\img\techStack\rclone.png" />
+      <None Include="wwwroot\img\techStack\sqlite.png" />
       <None Include="wwwroot\img\testimonials\testimonials-1.jpg" />
       <None Include="wwwroot\img\testimonials\testimonials-2.jpg" />
       <None Include="wwwroot\img\testimonials\testimonials-3.jpg" />
@@ -116,9 +126,14 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="PortfolioWebUi\assets\vendor\bootstrap-icons\bootstrap-icons.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\Apache_kafka_wordtype.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\elasticsearch-logo-svg-vector.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\Microsoft_.NET_logo.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\PHP-logo.svg" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="DeviceDetector.NET" Version="6.1.4" />
       <PackageReference Include="AutoMapper" Version="12.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.11" />
       <PackageReference Include="NEST" Version="7.17.5" />
@@ -127,6 +142,10 @@
       <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Portfolio.DataAccess\Portfolio.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

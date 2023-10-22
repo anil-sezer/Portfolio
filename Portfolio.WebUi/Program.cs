@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Portfolio.DataAccess;
 using Portfolio.Domain.Helpers;
 using Portfolio.WebUi.Services;
+using Nest;
 using Serilog;
 using Serilog.Events;
 
@@ -64,6 +65,12 @@ builder.Services.AddDbContext<WebAppDbContext>(options =>
                 // .AddInterceptors(new TaggedQueryCommandInterceptor());
     }
 );
+
+var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
+    .DefaultIndex("my_default_index");
+var client = new ElasticClient(settings);
+
+builder.Services.AddSingleton<IElasticClient>(client);
 
 var app = builder.Build();
 

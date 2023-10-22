@@ -29,98 +29,159 @@
                     You can check the source code at <a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;">GitHub!</a> </p>
             </div>
 
+            @{ const string boxDivClass = "col-lg-4 col-md-6 icon-box"; }
             <div class="row">
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
+            
+                @{ const string kubeLink = "https://kubernetes.io/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="50">
                     <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/kubernetes.png")" width="32" height="32" alt="Kubernetes logo. Blue hexagonal that has a white ship helm inside. A minimalist brand design.">
+                        <a href="@kubeLink">
+                            <img src="@Url.Content("~/img/techStack/kubernetes.png")" width="32" height="32" alt="Kubernetes logo. Blue hexagonal that has a white ship helm inside. A minimalist brand design.">
+                        </a>
                     </div>
-                    <h4 class="title"><a href="">Kubernetes</a></h4>
+                    <h4 class="title"><a href="@kubeLink">Kubernetes</a></h4>
                     <p class="description">Proudly self hosted at my Raspberry Pi 4 cluster!</p>
                 </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
+                
+                @{ const string dockerLink = "https://www.docker.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="50">
                     <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/docker.png")" width="45" height="27" alt="Docker logo. A cute blue smiling whale with blue containers on it.">
+                        <a href="@dockerLink">
+                            <img src="@Url.Content("~/img/techStack/docker.png")" width="45" height="27" alt="Docker logo. A cute blue smiling whale with blue containers on it.">
+                        </a>
                     </div>
-                    <h4 class="title"><a href="">Docker</a></h4>
+                    <h4 class="title"><a href="@dockerLink">Docker</a></h4>
                     <p class="description">Some images are created with Docker and tested locally with it. Websites private image is at <a href="https://hub.docker.com/">Docker Hub</a></p>
                 </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
+                
+                @{ const string dotnetLink = "https://dotnet.microsoft.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="50">
                     <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/dotnet.png")" width="32" height="32" alt=".NET logo. A cute blue smiling whale with blue containers on it.">
+                        <a href="@dotnetLink">
+                            <img src="@Url.Content("~/img/techStack/dotnet.png")" width="32" height="32" alt=".NET logo. A cute blue smiling whale with blue containers on it.">
+                        </a>
                     </div>
-                    <h4 class="title"><a href="">.Net 7 and Razor</a></h4>
+                    <h4 class="title"><a href="@dotnetLink">.Net 7 and Razor</a></h4>
                     <p class="description">This website is written with .Net 7 Razor</p>
                 </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="300">
+                
+                @{ const string bootstrapLink = "https://getbootstrap.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="150">
                     <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/bootstrap.png")" width="32" height="32" alt="Bootstrap logo. A purple box with a B in it.">
+                        <a href="@bootstrapLink">
+                            <img src="@Url.Content("~/img/techStack/bootstrap.png")" width="32" height="32" alt="Bootstrap logo. A purple box with a B in it.">
+                        </a>
                     </div>
-                    <h4 class="title"><a href="">Bootstrap</a></h4>
+                    <h4 class="title"><a href="@bootstrapLink">Bootstrap</a></h4>
                     <p class="description">Used it to create 3 projects including this, I like its ease of use.</p>
                 </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="400">
+                
+                @{ const string githubLink = "https://github.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="150">
                     <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/github.png")" width="32" height="32" alt="Github logo. Has a silhouette of a stylized cat's head inside a circle.">
+                        <a href="@githubLink">
+                            <img src="@Url.Content("~/img/techStack/github.png")" width="32" height="32" alt="Github logo. Has a silhouette of a stylized cat's head inside a circle.">
+                        </a>
                     </div>
-                    <h4 class="title"><a href="">Github Actions</a></h4>
-                    <p class="description">My favorite. I currently only use this to build and push docker images. I will add tests and static analysis later.</p>
+                    <h4 class="title"><a href="@githubLink">Github Actions</a></h4>
+                    <p class="description">I currently only use this to build and push docker images. I will add tests and static analysis later.</p>
                 </div>
-                @* <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="500"> *@
+                
+                @{ const string fail2BanLink = "https://github.com/fail2ban/fail2ban/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="150">
+                    <div class="icon">
+                        <a href="@fail2BanLink">
+                            <img src="@Url.Content("~/img/techStack/fail2ban.png")" width="34" height="33" alt="Fail2Ban logo. A soft colored house that has a unique stop sign front of it. It's a bit funny.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@fail2BanLink">Fail2Ban</a></h4>
+                    <p class="description">For repelling some pesky attacks</p>
+                </div>
+                
+                @{ const string sqLiteLink = "https://github.com/fail2ban/fail2ban/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon">
+                        <a href="@sqLiteLink">
+                            <img src="@Url.Content("~/img/techStack/sqlite.png")" width="32" height="32" alt="SQLite logo. A feather in front of a blue gradient box. Simple but nice, like the SQLite.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@sqLiteLink">SQLite</a></h4>
+                    <p class="description">Due to cluster limitations and ease of usage for local testing, SQLite is my current option</p>
+                </div>
+                
+                @{ const string lensLink = "https://k8slens.dev/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon">
+                        <a href="@lensLink">
+                            <img src="@Url.Content("~/img/techStack/lens.png")" width="32" height="32" alt="Lens logo. A minimalist design. It has white aperture blades in a light blue box.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@lensLink">Lens</a></h4>
+                    <p class="description">Using it to observe the cluster in a more graphical way. Thinking about trying K9s later.</p>
+                </div>
+                
+                @{ const string expressifLink = "https://www.espressif.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon">
+                        <a href="@expressifLink">
+                            <img src="@Url.Content("~/img/techStack/expressif.png")" width="32" height="32" alt="Expressif logo. Looks like a red wifi signal logo, but contained inside a circle.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@expressifLink">3 IOT Integration</a></h4>
+                    <p class="description">Coming soon!</p>
+                </div>
+                
+                @{ const string elasticLink = "https://www.elastic.co/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon">
+                        <a href="@elasticLink">
+                            <img src="@Url.Content("~/img/techStack/elastic.png")" width="32" height="32" alt="Elastic Search logo. Looks like colorful bubbles fused together.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@elasticLink">Elastic Search</a></h4>
+                    <p class="description">Coming in the November!</p>
+                </div>
+                
+                @{ const string kafkaLink = "https://kafka.apache.org/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon">
+                        <a href="@kafkaLink">
+                            <img src="@Url.Content("~/img/techStack/kafka.png")" width="32" height="32" alt="Kafka logo. Circles connected by lines. It's black and white.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@kafkaLink">Kafka</a></h4>
+                    <p class="description">Coming in the last week of November!</p>
+                </div>
+                
+                @{ const string prometheusLink = "https://prometheus.io/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon">
+                        <a href="@prometheusLink">
+                            <img src="@Url.Content("~/img/techStack/prometheus.png")" width="32" height="32" alt="Prometheus logo. A nice torch.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@prometheusLink">Prometheus</a></h4>
+                    <p class="description">Because why not!</p>
+                </div>
+                
+                @{ const string grafanaLink = "https://grafana.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="400">
+                    <div class="icon">
+                        <a href="@grafanaLink">
+                            <img src="@Url.Content("~/img/techStack/grafana.png")" width="32" height="32" alt="Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@grafanaLink">Grafana</a></h4>
+                    <p class="description">Coming in next weeks! Currently Lens is enough.</p>
+                </div>
+                
+                @* <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="500"> *@
                 @*     <div class="icon"> *@
                 @*         <img src="@Url.Content("~/img/techStack/rclone.png")" width="32" height="32" alt="Rclone logo. I dunno how to describe this. Looks like a 3 chain link linked together?"> *@
                 @*     </div> *@
                 @*     <h4 class="title"><a href="">Rclone</a></h4> *@
                 @*     <p class="description">For backups because why not</p> *@
                 @* </div> *@
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up" data-aos-delay="500">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/fail2ban.png")" width="34" height="33" alt="Fail2Ban logo. A soft colored house that has a unique stop sign front of it. It's a bit funny.">
-                    </div>
-                    <h4 class="title"><a href="">Fail2Ban</a></h4>
-                    <p class="description">For repelling some pesky attacks</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/sqlite.png")" width="32" height="32" alt="SQLite logo. A feather in front of a blue gradient box. Simple but nice, like the SQLite.">
-                    </div>
-                    <h4 class="title"><a href="">SQLite</a></h4>
-                    <p class="description">Due to cluster limitations and ease of usage for local testing, SQLite is my current option</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/expressif.png")" width="32" height="32" alt="Expressif logo. Looks like a red wifi signal logo, but contained inside a circle.">
-                    </div>
-                    <h4 class="title"><a href="">3 IOT Integration</a></h4>
-                    <p class="description">Coming soon!</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/elastic.png")" width="32" height="32" alt="Elastic Search logo. Looks like colorful bubbles fused together.">
-                    </div>
-                    <h4 class="title"><a href="">Elastic Search</a></h4>
-                    <p class="description">Coming in the November!</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/kafka.png")" width="32" height="32" alt="Kafka logo. Circles connected by lines. It's black and white.">
-                    </div>
-                    <h4 class="title"><a href="">Kafka</a></h4>
-                    <p class="description">Coming in the last week of November!</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/prometheus.png")" width="32" height="32" alt="Prometheus logo. A nice torch.">
-                    </div>
-                    <h4 class="title"><a href="">Prometheus</a></h4>
-                    <p class="description">Coming in next weeks!</p>
-                </div>
-                <div class="col-lg-4 col-md-6 icon-box" data-aos="fade-up">
-                    <div class="icon">
-                        <img src="@Url.Content("~/img/techStack/grafana.png")" width="32" height="32" alt="Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.">
-                    </div>
-                    <h4 class="title"><a href="">Grafana</a></h4>
-                    <p class="description">Coming in next weeks!</p>
-                </div>
             </div>
         </div>
     </section><!-- End Services Section -->

@@ -1,13 +1,4 @@
-﻿@{
-    const string title = "Anil Sezer's Portfolio";
-    const string description = "Made with love!";
-
-    var request = Context.Request;
-    var host = request.Scheme + "://" + request.Host.Value;
-    var imageUrl = host + Url.Content("~/img/pp_pic.jpeg");
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <!-- =======================================================
@@ -24,6 +15,14 @@
     
     <link rel="shortcut icon" href="@Url.Content("img/favicon.png")" />
 
+    @{
+        const string title = "Anil Sezer's Portfolio";
+        const string description = "Made with love in my bare metal setup!";
+    
+        var request = Context.Request;
+        var host = request.Scheme + "://" + request.Host.Value;
+        var imageUrl = host + Url.Content("~/img/pp_pic.jpeg");
+    }
 
     <title>@title</title>
     <meta content="" name="@description">

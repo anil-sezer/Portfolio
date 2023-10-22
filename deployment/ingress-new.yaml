@@ -8,9 +8,20 @@ spec:
   tls:
     - hosts:
         - anil-sezer.com
+        - www.anil-sezer.com
       secretName: portfolio-ingress-tls
   rules:
     - host: anil-sezer.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: portfolio-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: www.anil-sezer.com
       http:
         paths:
           - backend:

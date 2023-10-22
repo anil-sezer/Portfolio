@@ -45,3 +45,8 @@ kubectl describe challenges.acme.cert-manager.io anil-sezer-tls-qwp7c-743662298-
 kubectl describe ingress [your-ingress-name] -n default
 
 kubectl get configmap -n ingress
+
+
+#### Get Sqlite file:
+kubectl cp portfolio-deployment-688f7c85b7-brs88:/app/WebApp.db ~/WebApp.db
+getDb

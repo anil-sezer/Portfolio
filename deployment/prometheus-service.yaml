@@ -6,8 +6,11 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app.kubernetes.io/instance: kube-prom-stack
+    app.kubernetes.io/instance: kube-prom-stack-kube-prome-prometheus
     app.kubernetes.io/name: prometheus
+    app.kubernetes.io/managed-by: prometheus-operator
+    operator.prometheus.io/name: kube-prom-stack-kube-prome-prometheus
+    prometheus: kube-prom-stack-kube-prome-prometheus
   ports:
     - protocol: TCP
       port: 9090

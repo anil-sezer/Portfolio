@@ -22,10 +22,16 @@ public static class StartupHelper
 
     public static void DbInitWithPostgres(this IServiceCollection services)
     {
+        // TODO: REMOVE SECRETS FROM HERE AND CHANGE THEM
+        // Internal
+        var connectionString = "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
+        // Local
+        // var connectionString = "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
+        
         services.AddDbContext<WebAppDbContext>(options =>
                 options
                     //.UseInMemoryDatabase("WebAppDb")
-                    .UseNpgsql("")
+                    .UseNpgsql(connectionString)
                     // .UseSnakeCaseNamingConvention()
                     .EnableSensitiveDataLogging() // todo: Only for development
                     .EnableDetailedErrors() // todo: Only for development

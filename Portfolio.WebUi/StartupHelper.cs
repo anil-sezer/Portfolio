@@ -19,6 +19,18 @@ public static class StartupHelper
             .CreateLogger();
         builder.Host.UseSerilog(log);
     }
+
+    public static void DbInitWithPostgres(this IServiceCollection services)
+    {
+        services.AddDbContext<WebAppDbContext>(options =>
+                options
+                    //.UseInMemoryDatabase("WebAppDb")
+                    .UseNpgsql("")
+                    // .UseSnakeCaseNamingConvention()
+                    .EnableSensitiveDataLogging() // todo: Only for development
+                    .EnableDetailedErrors() // todo: Only for development
+        );
+    }
     
     public static void DbInitWithElastic(this IServiceCollection services)
     {

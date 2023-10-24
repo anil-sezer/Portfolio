@@ -1,0 +1,11 @@
+﻿/* 
+Website & Portfolio Color Palette 
+Placed in a css file so Rider can easily display the colors
+*/
+.ColorHexCodes {
+    --yale-blue: #173b6cff;
+    --celestial-blue: #149dddff;
+    --cambridge-blue: #99c099ff;
+    --charcoal: #47505fff;
+    --jet: #2d2d2dff;
+}

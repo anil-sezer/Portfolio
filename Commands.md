@@ -48,5 +48,5 @@ kubectl get configmap -n ingress
 
 
 #### Get Sqlite file:
-kubectl cp portfolio-deployment-688f7c85b7-brs88:/app/WebApp.db ~/WebApp.db
+kubectl cp portfolio-deployment-6c69c56f8-ct4qn:/app/WebApp.db ~/WebApp.db
 getDb

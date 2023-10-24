@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
+  type: NodePort
   selector:
     app: postgres
   ports:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  externalIPs:
-    - 192.168.1.104
+      nodePort: 30001

@@ -1,8 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Nest;
 using Portfolio.DataAccess;
-using Portfolio.Domain.Helpers;
 using Serilog;
 using Serilog.Events;
 
@@ -19,6 +17,23 @@ public static class StartupHelper
             .CreateLogger();
         builder.Host.UseSerilog(log);
     }
+
+    public static void DbInitWithPostgres(this IServiceCollection services)
+    {
+        // TODO: REMOVE SECRETS FROM HERE AND CHANGE THEM
+        // Internal
+        var connectionString = "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
+        // Local
+        // var connectionString = "Host=192.168.1.104;Port=30001;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
+        
+        services.AddDbContext<WebAppDbContext>(options =>
+                options
+                    .UseNpgsql(connectionString)
+                    .UseSnakeCaseNamingConvention()
+                    .EnableSensitiveDataLogging() // todo: Only for development
+                    .EnableDetailedErrors() // todo: Only for development
+        );
+    }
     
     public static void DbInitWithElastic(this IServiceCollection services)
     {
@@ -29,52 +44,52 @@ public static class StartupHelper
         services.AddSingleton<IElasticClient>(client);
     }
     
-    public static void DbInitWithSqLite(this IServiceCollection services)
-    {
-        const string connectionString = "Data Source=WebApp.db";
-        // var connectionString = "Data Source=/app/Data/WebApp.db"; // todo: Get this from Kubernetes ENV values?
-
-        using var connection = new SqliteConnection(connectionString);
-        connection.Open();
-
-        var command = connection.CreateCommand();
-        command.CommandText =
-                            @"
-                                CREATE TABLE IF NOT EXISTS Request (
-                                    Id TEXT PRIMARY KEY,
-                                    CreationTime DATETIME NOT NULL,
-                                    UserAgent TEXT NOT NULL,
-                                    AcceptLanguage TEXT NOT NULL,
-                                    ClientIp TEXT NOT NULL,
-                                    DeviceType TEXT NOT NULL
-                                );
-                                CREATE TABLE IF NOT EXISTS BingDailyBackground (
-                                    Id TEXT PRIMARY KEY,
-                                    CreationTime DATETIME NOT NULL,
-                                    ImageUrl DATETIME NOT NULL,
-                                    UrlWorks BOOL NOT NULL
-                                );
-                                CREATE TABLE IF NOT EXISTS Email (
-                                    Id TEXT PRIMARY KEY,
-                                    CreationTime DATETIME NOT NULL,
-                                    Name TEXT NOT NULL,
-                                    EmailAddress TEXT NOT NULL,
-                                    Subject TEXT NOT NULL,
-                                    Message TEXT NOT NULL
-                                );
-                                ";
-        command.ExecuteNonQuery();
-
-        services.AddDbContext<WebAppDbContext>(options =>
-            {
-                options.UseSqlite(connectionString);
-                // .EnableDetailedErrors(); // todo: Add this up, trigger some errors & observe the difference. It should be nicer yea?
-                if (EnvironmentHelper.IsDevelopment())
-                    options
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
-                // .AddInterceptors(new TaggedQueryCommandInterceptor());
-            }
-        );
-    }
+    // public static void DbInitWithSqLite(this IServiceCollection services)
+    // {
+    //     const string connectionString = "Data Source=WebApp.db";
+    //     // var connectionString = "Data Source=/app/Data/WebApp.db"; // todo: Get this from Kubernetes ENV values?
+    //
+    //     using var connection = new SqliteConnection(connectionString);
+    //     connection.Open();
+    //
+    //     var command = connection.CreateCommand();
+    //     command.CommandText =
+    //                         @"
+    //                             CREATE TABLE IF NOT EXISTS Request (
+    //                                 Id TEXT PRIMARY KEY,
+    //                                 CreationTime DATETIME NOT NULL,
+    //                                 UserAgent TEXT NOT NULL,
+    //                                 AcceptLanguage TEXT NOT NULL,
+    //                                 ClientIp TEXT NOT NULL,
+    //                                 DeviceType TEXT NOT NULL
+    //                             );
+    //                             CREATE TABLE IF NOT EXISTS BingDailyBackground (
+    //                                 Id TEXT PRIMARY KEY,
+    //                                 CreationTime DATETIME NOT NULL,
+    //                                 ImageUrl DATETIME NOT NULL,
+    //                                 UrlWorks BOOL NOT NULL
+    //                             );
+    //                             CREATE TABLE IF NOT EXISTS Email (
+    //                                 Id TEXT PRIMARY KEY,
+    //                                 CreationTime DATETIME NOT NULL,
+    //                                 Name TEXT NOT NULL,
+    //                                 EmailAddress TEXT NOT NULL,
+    //                                 Subject TEXT NOT NULL,
+    //                                 Message TEXT NOT NULL
+    //                             );
+    //                             ";
+    //     command.ExecuteNonQuery();
+    //
+    //     services.AddDbContext<WebAppDbContext>(options =>
+    //         {
+    //             options.UseSqlite(connectionString);
+    //             // .EnableDetailedErrors(); // todo: Add this up, trigger some errors & observe the difference. It should be nicer yea?
+    //             if (EnvironmentHelper.IsDevelopment())
+    //                 options
+    //                     .EnableSensitiveDataLogging()
+    //                     .EnableDetailedErrors();
+    //             // .AddInterceptors(new TaggedQueryCommandInterceptor());
+    //         }
+    //     );
+    // }
 }

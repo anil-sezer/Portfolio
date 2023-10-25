@@ -10,7 +10,7 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 
-builder.Services.DbInitWithSqLite();
+builder.Services.DbInitWithPostgres();
 
 var app = builder.Build();
 

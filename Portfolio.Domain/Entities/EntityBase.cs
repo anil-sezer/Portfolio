@@ -8,6 +8,6 @@ public abstract class EntityBase
     protected EntityBase()
     {
         Id = Guid.NewGuid();
-        CreationTime = DateTime.Now;
+        CreationTime = DateTime.UtcNow;
     }
 }

@@ -19,7 +19,7 @@ public class BackgroundImageFromBingService
 
     public async Task<string> GetBackgroundImg()
     {
-        var img = await _dbContext.BingDailyBackground.SingleOrDefaultAsync(x => x.CreationTime.Date == DateTime.Now.Date);
+        var img = await _dbContext.BingDailyBackground.SingleOrDefaultAsync(x => x.CreationTime.Date == DateTime.UtcNow.Date);
 
         if (img != null)
         {

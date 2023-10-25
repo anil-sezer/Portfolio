@@ -1,26 +1,33 @@
-﻿# Deprecated. Delete this
-apiVersion: networking.k8s.io/v1
+﻿apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: portfolio-ingress
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: lets-encrypt
 spec:
   tls:
     - hosts:
         - anil-sezer.com
-      secretName: anil-sezer-tls-vq82q
+        - www.anil-sezer.com
+      secretName: portfolio-ingress-tls
   rules:
-    - host:  anil-sezer.com
+    - host: anil-sezer.com
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
+          - backend:
               service:
-                name: portfolio-service
+                name: website-service
                 port:
                   number: 80
-
+            path: /
+            pathType: Prefix
+    - host: www.anil-sezer.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: website-service
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

@@ -1,3 +1,4 @@
+using Portfolio.Domain.Helpers;
 using Portfolio.WebUi;
 using Portfolio.WebUi.Services;
 using Serilog;
@@ -6,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.InitLogsWithSerilog();
 
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+if (EnvironmentHelper.IsDevelopment())
+    builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+else
+    builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nest;
 using Portfolio.DataAccess;
+using Portfolio.Domain.Helpers;
 using Serilog;
 using Serilog.Events;
 
@@ -21,10 +22,9 @@ public static class StartupHelper
     public static void DbInitWithPostgres(this IServiceCollection services)
     {
         // TODO: REMOVE SECRETS FROM HERE AND CHANGE THEM
-        // Internal
-        var connectionString = "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
-        // Local
-        // var connectionString = "Host=192.168.1.104;Port=30001;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
+        var connectionString = EnvironmentHelper.IsDevelopment() ? 
+            "Host=192.168.1.104;Port=30001;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;" : 
+            "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
         
         services.AddDbContext<WebAppDbContext>(options =>
                 options

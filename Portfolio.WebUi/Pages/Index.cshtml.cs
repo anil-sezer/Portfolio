@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
-using DeviceDetectorNET;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Portfolio.DataAccess;
-using Portfolio.Domain.Constants;
 using Portfolio.Domain.Entities.WebAppEntities;
 using Portfolio.WebUi.Services;
 using Serilog;
@@ -53,7 +50,7 @@ public class IndexModel : PageModel
             AcceptLanguage = Request.Headers.AcceptLanguage.ToString(),
             UserAgent = Request.Headers.UserAgent.ToString(),
             ClientIp = TryToGetIp(),
-            DeviceType = Enum.GetName(TryToGetDeviceType())!
+            DeviceType = ""
         });
         await _dbContext.SaveChangesAsync();
     }
@@ -65,23 +62,7 @@ public class IndexModel : PageModel
             ? HttpContext.Connection.RemoteIpAddress.ToString()
             : forwardedFor.Split(',').FirstOrDefault();
     }
-    
-    private Devices TryToGetDeviceType()
-    {
-        var userAgent = Request.Headers.UserAgent;
-        var headers = Request.Headers.ToDictionary(a => a.Key, a => a.Value.ToArray().FirstOrDefault());
-        var clientHints = ClientHints.Factory(headers);
 
-        var dd = new DeviceDetector(userAgent, clientHints);
-
-        return dd.IsDesktop() ? Devices.Desktop :
-            dd.IsBrowser() ? Devices.Browser :
-            dd.IsMobile() ? Devices.Mobile :
-            dd.IsTablet() ? Devices.Tablet :
-            dd.IsBot() ? Devices.Bot :
-            Devices.Unknown;
-    }
-    
     // public async Task OnPostAsync()
     // {
     //     try

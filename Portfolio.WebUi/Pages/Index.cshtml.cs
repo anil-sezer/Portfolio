@@ -125,6 +125,4 @@ public class IndexModel : PageModel
             return new JsonResult(new { success = false });
         }
     }
-
-
 }

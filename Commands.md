@@ -1,55 +1,35 @@
-﻿#### Does not work:
-docker buildx build --platform linux/arm64 -f ./Dockerfile -t anilsezer/portfolio ..
+﻿## Fail2Ban
+### Check Fail2Ban's All Jails
 
-#### Push the image:
+for jail in $(sudo fail2ban-client status | grep "Jail list:" | sed -E 's/^[^:]+:[ \t]+//' | tr ',' ' '); do
+echo "Jail: $jail"
+sudo fail2ban-client status $jail | grep "Banned IP list:"
+done
+
+### Check its ban or unban logs:
+
+sudo cat /var/log/fail2ban.log | grep "Ban "
+
+## Migrations
+dotnet ef migrations add MIGRATIONNAME --startup-project .\Portfolio.WebUi\ --project .\Portfolio.DataAccess\ --output-dir Migrations
+dotnet ef database update --startup-project .\Portfolio.WebUi\
+
+## Image commands:
 docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
 docker login
 docker push anilsezer/portfolio:latest
 
-**One liner:**
+**One liner to build & deploy at the rpi:** <br>
 sudo systemctl start docker && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment && sudo systemctl stop docker
 
-#### Migrations
-dotnet ef migrations add MIGRATIONNAME --startup-project .\Portfolio.WebUi\ --project .\Portfolio.DataAccess\ --output-dir Migrations
-dotnet ef database update --startup-project .\Portfolio.WebUi\
-
-No cache: --no-cache
-todo: Add dockerignore file, and add daily bing image to it. Also add bin and obj folders? Reduce the image size!
 
 
 ### From Root:
 docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
 docker run -p 8080:80 anilsezer/portfolio:latest
 
-
-Search all namespaces: 
-k get ingress --all-namespaces
-k get letsencrypt-prod --all-namespaces
-
-k get namespaces
-
-
-### Ngnix:
-k get pods -n ingress-nginx
-kubectl logs -n ingress-nginx ingress-nginx-controller-f7f5995cc-4vnmz
-
-### Get app logs:
-kubectl logs portfolio-deployment-7864bb7676-4lhvq
-
-kubectl describe certificaterequests.cert-manager.io anil-sezer-tls-qwp7c -n default
-
-
-### Etc:
-kubectl get orders.acme.cert-manager.io -n default
-kubectl describe orders.acme.cert-manager.io anil-sezer-tls-qwp7c-743662298 -n default
-
-kubectl get challenges.acme.cert-manager.io -n default
-kubectl describe challenges.acme.cert-manager.io anil-sezer-tls-qwp7c-743662298-579262875 -n default
-
-kubectl describe ingress [your-ingress-name] -n default
-
-kubectl get configmap -n ingress
-
+### Check for ports:
+kubectl get svc --all-namespaces -o json | jq -r '.items[] | select(.spec.type == "NodePort") | .spec.ports[] | .nodePort'
 
 #### Get Sqlite file:
 kubectl cp portfolio-deployment-6c69c56f8-ct4qn:/app/WebApp.db ~/WebApp.db

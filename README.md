@@ -1,10 +1,24 @@
-Hi! This will be my portfolio. It's currently on construction. 
+Hi! This is my Portfolio.
+---
+### Full Tech Stack:
+.NET 7 & Razor
+PostgreSQL
+Kubernetes
+Docker
+Bootstrap
+Prometheus
+Grafana
+Lens
+SQLite (Now PostgreSQL)
 
-I want to implement the Kafka, ElasticSearch, Microcontrollers(Arduino), IOT, and other knowledge here to promote myself.
+#### .NET Libraries:
+Serilog
 
-Feel free to use the code here without credit. Just try to use it in open source projects please.
-
-Good day!
+### Coming Next:
+Elastic Search
+Kafka
+OpenTelemetry
+3 IoT's
 
 
 Used this template for front end: https://bootstrapmade.com/demo/iPortfolio/

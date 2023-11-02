@@ -1,5 +1,7 @@
 Hi! This is my Portfolio.
 ---
+Made by using Domain Driven Design
+
 ### Full Tech Stack:
 .NET 7 & Razor
 

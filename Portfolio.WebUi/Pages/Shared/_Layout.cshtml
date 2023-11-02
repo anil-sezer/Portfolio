@@ -17,7 +17,7 @@
 
     @{
         const string title = "Anil Sezer's Portfolio";
-        const string description = "Made with love in my bare metal setup!";
+        const string description = "Made with love in my bare metal setup! Here I demonstrate my skills. You can also access the code from www.github.com/anil-sezer/Portfolio";
     
         var request = Context.Request;
         var host = request.Scheme + "://" + request.Host.Value;
@@ -25,9 +25,12 @@
     }
 
     <title>@title</title>
-    <meta content="" name="@description">
-    <meta content="" name="keywords">
+    <meta name="author" content="Anıl Sezer">
+    <meta content="@description" name="description">
+    <meta content=".Net Core, Kubernetes, Portfolio, Backend Engineer, Developer" name="keywords">
 
+
+    <meta content="@description" name="description">
     <!-- Open Graph Tags -->
     <meta property="og:title" content="@title">
     <meta property="og:description" content="@description">

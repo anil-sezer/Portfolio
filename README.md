@@ -1,10 +1,28 @@
-Hi! This will be my portfolio. It's currently on construction. 
+Hi! This is my Portfolio.
+---
+Made by using Domain Driven Design
 
-I want to implement the Kafka, ElasticSearch, Microcontrollers(Arduino), IOT, and other knowledge here to promote myself.
+### Full Tech Stack:
+.NET 7 & Razor
 
-Feel free to use the code here without credit. Just try to use it in open source projects please.
+1. PostgreSQL
+2. Kubernetes
+3. Docker
+4. Bootstrap
+5. Prometheus
+6. Grafana
+7. Lens
+8. SQLite (Now PostgreSQL)
 
-Good day!
+
+#### .NET Libraries:
+Serilog
+
+### Coming Next:
+1. Elastic Search
+2. Kafka
+3. OpenTelemetry
+4. 3 IoT's
 
 
 Used this template for front end: https://bootstrapmade.com/demo/iPortfolio/

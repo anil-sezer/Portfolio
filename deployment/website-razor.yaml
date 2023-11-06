@@ -20,16 +20,9 @@ spec:
             - containerPort: 80
           env:
             - name: ASPNETCORE_ENVIRONMENT
-#              value: "Production"
-              value: "Development"
-#            - name: TZ
-#              value: "Europe/Istanbul"
-          volumeMounts:
-            - mountPath: /app/Data
-              name: sqlite-volume
-      volumes:
-        - name: sqlite-volume
-          persistentVolumeClaim:
-            claimName: sqlite-pvc
+              value: "Production"
+#              value: "Development"
+            - name: TZ
+              value: "Europe/Istanbul"
       imagePullSecrets:
         - name: dockerlogin

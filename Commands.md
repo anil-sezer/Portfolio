@@ -1,4 +1,10 @@
-﻿## Fail2Ban
+﻿## Graceful shutdown
+k drain NODENAME --ignore-daemonsets --delete-emptydir-data
+k cordon NODENAME
+
+k uncordon NODENAME
+
+## Fail2Ban
 ### Check Fail2Ban's All Jails
 
 for jail in $(sudo fail2ban-client status | grep "Jail list:" | sed -E 's/^[^:]+:[ \t]+//' | tr ',' ' '); do
@@ -21,8 +27,6 @@ docker push anilsezer/portfolio:latest
 
 **One liner to build & deploy at the rpi:** <br>
 sudo systemctl start docker && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment && sudo systemctl stop docker
-
-
 
 ### From Root:
 docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.

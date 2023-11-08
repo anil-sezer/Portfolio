@@ -18,5 +18,7 @@ public partial class Request: EntityBase
     [Required(ErrorMessage = Etcetera.DataAnnotation_RequiredErrorMsg)]
     public string ClientIp { get; set; }
     [Required(ErrorMessage = Etcetera.DataAnnotation_RequiredErrorMsg)]
-    public string DeviceType { get; set; }
+    public string Country { get; set; }
+    [Required(ErrorMessage = Etcetera.DataAnnotation_RequiredErrorMsg)]
+    public string City { get; set; }
 }

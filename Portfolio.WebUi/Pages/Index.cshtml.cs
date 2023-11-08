@@ -50,7 +50,8 @@ public class IndexModel : PageModel
             AcceptLanguage = Request.Headers.AcceptLanguage.ToString(),
             UserAgent = Request.Headers.UserAgent.ToString(),
             ClientIp = TryToGetIp(),
-            DeviceType = ""
+            Country = "",
+            City = ""
         });
         await _dbContext.SaveChangesAsync();
     }

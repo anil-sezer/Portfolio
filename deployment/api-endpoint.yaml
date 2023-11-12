@@ -1,0 +1,28 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-api
+  template:
+    metadata:
+      labels:
+        app: portfolio-api
+    spec:
+      containers:
+        - name: portfolio-api
+          image: anilsezer/portfolioapi:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+#              value: "Development" # If you open this, replace the DB connectionString too
+            - name: TZ
+              value: "Europe/Istanbul"
+      imagePullSecrets:
+        - name: dockerlogin

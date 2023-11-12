@@ -14,7 +14,7 @@ else
 
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 
-builder.Services.DbInitWithPostgres();
+builder.Services.DbInitWithPostgres(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
 
 var app = builder.Build();
 

@@ -19,13 +19,8 @@ public static class StartupHelper
         builder.Host.UseSerilog(log);
     }
 
-    public static void DbInitWithPostgres(this IServiceCollection services)
+    public static void DbInitWithPostgres(this IServiceCollection services, string connectionString)
     {
-        // TODO: REMOVE SECRETS FROM HERE AND CHANGE THEM
-        var connectionString = EnvironmentHelper.IsDevelopment() ? 
-            "Host=192.168.1.104;Port=30001;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;" : 
-            "Host=postgres-service;Port=5432;Username=default-user;Password=rgT6%Qk9jTaURwK!&;Database=postgres;";
-        
         services.AddDbContext<WebAppDbContext>(options =>
                 options
                     .UseNpgsql(connectionString)

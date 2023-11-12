@@ -26,7 +26,7 @@ docker login
 docker push anilsezer/portfolio:latest
 
 **One liner to build & deploy at the rpi:** <br>
-sudo systemctl start docker && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment && sudo systemctl stop docker
+git pull && sudo systemctl start docker && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment && sudo systemctl stop docker
 
 ### From Root:
 docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.

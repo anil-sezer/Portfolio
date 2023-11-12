@@ -21,7 +21,7 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
-#              value: "Development"
+#              value: "Development" # If you open this, replace the DB connectionString too
             - name: TZ
               value: "Europe/Istanbul"
       imagePullSecrets:

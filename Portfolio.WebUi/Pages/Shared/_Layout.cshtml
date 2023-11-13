@@ -17,7 +17,7 @@
 
     @{
         const string title = "Anil Sezer's Portfolio";
-        const string description = "Made with love in my bare metal setup! Here I demonstrate my skills. You can also access the code from www.github.com/anil-sezer/Portfolio";
+        const string description = "Made with love on my bare-metal setup! This project is a showcase of my technical expertise. Code is at www.github.com/anil-sezer/Portfolio";
     
         var request = Context.Request;
         var host = request.Scheme + "://" + request.Host.Value;
@@ -36,6 +36,7 @@
     <meta property="og:description" content="@description">
     <meta property="og:image" content="@imageUrl">
     <meta property="og:url" content="@host">
+    <meta property="og:type" content="website" />
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">

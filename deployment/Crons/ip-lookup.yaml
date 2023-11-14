@@ -1,0 +1,14 @@
+﻿apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ip-lookup-go-cronjob
+spec:
+  schedule: "*/20 * * * *"  # Runs every 20 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: ip-lookup-go-app
+              image: anilsezer/iplookup-cron-go:latest 
+          restartPolicy: OnFailure

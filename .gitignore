@@ -3,8 +3,8 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # Mine
-prometheus_and_grafana/.env
 .idea/
+.env
 
 # User-specific stuff
 .idea/**/workspace.xml

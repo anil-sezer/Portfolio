@@ -15,11 +15,11 @@ jobs:
         with:
           dotnet-version: '7.0'
       - name: Restore dependencies
-        run: dotnet restore ShopAndEat.sln
+        run: dotnet restore Portfolio.sln
       - name: Build
-        run: dotnet build --no-restore ShopAndEat.sln
+        run: dotnet build --no-restore Portfolio.sln
       - name: Test
-        run: dotnet test --no-build --verbosity normal ShopAndEat.sln
+        run: dotnet test --no-build --verbosity normal Portfolio.sln
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to DockerHub

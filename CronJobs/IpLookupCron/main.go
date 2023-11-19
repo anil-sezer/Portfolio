@@ -2,37 +2,15 @@ package main
 
 import (
 	"IpLookupCron/Constants"
+	"IpLookupCron/DataAccess"
 	"IpLookupCron/DataAccess/Entities/Postgres"
 	"IpLookupCron/ThirdPartyApiCalls/GetIpInfo"
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"time"
 )
 
-func DbContext() *gorm.DB {
-	// Initialize the ORM database connection ('dsn' is your Postgres connection string).
-	dsn := "host=192.168.1.104 port=30001 user=default-user password=rgT6%Qk9jTaURwK!& dbname=postgres sslmode=disable TimeZone=Europe/Istanbul"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect to database")
-	}
-
-	return db
-}
-
-func AutoMigrate(db *gorm.DB) {
-
-	// Automatically migrate your schema, creating the 'requests' table if it doesn't exist.
-	var err = db.AutoMigrate(&Postgres.Request{})
-	if err != nil {
-		panic("failed to auto migrate")
-	}
-}
-
 func main() {
-
-	var db = DbContext()
+	var db = DataAccess.DbContext()
 
 	// Query all requests from the database into a slice of Request structs.
 	var requests []Postgres.Request

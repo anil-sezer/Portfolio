@@ -2,40 +2,53 @@ package DataAccess
 
 import (
 	"IpLookupCron/DataAccess/Entities/Postgres"
-	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"os"
 )
 
-// Function to establish a connection to the database
-func connectDB(connString string) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(context.Background(), connString)
+func DbContext() *gorm.DB {
+
+	// Initialize the ORM database connection ('dsn' is your Postgres connection string).
+	dsn := getConnectionString()
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to the database: %w", err)
+		panic("failed to connect to database")
 	}
-	return conn, nil
+
+	return db
 }
 
-// Function to query all requests from the database
-func queryRequests(conn *pgx.Conn) ([]Postgres.Request, error) {
-	rows, err := conn.Query(context.Background(), "SELECT client_ip FROM public.request WHERE country = ''")
+// KEEP THIS CLOSED
+func AutoMigrate(db *gorm.DB) {
+
+	// Automatically migrate your schema, creating the 'requests' table if it doesn't exist.
+	var err = db.AutoMigrate(&Postgres.Request{})
 	if err != nil {
-		return nil, fmt.Errorf("query failed: %w", err)
+		panic("failed to auto migrate")
 	}
-	defer rows.Close()
+}
 
-	var requests []Postgres.Request
-	for rows.Next() {
-		var r Postgres.Request
-		if err := rows.Scan(&r.ClientIP); err != nil {
-			return nil, fmt.Errorf("error scanning row: %w", err)
-		}
-		requests = append(requests, r)
-	}
+func getConnectionString() string {
+	var connectionString = connectionStringFromEnvFile()
 
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error during rows iteration: %w", err)
+	if connectionString != "" {
+		fmt.Println("DB Connection String:", connectionString)
+		return connectionString
 	}
 
-	return requests, nil
+	fmt.Println("DB Connection String:", connectionString)
+	return connectionString
+}
+
+func connectionStringFromEnvFile() string {
+
+	connectionString, exists := os.LookupEnv("DB_CONNECTION_STRING")
+	if !exists {
+		return ""
+	} else {
+		return connectionString
+	}
 }

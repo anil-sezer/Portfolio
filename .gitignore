@@ -4,7 +4,7 @@
 
 # Mine
 .idea/
-.env
+**/.env
 
 # User-specific stuff
 .idea/**/workspace.xml

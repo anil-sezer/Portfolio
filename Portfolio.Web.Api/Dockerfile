@@ -1,9 +1,9 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0.1-bullseye-slim-arm64v8 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0.404 AS build
 WORKDIR /src
 COPY ["Portfolio.Web.Api/Portfolio.Web.Api.csproj", "Portfolio.Web.Api/"]
 COPY ["Portfolio.Domain/Portfolio.Domain.csproj", "Portfolio.Domain/"]
@@ -12,10 +12,10 @@ RUN dotnet restore "Portfolio.Web.Api/Portfolio.Web.Api.csproj"
 
 COPY . .
 WORKDIR "/src/Portfolio.Web.Api"
-RUN dotnet build "Portfolio.Web.Api.csproj" -c Release -o /app/build
+RUN dotnet build "Portfolio.Web.Api.csproj" -c Release -o /app/build -r linux-arm64 --self-contained false
 
 FROM build AS publish
-RUN dotnet publish "Portfolio.Web.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Portfolio.Web.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false -r linux-arm64  --self-contained false
 
 FROM base AS final
 WORKDIR /app

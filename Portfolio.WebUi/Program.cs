@@ -6,6 +6,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.InitLogsWithSerilog();
+builder.SetupOpenTelemetry();
 
 if (EnvironmentHelper.IsDevelopment())
     builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

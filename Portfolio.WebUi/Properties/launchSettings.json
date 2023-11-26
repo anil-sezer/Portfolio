@@ -14,7 +14,9 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5131",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_EXPORTER_JAEGER_AGENT_HOST": "http://localhost",
+        "OTEL_EXPORTER_JAEGER_AGENT_PORT": "4317"
       }
     },
     "https": {
@@ -23,14 +25,18 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7160;http://localhost:5131",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_EXPORTER_JAEGER_AGENT_HOST": "http://localhost",
+        "OTEL_EXPORTER_JAEGER_AGENT_PORT": "4317"
       }
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_EXPORTER_JAEGER_AGENT_HOST": "http://localhost",
+        "OTEL_EXPORTER_JAEGER_AGENT_PORT": "4317"
       }
     }
   }

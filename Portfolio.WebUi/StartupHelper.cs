@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nest;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Portfolio.DataAccess;
-using Portfolio.Domain.Helpers;
 using Serilog;
 using Serilog.Events;
 
@@ -11,12 +14,65 @@ public static class StartupHelper
 {
     public static void InitLogsWithSerilog(this WebApplicationBuilder builder)
     {
+        // todo-anil: Is logging to OpenTelemetry is working? How should I debug?
         using var log = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .WriteTo.Console()
+            .WriteTo.OpenTelemetry(options =>
+            {
+                // options.Endpoint = "http://localhost:4317/v1/logs";
+                // options.Protocol = OtlpProtocol.HttpProtobuf;
+            })
             .CreateLogger();
         builder.Host.UseSerilog(log);
+    }
+    
+    public static void SetupOpenTelemetry(this WebApplicationBuilder builder)
+    {
+        // todo-anil-beforeMerge: Get the version from somewhere else. Maybe a file?
+        var serviceName = "Portfolio.WebUi";
+        var serviceVersion = "1.0.0";
+
+        builder.Logging.AddOpenTelemetry(options =>
+        {
+            options
+                .SetResourceBuilder(
+                    ResourceBuilder.CreateDefault()
+                        .AddService(serviceName: serviceName, serviceVersion: serviceVersion)
+                )
+                .AddOtlpExporter(opt =>
+                {
+                    // opt.Endpoint = new Uri("http://localhost:4317");
+                    // opt.Protocol = OtlpExportProtocol.Grpc; // or OtlpExportProtocol.Grpc
+                });
+            //.AddConsoleExporter()
+        });
+
+        builder.Services.AddOpenTelemetry()
+            .ConfigureResource(
+                resource => resource.AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+            .WithTracing(tracing => tracing
+                .AddAspNetCoreInstrumentation()
+                .AddEntityFrameworkCoreInstrumentation(options =>
+                {
+                    options.SetDbStatementForText = true;
+                    options.SetDbStatementForStoredProcedure = true;
+                })
+                // .AddConsoleExporter()
+                .AddOtlpExporter(opt =>
+                {
+                    // opt.Endpoint = new Uri("http://localhost:4317");
+                    // opt.Protocol = OtlpExportProtocol.Grpc;
+                }))
+            .WithMetrics(metrics => metrics
+                .AddAspNetCoreInstrumentation()
+                // .AddConsoleExporter()
+                .AddOtlpExporter(opt =>
+                {
+                    // opt.Endpoint = new Uri("http://localhost:4317");
+                    // opt.Protocol = OtlpExportProtocol.Grpc;
+                }));
     }
 
     public static void DbInitWithPostgres(this IServiceCollection services, string connectionString)

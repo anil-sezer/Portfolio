@@ -8,6 +8,14 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.13" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+      <PackageReference Include="OpenTelemetry" Version="1.6.0" />
+      <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.6.0" />
+      <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.6.0" />
+      <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.6.0" />
+      <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.6.0-beta.3" />
+      <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.8" />
+      <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="1.2.0" />
     </ItemGroup>
 
 </Project>

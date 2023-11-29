@@ -45,23 +45,32 @@ public class IndexModel : PageModel
 
     private async Task LogRequestAsync()
     {
-        await _dbContext.Request.AddAsync(new Request
+        var ip = TryToGetIp();
+        try
         {
-            AcceptLanguage = Request.Headers.AcceptLanguage.ToString(),
-            UserAgent = Request.Headers.UserAgent.ToString(),
-            ClientIp = TryToGetIp(),
-            Country = "",
-            City = ""
-        });
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.Request.AddAsync(new Request
+            {
+                AcceptLanguage = Request.Headers.AcceptLanguage.ToString(),
+                UserAgent = Request.Headers.UserAgent.ToString(),
+                ClientIp = ip,
+                Country = "",
+                City = ""
+            });
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Log.Error("Got some Db error here. Serve the page", e);
+        }
+        Log.Information("Logged visit to the DB by this ip: {Ip}", ip );
     }
 
     private string TryToGetIp()
     {
         var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
         return string.IsNullOrEmpty(forwardedFor) 
-            ? HttpContext.Connection.RemoteIpAddress.ToString()
-            : forwardedFor.Split(',').FirstOrDefault();
+            ? HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
+            : forwardedFor.Split(',').FirstOrDefault() ?? "";
     }
 
     // public async Task OnPostAsync()

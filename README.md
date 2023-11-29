@@ -1,3 +1,6 @@
+![It's a joke about my struggles with the cluster](we-thought-it-would-be-easy.webp)
+
+
 Hi! This is my Portfolio.
 ---
 Made by using Domain Driven Design

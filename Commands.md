@@ -4,6 +4,21 @@ k cordon NODENAME
 
 k uncordon NODENAME
 
+## DB
+Get superuser:
+SELECT usename FROM pg_user WHERE usesuper = TRUE;
+
+Terminate idle connections
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'idle';
+
+Connections:
+SELECT COUNT(*) FROM pg_stat_activity;
+SELECT pid, usename, datname, state FROM pg_stat_activity;
+SHOW max_connections;
+
+
+
+
 ## Fail2Ban
 ### Check Fail2Ban's All Jails
 

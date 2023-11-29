@@ -13,5 +13,5 @@ spec:
               image: anilsezer/iplookup-cron-go:latest
               env:
                 - name: DB_CONNECTION_STRING
-                  value: "host=192.168.1.104 port=30001 user=default-user password=rgT6%Qk9jTaURwK!& dbname=postgres sslmode=disable TimeZone=Europe/Istanbul"
+                  value: "host=postgres-service port=5432 user=default-user password=rgT6%Qk9jTaURwK!& dbname=postgres sslmode=disable TimeZone=Europe/Istanbul"
           restartPolicy: Never

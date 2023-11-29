@@ -4,12 +4,17 @@ import (
 	"IpLookupCron/Constants"
 	"IpLookupCron/DataAccess"
 	"IpLookupCron/DataAccess/Entities/Postgres"
-	"IpLookupCron/ThirdPartyApiCalls/GetIpInfo"
+	"IpLookupCron/DataAccess/ThirdPartyApiCalls/GetIpInfo"
 	"fmt"
+	"github.com/joho/godotenv"
 	"time"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Env file not present")
+	}
+
 	var db = DataAccess.DbContext()
 
 	// Query all requests from the database into a slice of Request structs.

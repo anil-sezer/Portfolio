@@ -41,7 +41,7 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@kubeLink">Kubernetes</a></h4>
-                    <p class="description">Proudly self hosted at my Raspberry Pi 4 cluster!</p>
+                    <p class="description">Proudly self hosted at my Raspberry Pi 4 cluster! Used Microk8s to ease the learning curve.</p>
                 </div>
                 
                 @{ const string dockerLink = "https://www.docker.com/"; }
@@ -52,7 +52,7 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@dockerLink">Docker</a></h4>
-                    <p class="description">Some images are created with Docker and tested locally with it. Websites private image is at <a href="https://hub.docker.com/" target="_blank">Docker Hub</a></p>
+                    <p class="description">Some images are created with Docker and tested locally with it. All my images are at <a href="https://hub.docker.com/repositories/anilsezer" target="_blank">My Docker Hub Account</a></p>
                 </div>
                 
                 @{ const string dotnetLink = "https://dotnet.microsoft.com/"; }
@@ -96,7 +96,29 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@kafkaLink" target="_blank">Kafka</a></h4>
-                    <p class="description">Coming in the last week of November!</p>
+                    <p class="description">Coming soon!</p>
+                </div>
+                
+                @{ const string prometheusLink = "https://prometheus.io/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
+                    <div class="icon">
+                        <a href="@prometheusLink" target="_blank">
+                            <img src="@Url.Content("~/img/techStack/prometheus.png")" width="32" height="32" alt="Prometheus logo. A nice torch.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@prometheusLink" target="_blank">Prometheus</a></h4>
+                    <p class="description">I'm used to Prometheus and it came with the Microk8s observability addon. I will dive deeper into it when I'm avaliable. </p>
+                </div>
+                                
+                @{ const string grafanaLink = "https://grafana.com/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
+                    <div class="icon">
+                        <a href="@grafanaLink" target="_blank">
+                            <img src="@Url.Content("~/img/techStack/grafana.png")" width="32" height="32" alt="Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@grafanaLink" target="_blank">Grafana</a></h4>
+                    <p class="description">Using it to visualize my data. I like it!</p>
                 </div>
                 
                 @{ const string bootstrapLink = "https://getbootstrap.com/"; }
@@ -162,31 +184,9 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@elasticLink" target="_blank">Elastic Search</a></h4>
-                    <p class="description">Coming in the November!</p>
+                    <p class="description">Coming soon!</p>
                 </div>
 
-                @{ const string prometheusLink = "https://prometheus.io/"; }
-                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
-                    <div class="icon">
-                        <a href="@prometheusLink" target="_blank">
-                            <img src="@Url.Content("~/img/techStack/prometheus.png")" width="32" height="32" alt="Prometheus logo. A nice torch.">
-                        </a>
-                    </div>
-                    <h4 class="title"><a href="@prometheusLink" target="_blank">Prometheus</a></h4>
-                    <p class="description">Because why not!</p>
-                </div>
-                
-                @{ const string grafanaLink = "https://grafana.com/"; }
-                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
-                    <div class="icon">
-                        <a href="@grafanaLink" target="_blank">
-                            <img src="@Url.Content("~/img/techStack/grafana.png")" width="32" height="32" alt="Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.">
-                        </a>
-                    </div>
-                    <h4 class="title"><a href="@grafanaLink" target="_blank">Grafana</a></h4>
-                    <p class="description">Coming in next weeks! Currently Lens is enough.</p>
-                </div>
-                
                 @* UPDATE BEFORE OPENING *@
                 @* <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)"> *@
                 @*     <div class="icon"> *@

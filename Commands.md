@@ -17,6 +17,9 @@ SELECT pid, usename, datname, state FROM pg_stat_activity;
 SHOW max_connections;
 
 
+# Debug via nikolaka
+k apply -f netshoot-debug-pod.yaml
+kubectl exec netshoot-debug-pod -- curl -k https://10.152.183.1:443
 
 
 ## Fail2Ban

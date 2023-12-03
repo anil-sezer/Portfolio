@@ -1,0 +1,11 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  name: netshoot-debug-pod
+spec:
+  containers:
+    - name: netshoot
+      image: nicolaka/netshoot
+      command:
+        - "sleep"
+        - "3600" # Keeps the pod running for an hour

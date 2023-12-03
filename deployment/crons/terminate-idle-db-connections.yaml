@@ -1,0 +1,27 @@
+﻿apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: terminate-idle-db-connections
+spec:
+  schedule: "0 * * * *" # Runs every hour at minute 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:latest
+              env:
+                - name: PGPASSWORD
+                  value: rgT6%Qk9jTaURwK!&
+              command: ["psql"]
+              args:
+                - -U
+                - default-user
+                - -h
+                - postgres-service
+                - -d
+                - postgres
+                - -c
+                - SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'idle';
+          restartPolicy: Never

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: portfolio-api
-          image: anilsezer/portfolioapi:latest
+          image: anilsezer/portfolio-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

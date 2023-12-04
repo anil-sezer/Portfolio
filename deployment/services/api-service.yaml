@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: api-service
 spec:
+  type: NodePort
   selector:
     app: portfolio-api
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-      NodePort: 30002
+      nodePort: 30002

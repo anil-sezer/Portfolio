@@ -38,18 +38,13 @@ sudo cat /var/log/fail2ban.log | grep "Ban "
 dotnet ef migrations add MIGRATIONNAME --startup-project .\Portfolio.WebUi\ --project .\Portfolio.DataAccess\ --output-dir Migrations
 dotnet ef database update --startup-project .\Portfolio.WebUi\
 
-## Image commands:
-docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
-docker login
-docker push anilsezer/portfolio:latest
-
 **One liner to build & deploy at the rpi:** <br>
 todo: change this command to build from the root folder
 website:
 git pull && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment
 
 api: <br>
-git pull && docker build -t anilsezer/portfolio-api -f ./Portfolio.Web.Api/Dockerfile . && docker push anilsezer/portfolio-api:latest && sleep 3 && k rollout restart deployment/portfolio-api-deployment
+git pull && docker build -f ./Portfolio.Web.Api/Dockerfile . -t anilsezer/portfolio-api && docker push anilsezer/portfolio-api:latest && sleep 3 && k rollout restart deployment/portfolio-api-deployment
 
 ip-lookup cron:
 git pull && docker build -t anilsezer/iplookup-cron-go -f ./CronJobs/IpLookupCron/Dockerfile ./CronJobs/IpLookupCron/ && docker push anilsezer/iplookup-cron-go:latest && sleep 3 && k apply -f deployment/crons/ip-lookup-go-cronjob

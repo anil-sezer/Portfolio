@@ -88,6 +88,17 @@
                     <p class="description">Current db. I like it's features and like to experiment with it.</p>
                 </div>
                 
+                @{ const string goLink = "https://go.dev/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
+                    <div class="icon">
+                        <a href="@goLink" target="_blank">
+                            <img src="@Url.Content("~/img/techStack/go.png")" width="42" height="21" alt="Blue letters of 'GO'">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@goLink" target="_blank">Go</a></h4>
+                    <p class="description">If writing the cron with just a yaml is not practical, I write it with Go. For trying out in this nice language. </p>
+                </div>
+                
                 @{ const string kafkaLink = "https://kafka.apache.org/"; }
                 <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
                     <div class="icon">

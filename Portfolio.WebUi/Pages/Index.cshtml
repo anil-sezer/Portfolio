@@ -118,7 +118,7 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@prometheusLink" target="_blank">Prometheus</a></h4>
-                    <p class="description">I'm used to Prometheus and it came with the Microk8s observability addon. I will dive deeper into it when I'm avaliable. </p>
+                    <p class="description">I was already used to Prometheus and then it came with the Microk8s observability addon. I will dive deeper into it when I'm avaliable. </p>
                 </div>
                                 
                 @{ const string grafanaLink = "https://grafana.com/"; }
@@ -129,7 +129,7 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@grafanaLink" target="_blank">Grafana</a></h4>
-                    <p class="description">Using it to visualize my data. I like it!</p>
+                    <p class="description">Using it to visualize my data. I like to play with it!</p>
                 </div>
                 
                 @{ const string bootstrapLink = "https://getbootstrap.com/"; }
@@ -162,7 +162,7 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@fail2BanLink" target="_blank">Fail2Ban</a></h4>
-                    <p class="description">For repelling some pesky attacks</p>
+                    <p class="description">For repelling some attacks.</p>
                 </div>
                 
                 @{ const string sqLiteLink = "https://www.sqlite.org/"; }
@@ -195,6 +195,17 @@
                         </a>
                     </div>
                     <h4 class="title"><a href="@elasticLink" target="_blank">Elastic Search</a></h4>
+                    <p class="description">Coming soon!</p>
+                </div>
+                
+                @{ const string openTelemetryLink = "https://opentelemetry.io/"; }
+                <div class="@boxDivClass" data-aos="fade-up" data-aos-delay="@(delay+=50)">
+                    <div class="icon">
+                        <a href="@openTelemetryLink" target="_blank">
+                            <img src="@Url.Content("~/img/techStack/opentelemetry.png")" width="32" height="33" alt="OpenTelemetry logo. A minimal, blue and orange colored telescope.">
+                        </a>
+                    </div>
+                    <h4 class="title"><a href="@openTelemetryLink" target="_blank">OpenTelemetry</a></h4>
                     <p class="description">Coming soon!</p>
                 </div>
 

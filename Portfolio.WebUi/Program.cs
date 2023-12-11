@@ -1,5 +1,5 @@
+using Portfolio.DataAccess.Helpers;
 using Portfolio.Domain.Helpers;
-using Portfolio.WebUi;
 using Portfolio.WebUi.Services;
 using Serilog;
 
@@ -14,7 +14,7 @@ else
 
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 
-builder.Services.DbInitWithPostgres(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
+builder.DbInitWithPostgres();
 
 var app = builder.Build();
 

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Nest;
-using Portfolio.DataAccess;
-using Portfolio.Domain.Helpers;
 using Serilog;
 using Serilog.Events;
 
-namespace Portfolio.WebUi;
+namespace Portfolio.DataAccess.Helpers;
 
 public static class StartupHelper
 {
@@ -18,10 +19,11 @@ public static class StartupHelper
             .CreateLogger();
         builder.Host.UseSerilog(log);
     }
-
-    public static void DbInitWithPostgres(this IServiceCollection services, string connectionString)
+    
+    public static void DbInitWithPostgres(this WebApplicationBuilder builder)
     {
-        services.AddDbContext<WebAppDbContext>(options =>
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
+        builder.Services.AddDbContext<WebAppDbContext>(options =>
                 options
                     .UseNpgsql(connectionString)
                     .UseSnakeCaseNamingConvention()
@@ -29,7 +31,7 @@ public static class StartupHelper
                     .EnableDetailedErrors() // todo: Only for development
         );
     }
-    
+
     public static void DbInitWithElastic(this IServiceCollection services)
     {
         var settings = new ConnectionSettings(new Uri("http://localhost:9200"))

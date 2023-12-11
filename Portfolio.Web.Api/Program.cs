@@ -10,8 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// todo: Add auto registration for services and integration tests!
 builder.Services.AddScoped<GetIotDirectivesService>();
 builder.Services.AddScoped<IotReportService>();
+builder.Services.AddScoped<SunriseAlarmClockService>();
 
 builder.DbInitWithPostgres();
 

@@ -23,7 +23,7 @@ public class SunriseAlarmClockServiceTests : WebApiTestBase
     }
 
     
-    // todo: Edit this code, this is just dirty. Use Theory?
+    // todo: Edit this code, this is just dirty. Use Theory? Add end of the day tests too!
     [Fact]
     public async Task Should_Get_Contact_Async()
     {

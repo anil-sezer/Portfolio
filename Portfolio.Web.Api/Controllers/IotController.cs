@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Portfolio.Web.Api.Services;
+using Portfolio.Web.Api.Services.Dto;
 
 namespace Portfolio.Web.Api.Controllers;
 
@@ -32,13 +33,10 @@ public class IotController : ControllerBase
         return Ok(directives);
     }
     
-    [HttpGet]
-    public async Task<ActionResult> SaveReport([FromQuery] string deviceName, string report)
+    [HttpPost]
+    public async Task<ActionResult> SaveReport([FromBody] ReportInput input)
     {
-        if (deviceName == "" || report == "")
-            return BadRequest("Params cannot be empty");
-        
-        await _reportService.SaveReportAsync(deviceName, report);
+        await _reportService.SaveReportAsync(input);
         
         return Ok();
     }

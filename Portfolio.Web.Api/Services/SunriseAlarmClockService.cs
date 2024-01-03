@@ -36,6 +36,9 @@ public class SunriseAlarmClockService
                 directive.BringTheSun = true; // Alarm begins!
         }
 
+        if (directive.BringTheSun)
+            Log.Information("Time to shine!");
+
         return JsonConvert.SerializeObject(directive);
     }
 }

@@ -16,6 +16,9 @@ SELECT COUNT(*) FROM pg_stat_activity;
 SELECT pid, usename, datname, state FROM pg_stat_activity;
 SHOW max_connections;
 
+# Adding ConfigMap
+k apply -f terminate-idle-db-connections-query-config-map.yaml
+
 
 # Debug via nikolaka
 k apply -f netshoot-debug-pod.yaml

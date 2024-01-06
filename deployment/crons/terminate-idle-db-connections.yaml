@@ -15,6 +15,10 @@ spec:
                 - name: PGPASSWORD
                   value: rgT6%Qk9jTaURwK!&
               command: ["psql"]
+              volumes:
+                - name: terminate-idle-db-connections-query
+                  configMap:
+                    name: terminate-idle-db-connections-query-config-map
               args:
                 - -U
                 - default-user
@@ -22,6 +26,6 @@ spec:
                 - postgres-service
                 - -d
                 - postgres
-                - -c
-                - SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'postgres' AND state = 'idle';
+                - -f
+                - /terminate-idle-db-connections-query.sql 
           restartPolicy: Never

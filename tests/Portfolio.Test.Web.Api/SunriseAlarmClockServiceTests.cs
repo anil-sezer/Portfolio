@@ -47,7 +47,7 @@ public class SunriseAlarmClockServiceTests : WebApiTestBase
             BringTheSun = false,
             IsAlarmActive = true,
         };
-        _dbContext.IotDirective.Add(new IotDirective
+        await _dbContext.IotDirective.AddAsync(new IotDirective
         {
             DeviceName = SunriseAlarmClockService.SunriseAlarmClock,
             Directives = JsonConvert.SerializeObject(directive, SunriseAlarmClockService.SerializerSettings)

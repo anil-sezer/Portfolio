@@ -27,7 +27,7 @@ public class BackgroundImageFromBingService
                 return img.ImageUrl;
 
             img.UrlWorks = false;
-            _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return Etcetera.DefaultBackgroundImage;
         }
         
@@ -39,7 +39,7 @@ public class BackgroundImageFromBingService
             UrlWorks = await IsValidImageUrlAsync(url)
         };
         await _dbContext.AddAsync(bg);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return bg.UrlWorks ? bg.ImageUrl : Etcetera.DefaultBackgroundImage;
     }

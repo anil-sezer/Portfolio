@@ -3,8 +3,8 @@ using Portfolio.Domain.Constants;
 
 namespace Portfolio.Web.Api.Services.Dto;
 
-public class ReportInput: IotBaseInput
+public class IotBaseInput
 {
     [Required(ErrorMessage = Etcetera.DataAnnotation_RequiredErrorMsg)]
-    public string Report { get; set; }
+    public string DeviceName { get; set; } // todo: Make this an Enum 
 }

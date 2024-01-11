@@ -12,7 +12,7 @@ public class IotReportService
         _dbContext = dbContext;
     }
 
-    public async Task SaveReportAsync(ReportInput input)
+    public async Task StoreDevicesReportAsync(ReportInput input)
     {
         var reportEntry = new IotReport
         {

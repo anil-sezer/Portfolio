@@ -20,34 +20,41 @@ public class IotController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult> GetIotDirectives([FromQuery] string deviceName)
+    public async Task<ActionResult> GetAllIotDirectives()
     {
-        if (deviceName == "")
-            return BadRequest("DeviceName cannot be empty");
-        
-        var directives = await _directivesService.GetDirectivesByDeviceNameAsync(deviceName);
+        var directives = await _directivesService.GetAllDirectivesAsync();
 
-        if (directives == "")
-            return NotFound("Device name not found");
+        return Ok(directives);
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult> GetIotDirectives([FromQuery] IotBaseInput input)
+    {
+        var directives = await _directivesService.GetDirectivesByDeviceNameAsync(input);
 
         return Ok(directives);
     }
     
     [HttpPost]
-    public async Task<ActionResult> SaveReport([FromBody] ReportInput input)
+    public async Task<ActionResult> StoreDevicesReport([FromBody] ReportInput input)
     {
-        await _reportService.SaveReportAsync(input);
+        await _reportService.StoreDevicesReportAsync(input);
         
         return Ok();
+    }
+    
+    [HttpPut]
+    public async Task<ActionResult> UpdateDeviceDirectives(UpdateDeviceDirectivesInput input)
+    {
+        var directives = await _directivesService.UpdateDeviceDirectivesAsync(input);
+
+        return Ok(directives);
     }
     
     [HttpGet]
     public async Task<ActionResult> SunriseAlarmClockCheck()
     {
         var directives = await _sunriseService.SunriseAlarmClockCheckAsync();
-
-        if (directives == "")
-            return NotFound("Device not found!");
 
         return Ok(directives);
     }

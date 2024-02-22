@@ -23,13 +23,23 @@ public static class StartupHelper
     public static void DbInitWithPostgres(this WebApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
+
+        // todo: Stop using default public schema
         builder.Services.AddDbContext<WebAppDbContext>(options =>
-                options
-                    .UseNpgsql(connectionString)
-                    .UseSnakeCaseNamingConvention()
-                    .EnableSensitiveDataLogging() // todo: Only for development
-                    .EnableDetailedErrors() // todo: Only for development
-        );
+        {
+            options.UseNpgsql(connectionString,
+                npgsqlOptionsAction: sqlOptions =>
+                {
+                    // sqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, dbSchemaName);
+                    // sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                }).UseSnakeCaseNamingConvention();
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
+            }
+        });
     }
 
     public static void DbInitWithElastic(this IServiceCollection services)

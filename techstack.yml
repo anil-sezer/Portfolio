@@ -1,0 +1,486 @@
+repo_name: anil-sezer/Portfolio
+report_id: 9941afefbb57b902f8b530b81db0084c
+version: 0.1
+repo_type: Public
+timestamp: '2024-02-29T18:40:38+00:00'
+requested_by: anil-sezer
+provider: github
+branch: prod
+detected_tools_count: 36
+tools:
+- name: C#
+  description: Simple, general-purpose, object-oriented programming language for the
+    .NET platform
+  website_url: http://csharp.net
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1015/1200px-C_Sharp_wordmark.svg.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: CSS 3
+  description: The latest evolution of the Cascading Style Sheets language
+  website_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: Golang
+  description: An open source programming language that makes it easy to build simple,
+    reliable, and efficient software
+  website_url: http://golang.org/
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1005/O6AczwfV_400x400.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: ".NET"
+  description: A free, cross-platform, open source developer platform for building
+    many different types of applications
+  website_url: http://www.microsoft.com/net/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/1014/IoPy1dce_400x400.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/Portfolio.WebUi.csproj
+  detection_source: Portfolio.WebUi/Portfolio.WebUi.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-10-14 13:35:10.000000000 Z
+- name: ".NET Core"
+  description: An Open Source, General-Purpose Development Platform Maintained by
+    Microsoft and the .NET Community
+  website_url: https://docs.microsoft.com/en-us/dotnet/core/
+  version: '7.0'
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/6403/default_91fc1f0ee315262794273aa1387eaf8fed8436e6.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  detection_source: Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: ASP.NET Core
+  description: A cross-platform .NET framework for building modern cloud-based web
+    applications on Windows, Mac, or Linux
+  website_url: docs.microsoft.com/en-us/aspnet/core/
+  version: '7.0'
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Frameworks (Full Stack)
+  image_url: https://img.stackshare.io/service/11331/asp.net-core.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  detection_source: Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: PostgreSQL
+  description: A powerful, open source object-relational database system
+  website_url: http://www.postgresql.org/
+  open_source: true
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Databases
+  image_url: https://img.stackshare.io/service/1028/ASOhU5xJ.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  detection_source: Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-10-25 17:15:47.000000000 Z
+- name: pgvector
+  description: Open-source vector similarity search for Postgres
+  website_url: https://github.com/pgvector/pgvector/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Database Tools
+  image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt
+  detection_source: Portfolio.WebUi/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt
+  last_updated_by: anil
+  last_updated_on: 2023-06-02 12:30:37.000000000 Z
+- name: Docker
+  description: Enterprise Container Platform for High-Velocity Innovation.
+  website_url: https://www.docker.com/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Virtual Machine Platforms & Containers
+  image_url: https://img.stackshare.io/service/586/n4u37v9t_400x400.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio
+  detection_source: Repo Metadata
+- name: NuGet
+  description: The package manager for .NET
+  website_url: https://www.nuget.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/service/2637/6I3oEOP4_400x400.jpg
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/Portfolio.WebUi.csproj
+  detection_source: Portfolio.WebUi/Portfolio.WebUi.csproj
+  last_updated_by: anil
+  last_updated_on: 2023-06-02 12:30:37.000000000 Z
+- name: Prometheus
+  description: An open-source service monitoring system and time series database,
+    developed by SoundCloud
+  website_url: http://prometheus.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Monitoring Tools
+  image_url: https://img.stackshare.io/service/2501/default_3cf1b307194b26782be5cb209d30360580ae5b3c.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.OtherContainerStuff/prometheus_and_grafana/prometheus/prometheus.yml
+  detection_source: Portfolio.OtherContainerStuff/prometheus_and_grafana/prometheus/prometheus.yml
+  last_updated_by: anil
+  last_updated_on: 2023-05-31 15:02:07.000000000 Z
+- name: Serilog
+  description: A portable and structured logging framework to record diagnostic logs
+  website_url: http://serilog.net/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Log Management
+  image_url: https://img.stackshare.io/service/4283/5691010.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Domain/Portfolio.Domain.csproj
+  detection_source: Portfolio.Domain/Portfolio.Domain.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-10 10:54:36.000000000 Z
+- name: Visual Studio
+  description: State-of-the-art tools and services that you can use to create great
+    apps for devices, the cloud, and everything in between.
+  website_url: http://msdn.microsoft.com/en-us/vstudio/aa718325.aspx
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Integrated Development Environment
+  image_url: https://img.stackshare.io/service/1451/SR2hUhQN.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.sln
+  detection_source: Portfolio.sln
+  last_updated_by: anil
+  last_updated_on: 2023-06-02 12:30:37.000000000 Z
+- name: xUnit
+  description: An open source, community-focused unit testing tool
+  website_url: http://xunit.github.io/
+  version: 2.6.3
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Testing Frameworks
+  image_url: https://img.stackshare.io/service/3077/ca5a327feb49ddfe1f4b11548907e5a1_400x400.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  detection_source: Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 18:39:05.000000000 Z
+- name: HTML
+  description: Hypertext Markup Language for creating web pages.
+  website_url: http://
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/2270/no-img-open-source.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/Pages/inner-page.html
+  detection_source: Portfolio.WebUi/Pages/inner-page.html
+  last_updated_by: anil
+  last_updated_on: 2023-06-02 10:45:02.000000000 Z
+- name: LangChain
+  description: Build AI apps with LLMs through composability
+  website_url: https://github.com/hwchase17/langchain
+  open_source: true
+  hosted_saas: false
+  category: Communications
+  sub_category: Large Language Model Tools
+  image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt
+  detection_source: Portfolio.WebUi/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt
+  last_updated_by: anil
+  last_updated_on: 2023-06-02 12:30:37.000000000 Z
+- name: AutoMapper
+  description: A convention-based object-object mapper
+  package_url: https://www.nuget.org/AutoMapper
+  version: 12.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/12871/default_3ee9e3bfd65cbae9db28ab78b712a58bcd81af27.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/Portfolio.WebUi.csproj
+  detection_source: Portfolio.WebUi/Portfolio.WebUi.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-10-22 12:25:34.000000000 Z
+- name: FluentAssertions
+  description: A very extensive set of extension methods that allow you to more naturally
+    specify the expected outcome of a TDD or BDD-style unit tests
+  package_url: https://www.nuget.org/FluentAssertions
+  version: 6.12.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13059/default_ed36ff3c005af695725e05bb15ea5b1f03de31f3.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  detection_source: Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 18:39:05.000000000 Z
+- name: Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+  description: Runtime compilation support for Razor views and Razor Pages in ASP.NET
+    Core MVC
+  package_url: https://www.nuget.org/Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+  version: 7.0.13
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/14475/default_e2210dba7a410b29af824a406b1ff3bc92763715.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.WebUi/Portfolio.WebUi.csproj
+  detection_source: Portfolio.WebUi/Portfolio.WebUi.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-10-25 17:15:47.000000000 Z
+- name: Microsoft.AspNetCore.TestHost
+  description: ASP.NET Core web server for writing and running tests
+  package_url: https://www.nuget.org/Microsoft.AspNetCore.TestHost
+  version: 7.0.14
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13268/default_3b9faa77d26eef0a944d4dab8d562db23059cb72.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  detection_source: Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 18:39:05.000000000 Z
+- name: Microsoft.EntityFrameworkCore
+  description: Entity Framework Core is a lightweight and extensible version of the
+    popular Entity Framework data access technology
+  package_url: https://www.nuget.org/Microsoft.EntityFrameworkCore
+  version: 7.0.14
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/12852/default_ccf90b566c21ad9eaa59733f297e535ea39fb3b4.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  detection_source: Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Microsoft.EntityFrameworkCore.Abstractions
+  description: Provides abstractions and attributes that are used to configure Entity
+    Framework Core
+  package_url: https://www.nuget.org/Microsoft.EntityFrameworkCore.Abstractions
+  version: 7.0.14
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13903/default_a57ab4de31742e28d27f7c8bcac0de76978eb737.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Domain/Portfolio.Domain.csproj
+  detection_source: Portfolio.Domain/Portfolio.Domain.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Microsoft.EntityFrameworkCore.InMemory
+  description: In-memory database provider for Entity Framework Core
+  package_url: https://www.nuget.org/Microsoft.EntityFrameworkCore.InMemory
+  version: 7.0.14
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13150/default_81ac985912284073db895b0d26abf3657532a164.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  detection_source: Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 18:39:05.000000000 Z
+- name: NEST
+  description: Strongly typed interface to Elasticsearch
+  package_url: https://www.nuget.org/NEST
+  version: 7.17.5
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13086/default_f40625acd95121d452edf898b600c5691551f727.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  detection_source: Portfolio.DataAccess/Portfolio.DataAccess.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Newtonsoft.Json
+  description: Json.NET is a popular high-performance JSON framework for .NET
+  package_url: https://www.nuget.org/Newtonsoft.Json
+  version: 13.0.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/nuget/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Domain/Portfolio.Domain.csproj
+  detection_source: Portfolio.Domain/Portfolio.Domain.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Serilog.AspNetCore
+  description: Serilog support for ASP.NET Core logging
+  package_url: https://www.nuget.org/Serilog.AspNetCore
+  version: 7.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13194/default_18a92235046d8c8db548cd22b87cf5792dc31759.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Domain/Portfolio.Domain.csproj
+  detection_source: Portfolio.Domain/Portfolio.Domain.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Serilog.Sinks.Console
+  description: A Serilog sink that writes log events to the console/terminal
+  package_url: https://www.nuget.org/Serilog.Sinks.Console
+  version: 5.0.1
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13071/default_0af6f5844ebd9062a9a4895d909753dc8447f2f3.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Domain/Portfolio.Domain.csproj
+  detection_source: Portfolio.Domain/Portfolio.Domain.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 05:47:44.000000000 Z
+- name: Swashbuckle.AspNetCore
+  description: Swagger tools for documenting APIs built on ASP.NET Core
+  package_url: https://www.nuget.org/Swashbuckle.AspNetCore
+  version: 6.5.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/12981/default_aa8a6e377c22dbeff795489a5ab127b1d597b5ed.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Web.Api/Portfolio.Web.Api.csproj
+  detection_source: Portfolio.Web.Api/Portfolio.Web.Api.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-12 17:30:04.000000000 Z
+- name: xunit.runner.visualstudio
+  description: Visual Studio 2012+ Test Explorer runner for the xUnit.net framework
+  package_url: https://www.nuget.org/xunit.runner.visualstudio
+  version: 2.5.5
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: NuGet Packages
+  image_url: https://img.stackshare.io/package/13260/default_d2db5a200c4fe2d08cbdb2174cc230708973870b.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  detection_source: Portfolio.Test.Shared/Portfolio.Test.Shared.csproj
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-12-11 18:39:05.000000000 Z
+- name: crypto
+  description: Go supplementary cryptography libraries
+  package_url: https://pkg.go.dev/golang.org/x/crypto
+  version: 0.14.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/CronJobs/IpLookupCron/go.sum
+  detection_source: CronJobs/IpLookupCron/go.mod
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-29 18:00:39.000000000 Z
+- name: godotenv
+  description: A Go port of Ruby's dotenv library
+  package_url: https://pkg.go.dev/github.com/joho/godotenv
+  version: 1.5.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/CronJobs/IpLookupCron/go.sum
+  detection_source: CronJobs/IpLookupCron/go.mod
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-29 18:00:39.000000000 Z
+- name: inflection
+  description: Pluralizes and singularizes English nouns
+  package_url: https://pkg.go.dev/github.com/jinzhu/inflection
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/CronJobs/IpLookupCron/go.sum
+  detection_source: CronJobs/IpLookupCron/go.mod
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-14 05:52:11.000000000 Z
+- name: now
+  description: Now is a time toolkit for golang
+  package_url: https://pkg.go.dev/github.com/jinzhu/now
+  version: 1.1.5
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/CronJobs/IpLookupCron/go.sum
+  detection_source: CronJobs/IpLookupCron/go.mod
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-14 05:52:11.000000000 Z
+- name: text
+  description: Go text processing support
+  package_url: https://pkg.go.dev/golang.org/x/text
+  version: 0.13.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/anil-sezer/Portfolio/blob/prod/CronJobs/IpLookupCron/go.sum
+  detection_source: CronJobs/IpLookupCron/go.mod
+  last_updated_by: Anıl Sezer
+  last_updated_on: 2023-11-29 18:00:39.000000000 Z

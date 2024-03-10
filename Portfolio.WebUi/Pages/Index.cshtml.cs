@@ -38,7 +38,7 @@ public class IndexModel : PageModel
 
         BackgroundImage = await _backgroundImageFromBing.GetBackgroundImg();
 
-        LogRequestAsync();
+        await LogRequestAsync();
         
         Log.Information("Background Img Url: {BackgroundImage}", BackgroundImage);
     }
@@ -73,27 +73,6 @@ public class IndexModel : PageModel
             : forwardedFor.Split(',').FirstOrDefault() ?? "";
     }
 
-    // public async Task OnPostAsync()
-    // {
-    //     try
-    //     {
-    //         var email = new Email
-    //         {
-    //             Name = Name,
-    //             Subject = Subject,
-    //             EmailAddress = Email,
-    //             Message = Message
-    //         };
-    //
-    //         await _dbContext.Email.AddAsync(email);
-    //         await _dbContext.SaveChangesAsync();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Log.Warning(e, "Mail service had an exception. Probably caused by a invalid email address. Address provided: {Email}", Email);
-    //     }
-    // }
-    
     public async Task<IActionResult> OnPostAsync()
     {
         try

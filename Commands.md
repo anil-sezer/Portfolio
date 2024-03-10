@@ -14,6 +14,7 @@ SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'postgres
 Connections:
 SELECT COUNT(*) FROM pg_stat_activity;
 SELECT pid, usename, datname, state FROM pg_stat_activity;
+SELECT * FROM pg_stat_activity;
 SHOW max_connections;
 
 # Adding ConfigMap

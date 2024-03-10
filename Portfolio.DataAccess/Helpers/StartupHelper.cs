@@ -25,9 +25,11 @@ public static class StartupHelper
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
 
         // todo: Stop using default public schema
+
+        var appName = AssemblyHelper.GetStartupProjectsName();
         builder.Services.AddDbContext<WebAppDbContext>(options =>
         {
-            options.UseNpgsql(connectionString,
+            options.UseNpgsql(connectionString + $";Application Name= {appName}",
                 npgsqlOptionsAction: sqlOptions =>
                 {
                     // sqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, dbSchemaName);

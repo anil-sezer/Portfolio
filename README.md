@@ -1,7 +1,7 @@
 ![It's a joke about my struggles with the cluster](we-thought-it-would-be-easy.webp)
 
 
-Hi! This is my Portfolio.
+Hi! This is my Portfolio. You can access it from https://www.anil-sezer.com/
 ---
 Made by using Domain Driven Design
 

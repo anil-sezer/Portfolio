@@ -1100,6 +1100,6 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
     #footer {
         position: static;
         width: auto;
-        padding-right: 20px 15px;
+        padding-right: 20px;
     }
 }

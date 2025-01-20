@@ -26,39 +26,6 @@ h6 {
 }
 
 /*--------------------------------------------------------------
-# Back to top button
---------------------------------------------------------------*/
-.back-to-top {
-    position: fixed;
-    visibility: hidden;
-    opacity: 0;
-    right: 15px;
-    bottom: 15px;
-    z-index: 996;
-    background: #149ddd;
-    width: 40px;
-    height: 40px;
-    border-radius: 50px;
-    transition: all 0.4s;
-}
-
-.back-to-top i {
-    font-size: 28px;
-    color: #fff;
-    line-height: 0;
-}
-
-.back-to-top:hover {
-    background: #2eafec;
-    color: #fff;
-}
-
-.back-to-top.active {
-    visibility: visible;
-    opacity: 1;
-}
-
-/*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
 #header {
@@ -116,32 +83,6 @@ h6 {
     background: #149ddd;
     color: #fff;
     text-decoration: none;
-}
-
-#main {
-    margin-left: 300px;
-}
-
-.container,
-.container-fluid {
-    padding-left: 30px;
-    padding-right: 30px;
-}
-
-@media (max-width: 1199px) {
-    #header {
-        left: -300px;
-    }
-
-    #main {
-        margin-left: 0;
-    }
-
-    .container,
-    .container-fluid {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
 }
 
 /*--------------------------------------------------------------

@@ -61,7 +61,7 @@
                     </div>
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <InputTextArea id="message" class="form-control" @bind-Value="_emailFormData.Message" placeholder="your message here" minlength="@MessageMinLength"/>
+                        <InputTextArea id="message" class="form-control" rows="11" @bind-Value="_emailFormData.Message" placeholder="your message here" minlength="@MessageMinLength"/>
                         <ValidationMessage For="@(() => _emailFormData.Message)" />
                     </div>
                     <div class="text-center">

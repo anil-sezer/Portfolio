@@ -353,6 +353,7 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 
 .contact .email-form textarea {
     padding: 10px 15px;
+    height: auto;
 }
 
 .contact .email-form button[type=submit] {

@@ -1,0 +1,25 @@
+﻿---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - www.anil-sezer.com
+      secretName: quickstart-example-tls
+  rules:
+    - host: www.anil-sezer.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kuard
+                port:
+                  number: 80

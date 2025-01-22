@@ -1,31 +1,4 @@
-/*--------------------------------------------------------------
-# General
---------------------------------------------------------------*/
-body {
-    font-family: "Open Sans", sans-serif;
-    color: #272829;
-}
-
-a {
-    color: #149ddd;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #37b3ed;
-    text-decoration: none;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Raleway", sans-serif;
-}
-
-/*--------------------------------------------------------------
+﻿/*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
 #header {
@@ -85,6 +58,22 @@ h6 {
     text-decoration: none;
 }
 
+@media (max-width: 1199px) {
+    #header {
+        left: -300px;
+    }
+
+    #main {
+        margin-left: 0;
+    }
+
+    .container,
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
@@ -128,6 +117,7 @@ h6 {
 .nav-menu li:hover>a {
     text-decoration: none;
     color: #fff;
+    font-weight: bold;
 }
 
 .nav-menu a:hover i,

@@ -1,35 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
-<script>
-     (function () {
-         const select = (el, all = false) => {
-             el = el.trim()
-             if (all) {
-                 return [...document.querySelectorAll(el)]
-             } else {
-                 return document.querySelector(el)
-             }
-         }
-
-         const on = (type, el, listener, all = false) => {
-             let selectEl = select(el, all)
-             if (selectEl) {
-                 if (all) {
-                     selectEl.forEach(e => e.addEventListener(type, listener))
-                 } else {
-                     selectEl.addEventListener(type, listener)
-                 }
-             }
-         }
-
-         on('click', '.mobile-nav-toggle', function(e) {
-             select('body').classList.toggle('mobile-nav-active')
-             this.classList.toggle('bi-list')
-             this.classList.toggle('bi-x')
-         })
-     })();
- </script>
+<script src="js/mobilenavtoggle.js"></script>
 
 <header id="header">
     <div class="d-flex flex-column">
@@ -90,7 +62,7 @@
                 [JSInvokable]
                 public void SetActiveSection(string sectionId)
                 {
-                    Console.WriteLine($"Active section: {sectionId}");
+                    Console.WriteLine($"✅ Active section: {sectionId}");
                     ActiveSection = sectionId;
                     InvokeAsync(StateHasChanged);
                 }
@@ -119,21 +91,4 @@
 </footer>
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-<script>
-    (function () {
-        const backToTopButton = document.querySelector('.back-to-top');
-
-        if (backToTopButton) {
-            const toggleBackToTopButton = () => {
-                if (window.scrollY > 100) {
-                    backToTopButton.classList.add('active');
-                } else {
-                    backToTopButton.classList.remove('active');
-                }
-            };
-
-            window.addEventListener('load', toggleBackToTopButton);
-            window.addEventListener('scroll', toggleBackToTopButton);
-        }
-    })();
-</script>
+<script src="js/backtotop.js"></script>

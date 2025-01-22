@@ -52,7 +52,6 @@
                 <li><a href="#contact"  class="@GetActiveClass("contact")"><i class="bi bi-envelope-plus-fill"></i> <span>Contact</span></a></li>
             </ul>
         </nav>
-        
         <script>
             function initializeObserver(dotnetHelper) {
                 const observer = new IntersectionObserver((entries) => {
@@ -96,20 +95,13 @@
                     InvokeAsync(StateHasChanged);
                 }
     
+                private string GetActiveClass(string sectionId) => ActiveSection == sectionId ? "nav-link active" : "nav-link";
+    
                 public void Dispose()
                 {
-                    _dotNetHelper?.Dispose();
+                    _dotNetHelper.Dispose();
                 }
-    
             }
-    
-            @code {
-    
-                private string GetActiveClass(string sectionId) =>
-                    ActiveSection == sectionId ? "nav-link active" : "nav-link";
-    
-            }
-        
         </script>
     </div>
 </header>
@@ -126,24 +118,22 @@
     </div>
 </footer>
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center">
-    <i class="bi bi-arrow-up-short"></i>
-</a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 <script>
     (function () {
-        const backtotop = document.querySelector('.back-to-top');
+        const backToTopButton = document.querySelector('.back-to-top');
 
-        if (backtotop) {
-            const toggleBacktotop = () => {
+        if (backToTopButton) {
+            const toggleBackToTopButton = () => {
                 if (window.scrollY > 100) {
-                    backtotop.classList.add('active');
+                    backToTopButton.classList.add('active');
                 } else {
-                    backtotop.classList.remove('active');
+                    backToTopButton.classList.remove('active');
                 }
             };
 
-            window.addEventListener('load', toggleBacktotop);
-            window.addEventListener('scroll', toggleBacktotop);
+            window.addEventListener('load', toggleBackToTopButton);
+            window.addEventListener('scroll', toggleBackToTopButton);
         }
     })();
 </script>

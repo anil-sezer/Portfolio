@@ -86,3 +86,9 @@ spec:
                 secretKeyRef:
                   name: sql-db-secrets
                   key: SQL_DB_NAME
+
+            - name: PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack-webhook-urls
+                  key: PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL

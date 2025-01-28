@@ -1,7 +1,7 @@
 ﻿@page "/Contact"
-@using System.ComponentModel.DataAnnotations
 @using Portfolio.Grpc
 @using Portfolio.Infrastructure.Constants
+@using Portfolio.Ui.Models
 @using Serilog
 @inject SendEmailToAdmin.SendEmailToAdminClient SendEmailToAdminClient;
 
@@ -45,7 +45,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="name">Your Name</label>
-                            <InputText id="name" class="form-control" @bind-Value="_emailFormData.Name" placeholder="Anil" minlength="@NameMinLength"/>
+                            <InputText id="name" class="form-control" @bind-Value="_emailFormData.Name" placeholder="Anil" minlength="@EmailFormModel.NameMinLength"/>
                             <ValidationMessage For="@(() => _emailFormData.Name)" />
                         </div>
                         <div class="form-group col-md-6">
@@ -56,12 +56,12 @@
                     </div>
                     <div class="form-group">
                         <label for="subject">Subject</label>
-                        <InputText id="subject" class="form-control" @bind-Value="_emailFormData.Subject" placeholder="Subject" minlength="@SubjectMinLength"/>
+                        <InputText id="subject" class="form-control" @bind-Value="_emailFormData.Subject" placeholder="Subject" minlength="@EmailFormModel.SubjectMinLength"/>
                         <ValidationMessage For="@(() => _emailFormData.Subject)" />
                     </div>
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <InputTextArea id="message" class="form-control" rows="11" @bind-Value="_emailFormData.Message" placeholder="Your message here" minlength="@MessageMinLength"/>
+                        <InputTextArea id="message" class="form-control" rows="11" @bind-Value="_emailFormData.Message" placeholder="Your message here" minlength="@EmailFormModel.MessageMinLength"/>
                         <ValidationMessage For="@(() => _emailFormData.Message)" />
                     </div>
                     <div class="text-center">
@@ -100,10 +100,6 @@
 </section>
 
 @code {
-    private const int NameMinLength = 3;
-    private const int SubjectMinLength = 2;
-    private const int MessageMinLength = 15;
-
     private EmailFormModel _emailFormData = new();
     private bool _displaySpinner = false;
     private bool? _isSuccess = null;
@@ -139,25 +135,6 @@
         {
             _displaySpinner = false;
         }
-    }
-
-    private class EmailFormModel
-    {
-        [Required(ErrorMessage = "Name is required.")]
-        [MinLength(NameMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
-        public string Name { get; set; } = null!;
-
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
-        public string Email { get; set; } = null!;
-
-        [Required(ErrorMessage = "Subject is required.")]
-        [MinLength(SubjectMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
-        public string Subject { get; set; } = null!;
-
-        [Required(ErrorMessage = "Message is required.")]
-        [MinLength(MessageMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
-        public string Message { get; set; } = null!;
     }
 }
 

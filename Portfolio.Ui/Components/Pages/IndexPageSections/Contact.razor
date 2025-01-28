@@ -89,7 +89,7 @@
                             const alert = document.getElementById('floating-alert');
                             if (alert) {
                                 alert.style.opacity = '0'; // Fade out
-                                setTimeout(() => alert.remove(), 500); // Remove from DOM after fade
+                                setTimeout(() => alert.style.display = 'none', 500); // Remove from DOM after fade
                             }
                         }, 5000); // 5-second delay before fading out
                     </script>

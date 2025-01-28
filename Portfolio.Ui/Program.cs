@@ -77,6 +77,14 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+// Log 404 and 302 responses. 302 is for this: app.UseStatusCodePagesWithRedirects("/404").
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode is 404 or 302)
+        Log.Information("4️⃣0️⃣4️⃣ Not Found: {RequestedUrl}", context.Request.Path.ToString());
+});
+
 try
 {
     Log.Information("UI Starting");

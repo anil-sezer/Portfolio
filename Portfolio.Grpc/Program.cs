@@ -14,6 +14,9 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.InitLogsWithSerilog();
+builder.InitOpenTelemetry();
+
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
@@ -28,8 +31,6 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
     EnvironmentVariableNames.Email_Slack_WebhookUrl
 ]);
 
-builder.InitLogsWithSerilog();
-builder.InitOpenTelemetry();
 builder.InitDbWithPostgres();
 
 const string readinessDbCheckName = "databaseConnectionActive";

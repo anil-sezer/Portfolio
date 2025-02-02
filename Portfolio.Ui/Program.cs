@@ -10,6 +10,9 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.InitLogsWithSerilog();
+builder.InitOpenTelemetry();
+
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
@@ -23,8 +26,7 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.InitLogsWithSerilog();
-builder.InitOpenTelemetry();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHealthChecks();
 

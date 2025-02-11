@@ -1,7 +1,7 @@
 ---
 - name: Upgrade ubuntu
   ansible.builtin.import_tasks: tasks/upgrade-ubuntu.yml
-  
+
 - name: Ensure a directory for apt keyrings exists
   ansible.builtin.file:
     path: /etc/apt/keyrings
@@ -10,7 +10,7 @@
     owner: root
     group: root
   become: true
-  
+
 - name: Install gpg
   ansible.builtin.apt:
     state: present

@@ -1,21 +1,21 @@
 ---
 - name: Fetch copy kubeadm init logs to a file and fetch it to the control node.
   block:
-  - name: Save the output to a file on the managed node.
-    ansible.builtin.copy:
-      content: "{{ kubeadm_output.stdout }}"
-      dest: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
-    become: true
-  
-  - name: Fetch the output file to the control node.
-    ansible.builtin.fetch:
-      src: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
-      dest: "{{ kubeadm_init_log_dir }}"
-      flat: true
-    become: false
-  
-  - name: Clean up the temporary file on the managed node.
-    ansible.builtin.file:
-      path: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
-      state: absent
-    become: true
+    - name: Save the output to a file on the managed node.
+      ansible.builtin.copy:
+        content: "{{ kubeadm_output.stdout }}"
+        dest: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
+      become: true
+
+    - name: Fetch the output file to the control node.
+      ansible.builtin.fetch:
+        src: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
+        dest: "{{ kubeadm_init_log_dir }}"
+        flat: true
+      become: false
+
+    - name: Clean up the temporary file on the managed node.
+      ansible.builtin.file:
+        path: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
+        state: absent
+      become: true

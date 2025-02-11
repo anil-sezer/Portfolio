@@ -62,7 +62,7 @@
     dest: /usr/bin/bat
     state: link
   become: true
-  
+
 # https://github.com/ajeetdsouza/zoxide
 - name: Install zoxide
   ansible.builtin.apt:

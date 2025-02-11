@@ -1,3 +1,4 @@
+---
 services:
   db_postgres:
     image: postgres:latest

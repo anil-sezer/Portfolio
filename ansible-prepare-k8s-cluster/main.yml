@@ -3,7 +3,7 @@
   hosts: kubernetes_nodes
   gather_facts: true
   # become: true # TODO: Become'ları kaldır, yerine bunu koy
-  # TODO: remove manage_etc_hosts from 
+  # TODO: remove manage_etc_hosts from
   vars_files:
     - variables.yml
   handlers:

@@ -32,11 +32,11 @@
       - "'cgroup_enable=memory' in proc_cmdline.stdout"
       - "'cgroup_memory=1' in proc_cmdline.stdout"
 
-#- name: Lets do a triple check by using Ansible facts
-#  ansible.builtin.assert:
-#    that:
-#      - "ansible_proc_cmdline.cgroup_enable is defined"
-#      - "'cpuset' in ansible_facts.ansible_proc_cmdline.cgroup_enable"
-#      - "'memory' in ansible_facts.ansible_proc_cmdline.cgroup_enable"
-#      - "ansible_proc_cmdline.cgroup_memory is defined"
-#      - "ansible_proc_cmdline.cgroup_memory == '1'"
+# - name: Lets do a triple check by using Ansible facts
+#   ansible.builtin.assert:
+#     that:
+#       - "ansible_proc_cmdline.cgroup_enable is defined"
+#       - "'cpuset' in ansible_facts.ansible_proc_cmdline.cgroup_enable"
+#       - "'memory' in ansible_facts.ansible_proc_cmdline.cgroup_enable"
+#       - "ansible_proc_cmdline.cgroup_memory is defined"
+#       - "ansible_proc_cmdline.cgroup_memory == '1'"

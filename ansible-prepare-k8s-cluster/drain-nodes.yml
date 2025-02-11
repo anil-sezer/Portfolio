@@ -16,13 +16,12 @@
     - name: Cordon all nodes
       ansible.builtin.command: "k cordon {{ ansible_hostname }}"
       delegate_to: localhost
-      
+
     - name: Drain all nodes
       ansible.builtin.command: "k drain {{ ansible_hostname }} --ignore-daemonsets --delete-emptydir-data"
       delegate_to: localhost
-      
+
       # stop kubelet: sudo systemctl stop kubelet
       # maintenance + restart
       # start kubelet: sudo systemctl start kubelet
       # k uncordon {{ ansible_hostname }}
-      

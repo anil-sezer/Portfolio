@@ -64,7 +64,6 @@
 - name: Install Cert Manager
   ansible.builtin.import_tasks: tasks/install-cert-manager.yml
 
-
 # - name: Containerd might need a reconfiguration because installing a CNI sometimes alter it.
 #   ansible.builtin.import_tasks: tasks/containerd-config.yml
 
@@ -72,7 +71,7 @@
 
 # https://cert-manager.io/docs/installation/kubectl/#verify
 
-# Your other option is to replace your Issuers with ClusterIssuers; ClusterIssuer 
-# resources apply across all Ingress resources in your cluster. 
-# If using a ClusterIssuer, remember to update the Ingress annotation cert-manager.io/issuer 
+# Your other option is to replace your Issuers with ClusterIssuers; ClusterIssuer
+# resources apply across all Ingress resources in your cluster.
+# If using a ClusterIssuer, remember to update the Ingress annotation cert-manager.io/issuer
 # to cert-manager.io/cluster-issuer.

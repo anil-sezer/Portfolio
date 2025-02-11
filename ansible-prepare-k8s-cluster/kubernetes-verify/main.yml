@@ -31,6 +31,6 @@
   register: boards_serial_number
   changed_when: false
 
-- name: Display serial numbers of all the nodes. product_uuid is probably this for raspberry pi, right? These should not be same too. 
+- name: Display serial numbers of all the nodes. product_uuid is probably this for raspberry pi, right? These should not be same too.
   ansible.builtin.debug:
     msg: "{{ boards_serial_number.stdout }}"

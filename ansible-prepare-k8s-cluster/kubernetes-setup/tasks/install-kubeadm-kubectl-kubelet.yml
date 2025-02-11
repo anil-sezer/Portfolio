@@ -20,52 +20,52 @@
 - name: Install kubeadm kubectl and kubelet if they are not already installed
   when: "'kubelet' not in kubelet_check.stdout and 'kubeadm' not in kubeadm_check.stdout and 'kubectl' not in kubectl_check.stdout"
   block:
-  - name: Ensure /etc/apt/keyrings directory exists
-    become: true
-    ansible.builtin.file:
-      path: /etc/apt/keyrings
-      state: directory
-      mode: "0755"
+    - name: Ensure /etc/apt/keyrings directory exists
+      become: true
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
 
-  - name: Download and convert the Kubernetes apt keyring
-    ansible.builtin.shell: >
-      curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key |
-      gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    args:
-      creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    become: true
+    - name: Download and convert the Kubernetes apt keyring
+      ansible.builtin.shell: >
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key |
+        gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      become: true
 
-  - name: This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-    become: true
-    ansible.builtin.shell: >
-      echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
-      tee /etc/apt/sources.list.d/kubernetes.list
+    - name: This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+      become: true
+      ansible.builtin.shell: >
+        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
+        tee /etc/apt/sources.list.d/kubernetes.list
 
-  - name: Install kubelet kubeadm kubectl.
-    ansible.builtin.apt:
-      update_cache: true
-      state: present
-      pkg:
-        - kubelet
-        - kubeadm
-        - kubectl
-      install_recommends: true
-    become: true
+    - name: Install kubelet kubeadm kubectl.
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        pkg:
+          - kubelet
+          - kubeadm
+          - kubectl
+        install_recommends: true
+      become: true
 
-  - name: Prevent kubelet from being upgraded.
-    ansible.builtin.dpkg_selections:
-      name: kubelet
-      selection: hold
-    become: true
+    - name: Prevent kubelet from being upgraded.
+      ansible.builtin.dpkg_selections:
+        name: kubelet
+        selection: hold
+      become: true
 
-  - name: Prevent kubeadm from being upgraded.
-    ansible.builtin.dpkg_selections:
-      name: kubeadm
-      selection: hold
-    become: true
+    - name: Prevent kubeadm from being upgraded.
+      ansible.builtin.dpkg_selections:
+        name: kubeadm
+        selection: hold
+      become: true
 
-  - name: Prevent kubectl from being upgraded.
-    ansible.builtin.dpkg_selections:
-      name: kubectl
-      selection: hold
-    become: true
+    - name: Prevent kubectl from being upgraded.
+      ansible.builtin.dpkg_selections:
+        name: kubectl
+        selection: hold
+      become: true

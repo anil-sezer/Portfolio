@@ -15,7 +15,7 @@
         name: coredns
       register: coredns_config
 
-# TODO: Do I need to add node names and ips here? 
+# TODO: Do I need to add node names and ips here?
 # https://coredns.io/plugins/hosts/ this says core-dns checks for /etc/hosts file every 5 seconds
     - name: Update CoreDNS Corefile with hosts plugin
       lineinfile:
@@ -34,4 +34,3 @@
       kubernetes.core.k8s:
         state: present
         definition: "{{ lookup('file', '/tmp/coredns_config.yaml') }}"
-

@@ -23,7 +23,7 @@
   set_fact:
     systemd_cgroup_value: "{{ config_toml_content.stdout | regex_search('SystemdCgroup\\s*=\\s*(\\w+)', '\\1') | first }}"
 
-- name: 
+- name:
   ansible.builtin.debug:
     msg: "{{ systemd_cgroup_value }}"
 

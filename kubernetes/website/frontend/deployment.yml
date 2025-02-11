@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,6 +59,6 @@ spec:
 
             - name: OTEL_COLLECTOR_ENDPOINT
               value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
-            
+
             - name: GRPC_BASE_URL
               value: "http://portfolio-grpc-service.default.svc.cluster.local:8080"

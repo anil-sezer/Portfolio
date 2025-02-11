@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Upgrade ubuntu
   ansible.builtin.import_tasks: tasks/upgrade-ubuntu.yml
   

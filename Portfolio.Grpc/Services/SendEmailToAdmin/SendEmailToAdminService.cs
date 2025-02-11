@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.Repositories.Dtos;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;

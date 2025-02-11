@@ -1,4 +1,4 @@
-﻿Write-Host "✅ Starting Docker Compose..."
+Write-Host "✅ Starting Docker Compose..."
 docker compose up -d
 
 Write-Host "✅ Waiting for Docker services to become ready..."

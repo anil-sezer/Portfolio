@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Check if kubelet is installed
   ansible.builtin.shell: dpkg -l | grep kubelet
   register: kubelet_check

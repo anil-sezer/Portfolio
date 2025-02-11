@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Get config.toml files previous setting
   ansible.builtin.import_tasks: ../../generic-tasks/extract-sandbox-image-urls.yml
 

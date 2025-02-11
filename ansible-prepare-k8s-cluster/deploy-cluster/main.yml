@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Deploy the postgres DB
   become: false
   block:

@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     const backToTopButton = document.querySelector('.back-to-top');
 
     if (backToTopButton) {

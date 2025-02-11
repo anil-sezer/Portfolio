@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Ui.Models;
+namespace Portfolio.Ui.Models;
 
 public class TechStackModel
 {

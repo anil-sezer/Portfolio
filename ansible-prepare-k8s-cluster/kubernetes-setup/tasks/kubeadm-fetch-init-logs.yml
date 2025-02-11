@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Fetch copy kubeadm init logs to a file and fetch it to the control node.
   block:
   - name: Save the output to a file on the managed node.

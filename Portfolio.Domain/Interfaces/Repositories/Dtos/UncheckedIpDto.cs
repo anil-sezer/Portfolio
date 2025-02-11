@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Domain.Interfaces.Repositories.Dtos;
+namespace Portfolio.Domain.Interfaces.Repositories.Dtos;
 
 public class UncheckedIpDto
 {

@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Grpc;
 using Serilog;

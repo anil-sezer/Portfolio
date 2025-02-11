@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Verify stuff
   hosts: kubernetes_nodes
   tasks:

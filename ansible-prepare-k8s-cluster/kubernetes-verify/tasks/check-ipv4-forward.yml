@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Check if IP forwarding is enabled
   ansible.builtin.command: sysctl net.ipv4.ip_forward
   register: ip_forward_status

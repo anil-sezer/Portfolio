@@ -1,4 +1,4 @@
-﻿using Portfolio.Domain.Interfaces.Repositories;
+using Portfolio.Domain.Interfaces.Repositories;
 
 namespace Portfolio.Grpc.Services;
 

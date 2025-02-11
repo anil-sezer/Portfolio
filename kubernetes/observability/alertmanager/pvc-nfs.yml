@@ -1,4 +1,4 @@
-﻿apiVersion: v1
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: alertmanager-nfs-pvc # TODO: Cannot use this as the prometheus helm subchart does not have a existing claim thingy, maybe I will add it?

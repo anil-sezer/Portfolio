@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Update all nodes, then set up some quality-of-life tools, then setup Kubernetes cluster
   hosts: kubernetes_nodes
   gather_facts: true

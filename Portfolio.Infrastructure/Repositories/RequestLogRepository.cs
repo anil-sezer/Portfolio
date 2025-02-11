@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using Portfolio.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Interfaces.Repositories;

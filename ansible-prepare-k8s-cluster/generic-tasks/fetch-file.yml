@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Fetch file
   block:
     - name: Create a copy of the original file with a different name.

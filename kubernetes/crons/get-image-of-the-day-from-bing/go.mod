@@ -1,4 +1,4 @@
-﻿module get-image-of-the-day-from-bing
+module get-image-of-the-day-from-bing
 
 go 1.23.4
 

@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Get /etc/containerd/config.toml's metadata.
   ansible.builtin.stat:
     path: /etc/containerd/config.toml

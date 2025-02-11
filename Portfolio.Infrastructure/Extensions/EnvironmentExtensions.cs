@@ -1,4 +1,4 @@
-﻿using Portfolio.Infrastructure.Exceptions;
+using Portfolio.Infrastructure.Exceptions;
 using Serilog;
 
 namespace Portfolio.Infrastructure.Extensions;

@@ -1,4 +1,4 @@
-﻿package grpc
+package grpc
 
 import (
 	"github.com/golang/protobuf/ptypes/empty"

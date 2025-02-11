@@ -1,4 +1,4 @@
-﻿# docker build -t get-image-of-the-day-from-bing .
+# docker build -t get-image-of-the-day-from-bing .
 # docker build -f deployment/crons/get-image-of-the-day-from-bing/Dockerfile -t img-from-bing .
 # docker run --name get-image-of-the-day-from-bing --env-file .env get-image-of-the-day-from-bing
 FROM golang:1.23.4 AS builder

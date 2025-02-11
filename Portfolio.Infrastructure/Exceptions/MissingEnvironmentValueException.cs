@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Infrastructure.Exceptions;
+namespace Portfolio.Infrastructure.Exceptions;
 
 public class MissingEnvironmentValueException : Exception
 {

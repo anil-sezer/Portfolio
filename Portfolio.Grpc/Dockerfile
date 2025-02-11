@@ -1,4 +1,4 @@
-﻿# From root:
+# From root:
 # docker build -f Portfolio.Grpc/Dockerfile -t portfolio-grpc .
 # https://devblogs.microsoft.com/dotnet/improving-multiplatform-container-support/
 ARG DOTNET_VERSION=9.0

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.Repositories.Dtos;

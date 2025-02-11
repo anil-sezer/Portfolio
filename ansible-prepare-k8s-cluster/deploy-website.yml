@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Build & deploy the website to the cluster
   hosts: rpi4red
   gather_facts: true

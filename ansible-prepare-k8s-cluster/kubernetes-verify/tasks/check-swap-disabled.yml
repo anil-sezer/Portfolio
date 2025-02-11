@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Is swap disabled?
   ansible.builtin.assert:
     that:

@@ -1,4 +1,4 @@
-﻿# docker build -f Portfolio.Ui/Dockerfile -t portfolio-ui .
+# docker build -f Portfolio.Ui/Dockerfile -t portfolio-ui .
 # https://devblogs.microsoft.com/dotnet/improving-multiplatform-container-support/
 ARG DOTNET_VERSION=9.0
 ARG BUILD_CONFIGURATION=Release

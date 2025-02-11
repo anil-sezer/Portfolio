@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Get loaded kernel modules list
   ansible.builtin.command: lsmod
   become: false

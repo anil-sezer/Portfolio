@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Enums;

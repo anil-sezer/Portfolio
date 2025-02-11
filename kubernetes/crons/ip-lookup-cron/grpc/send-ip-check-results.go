@@ -1,4 +1,4 @@
-﻿package grpc
+package grpc
 
 import (
 	pb "ip-lookup-cron/proto"

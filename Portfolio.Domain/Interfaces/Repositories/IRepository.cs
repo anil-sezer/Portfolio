@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Domain.Interfaces.Repositories;
+namespace Portfolio.Domain.Interfaces.Repositories;
 
 public interface IRepository<T> where T : class
 {

@@ -1,4 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 namespace Portfolio.Domain.Enums;
 
 // There is a duplicate for this enum in the proto file. If this file is edited, that should be too. Search this code for it: GXJQJZ

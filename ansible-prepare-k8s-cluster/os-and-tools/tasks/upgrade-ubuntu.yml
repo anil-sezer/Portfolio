@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Update all host/vm packages
   become: true
   ansible.builtin.apt:

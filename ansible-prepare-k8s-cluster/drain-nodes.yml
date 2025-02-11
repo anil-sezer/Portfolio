@@ -1,4 +1,4 @@
-﻿# TODO: Debug this, does not work
+# TODO: Debug this, does not work
 ---
 - name: Testing some stuff before adding them to the main flow
   hosts: kubernetes_nodes

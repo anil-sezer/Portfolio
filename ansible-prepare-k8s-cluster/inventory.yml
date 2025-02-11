@@ -1,4 +1,4 @@
-﻿all:
+all:
   hosts:
     rpi5green:
       ansible_host: rpi5-green.local # 8GB

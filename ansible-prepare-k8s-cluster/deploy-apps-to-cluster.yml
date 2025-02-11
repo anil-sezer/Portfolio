@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Deploy the entire app to the cluster
   hosts: all
   tasks:

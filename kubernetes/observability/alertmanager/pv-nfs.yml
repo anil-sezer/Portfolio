@@ -1,4 +1,4 @@
-﻿apiVersion: v1
+apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: storage-my-first-prometheus-alertmanager-0 # TODO: USE THIS: alertmanager-nfs-pv

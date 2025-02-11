@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Read the contents of config.toml (containerd).
   become: true
   ansible.builtin.command: cat /etc/containerd/config.toml

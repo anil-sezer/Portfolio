@@ -1,4 +1,4 @@
-﻿---
+---
 - name: Download GPG key and save it to apt keyrings directory
   ansible.builtin.shell: wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
   args:

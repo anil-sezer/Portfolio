@@ -1,4 +1,4 @@
-﻿---
+---
 # TODO: Set these later. 
 #- name: This command is same-ish as the others below. Use the other ones?
 #  ansible.builtin.shell: >

@@ -1,15 +1,12 @@
 ---
 name: ci-yaml-lint
-'on':
-  pull_request:
+
+on:
   push:
     branches:
-      - master
-  schedule:
-    - cron: "9 10 * * 0"
+      - "prod"
 
 jobs:
-
   lint:
     name: Lint
     runs-on: ubuntu-latest

@@ -25,7 +25,6 @@
   ansible.builtin.command: apt-mark showhold
   changed_when: false
   register: showhold_check
-  become: true
 
 - name: Output held packages to the terminal.
   ansible.builtin.debug:

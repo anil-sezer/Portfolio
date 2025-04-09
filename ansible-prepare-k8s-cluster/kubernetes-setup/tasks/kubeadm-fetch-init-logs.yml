@@ -5,7 +5,6 @@
       ansible.builtin.copy:
         content: "{{ kubeadm_output.stdout }}"
         dest: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
-      become: true
 
     - name: Fetch the output file to the control node.
       ansible.builtin.fetch:
@@ -18,4 +17,3 @@
       ansible.builtin.file:
         path: "/tmp/{{ ansible_hostname }}-{{ plane_name }}-{{ ansible_date_time.date }}-kubeadminit.txt"
         state: absent
-      become: true

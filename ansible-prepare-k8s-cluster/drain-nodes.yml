@@ -3,14 +3,12 @@
 - name: Testing some stuff before adding them to the main flow
   hosts: kubernetes_nodes
   gather_facts: true
-  become: true
   handlers:
     - name: Reboot device
       ansible.builtin.reboot:
         reboot_timeout: 3600
         msg: Rebooting machine in 3600 as timeout
       when: package_update_result.changed
-      become: true
 
   tasks:
     - name: Cordon all nodes

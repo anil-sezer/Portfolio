@@ -9,12 +9,10 @@
   block:
     - name: Pull the images for kubeadm.
       ansible.builtin.command: kubeadm config images pull
-      become: true
 
     - name: Init the control node!
       ansible.builtin.command: kubeadm init --pod-network-cidr={{ pod_network_cdr }}
       register: kubeadm_output
-      become: true
 
     - name: Fetch the kubeadm init logs, you might need it.
       ansible.builtin.import_tasks: kubeadm-fetch-init-logs.yml
@@ -38,7 +36,6 @@
         group: "{{ ansible_user_id }}"
         mode: '0644'
         remote_src: true
-      become: true
 
     - name: Ensure ownership of ~/.kube/config is correct.
       ansible.builtin.file:
@@ -46,7 +43,6 @@
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0644'
-      become: true
 
     - name: Fetch kube config file.
       ansible.builtin.fetch:

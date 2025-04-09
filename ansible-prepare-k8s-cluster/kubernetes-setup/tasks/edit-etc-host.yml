@@ -37,14 +37,12 @@
         path: /etc/cloud/cloud.cfg
         regexp: '^\s*- update_etc_hosts$'
         state: absent
-      become: true
 
     - name: Remove the 'manage_etc_hosts' line
       ansible.builtin.lineinfile:
         path: /etc/cloud/cloud.cfg
         regexp: '^\s*- manage_etc_hosts$'
         state: absent
-      become: true
 
     - name: Get /etc/cloud/cloud.cfg files default state so we can compare if something goes awry
       ansible.builtin.import_tasks: ../../generic-tasks/fetch-file.yml
@@ -73,7 +71,6 @@
         regexp: '^(#.*\n)'
         replace: ''
         before: '{{ ansible_hostname }}'
-      become: true
 
     - name: Construct regex for replacing hostname entry
       ansible.builtin.set_fact:
@@ -84,4 +81,3 @@
         path: /etc/hosts
         regexp: "{{ hostname_regex }}"
         replace: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
-      become: true

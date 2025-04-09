@@ -9,12 +9,10 @@
     path: /etc/sysctl.d/k8s.conf
     line: "net.ipv4.ip_forward = 1"
     create: true
-  become: true
   when: "'net.ipv4.ip_forward = 1' not in ip_forward_status.stdout"
 
 - name: Reload sysctl settings
   ansible.builtin.command: sysctl --system
-  become: true
   when: "'net.ipv4.ip_forward = 1' not in ip_forward_status.stdout"
   register: sysctl_result
   changed_when: sysctl_result.rc != 0 # todo: might not be a right condition

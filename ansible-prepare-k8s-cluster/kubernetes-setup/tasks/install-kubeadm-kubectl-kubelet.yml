@@ -21,7 +21,6 @@
   when: "'kubelet' not in kubelet_check.stdout and 'kubeadm' not in kubeadm_check.stdout and 'kubectl' not in kubectl_check.stdout"
   block:
     - name: Ensure /etc/apt/keyrings directory exists
-      become: true
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
@@ -33,10 +32,8 @@
         gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-      become: true
 
     - name: This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-      become: true
       ansible.builtin.shell: >
         echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
         tee /etc/apt/sources.list.d/kubernetes.list
@@ -50,22 +47,18 @@
           - kubeadm
           - kubectl
         install_recommends: true
-      become: true
 
     - name: Prevent kubelet from being upgraded.
       ansible.builtin.dpkg_selections:
         name: kubelet
         selection: hold
-      become: true
 
     - name: Prevent kubeadm from being upgraded.
       ansible.builtin.dpkg_selections:
         name: kubeadm
         selection: hold
-      become: true
 
     - name: Prevent kubectl from being upgraded.
       ansible.builtin.dpkg_selections:
         name: kubectl
         selection: hold
-      become: true

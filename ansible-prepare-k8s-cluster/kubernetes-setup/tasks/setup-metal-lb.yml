@@ -6,7 +6,6 @@
 #     sed -e "s/strictARP: false/strictARP: true/" |
 #     kubectl diff -f - -n kube-system
 #   register:
-#   become: true
 
 - name: Get kube-proxy config.
   ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml

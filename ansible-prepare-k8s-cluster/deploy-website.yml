@@ -8,7 +8,6 @@
       ansible.builtin.systemd:
         name: docker
         state: started
-      become: true
 
     - name: Get the latest from git.
       ansible.builtin.git:
@@ -40,7 +39,6 @@
       ansible.builtin.systemd:
         name: docker
         state: stopped
-      become: true
 
     - name: Deploy the website.
       ansible.builtin.command: kubectl rollout restart deployment website-deployment -n default

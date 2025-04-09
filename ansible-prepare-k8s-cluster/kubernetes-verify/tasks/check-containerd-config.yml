@@ -9,7 +9,6 @@
     that: config_toml.stat.exists
 
 - name: Read the content of config.toml
-  become: true
   ansible.builtin.command: cat /etc/containerd/config.toml
   register: config_toml_content
   changed_when: false

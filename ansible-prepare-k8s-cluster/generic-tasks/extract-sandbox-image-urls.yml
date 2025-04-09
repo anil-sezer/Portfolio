@@ -1,6 +1,5 @@
 ---
 - name: Read the contents of config.toml (containerd).
-  become: true
   ansible.builtin.command: cat /etc/containerd/config.toml
   register: config_toml_content
   changed_when: false
@@ -14,7 +13,6 @@
     msg: "{{ sandbox_image_at_containerd }}"
 
 - name: Read the contents of kubeadm-flags.env (kubelet).
-  become: true
   ansible.builtin.command: cat /var/lib/kubelet/kubeadm-flags.env
   register: kubeadm_flags_content
   changed_when: false

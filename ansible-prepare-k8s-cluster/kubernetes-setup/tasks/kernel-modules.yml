@@ -11,7 +11,6 @@
     mode: '0644'
     owner: root
     group: root
-  become: true
   when: not containerd_config_conf.stat.exists
 
 - name: Ensure br_netfilter module is active
@@ -19,12 +18,10 @@
     path: /etc/modules-load.d/containerd.conf
     regexp: 'br_netfilter'
     line: 'br_netfilter'
-  become: true
   register: br_netfilter_result
 
 - name: Load the br_netfilter kernel module without a reboot
   ansible.builtin.command: modprobe br_netfilter
-  become: true
   when: br_netfilter_result.changed
 
 - name: Ensure overlay module is active
@@ -32,19 +29,16 @@
     path: /etc/modules-load.d/containerd.conf
     regexp: 'overlay'
     line: 'overlay'
-  become: true
   register: overlay_result
 
 - name: Load the overlay kernel module without a reboot
   ansible.builtin.command: modprobe overlay
-  become: true
   when: overlay_result.changed
 
 - name: Check if kernel modules are successfully loaded
   block:
     - name: Get loaded kernel modules list
       ansible.builtin.command: lsmod
-      become: true
       register: lsmod_result
       changed_when: false
 

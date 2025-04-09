@@ -9,7 +9,6 @@
   block:
     - name: Pull the images for kubeadm.
       ansible.builtin.command: kubeadm config images pull
-      become: true
 
     - name: Ensure .kube directory exists in the user's home directory.
       ansible.builtin.file:
@@ -18,7 +17,6 @@
         mode: '0755'
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
-      become: true
 
     - name: Copy Kubernetes admin.conf to user's .kube/config.
       ansible.builtin.copy:
@@ -28,7 +26,6 @@
         group: "{{ ansible_user_id }}"
         mode: '0644'
         remote_src: true
-      become: true
 
     - name: Ensure ownership of ~/.kube/config is correct.
       ansible.builtin.file:
@@ -36,4 +33,3 @@
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0644'
-      become: true

@@ -6,7 +6,6 @@
         src: "{{ file_path_and_name }}"
         dest: "{{ new_file_path_and_name }}"
         remote_src: true
-      become: true
       changed_when: false
 
     - name: Fetch the new file to the Ansible control node
@@ -14,12 +13,10 @@
         src: "{{ new_file_path_and_name }}"
         dest: "{{ kubeadm_init_log_dir }}"
         flat: true
-      become: true
       changed_when: false
 
     - name: Remove the new file from the Ansible managed node
       ansible.builtin.file:
         path: "{{ new_file_path_and_name }}"
         state: absent
-      become: true
       changed_when: false

@@ -10,10 +10,8 @@
     regexp: '^\s*sandbox_image\s*=\s*".*"'
     line: 'sandbox_image = "{{ sandbox_image_at_kubelet }}"'
     insertafter: '[plugins."io.containerd.grpc.v1.cri"]'
-  become: true
 
 - name: Restart the containerd service
   ansible.builtin.systemd:
     name: containerd
     state: restarted
-  become: true

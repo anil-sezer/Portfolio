@@ -1,12 +1,10 @@
 ---
 - name: Read the content of config.toml
-  become: true
   ansible.builtin.command: cat /etc/containerd/config.toml
   register: config_toml_content
   changed_when: false
 
 - name: Read the kubeadm flags
-  become: true
   ansible.builtin.command: cat /var/lib/kubelet/kubeadm-flags.env
   register: config_toml_content
   changed_when: false

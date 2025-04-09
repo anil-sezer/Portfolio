@@ -1,11 +1,9 @@
 ---
 - name: Check if swap is enabled
   ansible.builtin.command: swapon --show
-  become: true
   register: swap_status
   changed_when: false
 
 - name: Disable swap if it's enabled
   ansible.builtin.command: sudo sed -i '/ swap / s/^\\(.*\\)$/#\\1/g' /etc/fstab
-  become: true
   when: swap_status.stdout | length > 0  # Check if swap status output is non-empty

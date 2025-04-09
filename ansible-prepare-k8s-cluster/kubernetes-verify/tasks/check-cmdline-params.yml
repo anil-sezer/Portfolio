@@ -1,6 +1,5 @@
 ---
 - name: Read the content of /boot/firmware/cmdline.txt
-  become: true
   ansible.builtin.command: cat /boot/firmware/cmdline.txt
   register: cmdline_content
   changed_when: false

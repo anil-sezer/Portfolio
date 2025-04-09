@@ -1,6 +1,5 @@
 ---
 - name: Update all host/vm packages
-  become: true
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist

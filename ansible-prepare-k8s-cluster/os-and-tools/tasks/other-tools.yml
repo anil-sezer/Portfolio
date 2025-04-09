@@ -3,7 +3,6 @@
   ansible.builtin.apt:
     state: present
     name: git
-  become: true
 
 # https://github.com/bootandy/dust
 - name: Check if dust is already installed.
@@ -13,7 +12,6 @@
   changed_when: false
 
 - name: Install dust.
-  become: true
   ansible.builtin.unarchive:
     src: "https://github.com/bootandy/dust/releases/download/{{ dustversion }}/dust-{{ dustversion }}-aarch64-unknown-linux-gnu.tar.gz"
     dest: /usr/local/bin
@@ -40,59 +38,50 @@
   ansible.builtin.apt:
     state: present
     pkg: fd-find
-  become: true
 
 - name: Create link fd to fdfind
   ansible.builtin.file:
     src: /usr/bin/fdfind
     dest: /usr/bin/fd
     state: link
-  become: true
 
 # https://github.com/sharkdp/bat
 - name: Install bat
   ansible.builtin.apt:
     state: present
     pkg: bat
-  become: true
 
 - name: Create link bat to batcat in Debian
   ansible.builtin.file:
     src: /usr/bin/batcat
     dest: /usr/bin/bat
     state: link
-  become: true
 
 # https://github.com/ajeetdsouza/zoxide
 - name: Install zoxide
   ansible.builtin.apt:
     state: present
     pkg: zoxide
-  become: true
 
 # required by the OMZ plugin zsh-interactive-cd
 - name: Install fzf (command-line fuzzy finder)
   ansible.builtin.apt:
     state: present
     pkg: fzf
-  become: true
 
 - name: Install procs
   ansible.builtin.package:
     name: procs
     state: present
     use: snap
-  become: true
 
 - name: Install unzip
   ansible.builtin.apt:
     state: present
     pkg: unzip
-  become: true
 
 # https://github.com/BurntSushi/ripgrep
 - name: Install ripgrep
   ansible.builtin.apt:
     state: present
     pkg: ripgrep
-  become: true

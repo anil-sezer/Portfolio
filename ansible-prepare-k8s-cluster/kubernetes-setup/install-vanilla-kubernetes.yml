@@ -17,7 +17,6 @@
     update_cache: true
     state: present
     install_recommends: true
-  become: true
 
 - name: Enable cgroup_enable & cgroup_memory options for Kubernetes
   ansible.builtin.import_tasks: tasks/edit-cmdline.yml
@@ -47,7 +46,6 @@
 
 - name: Install Helm
   ansible.builtin.command: snap install helm --classic
-  become: true
 
 - name: Enable hosts plugin at CoreDNS and add node ips there
   ansible.builtin.import_tasks: tasks/core-dns-config.yml

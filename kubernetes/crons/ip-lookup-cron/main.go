@@ -15,6 +15,8 @@ func main() {
 	}
 
 	ips := grpc.GetIpsToCheckFromGrpc()
+	//ips := grpc.GetTestIps() // todo: add some unit tests?
+
 	fmt.Println("Got: " + fmt.Sprintf("%d", len(ips)) + " from grpc")
 
 	rowsToDeleteCount := 0

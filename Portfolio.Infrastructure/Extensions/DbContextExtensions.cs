@@ -29,18 +29,6 @@ public static class DbContextExtensions
             options.EnableDetailedErrors();
             options.EnableSensitiveDataLogging();
         });
-
-        // todo: I should create a solution for this, I don't want commented out code. 
-        // comment this if you wanna create migrations. It confuses EF.
-        // if (builder.Environment.IsDevelopment())
-        //     AutoMigrate(builder);
-    }
-
-    private static void AutoMigrate(WebApplicationBuilder builder)
-    {
-        using var scope = builder.Services.BuildServiceProvider().CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
-        dbContext.Database.Migrate();
     }
     
     private static string GetConnectionStringForPostgres(this WebApplicationBuilder builder)
@@ -72,26 +60,5 @@ public static class DbContextExtensions
         Log.Fatal("One or more db ConnectionString value(s) is not set. Params: Host: {Host}, Port: {Port}, UserName: {UserName}, UserPass: {UserPass}, DbName: {DbName}", 
             host, port, userName, userPass, dbName);
         throw new InvalidOperationException();
-    }
-    
-    private static void ApplyMigrations(this IHost host)
-    {
-        using var scope = host.Services.CreateScope();
-        var services = scope.ServiceProvider;
-        var environment = services.GetRequiredService<IHostEnvironment>();
-
-        if (environment.IsDevelopment())
-        {
-            try
-            {
-                var dbContext = services.GetRequiredService<PortfolioDbContext>();
-                dbContext.Database.Migrate();
-                Log.Information("Database migrated successfully");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while applying migrations");
-            }
-        }
     }
 }

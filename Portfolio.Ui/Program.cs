@@ -1,10 +1,7 @@
 using DotNetEnv;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Portfolio.Infrastructure.Constants;
-using Portfolio.Grpc;
-using Portfolio.Infrastructure.Exceptions;
 using Portfolio.Infrastructure.Extensions;
+using Portfolio.Ui;
 using Portfolio.Ui.Components;
 using Serilog;
 
@@ -22,13 +19,10 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
     EnvironmentVariableNames.DevOrProd
 ]);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHealthChecks();
 
 builder.InitializeHealthChecks();
 
@@ -45,21 +39,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
-{
-    Predicate = _ => false, // Always return healthy for liveness
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        [HealthStatus.Degraded] = StatusCodes.Status200OK, // Liveness doesn't degrade
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-    }
-});
-
-app.MapMethods(DefaultValues.HealthCheck_ThirdParty, [HttpMethods.Head], () =>
-{
-    return Results.Ok();
-});
+app.MapLivenessHealthCheck();
+app.MapHealthCheckForUptimeRobot();
 
 app.UseHttpsRedirection();
 

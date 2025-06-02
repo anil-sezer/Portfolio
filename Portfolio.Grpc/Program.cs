@@ -33,10 +33,7 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
 
 builder.InitDbWithPostgres();
 
-const string readinessDbCheckName = "databaseConnectionActive";
-builder.Services
-    .AddHealthChecks()
-    .AddDbContextCheck<PortfolioDbContext>(failureStatus: HealthStatus.Degraded, name: readinessDbCheckName);
+builder.AddHealthChecksForEndpointAndDb();
 
 builder.Services.AddGrpc();
 
@@ -51,28 +48,8 @@ builder.Services.AddScoped<IEmailProviderFactory, EmailProviderFactory>();
 
 var app = builder.Build();
 
-// todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
-app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
-{
-    Predicate = _ => false, // Always return healthy for liveness
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        [HealthStatus.Degraded] = StatusCodes.Status200OK, // Liveness doesn't degrade
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-    }
-});
-
-app.MapHealthChecks(DefaultValues.HealthCheck_Readiness, new HealthCheckOptions
-{
-    Predicate = check => check.Name == readinessDbCheckName,
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        [HealthStatus.Degraded] = StatusCodes.Status206PartialContent,
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-    }
-});
+app.MapLivenessHealthCheck();
+app.MapReadinessHealthCheck();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GetBackgroundImageService>();

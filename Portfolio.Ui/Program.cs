@@ -30,19 +30,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHealthChecks();
 
-var grpcAddress = Environment.GetEnvironmentVariable(EnvironmentVariableNames.Grpc_BaseUrl) ?? throw new MissingEnvironmentValueException();
-builder.Services.AddGrpcClient<VisitorInsights.VisitorInsightsClient>(o =>
-{
-    o.Address = new Uri(grpcAddress);
-});
-builder.Services.AddGrpcClient<BackgroundImages.BackgroundImagesClient>(o =>
-{
-    o.Address = new Uri(grpcAddress);
-});
-builder.Services.AddGrpcClient<SendEmailToAdmin.SendEmailToAdminClient>(o =>
-{
-    o.Address = new Uri(grpcAddress);
-});
+builder.InitializeHealthChecks();
+
+builder.InitializeGrpcClients();
 
 var app = builder.Build();
 

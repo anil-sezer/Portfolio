@@ -25,7 +25,7 @@ public static class HealthCheckExtensions
     
     public static void MapLivenessHealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
+        app.MapHealthChecks("/liveness", new HealthCheckOptions
         {
             Predicate = _ => false, // Always return healthy for liveness
             ResultStatusCodes =
@@ -40,7 +40,7 @@ public static class HealthCheckExtensions
     // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
     public static void MapReadinessHealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks(DefaultValues.HealthCheck_Readiness, new HealthCheckOptions
+        app.MapHealthChecks("/readiness", new HealthCheckOptions
         {
             Predicate = check => check.Name == ReadinessDbCheckName,
             ResultStatusCodes =
@@ -54,7 +54,7 @@ public static class HealthCheckExtensions
     
     public static void MapHealthCheckForUptimeRobot(this WebApplication app)
     {
-        app.MapMethods(DefaultValues.HealthCheck_ThirdParty, [HttpMethods.Head], () =>
+        app.MapMethods("/thirdPartyHealthCheck", [HttpMethods.Head], () =>
         {
             return Results.Ok();
         });

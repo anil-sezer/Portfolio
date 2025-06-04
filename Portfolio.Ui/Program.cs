@@ -7,6 +7,8 @@ using Portfolio.Ui.Components;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+    Env.Load("../.env");
 
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();

@@ -14,6 +14,8 @@ using Portfolio.Infrastructure.Repositories;
 using Portfolio.Infrastructure.ThirdPartyServices;
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+    Env.Load("../.env");
 
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();

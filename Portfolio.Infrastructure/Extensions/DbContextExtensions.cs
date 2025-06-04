@@ -1,8 +1,8 @@
-using DotNetEnv;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Helpers;
 using Serilog;
 
@@ -12,7 +12,7 @@ public static class DbContextExtensions
 {
     public static void InitDbWithPostgres(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.GetConnectionStringForPostgres();
+        var connectionString = GetConnectionStringForPostgres();
 
         var appName = AssemblyHelper.GetStartupProjectsName();
         builder.Services.AddDbContext<PortfolioDbContext>(options =>
@@ -31,16 +31,13 @@ public static class DbContextExtensions
         });
     }
     
-    private static string GetConnectionStringForPostgres(this WebApplicationBuilder builder)
+    private static string GetConnectionStringForPostgres()
     {
-        if (builder.Environment.IsDevelopment())
-            Env.Load("../.env");
-
-        var host     = Environment.GetEnvironmentVariable("SQL_DB_HOST");
-        var port     = Environment.GetEnvironmentVariable("SQL_DB_PORT");
-        var userName = Environment.GetEnvironmentVariable("SQL_DB_USER");
-        var userPass = Environment.GetEnvironmentVariable("SQL_DB_PASSWORD");
-        var dbName   = Environment.GetEnvironmentVariable("SQL_DB_NAME");
+        var host = EnvVarHelpers.GetValue(EnvVarNames.SqlDb_Host);
+        var port     = EnvVarHelpers.GetValue(EnvVarNames.SqlDb_Port);
+        var userName = EnvVarHelpers.GetValue(EnvVarNames.SqlDb_User);
+        var userPass = EnvVarHelpers.GetValue(EnvVarNames.SqlDb_Password);
+        var dbName = EnvVarHelpers.GetValue(EnvVarNames.SqlDb_Name);
 
         CheckDbParams(host, port, userName, userPass, dbName);
 
@@ -60,5 +57,25 @@ public static class DbContextExtensions
         Log.Fatal("One or more db ConnectionString value(s) is not set. Params: Host: {Host}, Port: {Port}, UserName: {UserName}, UserPass: {UserPass}, DbName: {DbName}", 
             host, port, userName, userPass, dbName);
         throw new InvalidOperationException();
+    }
+    
+    public static void AutoMigrateInDevEnv(this WebApplication app)
+    {
+        if (!EnvVarHelpers.IsDevelopment())
+            return;
+
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+    
+        try
+        {
+            context.Database.Migrate();
+            Log.Information("Database migrations applied successfully");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred while migrating the database");
+            throw;
+        }
     }
 }

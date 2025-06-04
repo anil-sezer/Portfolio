@@ -64,6 +64,7 @@ app.MapGet("/",
 try
 {
     Log.Information("✅ App Starting");
+    app.AutoMigrateInDevEnv();
     app.Run();
 }
 catch (Exception ex)

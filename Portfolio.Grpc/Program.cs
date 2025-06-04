@@ -9,6 +9,7 @@ using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
 using Portfolio.Grpc.Services.VisitorInsightsServices;
 using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.Extensions;
+using Portfolio.Infrastructure.Helpers;
 using Portfolio.Infrastructure.Repositories;
 using Portfolio.Infrastructure.ThirdPartyServices;
 
@@ -17,18 +18,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
 
-if (builder.Environment.IsDevelopment())
-    Env.Load("../.env");
-
-EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
-    EnvironmentVariableNames.SqlDb_Host, 
-    EnvironmentVariableNames.SqlDb_Port, 
-    EnvironmentVariableNames.SqlDb_User, 
-    EnvironmentVariableNames.SqlDb_Password, 
-    EnvironmentVariableNames.SqlDb_Name,
-    EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint,
-    EnvironmentVariableNames.DevOrProd,
-    EnvironmentVariableNames.Email_Slack_WebhookUrl
+EnvVarHelpers.VerifyEnvironmentValuesAreSet([
+    EnvVarNames.SqlDb_Host, 
+    EnvVarNames.SqlDb_Port, 
+    EnvVarNames.SqlDb_User, 
+    EnvVarNames.SqlDb_Password, 
+    EnvVarNames.SqlDb_Name,
+    EnvVarNames.OpenTelemetry_CollectorEndpoint,
+    EnvVarNames.DevOrProd,
+    EnvVarNames.Email_Slack_WebhookUrl
 ]);
 
 builder.InitDbWithPostgres();

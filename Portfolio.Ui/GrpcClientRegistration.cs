@@ -1,6 +1,7 @@
 ﻿using Portfolio.Grpc;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Exceptions;
+using Portfolio.Infrastructure.Helpers;
 
 namespace Portfolio.Ui;
 
@@ -8,7 +9,7 @@ public static class GrpcClientRegistration
 {
     public static void InitializeGrpcClients(this WebApplicationBuilder builder)
     {
-        var grpcAddress = Environment.GetEnvironmentVariable(EnvironmentVariableNames.Grpc_BaseUrl) ?? throw new MissingEnvironmentValueException();
+        var grpcAddress = EnvVarHelpers.GetValue(EnvVarNames.Grpc_BaseUrl) ?? throw new MissingEnvironmentValueException();
         builder.Services.AddGrpcClient<VisitorInsights.VisitorInsightsClient>(o =>
         {
             o.Address = new Uri(grpcAddress);

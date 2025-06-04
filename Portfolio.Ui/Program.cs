@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
+using Portfolio.Infrastructure.Helpers;
 using Portfolio.Ui;
 using Portfolio.Ui.Components;
 using Serilog;
@@ -10,13 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
 
-if (builder.Environment.IsDevelopment())
-    Env.Load("../.env");
-
-EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
-    EnvironmentVariableNames.Grpc_BaseUrl, 
-    EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint,
-    EnvironmentVariableNames.DevOrProd
+EnvVarHelpers.VerifyEnvironmentValuesAreSet([
+    EnvVarNames.Grpc_BaseUrl, 
+    EnvVarNames.OpenTelemetry_CollectorEndpoint,
+    EnvVarNames.DevOrProd
 ]);
 
 builder.Services.AddRazorComponents()

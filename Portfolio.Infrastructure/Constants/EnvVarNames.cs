@@ -1,7 +1,7 @@
 // ReSharper disable InconsistentNaming
 namespace Portfolio.Infrastructure.Constants;
 
-public static class EnvironmentVariableNames
+public static class EnvVarNames
 {
     public const string Grpc_BaseUrl = "GRPC_BASE_URL";
     

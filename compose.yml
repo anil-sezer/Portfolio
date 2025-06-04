@@ -3,9 +3,9 @@ services:
   db_postgres:
     image: postgres:latest
     environment:
+      POSTGRES_DB: ${SQL_DB_NAME}
       POSTGRES_USER: ${SQL_DB_USER}
       POSTGRES_PASSWORD: ${SQL_DB_PASSWORD}
-      POSTGRES_DB: ${SQL_DB_NAME}
     ports:
       - "5432:5432"
     healthcheck:
@@ -15,42 +15,41 @@ services:
       retries: 5
       start_interval: 5s
 
-  portfolio.grpc:
-    image: portfolio.grpc
-    environment:
-      SQL_DB_HOST: db_postgres
-      ASPNETCORE_HTTP_PORTS: 8081
-      SQL_DB_PORT: ${SQL_DB_PORT}
-      SQL_DB_USER: ${SQL_DB_USER}
-      SQL_DB_PASSWORD: ${SQL_DB_PASSWORD}
-      SQL_DB_NAME: ${SQL_DB_NAME}
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
-      PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL: ${PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL}
+  grpc:
     build:
       context: .
       dockerfile: Portfolio.Grpc/Dockerfile
+    environment:
+      SQL_DB_HOST: db_postgres
+      SQL_DB_PORT: ${SQL_DB_PORT}
+      SQL_DB_USER: ${SQL_DB_USER}
+      SQL_DB_NAME: ${SQL_DB_NAME}
+      ASPNETCORE_HTTP_PORTS: 8081
+      SQL_DB_PASSWORD: ${SQL_DB_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
+      PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL: ${PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL}
     ports:
       - "8081:8081"
     depends_on:
       db_postgres:
         condition: service_healthy
 
-  portfolio.ui:
-    image: portfolio.ui
-    environment:
-      GRPC_BASE_URL: ${GRPC_BASE_URL}
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+
+  ui:
     build:
       context: .
       dockerfile: Portfolio.Ui/Dockerfile
+    environment:
+      GRPC_BASE_URL: ${GRPC_BASE_URL}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
     ports:
-      - "4000:8080"
+      - "8080:8080"
     depends_on:
       - portfolio.grpc
 
   adminer:
-    image: adminer:latest
+    image: adminer:5.3.0-standalone
     environment:
       ADMINER_DEFAULT_SERVER: db_postgres
     ports:

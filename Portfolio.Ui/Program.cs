@@ -10,14 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
+// Trigger a get value to ensure that the env vars are loaded
+_ = EnvVars.GRPC_BASE_URL;
+_ = EnvVars.ASPNETCORE_ENVIRONMENT;
+_ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
+
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
-
-EnvVarHelpers.VerifyEnvironmentValuesAreSet([
-    EnvVarNames.Grpc_BaseUrl, 
-    EnvVarNames.OpenTelemetry_CollectorEndpoint,
-    EnvVarNames.DevOrProd
-]);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

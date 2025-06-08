@@ -17,19 +17,20 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
+// Trigger a get value to ensure that the env vars are loaded
+_ = EnvVars.ASPNETCORE_ENVIRONMENT;
+
+_ = EnvVars.SQL_DB_HOST;
+_ = EnvVars.SQL_DB_PORT;
+_ = EnvVars.SQL_DB_USER;
+_ = EnvVars.SQL_DB_NAME;
+_ = EnvVars.SQL_DB_PASSWORD;
+
+_ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
+_ = EnvVars.PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL;
+
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
-
-EnvVarHelpers.VerifyEnvironmentValuesAreSet([
-    EnvVarNames.SqlDb_Host, 
-    EnvVarNames.SqlDb_Port, 
-    EnvVarNames.SqlDb_User, 
-    EnvVarNames.SqlDb_Password, 
-    EnvVarNames.SqlDb_Name,
-    EnvVarNames.OpenTelemetry_CollectorEndpoint,
-    EnvVarNames.DevOrProd,
-    EnvVarNames.Email_Slack_WebhookUrl
-]);
 
 builder.InitDbWithPostgres();
 

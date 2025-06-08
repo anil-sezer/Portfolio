@@ -3,8 +3,7 @@ using System.Text.Json;
 using Portfolio.Domain.Interfaces.Repositories.Dtos;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
-using Portfolio.Infrastructure.Constants;
-using Portfolio.Infrastructure.Helpers;
+using Portfolio.Infrastructure.Extensions;
 using Serilog;
 
 namespace Portfolio.Infrastructure.ThirdPartyServices;
@@ -18,7 +17,7 @@ public class SlackEmailProvider : IEmailProvider
         
         var jsonPayload = JsonSerializer.Serialize(payload);
 
-        var webhookUrl = EnvVarHelpers.GetValue(EnvVarNames.Email_Slack_WebhookUrl);
+        var webhookUrl = EnvVars.PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL;
         var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(webhookUrl, content);
 

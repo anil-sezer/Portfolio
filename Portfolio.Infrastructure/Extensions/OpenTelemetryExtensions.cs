@@ -19,12 +19,12 @@ public static class OpenTelemetryExtensions
                 .AddContainerDetector()
                 .AddHostDetector()
                 .AddOperatingSystemDetector()
-                .AddService(AssemblyHelper.GetStartupProjectsName() + " " + EnvVarHelpers.GetValue(EnvVarNames.DevOrProd));
+                .AddService(AssemblyHelper.GetStartupProjectsName() + " " + EnvVars.ASPNETCORE_ENVIRONMENT);
 
-        var otelEndpoint = EnvVarHelpers.GetValue(EnvVarNames.OpenTelemetry_CollectorEndpoint);
+        var otelEndpoint = EnvVars.OTEL_COLLECTOR_ENDPOINT;
         if (string.IsNullOrEmpty(otelEndpoint))
         {
-            Log.Error("Otel endpoint not set at environment variable! Please set environment variable {OtelEndpoint}", EnvVarNames.OpenTelemetry_CollectorEndpoint);
+            Log.Error("Otel endpoint not set at environment variable! Please set environment variable {OtelEndpoint}", EnvVars.OTEL_COLLECTOR_ENDPOINT);
             return;
         }
         

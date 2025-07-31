@@ -1,0 +1,16 @@
+﻿---
+# https://github.com/zsh-users/zsh-autosuggestions
+- name: Ensure zsh-completions is installed
+  block:
+    - name: Check if zsh-autosuggestions is already installed
+      ansible.builtin.stat:
+        path: "{{ oh_my_zsh_plugins_path }}/zsh-autosuggestions"
+      register: zsh_autosuggestions_dir
+
+    - name: Download zsh-autosuggestions plugin
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: "{{ oh_my_zsh_plugins_path }}zsh-autosuggestions"
+        depth: 1
+      when: not zsh_autosuggestions_dir.stat.exists
+      become: false

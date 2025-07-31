@@ -1,3 +1,12 @@
+# https://cert-manager.io/docs/installation/helm/
+
+# https://cert-manager.io/docs/installation/kubectl/#verify
+
+# Your other option is to replace your Issuers with ClusterIssuers; ClusterIssuer
+# resources apply across all Ingress resources in your cluster.
+# If using a ClusterIssuer, remember to update the Ingress annotation cert-manager.io/issuer
+# to cert-manager.io/cluster-issuer.
+
 ---
 - name: Apply metallb configs
   ansible.builtin.command: helm repo add jetstack https://charts.jetstack.io --force-update

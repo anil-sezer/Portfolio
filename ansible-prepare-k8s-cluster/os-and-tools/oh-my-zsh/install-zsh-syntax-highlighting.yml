@@ -1,0 +1,16 @@
+﻿---
+# https://github.com/zsh-users/zsh-syntax-highlighting
+- name: Ensure zsh-syntax-highlighting is installed
+  block:
+    - name: Check if zsh-syntax-highlighting is already installed
+      ansible.builtin.stat:
+        path: "{{ oh_my_zsh_plugins_path }}/zsh-syntax-highlighting"
+      register: zsh_syntax_highlighting_dir
+
+    - name: Download zsh-syntax-highlighting plugin
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "{{ oh_my_zsh_plugins_path }}zsh-syntax-highlighting"
+        depth: 1
+      when: not zsh_syntax_highlighting_dir.stat.exists
+      become: false

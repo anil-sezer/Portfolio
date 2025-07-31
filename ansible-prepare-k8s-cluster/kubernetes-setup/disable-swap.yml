@@ -1,0 +1,20 @@
+---
+- name: Check if swap is enabled
+  ansible.builtin.command: swapon --show
+  register: swap_status
+  changed_when: false
+
+- name: Update /etc/hosts so It will be ready for Kubernetes.
+  when: swap_status.stdout | length > 0
+  block:
+  - name: Disable swap for this session
+    ansible.builtin.command: swapoff -a
+    changed_when: true
+  
+  - name: Disable swap if it's enabled
+    ansible.builtin.command: sudo sed -i '/ swap / s/^\\(.*\\)$/#\\1/g' /etc/fstab
+    notify:
+      - Reboot device
+
+  - name: Flush handlers (Reboot Device)
+    meta: flush_handlers

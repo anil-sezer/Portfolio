@@ -1,0 +1,60 @@
+---
+- name: Check if oh-my-zsh is installed
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: ohmyzsh_installed
+
+- name: Setup Oh My ZSH
+  when: ansible_env.SHELL != '/bin/zsh' and not ohmyzsh_installed.stat.exists
+  block:
+    - name: Install zsh
+      ansible.builtin.apt:
+        pkg: zsh
+        state: present
+        update_cache: true
+      become: true
+    
+    - name: Set user shell to zsh
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+      become: true
+    
+    - name: Run Oh My ZSH install script
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      become: false
+    
+    - name: 'Set var: the oh_my_zsh_plugins_path variable'
+      ansible.builtin.set_fact:
+        oh_my_zsh_plugins_path: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/"
+      become: false
+    
+    - name: Install zsh-autosuggestions
+      ansible.builtin.import_tasks: ./oh-my-zsh/install-zsh-autosuggestions.yml
+    
+    - name: Install zsh-completions
+      ansible.builtin.import_tasks: ./oh-my-zsh/install-zsh-completions.yml
+    
+    - name: Install zsh-syntax-highlighting
+      ansible.builtin.import_tasks: ./oh-my-zsh/install-zsh-syntax-highlighting.yml
+    
+    - name: Install PowerLevel10K
+      ansible.builtin.import_tasks: ./oh-my-zsh/install-power-level-10k.yml
+
+    - name: Copy zshrc from control node to managed node
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.zshrc"
+        dest: "{{ ansible_env.HOME }}/.zshrc"
+        mode: "0644"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+      become: true
+    
+    - name: Copy p10k.zsh from control node to managed node
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.p10k.zsh"
+        dest: "{{ ansible_env.HOME }}/.p10k.zsh"
+        mode: "0644"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+      become: true

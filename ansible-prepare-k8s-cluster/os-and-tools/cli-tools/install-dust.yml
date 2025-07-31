@@ -1,0 +1,21 @@
+---
+# dust, best way to check the file system
+# https://github.com/bootandy/dust
+- name: Check if dust is already installed
+  ansible.builtin.command: dust --version
+  register: dust_rc
+  failed_when: false
+  changed_when: false
+  become: true
+
+- name: Install dust
+  ansible.builtin.unarchive:
+    src: "https://github.com/bootandy/dust/releases/download/{{ dustversion }}/dust-{{ dustversion }}-aarch64-unknown-linux-gnu.tar.gz"
+    dest: /usr/local/bin
+    extra_opts:
+      - --strip=1
+      - --wildcards
+      - '*/dust'
+    remote_src: true
+  become: true
+  when: dust_rc.rc != 0

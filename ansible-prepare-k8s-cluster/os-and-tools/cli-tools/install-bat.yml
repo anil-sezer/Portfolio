@@ -1,0 +1,18 @@
+---
+# https://github.com/sharkdp/bat
+- name: Install bat
+  ansible.builtin.apt:
+    state: present
+    pkg: bat
+  register: bat_install_result
+  become: true
+
+- name: Create link bat to batcat
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: /usr/bin/bat
+    state: link
+  become: true
+  when:
+    - not ansible_check_mode
+    - bat_install_result.changed

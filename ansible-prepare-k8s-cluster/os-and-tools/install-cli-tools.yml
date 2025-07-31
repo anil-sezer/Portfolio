@@ -1,0 +1,45 @@
+---
+- name: Install Dust
+  ansible.builtin.import_tasks: ./cli-tools/install-dust.yml
+
+- name: Install Eza
+  ansible.builtin.import_tasks: ./cli-tools/install-eza.yml
+
+- name: Install fd-find
+  ansible.builtin.import_tasks: ./cli-tools/install-fd-find.yml
+
+- name: Install Bat
+  ansible.builtin.import_tasks: ./cli-tools/install-bat.yml
+
+# Smarter cd command
+# https://github.com/ajeetdsouza/zoxide
+- name: Install zoxide
+  ansible.builtin.apt:
+    state: present
+    pkg: zoxide
+  become: true
+
+# Required by the OMZ plugin zsh-interactive-cd
+# https://github.com/junegunn/fzf
+- name: Install fzf (command-line fuzzy finder)
+  ansible.builtin.apt:
+    state: present
+    pkg: fzf
+  become: true
+
+# A modern replacement for ps
+# https://github.com/dalance/procs
+- name: Install procs
+  ansible.builtin.package:
+    name: procs
+    state: present
+    use: snap
+  become: true
+
+# A line-oriented search tool that recursively searches the current directory for a regex pattern.
+# https://github.com/BurntSushi/ripgrep
+- name: Install ripgrep
+  ansible.builtin.apt:
+    state: present
+    pkg: ripgrep
+  become: true

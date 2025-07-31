@@ -1,0 +1,16 @@
+﻿---
+# https://github.com/zsh-users/zsh-completions
+- name: Ensure zsh-completions is installed
+  block:
+    - name: Check if zsh-completions is already installed
+      ansible.builtin.stat:
+        path: "{{ oh_my_zsh_plugins_path }}/zsh-completions"
+      register: zsh_completions_dir
+
+    - name: Download zsh-completions plugin
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-completions
+        dest: "{{ oh_my_zsh_plugins_path }}zsh-completions"
+        depth: 1
+      when: not zsh_completions_dir.stat.exists
+      become: false

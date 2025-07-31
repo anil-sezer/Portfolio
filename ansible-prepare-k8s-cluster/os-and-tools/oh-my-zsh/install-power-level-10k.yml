@@ -1,0 +1,23 @@
+﻿---
+# Required for powerlevel10k
+- name: Install Powerline fonts
+  ansible.builtin.apt:
+    state: present
+    name: "fonts-powerline"
+  become: true
+
+# https://github.com/romkatv/powerlevel10k
+- name: Ensure PowerLevel10K is installed
+  block:
+    - name: Check if PowerLevel10K is already installed
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+      register: zsh_power_level_10k_dir
+
+    - name: Install PowerLevel10K
+      ansible.builtin.git:
+        repo: https://github.com/romkatv/powerlevel10k.git
+        dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        depth: 1
+      when: not zsh_power_level_10k_dir.stat.exists
+      become: false

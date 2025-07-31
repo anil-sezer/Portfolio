@@ -1,11 +1,12 @@
 ---
-- name: Update all host/vm packages
+- name: Update all packages on rpi
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist
   register: package_update_result
   notify:
     - Reboot device
+  become: true
 
-- name: Flush handlers
+- name: Flush handlers (Reboot Device)
   meta: flush_handlers

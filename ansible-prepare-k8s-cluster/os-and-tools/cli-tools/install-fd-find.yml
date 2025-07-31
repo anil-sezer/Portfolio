@@ -1,0 +1,18 @@
+---
+# https://github.com/sharkdp/fd
+- name: Install fd-find
+  ansible.builtin.apt:
+    state: present
+    pkg: fd-find
+  register: fd_install_result
+  become: true
+
+- name: Create link fd to fdfind
+  ansible.builtin.file:
+    src: /usr/bin/fdfind
+    dest: /usr/bin/fd
+    state: link
+  become: true
+  when:
+    - not ansible_check_mode
+    - fd_install_result.changed

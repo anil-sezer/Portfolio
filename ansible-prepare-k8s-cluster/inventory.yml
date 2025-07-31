@@ -3,13 +3,10 @@ all:
   hosts:
     rpi5green:
       ansible_host: rpi5-green.local # 8GB
-      ansible_become_pass: PLACEHOLDER
     rpi4blue:
       ansible_host: rpi4-blue.local # 8GB
-      ansible_become_pass: PLACEHOLDER
     rpi4red:
       ansible_host: rpi4-red-nas.local # 4GB
-      ansible_become_pass: PLACEHOLDER
 #    rpi3Purple:
 #      ansible_host: rpi3-purple.local # 1GB # Camera
 #      ansible_user: pi

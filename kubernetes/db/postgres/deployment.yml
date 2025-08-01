@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres-deployment
+  namespace: database
 spec:
   replicas: 1
   selector:
@@ -13,29 +14,35 @@ spec:
       labels:
         app: postgres
     spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
       containers:
         - name: postgres
           image: postgres:16
+          ports:
+            - containerPort: 5432
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data", "-m", "fast" ]
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: postgres-init-secrets
                   key: SQL_DB_USER
 
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: postgres-init-secrets
                   key: SQL_DB_PASSWORD
 
-          ports:
-            - containerPort: 5432
           volumeMounts:
-            - name: postgres-pv
+            - name: postgres-nfs-pvc
               mountPath: /var/lib/postgresql/data
               readOnly: false
       volumes:
-        - name: postgres-pv
+        - name: postgres-nfs-pvc
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: postgres-nfs-pvc

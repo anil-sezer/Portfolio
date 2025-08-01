@@ -2,15 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc-nodeport
+  name: postgres-svc-loadbalancer
   namespace: database
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: postgres
   ports:
-    - name: external
+    - name: internal
       protocol: TCP
       port: 5432
       targetPort: 5432
-      nodePort: 30001

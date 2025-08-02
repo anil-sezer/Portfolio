@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LaunchBothProjects" type="CompoundRunConfigurationType">
+    <toRun name="Portfolio.Grpc: http" type="LaunchSettings" />
+    <toRun name="Portfolio.Ui: http" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

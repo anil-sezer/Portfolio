@@ -27,8 +27,8 @@ public partial class VisitorInsightsService
                 MaxTouchPoints = r.MaxTouchPoints,
 
                 ClientIp = r.IpAddress,
-                City = DefaultValues.EmptyForString,
-                Country = DefaultValues.EmptyForString,
+                City = string.Empty,
+                Country = string.Empty,
                 Extras = r.Extras
             }
         );

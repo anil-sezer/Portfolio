@@ -1,15 +1,11 @@
 using DotNetEnv;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.Services;
 using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
 using Portfolio.Grpc.Services.VisitorInsightsServices;
-using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.Extensions;
-using Portfolio.Infrastructure.Helpers;
 using Portfolio.Infrastructure.Repositories;
 using Portfolio.Infrastructure.ThirdPartyServices;
 

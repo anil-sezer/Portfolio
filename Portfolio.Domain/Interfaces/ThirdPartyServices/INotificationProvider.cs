@@ -3,7 +3,7 @@ using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
 
 namespace Portfolio.Domain.Interfaces.ThirdPartyServices;
 
-public interface IEmailProvider
+public interface INotificationProvider
 { 
-    Task<SendEmailResultDto> SendEmailAsync(EmailDto dto);
+    Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto);
 }

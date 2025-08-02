@@ -27,7 +27,8 @@ _ = EnvVars.SQL_DB_NAME;
 _ = EnvVars.SQL_DB_PASSWORD;
 
 _ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
-_ = EnvVars.PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL;
+_ = EnvVars.NOTIFICATION_TELEGRAM_API_KEY;
+_ = EnvVars.NOTIFICATION_TELEGRAM_CHAT_ID;
 
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
@@ -41,11 +42,11 @@ builder.Services.AddGrpc();
 // Repositories
 builder.Services.AddScoped<IImageOfTheDayRepository, ImageOfTheDayRepository>();
 builder.Services.AddScoped<IRequestLogRepository, RequestLogRepository>();
-builder.Services.AddScoped<IEmailToAdminRepository, EmailToAdminRepository>();
+builder.Services.AddScoped<INotificationToAdminRepository, NotificationToAdminRepository>();
 
 // Factories
-builder.Services.AddScoped<IEmailProvider, SlackEmailProvider>();
-builder.Services.AddScoped<IEmailProviderFactory, EmailProviderFactory>();
+builder.Services.AddScoped<INotificationProvider, NotificationProviderTelegram>();
+builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
 
 var app = builder.Build();
 
@@ -55,7 +56,7 @@ app.MapReadinessHealthCheck();
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GetBackgroundImageService>();
 app.MapGrpcService<VisitorInsightsService>();
-app.MapGrpcService<SendEmailToAdminService>();
+app.MapGrpcService<SendNotificationToAdminService>();
 
 
 app.MapGet("/",

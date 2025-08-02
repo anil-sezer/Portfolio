@@ -10,6 +10,6 @@ public class PortfolioDbContext : DbContext
     }
 
     public DbSet<RequestLog> RequestLog { get; set; }
-    public DbSet<EmailToAdmin> EmailToAdmin { get; set; }
+    public DbSet<NotificationToAdmin> NotificationToAdmin { get; set; }
     public DbSet<ImageOfTheDay> ImageOfTheDay { get; set; }
 }

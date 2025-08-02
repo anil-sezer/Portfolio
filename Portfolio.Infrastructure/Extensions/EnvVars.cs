@@ -10,8 +10,8 @@ namespace Portfolio.Infrastructure.Extensions;
 /// </summary>
 public static class EnvVars
 {
-    // todo: Lets use Discord fpr this. Slack is too meh compared to Discord
-    public static string PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL => GetValue("PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL");
+    public static string NOTIFICATION_TELEGRAM_API_KEY => GetValue("NOTIFICATION_TELEGRAM_API_KEY");
+    public static string NOTIFICATION_TELEGRAM_CHAT_ID => GetValue("NOTIFICATION_TELEGRAM_CHAT_ID");
     
     public static string GRPC_BASE_URL => GetValue("GRPC_BASE_URL");
 

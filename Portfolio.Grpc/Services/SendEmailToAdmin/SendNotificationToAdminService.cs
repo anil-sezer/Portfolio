@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.Repositories.Dtos;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
@@ -7,7 +8,7 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 
 namespace Portfolio.Grpc.Services.SendEmailToAdmin;
 
-public class SendEmailToAdminService(IEmailToAdminRepository emailToAdminRepository, IEmailProviderFactory emailProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
+public class SendNotificationToAdminService(INotificationToAdminRepository notificationToAdminRepo, INotificationProviderFactory notificationProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
     // todo: I wanna use MediatR here
     public override async Task<SendResponse> Send(SendRequest r, ServerCallContext context)
@@ -16,7 +17,7 @@ public class SendEmailToAdminService(IEmailToAdminRepository emailToAdminReposit
         
         var emailDto = MapToEmailDto(r);
 
-        if (await emailToAdminRepository.IsThisEmailAlreadySentAtLastHourAsync(emailDto))
+        if (await notificationToAdminRepo.IsThisEmailAlreadySentAtLastHourAsync(emailDto))
         {
             return new SendResponse
             {
@@ -25,11 +26,11 @@ public class SendEmailToAdminService(IEmailToAdminRepository emailToAdminReposit
             };
         }
         
-        var result = await SendEmailToAdminAsync(emailDto);
+        var result = await SendNotificationToAdminAsync(emailDto);
         if (result.IsItSentSuccessfully == false)
         {
             Log.Error("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
-            await StoreEmailAtDb(emailDto, false);
+            await StoreNotificationAtDb(emailDto, false);
             return new SendResponse
             {
                 ResultCode = ResultCode.Error,
@@ -37,7 +38,7 @@ public class SendEmailToAdminService(IEmailToAdminRepository emailToAdminReposit
             };
         }
 
-        await StoreEmailAtDb(emailDto, true);
+        await StoreNotificationAtDb(emailDto, true);
         return new SendResponse
         {
             ResultCode = ResultCode.Success,
@@ -45,26 +46,27 @@ public class SendEmailToAdminService(IEmailToAdminRepository emailToAdminReposit
         };
     }
 
-    private static EmailDto MapToEmailDto(SendRequest r)
+    private static NotificationDto MapToEmailDto(SendRequest r)
     {
-        return new EmailDto
+        return new NotificationDto
         {
             Name = r.SenderName,
             EmailAddress = r.SenderEmail,
             Subject = r.Subject,
-            Message = r.Message
+            Message = r.Message,
+            NotificationType = NotificationType.Info
         };
     }
 
-    private async Task<SendEmailResultDto> SendEmailToAdminAsync(EmailDto dto)
+    private async Task<SendNotificationResultDto> SendNotificationToAdminAsync(NotificationDto dto)
     {
-        var emailProvider = emailProviderFactory.GetProvider(nameof(SlackEmailProvider));
-        return await emailProvider.SendEmailAsync(dto);
+        var emailProvider = notificationProviderFactory.GetProvider(nameof(NotificationProviderTelegram));
+        return await emailProvider.SendNotificationAsync(dto);
     }
 
-    private async Task StoreEmailAtDb(EmailDto dto, bool isItSentSuccessfully)
+    private async Task StoreNotificationAtDb(NotificationDto dto, bool isItSentSuccessfully)
     {
-        await emailToAdminRepository.CreateAsync(new EmailToAdmin
+        await notificationToAdminRepo.CreateAsync(new NotificationToAdmin
         {
             Name = dto.Name,
             EmailAddress = dto.EmailAddress,

@@ -5,11 +5,11 @@ using Portfolio.Domain.Interfaces.Repositories.Dtos;
 
 namespace Portfolio.Infrastructure.Repositories;
 
-public class EmailToAdminRepository(PortfolioDbContext dbContext) : BaseRepository<EmailToAdmin>(dbContext), IEmailToAdminRepository
+public class NotificationToAdminRepository(PortfolioDbContext dbContext) : BaseRepository<NotificationToAdmin>(dbContext), INotificationToAdminRepository
 {
-    public async Task<bool> IsThisEmailAlreadySentAtLastHourAsync(EmailDto dto)
+    public async Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto)
     {
-        return await dbContext.EmailToAdmin
+        return await dbContext.NotificationToAdmin
             .AnyAsync(x => x.Name == dto.Name &&
                            x.EmailAddress == dto.EmailAddress &&
                            x.Subject == dto.Subject &&

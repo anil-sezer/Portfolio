@@ -62,4 +62,4 @@ spec:
               value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
 
             - name: GRPC_BASE_URL
-              value: "http://portfolio-grpc-service.default.svc.cluster.local:8080"
+              value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"

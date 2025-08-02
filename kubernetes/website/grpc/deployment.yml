@@ -62,35 +62,41 @@ spec:
             - name: SQL_DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: portfolio-secrets
                   key: SQL_DB_HOST
 
             - name: SQL_DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: portfolio-secrets
                   key: SQL_DB_PORT
 
             - name: SQL_DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: portfolio-secrets
                   key: SQL_DB_USER
 
             - name: SQL_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: portfolio-secrets
                   key: SQL_DB_PASSWORD
 
             - name: SQL_DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: sql-db-secrets
+                  name: portfolio-secrets
                   key: SQL_DB_NAME
 
-            - name: PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL
+            - name: NOTIFICATION_TELEGRAM_CHAT_ID
               valueFrom:
                 secretKeyRef:
-                  name: slack-webhook-urls
-                  key: PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL
+                  name: portfolio-secrets
+                  key: NOTIFICATION_TELEGRAM_CHAT_ID
+
+            - name: NOTIFICATION_TELEGRAM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: portfolio-secrets
+                  key: NOTIFICATION_TELEGRAM_API_KEY

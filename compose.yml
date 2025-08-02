@@ -1,5 +1,37 @@
 ---
 services:
+  grpc:
+    build:
+      context: .
+      dockerfile: Portfolio.Grpc/Dockerfile
+    environment:
+      SQL_DB_HOST: db_postgres
+      SQL_DB_PORT: ${SQL_DB_PORT}
+      SQL_DB_USER: ${SQL_DB_USER}
+      SQL_DB_NAME: ${SQL_DB_NAME}
+      ASPNETCORE_HTTP_PORTS: 8081
+      SQL_DB_PASSWORD: ${SQL_DB_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
+      NOTIFICATION_TELEGRAM_API_KEY: ${NOTIFICATION_TELEGRAM_API_KEY}
+    ports:
+      - "8081:8081"
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+
+  ui:
+    build:
+      context: .
+      dockerfile: Portfolio.Ui/Dockerfile
+    environment:
+      GRPC_BASE_URL: ${GRPC_BASE_URL}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - grpc
+
   db_postgres:
     image: postgres:latest
     environment:
@@ -14,39 +46,7 @@ services:
       timeout: 5s
       retries: 5
       start_interval: 5s
-
-  grpc:
-    build:
-      context: .
-      dockerfile: Portfolio.Grpc/Dockerfile
-    environment:
-      SQL_DB_HOST: db_postgres
-      SQL_DB_PORT: ${SQL_DB_PORT}
-      SQL_DB_USER: ${SQL_DB_USER}
-      SQL_DB_NAME: ${SQL_DB_NAME}
-      ASPNETCORE_HTTP_PORTS: 8081
-      SQL_DB_PASSWORD: ${SQL_DB_PASSWORD}
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
-      PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL: ${PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL}
-    ports:
-      - "8081:8081"
-    depends_on:
-      db_postgres:
-        condition: service_healthy
-
-
-  ui:
-    build:
-      context: .
-      dockerfile: Portfolio.Ui/Dockerfile
-    environment:
-      GRPC_BASE_URL: ${GRPC_BASE_URL}
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
-    ports:
-      - "8080:8080"
-    depends_on:
-      - portfolio.grpc
+      start_period: 5s
 
   adminer:
     image: adminer:5.3.0-standalone

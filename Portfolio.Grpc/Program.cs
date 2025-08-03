@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
+using Portfolio.Grpc.BackgroundServices;
 using Portfolio.Grpc.Services;
 using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
@@ -43,6 +44,9 @@ builder.Services.AddScoped<INotificationToAdminRepository, NotificationToAdminRe
 // Factories
 builder.Services.AddScoped<INotificationProvider, NotificationProviderTelegram>();
 builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
+
+// Background Services
+builder.Services.AddHostedService<DatabaseOperationQueueWorker>();
 
 var app = builder.Build();
 

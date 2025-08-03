@@ -1,0 +1,70 @@
+﻿@using Portfolio.Grpc
+@using Portfolio.Ui.Factories
+@using Serilog
+@inject IHttpContextAccessor HttpContextAccessor
+@inject VisitorInsights.VisitorInsightsClient VisitorInsightsClient;
+@inject IJSRuntime JsRuntime
+
+<!-- 
+    Here I Log visits to my website.
+    Many visits are automated and info gathered here is beneficial for understanding how internet works. 🚀
+-->
+
+<script>
+    window.blazorReady = () => new Promise(resolve => setTimeout(() => resolve(true), 500));
+</script>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await GetClientInfoAsync();
+    }
+    
+    private async Task GetClientInfoAsync()
+    {
+        Dictionary<string, string>? viaJavascript;
+        try
+        { 
+            viaJavascript = await JsRuntime.InvokeAsync<Dictionary<string, string>>("getClientInfoViaJs", null);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.Message);
+            return;
+        }
+        
+        var request = ClientInfoRequestFactory.Create(viaJavascript, HttpContextAccessor);
+
+        try
+        {
+            await VisitorInsightsClient.StoreVisitorInfoAsync(request);
+            Log.Information("📨 Sent a gRPC request to {ServiceName}", nameof(VisitorInsightsClient.StoreVisitorInfoAsync));
+        }
+        catch (Exception e)
+        {
+            Log.Error("❌ Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
+        }
+    }
+}
+
+<script>
+    // todo: use cookies with guid?
+    window.getClientInfoViaJs = async function () {
+        return {
+            userAgent: navigator.userAgent || "",
+            language: navigator.languages ? navigator.languages.toString() : "",
+            platform: navigator.platform || "",
+            webdriver: navigator.webdriver ? "true" : "false",
+            deviceMemory: navigator.deviceMemory ? navigator.deviceMemory.toString() : "",
+            hardwareConcurrency: navigator.hardwareConcurrency ? navigator.hardwareConcurrency.toString() : "",
+            maxTouchPoints: navigator.maxTouchPoints ? navigator.maxTouchPoints.toString() : "-1",
+            doNotTrack: navigator.doNotTrack !== null ? navigator.doNotTrack.toString() : "",
+            connection: (navigator.connection && navigator.connection.effectiveType) ? navigator.connection.effectiveType : "",
+            cookieEnabled: navigator.cookieEnabled ? "true" : "false",
+            onLine: navigator.onLine ? "true" : "false",
+            referrer: document.referrer || "",
+            resolution: (screen && screen.width && screen.height) ? screen.height + "x" + screen.width : ""
+        };
+    };
+</script>

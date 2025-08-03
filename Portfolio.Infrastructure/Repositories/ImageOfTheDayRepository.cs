@@ -7,11 +7,11 @@ using Serilog;
 
 namespace Portfolio.Infrastructure.Repositories;
 
-public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : BaseRepository<ImageOfTheDay>(dbContext), IImageOfTheDayRepository
+public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : BaseRepository<DailyImage>(dbContext), IImageOfTheDayRepository
 {
-    public async Task<ImageOfTheDay> GetLatestBackgroundImageDetailsAsync()
+    public async Task<DailyImage> GetLatestBackgroundImageDetailsAsync()
     {
-        var img = await dbContext.ImageOfTheDay
+        var img = await dbContext.DailyImages
             .Where(x => x.UrlWorks && x.DoIPreferToDisplayThis)
             .OrderByDescending(x => x.Id)
             .FirstOrDefaultAsync();
@@ -23,7 +23,7 @@ public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : BaseReposit
         }
 
         Log.Error("Cannot get a background image from the database. Default image served");
-        return new ImageOfTheDay
+        return new DailyImage
         {
             ImageUrl = DefaultValues.DefaultBackgroundImage,
             AltText = DefaultValues.DefaultAltText,

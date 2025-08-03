@@ -10,7 +10,7 @@ public class RequestLogRepository(PortfolioDbContext dbContext): BaseRepository<
 {
     public async Task<List<UncheckedIpDto>> GetRowsOfUncheckedIpsAsync()
     {
-        return await dbContext.RequestLog
+        return await dbContext.RequestLogs
             .Where(x => x.ClientIp != "" &&
                         x.City == "" &&
                         x.Country == "")

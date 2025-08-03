@@ -2,7 +2,7 @@ using Portfolio.Domain.Entities;
 
 namespace Portfolio.Domain.Interfaces.Repositories;
 
-public interface IImageOfTheDayRepository : IRepository<ImageOfTheDay>
+public interface IImageOfTheDayRepository : IRepository<DailyImage>
 {
-    Task<ImageOfTheDay> GetLatestBackgroundImageDetailsAsync();
+    Task<DailyImage> GetLatestBackgroundImageDetailsAsync();
 }

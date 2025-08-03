@@ -9,7 +9,7 @@ public class PortfolioDbContext : DbContext
     {
     }
 
-    public DbSet<RequestLog> RequestLog { get; set; }
-    public DbSet<NotificationToAdmin> NotificationToAdmin { get; set; }
-    public DbSet<ImageOfTheDay> ImageOfTheDay { get; set; }
+    public DbSet<RequestLog> RequestLogs { get; set; }
+    public DbSet<NotificationToAdmin> NotificationsToAdmin { get; set; }
+    public DbSet<DailyImage> DailyImages { get; set; }
 }

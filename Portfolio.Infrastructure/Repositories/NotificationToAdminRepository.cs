@@ -9,7 +9,7 @@ public class NotificationToAdminRepository(PortfolioDbContext dbContext) : BaseR
 {
     public async Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto)
     {
-        return await dbContext.NotificationToAdmin
+        return await dbContext.NotificationsToAdmin
             .AnyAsync(x => x.Name == dto.Name &&
                            x.EmailAddress == dto.EmailAddress &&
                            x.Subject == dto.Subject &&

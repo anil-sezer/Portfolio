@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Portfolio.Infrastructure.Constants;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.Repositories;
@@ -22,14 +21,14 @@ public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : BaseReposit
             return img;
         }
 
-        Log.Error("Cannot get a background image from the database. Default image served");
+        Log.Error("Cannot get a background image from the database. Frontend will decide what to serve.");
         return new DailyImage
         {
-            ImageUrl = DefaultValues.DefaultBackgroundImage,
-            AltText = DefaultValues.DefaultAltText,
-            Source = ImageOfTheDaySource.Bing,
-            UrlWorks = true,
-            DoIPreferToDisplayThis = true
+            ImageUrl = "",
+            AltText = "",
+            Source = ImageOfTheDaySource.None,
+            UrlWorks = false,
+            DoIPreferToDisplayThis = false
         };
     }
 }

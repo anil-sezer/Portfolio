@@ -12,6 +12,7 @@ import "google/protobuf/empty.proto";
 enum ImageOfTheDaySource {
   Bing = 0;
   NASA = 1;
+  None = 2;
 }
 
 service BackgroundImages {

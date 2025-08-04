@@ -5,5 +5,6 @@ namespace Portfolio.Domain.Enums;
 public enum ImageOfTheDaySource
 {
     Bing = 0,
-    NASA = 1
+    NASA = 1,
+    None = 2
 }

@@ -1,12 +1,10 @@
 @page "/Hero"
 @using Google.Protobuf.WellKnownTypes
-@using Portfolio.Infrastructure.Constants
 @using Portfolio.Grpc
 @using Serilog
 @inject BackgroundImages.BackgroundImagesClient BackgroundImagesClient;
 
-
-<section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImage) top center; background-size: cover;" alt="Image of the day from Bing. For more, please visit them.">
+<section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImage) top center; background-size: cover;" alt="@_backgroundImageAltText">
     <div class="hero-container" data-aos="fade-in">
         <h1>Anıl Sezer</h1>
         <p>Hi! I'm a fullstack engineer and here, I showcase my craft!</p>
@@ -16,9 +14,12 @@
     </div>
 </section>
 
-
 @code {
-    private string _backgroundImage = "";
+    private const string FallbackBackgroundImage = "https://raw.githubusercontent.com/anil-sezer/Portfolio/prod/Portfolio.Ui/wwwroot/img/default-bg.jpg";
+    private const string FallbackAltText = "A lush, tropical landscape with a dramatic view of a conical mountain in the distance, possibly a volcano, surrounded by layers of rolling hills and dense forests. The sky above features a stunning mix of colors and clouds.";
+    
+    private string _backgroundImage = FallbackBackgroundImage;
+    private string _backgroundImageAltText = FallbackAltText;
     
     protected override async Task OnInitializedAsync()
     {
@@ -27,14 +28,19 @@
             var response = await BackgroundImagesClient.GetAsync(new Empty());
             Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(BackgroundImagesClient.GetAsync), response.Url);
 
+            if (response.Source == ImageOfTheDaySource.None)
+            {
+                Log.Error("\u274c There is no image of the day available at gRPC, serving default bg img.");
+                return;
+            }
+
             _backgroundImage = response.Url;
+            _backgroundImageAltText = response.AltText;
         }
         catch (Exception e)
         {
             Log.Error("\u274c Looks like gRPC pod is down, serving default bg img. Error: {ExMsg}", e.Message);
-            _backgroundImage = DefaultValues.DefaultBackgroundImage;
+            _backgroundImage = FallbackBackgroundImage;
         }
     }
-    
-    // private string _backgroundImage = "img/wallpapers/perm/BiodiverseCostaRica.jpg";
 }

@@ -146,7 +146,7 @@ public class TechStackModel
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Used it to create numerous projects including this and I like it, but after delivering multiple projects I'm gravitating towards other CSS frameworks like Tailwind CSS."
+                Description = "Used it to create numerous projects including this and I like it, but after delivering multiple projects I'm gravitating towards other CSS frameworks."
             },
             new()
             {

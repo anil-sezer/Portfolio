@@ -45,7 +45,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="name">Your Name</label>
-                            <InputText id="name" class="form-control" @bind-Value="_emailFormData.Name" placeholder="Anil" minlength="@EmailFormModel.NameMinLength"/>
+                            <InputText id="name" class="form-control" @bind-Value="_emailFormData.Name" placeholder="What's your name" minlength="@EmailFormModel.NameMinLength"/>
                             <ValidationMessage For="@(() => _emailFormData.Name)" />
                         </div>
                         <div class="form-group col-md-6">

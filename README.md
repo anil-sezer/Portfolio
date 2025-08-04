@@ -1,7 +1,7 @@
 Welcome to my portfolios repository! You can check the entire code here, or you can visit the website at: https://www.anil-sezer.com/
 ---
 
-Made with love, by using **Domain Driven Design** from Eric Ewans!
+Made with love, by using **Domain Driven Design** from [Eric Evans!](https://ddd.academy/eric-evans/)
 
 ## Tech Stack:
 

@@ -1,5 +1,3 @@
-using Portfolio.Grpc;
-
 namespace Portfolio.Ui.Models;
 
 public class BackgroundImageModel

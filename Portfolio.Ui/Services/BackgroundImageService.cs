@@ -1,8 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Memory;
-using Portfolio.Grpc;
 using Portfolio.Ui.Models;
-using Serilog;
 
 
 namespace Portfolio.Ui.Services;

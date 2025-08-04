@@ -1,8 +1,4 @@
-﻿using Portfolio.Grpc;
-using Portfolio.Infrastructure.Constants;
-using Portfolio.Infrastructure.Exceptions;
-using Portfolio.Infrastructure.Extensions;
-using Portfolio.Infrastructure.Helpers;
+﻿using Portfolio.Infrastructure.Extensions;
 
 namespace Portfolio.Ui;
 

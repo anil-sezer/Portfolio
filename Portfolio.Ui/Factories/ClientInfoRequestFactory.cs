@@ -1,7 +1,5 @@
 using System.Text.Json;
 using Portfolio.Infrastructure.Constants;
-using Portfolio.Grpc;
-using Serilog;
 
 namespace Portfolio.Ui.Factories;
 

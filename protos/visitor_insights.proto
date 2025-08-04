@@ -53,4 +53,5 @@ message StoreVisitorInfoRequest {
   string resolution = 13;
   string ipAddress = 14;
   string extras = 15;
+  string requestedUrl = 16;
 }

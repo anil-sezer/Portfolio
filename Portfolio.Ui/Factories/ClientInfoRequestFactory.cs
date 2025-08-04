@@ -23,6 +23,30 @@ public static class ClientInfoRequestFactory
             CookieEnabled       = GetValueOrDefault(viaJavascript, "cookieEnabled", false),
             MaxTouchPoints      = GetValueOrDefault(viaJavascript, "maxTouchPoints", DefaultValues.EmptyForInt),
             IpAddress           = GetIpAddress(httpContextAccessor),
+            RequestedUrl        = GetRequestedPage(httpContextAccessor),
+            Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
+        };
+    }
+
+    public static StoreVisitorInfoRequest Create(IHttpContextAccessor httpContextAccessor)
+    {
+        return new StoreVisitorInfoRequest
+        {
+            Language            = string.Empty,
+            Platform            = string.Empty,
+            Referrer            = string.Empty,
+            UserAgent           = string.Empty,
+            DoNotTrack          = string.Empty,
+            Connection          = string.Empty,
+            Resolution          = string.Empty,
+            DeviceMemory        = string.Empty,
+            OnLine              = false,
+            HardwareConcurrency = string.Empty,
+            Webdriver           = false,
+            CookieEnabled       = false,
+            MaxTouchPoints      = DefaultValues.EmptyForInt,
+            IpAddress           = GetIpAddress(httpContextAccessor),
+            RequestedUrl        = GetRequestedPage(httpContextAccessor),
             Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
         };
     }
@@ -54,6 +78,17 @@ public static class ClientInfoRequestFactory
             return "";
         
         return headers.TryGetValue("X-Real-IP", out var value) ? value.ToString() : "";
+    }
+    
+    private static string GetRequestedPage(IHttpContextAccessor httpContextAccessor)
+    {
+        var request = httpContextAccessor.HttpContext?.Request;
+        if (request is null)
+            return "";
+    
+        var fullUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+    
+        return fullUrl;
     }
 
     private static string GetAllRequestHeadersAsJson(IHttpContextAccessor httpContextAccessor)

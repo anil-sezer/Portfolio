@@ -28,6 +28,8 @@ public class RequestLog : EntityBase
     public required string ClientIp { get; init; }
     public required string Country { get; set; }
     public required string City { get; set; }
+
+    public required string RequestedUrl { get; init; }
     
     public required string Extras { get; init; }
     

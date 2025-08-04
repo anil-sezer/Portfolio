@@ -10,30 +10,6 @@ public partial class VisitorInsightsService
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
         
         await DatabaseOperationQueueWorker.EnqueueAsync(new LogVisitorInfoQueuedOperation{Request = r});
-
-        // await requestLogRepository.CreateAsync(
-        //     new RequestLog
-        //     {
-        //         AcceptLanguage = r.Language,
-        //         UserAgent = r.UserAgent,
-        //         Platform = r.Platform,
-        //         Referrer = r.Referrer,
-        //         DoNotTrack = r.DoNotTrack,
-        //         Connection = r.Connection,
-        //         Resolution = r.Resolution,
-        //         DeviceMemory = r.DeviceMemory,
-        //         OnLine = r.OnLine,
-        //         HardwareConcurrency = r.HardwareConcurrency,
-        //         Webdriver = r.Webdriver,
-        //         CookieEnabled = r.CookieEnabled,
-        //         MaxTouchPoints = r.MaxTouchPoints,
-        //
-        //         ClientIp = r.IpAddress,
-        //         City = string.Empty,
-        //         Country = string.Empty,
-        //         Extras = r.Extras
-        //     }
-        // );
         
         return new Empty();
     }

@@ -1,9 +1,8 @@
 using DotNetEnv;
-using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
-using Portfolio.Infrastructure.Helpers;
 using Portfolio.Ui;
 using Portfolio.Ui.Components;
+using Portfolio.Ui.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +22,14 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddMemoryCache();
+
 builder.InitializeHealthChecks();
 
 builder.InitializeGrpcClients();
+
+// Services
+builder.Services.AddSingleton<BackgroundImageService>();
 
 var app = builder.Build();
 

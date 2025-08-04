@@ -13,13 +13,11 @@
         @code {
             private IReadOnlyList<TechStackModel> _modelToRender = TechStackModel.GetTechStack();
             const string BoxDivClass = "col-lg-4 col-md-6 icon-box";
-            byte _delayForAppearance = 0;
-            const byte DefaultIncrementToDelay = 0;
         }
         <div class="row">
             @foreach (var model in _modelToRender)
             {
-                <div class="@BoxDivClass" data-aos="fade-up" data-aos-delay="@(_delayForAppearance += DefaultIncrementToDelay)">
+                <div class="@BoxDivClass">
                     <div class="icon">
                         <a href="@model.WebsiteLink" target="_blank">
                             <img src="@model.ImageAddress" width="@model.ImageWidth" height="@model.ImageHeight" alt="@model.ImageAltText">

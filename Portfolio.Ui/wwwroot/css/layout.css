@@ -103,6 +103,15 @@
     transition: 0.3s;
     font-size: 15px;
 }
+@media (max-width: 1199px) {
+    .nav-menu a{
+        padding: 2px 15px;
+        margin-bottom: 0;
+    }
+    .flex-column{
+        align-items: center;
+    }
+}
 
 .nav-menu a i,
 .nav-menu a:focus i {

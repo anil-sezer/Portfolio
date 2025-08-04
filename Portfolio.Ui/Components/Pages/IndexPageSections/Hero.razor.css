@@ -2,14 +2,6 @@
 # Hero Section
 --------------------------------------------------------------*/
 
-.bing-credit {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    color: white; /* or any color that contrasts with the background */
-    z-index: 1; /* to ensure it appears above other elements */
-}
-
 #hero {
     width: 100%;
     height: 100vh;
@@ -31,6 +23,7 @@
     position: relative;
     z-index: 2;
     min-width: 300px;
+    padding: 1.4rem;
 }
 
 #hero h1 {
@@ -55,6 +48,15 @@
     border-bottom: 3px solid #149ddd;
 }
 
+.bing-credit {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: white;
+    z-index: 1;
+    padding: 0.5rem 1.4rem 0.5rem 1.4rem;
+}
+
 @media (min-width: 1024px) {
     #hero {
         background-attachment: fixed;
@@ -71,5 +73,12 @@
         font-size: 18px;
         line-height: 24px;
         margin-bottom: 30px;
+    }
+
+    .bing-credit{
+        font-size: 0.8rem;
+        left: 1rem;
+        bottom: 1rem;
+        padding: 0;
     }
 }

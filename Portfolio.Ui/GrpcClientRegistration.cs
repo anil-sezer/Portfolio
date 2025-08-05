@@ -18,5 +18,9 @@ public static class GrpcClientRegistration
         {
             o.Address = new Uri(EnvVars.GRPC_BASE_URL);
         });
+        builder.Services.AddGrpcClient<K8sStats.K8sStatsClient>(o =>
+        {
+            o.Address = new Uri(EnvVars.GRPC_BASE_URL);
+        });
     }
 }

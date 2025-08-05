@@ -1,0 +1,13 @@
+﻿---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-stats-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: k8s-stats-reader
+subjects:
+- kind: ServiceAccount
+  name: k8s-stats-service
+  namespace: portfolio

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Portfolio.Grpc";
+
+package client_info;
+
+import "google/protobuf/empty.proto";
+
+service K8sStats {
+  rpc Get (google.protobuf.Empty) returns (GetK8sStatsResponse);
+}
+
+message GetK8sStatsResponse {
+  int32 ActivePodCount = 1;
+  int32 ServiceCount = 2;
+  int32 NodeCount = 3;
+  int32 DeploymentCount = 4;
+  int32 CronJobCount = 5;
+}

@@ -1,0 +1,39 @@
+﻿.stats .stats-item {
+    padding: 1rem;
+    flex: 1 1 25rem;
+    min-width: 20rem;
+    display: flex;
+    align-items: center;
+    background-color: #f5f8fd;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 1.25rem;
+}
+
+#stats-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.stats .stats-item img.stats-icon {
+    width: 5rem;
+    height: 5rem;
+    flex-shrink: 0;
+}
+
+.stats .stats-item .counter {
+    color: #1e3a8a;
+    font-size: 2rem;
+    font-weight: 700;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.stats .stats-item p {
+    color: color-mix(in srgb, #272829, transparent 40%);
+    font-family: "Raleway", sans-serif;
+    font-size: 0.875rem;
+    margin: 0.2rem 0 0 0;
+}

@@ -1,8 +1,8 @@
 using DotNetEnv;
-using Portfolio.Infrastructure.Extensions;
 using Portfolio.Ui;
-using Portfolio.Ui.Components;
 using Portfolio.Ui.Services;
+using Portfolio.Ui.Components;
+using Portfolio.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
@@ -28,6 +28,7 @@ builder.InitializeHealthChecks();
 builder.InitializeGrpcClients();
 
 // Services
+builder.Services.AddSingleton<ClusterStatsService>();
 builder.Services.AddSingleton<BackgroundImageService>();
 builder.Services.AddSingleton<LogVisitService>();
 

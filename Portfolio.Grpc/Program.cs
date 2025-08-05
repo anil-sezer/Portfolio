@@ -58,6 +58,7 @@ app.MapReadinessHealthCheck();
 app.MapGrpcService<GetBackgroundImageService>();
 app.MapGrpcService<VisitorInsightsService>();
 app.MapGrpcService<SendNotificationToAdminService>();
+app.MapGrpcService<K8sStatsService>();
 
 
 app.MapGet("/",

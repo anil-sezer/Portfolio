@@ -1,0 +1,148 @@
+﻿@using System.Timers
+@using Portfolio.Ui.Services
+@inject ClusterStatsService ClusterStatsService;
+
+@implements IDisposable
+
+<!-- Stats Section -->
+<section id="clusterInfo" class="stats section">
+    <div class="container">
+        
+        <div class="section-title">
+            <h2>About This Kubernetes Cluster</h2>
+        </div>
+
+        <div id="stats-list">
+
+            <div class="stats-item">
+                <div class="stats-icon-container">
+                    <img src="img/cluster/pod-128.png" alt="Kubernetes Pod" class="stats-icon"/>
+                </div>
+
+                <div class="stats-text-container">
+                    <span class="counter">@animatedPods Pods</span>
+                    <p>Including this UI and gRPC pod to support this frontend</p>
+                </div>
+            </div>
+
+            <div class="stats-item">
+                <div class="stats-icon-container">
+                    <img src="img/cluster/svc-128.png" alt="Kubernetes Service" class="stats-icon"/>
+                </div>
+
+                <div class="stats-text-container">
+                    <span class="counter">@animatedServices Services</span>
+                    <p> 
+                        <a href="https://metallb.io/" target="_blank">MetalLB</a> for as load balancer, <br/>
+                        <a href="https://nginx.org/" target="_blank">Ngnix</a> for ingress controller, <br/>
+                        <a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> for certificates
+                    </p>
+                </div>
+            </div>
+
+            <div class="stats-item">
+                <div class="stats-icon-container">
+                    <img src="img/cluster/deploy-128.png" alt="Kubernetes Deployment" class="stats-icon"/>
+                </div>
+
+                <div class="stats-text-container">
+                    <span class="counter">@animatedDeployments Deployments</span>
+                    <p>Including a <a href="https://hub.docker.com/_/registry">Docker private image registry</a></p>
+                </div>
+            </div>
+
+            <div class="stats-item">
+                <div class="stats-icon-container">
+                    <img src="img/cluster/cronjob-128.png" alt="Kubernetes Cron Job" class="stats-icon"/>
+                </div>
+
+                <div class="stats-text-container">
+                    <span class="counter">@animatedCronJobs Cron Jobs</span>
+                    <p>For various tasks like getting image of the day</p>
+                </div>
+            </div>
+            
+            <div class="stats-item">
+                <div class="stats-icon-container">
+                    <img src="img/cluster/node-128.png" alt="Kubernetes Node" class="stats-icon" />
+                </div>
+
+                <div class="stats-text-container">
+                    <span class="counter">@animatedNodes Nodes</span>
+                    <p>Used 3 Raspberry Pi's with a tower case. I can easily add new Pi's when needed.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+@code {
+    private int animatedPods = 0;
+    private int animatedServices = 0;
+    private int animatedDeployments = 0;
+    private int animatedCronJobs = 0;
+    private int animatedNodes = 0;
+
+    private int targetPodCount;
+    private int targetServiceCount;
+    private int targetDeploymentCount;
+    private int targetCronJobCount;
+    private int targetNodeCount;
+
+    private Timer? animationTimer;
+    private DateTime animationStart;
+    private readonly int animationDuration = 1000; // 1 second
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var stats = await ClusterStatsService.GetFromCacheAsync();
+            targetPodCount = stats.ActivePodCount;
+            targetServiceCount = stats.ServiceCount;
+            targetDeploymentCount = stats.DeploymentCount;
+            targetCronJobCount = stats.CronJobCount;
+            targetNodeCount = stats.NodeCount;
+            
+            await StartAnimationAsync();
+        }
+    }
+
+    private async Task StartAnimationAsync()
+    {
+        animationStart = DateTime.Now;
+        animationTimer = new Timer(32); // ~60 FPS
+        animationTimer.Elapsed += UpdateAnimationAsync;
+        animationTimer.Start();
+    }
+
+    // todo: resolve the async void warning
+    private async void UpdateAnimationAsync(object? sender, ElapsedEventArgs e)
+    {
+        var elapsed = (DateTime.Now - animationStart).TotalMilliseconds;
+        var progress = Math.Min(elapsed / animationDuration, 1.0);
+
+        animatedPods = (int)(targetPodCount * progress);
+        animatedServices = (int)(targetServiceCount * progress);
+        animatedDeployments = (int)(targetDeploymentCount * progress);
+        animatedCronJobs = (int)(targetCronJobCount * progress);
+        animatedNodes = (int)(targetNodeCount * progress);
+
+        await InvokeAsync(StateHasChanged);
+
+        if (progress >= 1.0)
+        {
+            animationTimer?.Stop();
+            animationTimer?.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        animationTimer?.Stop();
+        animationTimer?.Dispose();
+    }
+}

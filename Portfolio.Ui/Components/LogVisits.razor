@@ -1,9 +1,8 @@
-﻿@using Portfolio.Grpc
-@using Portfolio.Ui.Factories
+﻿@using Portfolio.Ui.Services
 @using Serilog
 @inject IHttpContextAccessor HttpContextAccessor
-@inject VisitorInsights.VisitorInsightsClient VisitorInsightsClient;
 @inject IJSRuntime JsRuntime
+@inject LogVisitService LogVisitService
 
 <!-- 
     Here I Log visits to my website.
@@ -34,17 +33,7 @@
             return;
         }
         
-        var request = ClientInfoRequestFactory.Create(viaJavascript, HttpContextAccessor);
-
-        try
-        {
-            await VisitorInsightsClient.StoreVisitorInfoAsync(request);
-            Log.Information("📨 Sent a gRPC request to {ServiceName}", nameof(VisitorInsightsClient.StoreVisitorInfoAsync));
-        }
-        catch (Exception e)
-        {
-            Log.Error("❌ Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
-        }
+        await LogVisitService.LogVisitToWebpageAsync(viaJavascript, HttpContextAccessor);
     }
 }
 

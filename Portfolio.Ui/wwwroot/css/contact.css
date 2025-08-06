@@ -23,7 +23,7 @@
 
 .contact .info i {
     font-size: 20px;
-    color: #149ddd;
+    color: var(--celestial-blue);
     float: left;
     width: 44px;
     height: 44px;
@@ -47,18 +47,18 @@
     padding: 0 0 10px 60px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: #173b6c;
+    color: var(--yale-blue);
 }
 
 .contact .info .email p {
     padding-top: 5px;
 }
 
-.contact .info .social-links {
+.contact .info {
     padding-left: 60px;
 }
 
-.contact .info .social-links a {
+.contact .info a {
     font-size: 18px;
     display: inline-block;
     background: #333;
@@ -73,15 +73,15 @@
     margin-right: 10px;
 }
 
-.contact .info .social-links a:hover {
-    background: #149ddd;
+.contact .info a:hover {
+    background: var(--celestial-blue);
     color: #fff;
 }
 
 .contact .info .email:hover i,
 .contact .info .address:hover i,
 .contact .info .phone:hover i {
-    background: #149ddd;
+    background: var(--celestial-blue);
     color: #fff;
 }
 
@@ -98,7 +98,7 @@
 
 .contact .email-form input,
 .contact .email-form textarea {
-    outline: 2px solid hsl(203, 30%, 26%);
+    outline: 2px solid var(--charcoal);
     font-size: 14px;
     box-shadow: none;
 }
@@ -131,25 +131,25 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 }
 
 .floating-alert {
-    position: fixed; /* Makes the alert stay in a fixed position on the screen */
-    top: 50px; /* Distance from the top of the screen */
-    right: 50px; /* Distance from the right of the screen */
-    z-index: 1050; /* Ensures it appears above other content */
-    padding: 15px 20px; /* Adds some padding for better appearance */
-    border-radius: 5px; /* Rounds the corners of the alert */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
-    color: white; /* Text color */
-    font-size: 16px; /* Adjust text size */
-    transition: opacity 4s ease-in-out; /* Enables fade-out animation and sets the fade out animation duration */
-    opacity: 1; /* Start fully visible */
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    z-index: 1050;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 16px;
+    transition: opacity 4s ease-in-out;
+    opacity: 1;
 }
 
 .alert-success {
-    background-color: #28a745; /* Green for success */
+    background-color: #28a745;
 }
 
 .alert-danger {
-    background-color: #dc3545; /* Red for error */
+    background-color: #dc3545;
 }
 
 .contact .email-form .form-group {
@@ -170,7 +170,7 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 }
 
 .contact .email-form button[type=submit] {
-    background: #149ddd;
+    background: var(--celestial-blue);
     border: 0;
     padding: 10px 24px;
     color: #fff;

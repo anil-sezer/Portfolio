@@ -53,7 +53,7 @@
 }
 
 #header .profile .social-links a:hover {
-    background: #149ddd;
+    background: var(--celestial-blue);
     color: #fff;
     text-decoration: none;
 }
@@ -133,7 +133,7 @@
 .nav-menu .active i,
 .nav-menu .active:focus i,
 .nav-menu li:hover>a i {
-    color: #149ddd;
+    color: var(--celestial-blue);
 }
 
 /* Mobile Navigation */
@@ -146,7 +146,7 @@
     font-size: 24px;
     transition: all 0.4s;
     outline: none !important;
-    background-color: #149ddd;
+    background-color: var(--celestial-blue);
     color: #fff;
     width: 40px;
     height: 40px;

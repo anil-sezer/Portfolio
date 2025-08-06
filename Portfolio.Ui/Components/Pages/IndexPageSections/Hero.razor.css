@@ -55,11 +55,10 @@
     font-family: "Poppins", sans-serif;
 }
 
-#hero p span {
+#hero p {
     color: #fff;
     padding-bottom: 4px;
     letter-spacing: 1px;
-    border-bottom: 3px solid #149ddd;
 }
 
 .bing-credit {

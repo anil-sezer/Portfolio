@@ -7,7 +7,7 @@ body {
 }
 
 a {
-    color: #149ddd;
+    color: var(--celestial-blue);
     text-decoration: none;
 }
 
@@ -73,7 +73,7 @@ section {
     font-weight: bold;
     padding-bottom: 0.5rem;
     position: relative;
-    color: #173b6c;
+    color: var(--yale-blue);
 }
 
 .section-title h2::after {
@@ -82,7 +82,7 @@ section {
     display: block;
     width: 50px;
     height: 3px;
-    background: #149ddd;
+    background: var(--celestial-blue);
 }
 
 .section-title p {

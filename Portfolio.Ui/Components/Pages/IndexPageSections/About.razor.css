@@ -10,7 +10,7 @@
 .about .content h3 {
     font-weight: 700;
     font-size: 26px;
-    color: #173b6c;
+    color: var(--yale-blue);
 }
 
 .about .content ul {
@@ -31,7 +31,7 @@
 .about .content ul i {
     font-size: 16px;
     margin-right: 5px;
-    color: #149ddd;
+    color: var(--celestial-blue);
     line-height: 0;
 }
 

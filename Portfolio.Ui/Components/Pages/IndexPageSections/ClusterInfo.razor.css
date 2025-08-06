@@ -37,7 +37,5 @@
 
 .stats .stats-item p {
     color: color-mix(in srgb, #272829, transparent 40%);
-    font-family: "Raleway", sans-serif;
-    font-size: 0.875rem;
     margin: 0.2rem 0 0 0;
 }

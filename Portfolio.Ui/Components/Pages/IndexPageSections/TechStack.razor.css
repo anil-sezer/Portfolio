@@ -29,7 +29,7 @@
     background: #fff;
     border-radius: 50%;
     transition: 0.5s;
-    border: 1px solid #149ddd;
+    border: 1px solid var(--celestial-blue);
     margin-top: 0.2rem;
 }
 
@@ -40,7 +40,7 @@
 }
 
 #techstack .icon-box:hover .icon {
-    background: #149ddd;
+    background: var(--celestial-blue);
 }
 
 #techstack .icon-box:hover .icon i {
@@ -59,7 +59,7 @@
 }
 
 #techstack .title a:hover {
-    color: #149ddd;
+    color: var(--celestial-blue);
 }
 
 #techstack .description {

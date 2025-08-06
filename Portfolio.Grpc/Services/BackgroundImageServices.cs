@@ -2,7 +2,7 @@ using Portfolio.Domain.Interfaces.Repositories;
 
 namespace Portfolio.Grpc.Services;
 
-public class BackgroundImageServices(IImageOfTheDayRepository repository, IHttpClientFactory httpClientFactory) : BackgroundImages.BackgroundImagesBase
+public class BackgroundImageServices(IImageOfTheDayRepository repository) : BackgroundImages.BackgroundImagesBase
 {
     public override async Task<BackgroundImageDetails> Get(Empty empty, ServerCallContext context)
     {
@@ -34,7 +34,7 @@ public class BackgroundImageServices(IImageOfTheDayRepository repository, IHttpC
 
         try
         {
-            using var httpClient = httpClientFactory.CreateClient();
+            using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromSeconds(5);
             
             // todo: will this work for all sources?

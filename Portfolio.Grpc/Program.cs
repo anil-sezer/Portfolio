@@ -55,7 +55,7 @@ app.MapLivenessHealthCheck();
 app.MapReadinessHealthCheck();
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<GetBackgroundImageService>();
+app.MapGrpcService<BackgroundImageServices>();
 app.MapGrpcService<VisitorInsightsService>();
 app.MapGrpcService<SendNotificationToAdminService>();
 app.MapGrpcService<K8sStatsService>();

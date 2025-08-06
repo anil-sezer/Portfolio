@@ -1,0 +1,20 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-daily-images-cronjob
+  namespace: portfolio
+spec:
+  schedule: "0 2 * * *"  # Every day at 02:00 (2:00 AM)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: get-daily-images-go-app
+              image: anilsezer/get-daily-images-go-cron:latest
+              env:
+                - name: GRPC_BASE_URL
+                  value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"
+
+          restartPolicy: Never

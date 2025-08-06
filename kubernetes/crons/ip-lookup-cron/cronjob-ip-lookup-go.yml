@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: ip-lookup-go-cronjob
+  namespace: portfolio
 spec:
   schedule: "*/20 * * * *"  # Runs every 20 minutes
   jobTemplate:
@@ -13,46 +14,7 @@ spec:
             - name: ip-lookup-go-app
               image: anilsezer/iplookup-cron-go:latest
               env:
-                - name: SQL_DB_HOST
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_HOST
-
-                - name: SQL_DB_PORT
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_PORT
-
-                - name: SQL_DB_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_USER
-
-                - name: SQL_DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_PASSWORD
-
-                - name: SQL_DB_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_NAME
-
-                - name: SQL_DB_SSL_MODE
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_SSL_MODE
-
-                - name: SQL_DB_TIMEZONE
-                  valueFrom:
-                    secretKeyRef:
-                      name: sql-db-secrets
-                      key: SQL_DB_TIMEZONE
+              - name: GRPC_BASE_URL
+                value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"
 
           restartPolicy: Never

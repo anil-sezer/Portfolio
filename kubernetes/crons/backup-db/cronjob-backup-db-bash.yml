@@ -1,0 +1,58 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: database
+spec:
+  schedule: "0 0 * * 0"  # Runs every Sunday at 00:00
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: postgres-backup
+              image: anilsezer/pg_dump:latest
+              env:
+                - name: RETAIN_COUNT
+                  value: "4" # Keep this number of backups
+
+                - name: SQL_DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_HOST
+    
+                - name: SQL_DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_PORT
+    
+                - name: SQL_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_USER
+    
+                - name: SQL_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_PASSWORD
+    
+                - name: SQL_DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_NAME
+
+              volumeMounts:
+                - name: db-backups-nfs-pv
+                  mountPath: /backups
+                  readOnly: false
+          volumes:
+            - name: db-backups-nfs-pv
+              persistentVolumeClaim:
+                claimName: db-backups-nfs-pvc

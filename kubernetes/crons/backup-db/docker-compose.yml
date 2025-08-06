@@ -1,0 +1,14 @@
+---
+services:
+  postgres-backup:
+    image: anilsezer/pg_dump:latest
+    container_name: postgres-backup
+    environment:
+      - DB=${SQL_DB_NAME}
+      - USER=${SQL_DB_USER}
+      - PASSWORD=${SQL_DB_PASSWORD}
+      - HOST=${SQL_DB_HOST}
+      - PORT=${SQL_DB_PORT}
+      - RETAIN_COUNT=4 # Keep this number of backups
+    volumes:
+      - ./persistent/data:/dump

@@ -1,4 +1,8 @@
-﻿.stats .stats-item {
+﻿.section-title h2::after {
+    width: 28.5rem;
+}
+
+.stats .stats-item {
     padding: 1rem;
     flex: 1 1 25rem;
     min-width: 20rem;

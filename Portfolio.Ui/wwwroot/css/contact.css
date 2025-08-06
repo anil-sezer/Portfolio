@@ -5,6 +5,11 @@
     todo: Looks like <EditForm> does not accept isolated css files like: Contact.razor.css 
      I'm too lazy to figure out why, so I'm just going to use Contact components css from here. 
 */
+
+#contact-title h2::after {
+    width: 6.9rem;
+}
+
 .contact {
     padding-bottom: 130px;
 }

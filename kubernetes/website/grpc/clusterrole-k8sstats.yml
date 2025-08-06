@@ -10,3 +10,6 @@ rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
     verbs: ["get", "list"]
+  - apiGroups: [ "batch" ]
+    resources: [ "cronjobs" ]
+    verbs: [ "get", "list" ]

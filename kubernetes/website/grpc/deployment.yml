@@ -22,6 +22,7 @@ spec:
       labels:
         app: portfolio-grpc
     spec:
+      serviceAccountName: k8s-stats-service
       containers:
         - name: portfolio-grpc
           image: anilsezer/portfolio-grpc:latest

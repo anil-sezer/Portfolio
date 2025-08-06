@@ -2,11 +2,24 @@
     width: 9.3rem;
 }
 
-.services .icon-box {
-    margin-bottom: 20px;
+.tech-stack-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    max-width: 25rem;
+    flex: 1 1 25rem;
+    min-width: 300px;
 }
 
-.services .icon {
+.tech-stack-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: flex-start;
+}
+
+#techstack .icon {
     float: left;
     display: flex;
     align-items: center;
@@ -20,36 +33,36 @@
     margin-top: 0.2rem;
 }
 
-.services .icon i {
+#techstack .icon i {
     color: #fff;
     font-size: 24px;
     line-height: 0;
 }
 
-.services .icon-box:hover .icon {
+#techstack .icon-box:hover .icon {
     background: #149ddd;
 }
 
-.services .icon-box:hover .icon i {
+#techstack .icon-box:hover .icon i {
     color: #fff;
 }
 
-.services .title {
+#techstack .title {
     margin-left: 80px;
     font-weight: 700;
     margin-bottom: 15px;
     font-size: 18px;
 }
 
-.services .title a {
+#techstack .title a {
     color: #343a40;
 }
 
-.services .title a:hover {
+#techstack .title a:hover {
     color: #149ddd;
 }
 
-.services .description {
+#techstack .description {
     margin-left: 80px;
     line-height: 24px;
     font-size: 14px;

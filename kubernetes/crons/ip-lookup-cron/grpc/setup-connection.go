@@ -13,6 +13,7 @@ import (
 func setupConnection() *grpc.ClientConn {
 	grpcAddress, _ := os.LookupEnv("GRPC_BASE_URL")
 
+	log.Printf("Connecting to: %s", grpcAddress)
 	conn, err := grpc.NewClient(grpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Did not connect: %v", err)

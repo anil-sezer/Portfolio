@@ -11,6 +11,14 @@ func main() {
 		log.Println("Env file not present.")
 	}
 
+	processBingImage()
+	log.Println("✅ Bing image processing completed successfully.")
+	//todo: Add NASA APOD API +
+	// Eurpean Space Agency (ESA) Monthly image
+	// https://esawebb.org/images/potm/
+}
+
+func processBingImage() {
 	url, err := GetDailyImageUrl()
 	if err != nil {
 		log.Fatalf("Failed to get daily image URL: %v", err)

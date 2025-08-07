@@ -12,10 +12,10 @@ import (
 )
 
 func setupConnection() *grpc.ClientConn {
-	host, _ := os.LookupEnv("GRPC_SERVER_HOST")
-	port, _ := os.LookupEnv("GRPC_SERVER_PORT")
+	grpcAddress, _ := os.LookupEnv("GRPC_BASE_URL")
 
-	conn, err := grpc.NewClient(host+":"+port, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	log.Printf("Connecting to: %s", grpcAddress)
+	conn, err := grpc.NewClient(grpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Did not connect: %v", err)
 	}
@@ -31,7 +31,11 @@ func SendUrlToGrpc(url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	res, err := client.Persist(ctx, &pb.Url{Url: url})
+	res, err := client.Persist(ctx, &pb.BackgroundImageDetails{
+		Url:     url,
+		AltText: "", // You can set this to an appropriate value if needed
+		Source:  pb.ImageOfTheDaySource_Bing,
+	})
 	if err != nil {
 		log.Fatalf("Could not persist URL: %v", err)
 	}

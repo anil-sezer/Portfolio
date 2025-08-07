@@ -1,13 +1,10 @@
-# docker build -t get-image-of-the-day-from-bing .
-# docker build -f deployment/crons/get-image-of-the-day-from-bing/Dockerfile -t img-from-bing .
-# docker run --name get-image-of-the-day-from-bing --env-file .env get-image-of-the-day-from-bing
+# docker build -t anilsezer/get-daily-images-go-cron:latest . && docker push anilsezer/get-daily-images-go-cron:latest
 FROM golang:1.23.4 AS builder
 LABEL  maintainer="Anil Sezer - msnanil@hotmail.com"
 
 WORKDIR /app
 
-COPY deployment/crons/get-image-of-the-day-from-bing/ .
-COPY protos/background_images/persist .
+COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o get-image-of-the-day-from-bing .
 

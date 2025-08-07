@@ -15,6 +15,6 @@ spec:
               image: anilsezer/iplookup-cron-go:latest
               env:
               - name: GRPC_BASE_URL
-                value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"
+                value: "portfolio-grpc-service.portfolio.svc.cluster.local:8080"
 
           restartPolicy: Never

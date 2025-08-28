@@ -50,7 +50,7 @@ public class TechStackModel
                 ImageWidth = 45,
                 ImageHeight = 27,
 
-                Description = "Deployed with Docker images. All my images are at <a href=\"https://hub.docker.com/repositories/anilsezer\" target=\"_blank\">my DockerHub account</a>."
+                Description = "Deployed with Docker images. My all public images are at <a href=\"https://hub.docker.com/repositories/anilsezer\" target=\"_blank\">my DockerHub account</a>. My private images are in this cluster, at Docker private image registry."
             },
             new()
             {

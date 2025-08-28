@@ -12,7 +12,7 @@ Made with love, by using **Domain Driven Design** from [Eric Evans!](https://ddd
 
 1. `Kubernetes:` After setting this bare metal cluster by myself, I learnt that it is called: [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way). Nodes are prepared and cluster deployed with a single Ansible command.
 2. `Ansible:` I felt this Kubernetes setup would be incomplete without fully automating nodes. Also encourages experimentation since I can reset the lab rapidly if things break beyond repair.
-3. `Docker:` Deployed with Docker images. All my images are at [my DockerHub account](https://hub.docker.com/repositories/anilsezer).
+3. `Docker:` Deployed with Docker images. My all public images are at [my DockerHub account](https://hub.docker.com/repositories/anilsezer). My private images are in this cluster, at Docker private image registry.
 4. `.Net 9 & Blazor:` This website is written with .Net 9 & Blazor.
 5. `Go:` If writing a cron with just yaml is not practical, I write it with Go. For trying out other languages to widen my view.
 6. `PostgreSQL:` Current database. I like It's features and like to experiment with it.

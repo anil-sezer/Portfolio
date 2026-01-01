@@ -81,7 +81,7 @@ app.Use(async (context, next) =>
 try
 {
     Log.Information("UI Starting");
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception ex)
 {

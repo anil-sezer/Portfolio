@@ -6,7 +6,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Valid values are "daemonset", "deployment", and "statefulset".
-mode: "daemonset"
+mode: "deployment"
 
 # Specify which namespace should be used to deploy the resources into
 namespaceOverride: ""
@@ -27,7 +27,7 @@ presets:
   # Best used with mode = daemonset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#filelog-receiver for details on the receiver.
   logsCollection:
-    enabled: true
+    enabled: false
     includeCollectorLogs: false
     # Enabling this writes checkpoints in /var/lib/otelcol/ host directory.
     # Note this changes collector's user to root, so that it can write to host directory.
@@ -41,51 +41,96 @@ presets:
   # Best used with mode = daemonset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#host-metrics-receiver for details on the receiver.
   hostMetrics:
-    enabled: true
+    enabled: false
   # Configures the Kubernetes Processor to add Kubernetes metadata.
   # Adds the k8sattributes processor to all the pipelines
-  # and adds the necessary rules to ClusteRole.
+  # and adds a preset of minimum required RBAC rules to ClusterRole.
   # Best used with mode = daemonset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-attributes-processor for details on the receiver.
   kubernetesAttributes:
-    enabled: true
-    # When enabled the processor will extra all labels for an associated pod and add them as resource attributes.
+    enabled: false
+    # When enabled the processor will extract all labels for an associated pod and add them as resource attributes.
     # The label's exact name will be the key.
-    extractAllPodLabels: true
-    # When enabled the processor will extra all annotations for an associated pod and add them as resource attributes.
+    extractAllPodLabels: false
+    # When enabled the processor will extract all annotations for an associated pod and add them as resource attributes.
     # The annotation's exact name will be the key.
-    extractAllPodAnnotations: true
-  # Configures the collector to collect node, pod, and container metrics from the API server on a kubelet..
+    extractAllPodAnnotations: false
+  # Configures the collector to collect node, pod, and container metrics from the API server on a kubelet.
   # Adds the kubeletstats receiver to the metrics pipeline
-  # and adds the necessary rules to ClusteRole.
+  # and adds the necessary rules to ClusterRole.
   # Best used with mode = daemonset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubeletstats-receiver for details on the receiver.
   kubeletMetrics:
-    enabled: true
+    enabled: false
   # Configures the collector to collect kubernetes events.
-  # Adds the k8sobject receiver to the logs pipeline
+  # Adds the k8sobjects receiver to the logs pipeline
   # and collects kubernetes events by default.
   # Best used with mode = deployment or statefulset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-objects-receiver for details on the receiver.
   kubernetesEvents:
-    enabled: false
+    enabled: true
   # Configures the Kubernetes Cluster Receiver to collect cluster-level metrics.
   # Adds the k8s_cluster receiver to the metrics pipeline
-  # and adds the necessary rules to ClusteRole.
+  # and adds the necessary rules to ClusterRole.
   # Best used with mode = deployment or statefulset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-cluster-receiver for details on the receiver.
   clusterMetrics:
-    enabled: false
+    enabled: true
+
+  # Configures the collector to collect logs and metrics from pods with specific annotations.
+  # This preset can not be used together with the `logsCollection` preset.
+  # Adds the receiver_creator receiver to the logs and metrics pipelines
+  # and adds the necessary rules to ClusterRole.
+  # Best used with mode = daemonset.
+  # See https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/receivercreator/README.md#generate-receiver-configurations-from-provided-hints for details on the receiver.
+  annotationDiscovery:
+    logs:
+      enabled: false
+    metrics:
+      enabled: false
 
 configMap:
   # Specifies whether a configMap should be created (true by default)
   create: true
   # Specifies an existing ConfigMap to be mounted to the pod
   # The ConfigMap MUST include the collector configuration via a key named 'relay' or the collector will not start.
+  # This also supports template content, which will eventually be converted to yaml.
   existingName: ""
   # Specifies the relative path to custom ConfigMap template file. This option SHOULD be used when bundling a custom
   # ConfigMap template, as it enables pod restart via a template checksum annotation.
   # existingPath: ""
+
+# When enabled, the chart will configure the collector to emit its traces, metrics, and logs over http via the OTLP using the Otel Go SDK.
+# If internalTelemetryViaOTLP.metrics.enabled the chart will remove the default prometheus receiver (which was configured to scrape the Collector's metrics)
+# and the service.telemetry.metrics.address value.
+# Learn more about the Collector telemetry at https://opentelemetry.io/docs/collector/internal-telemetry/.
+#
+# THIS OPTION IS EXPERIMENTAL AND SUBJECT TO BREAKING CHANGES
+internalTelemetryViaOTLP:
+  # The endpoint where the telemetry will be exported
+  endpoint: ""
+  # Optional headers to configure the exporters
+  headers: []
+    # - name: "x-dest-auth"
+  #   value: "some auth key"
+  traces:
+    enabled: false
+    # overrides internalTelemetryViaOTLP.endpoint for traces
+    endpoint: ""
+    # overrides internalTelemetryViaOTLP.headers for traces
+    headers: []
+  metrics:
+    enabled: false
+    # overrides internalTelemetryViaOTLP.endpoint for metrics
+    endpoint: ""
+    # overrides internalTelemetryViaOTLP.headers for metrics
+    headers: []
+  logs:
+    enabled: false
+    # overrides internalTelemetryViaOTLP.endpoint for logs
+    endpoint: ""
+    # overrides internalTelemetryViaOTLP.headers for logs
+    headers: []
 
 # Base collector configuration.
 # Supports templating. To escape existing instances of {{ }}, use {{` <original content> `}}.
@@ -93,18 +138,25 @@ configMap:
 config:
   exporters:
     prometheus:
-      endpoint: "0.0.0.0:9465" # todo: should I use ${env:MY_POD_IP}:9465
+      endpoint: ${env:MY_POD_IP}:8889 # Prometheus endpoint for exposing metrics
       send_timestamps: true
-
+      # Add Seq exporter
+    otlphttp/seq:
+      endpoint: "http://seq.observability:5341/ingest/otlp"
+      headers:
+        "Content-Type": "application/x-protobuf"
   extensions:
     # The health_check extension is mandatory for this chart.
-    # Without the health_check extension the collector will fail the readiness and liveliness probes.
+    # Without the health_check extension the collector will fail the readiness and liveness probes.
     # The health_check extension can be modified, but should never be removed.
     health_check:
       endpoint: ${env:MY_POD_IP}:13133
 
   processors:
-    batch: {}
+    batch:
+      timeout: 3s
+      send_batch_size: 1024
+      send_batch_max_size: 2048
     # Default memory limiter configuration for the collector based on k8s resource limits.
     memory_limiter:
       # check_interval is the time between measurements of memory usage.
@@ -114,90 +166,81 @@ config:
       # By default spike_limit_mib is set to 25% of ".Values.resources.limits.memory"
       spike_limit_percentage: 25
 
-    # TODO: What was this doing? check it out later
-    resource:
-      attributes:
-        - key: service.name
-          value: otel-daemonset
-          action: insert
-
   receivers:
-    kubeletstats:
-      collection_interval: 10s
-      auth_type: 'serviceAccount'
-      endpoint: '${env:K8S_NODE_NAME}:10250'
-      insecure_skip_verify: true
-      enable_cpu_usage_metrics: true # The default metric k8s.pod.cpu.utilization is being replaced by the k8s.pod.cpu.usage metric. Switch now by enabling the receiver.kubeletstats.enableCPUUsageMetrics feature gate.
-      metric_groups:
-        - node
-        - pod
-        - container
-    jaeger:
-      protocols:
-        grpc:
-          endpoint: ${env:MY_POD_IP}:14250
-        thrift_http:
-          endpoint: ${env:MY_POD_IP}:14268
-        thrift_compact:
-          endpoint: ${env:MY_POD_IP}:6831
+#    jaeger:
+#      protocols:
+#        grpc:
+#          endpoint: ${env:MY_POD_IP}:14250
+#        thrift_http:
+#          endpoint: ${env:MY_POD_IP}:14268
+#        thrift_compact:
+#          endpoint: ${env:MY_POD_IP}:6831
+
     otlp:
       protocols:
         grpc:
           endpoint: ${env:MY_POD_IP}:4317
         http:
           endpoint: ${env:MY_POD_IP}:4318
-#    prometheus:
-#      config:
-#        scrape_configs:
-#          - job_name: opentelemetry-collector
-#            scrape_interval: 15s
-#            static_configs:
-#              - targets:
-#                  - ${env:MY_POD_IP}:8888
-    zipkin:
-      endpoint: ${env:MY_POD_IP}:9411
+
+    # if internalTelemetryViaOTLP.metrics.enabled = true, prometheus receiver will be removed
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - ${env:MY_POD_IP}:8888
+#    zipkin:
+#      endpoint: ${env:MY_POD_IP}:9411
   service:
     telemetry:
       metrics:
-        address: ${env:MY_POD_IP}:8888
+        readers:
+          - pull:
+              exporter:
+                prometheus:
+                  host: ${env:MY_POD_IP}
+                  port: 8888
     extensions:
       - health_check
     pipelines:
       logs:
         exporters:
           - debug
+          - otlphttp/seq
         processors:
           - memory_limiter
           - batch
-          - resource
         receivers:
           - otlp
-
       metrics:
         exporters:
-          - prometheus # Prometheus is the sole destination
+#          - debug
+          - prometheus
         processors:
           - memory_limiter
           - batch
-          - resource
         receivers:
           - otlp
-          - kubeletstats
-
+          # if internalTelemetryViaOTLP.metrics.enabled = true, prometheus receiver will be removed
+          - prometheus
       traces:
         exporters:
-          - debug
+#          - debug
+          - otlphttp/seq
         processors:
           - memory_limiter
           - batch
-          - resource
         receivers:
           - otlp
-          # - jaeger # todo: I will open this up later
+#          - jaeger
+#          - zipkin
 
 # Helm currently has an issue (https://github.com/helm/helm/pull/12879) when using null to remove
 # default configuration from a subchart. The result is that you cannot remove default configuration
-# from `config`, such as a specific recevier or a specific pipeline, when the chart is used as a
+# from `config`, such as a specific receiver or a specific pipeline, when the chart is used as a
 # subchart.
 #
 # Until the helm bug is fixed, this field is provided as an alternative when using this chart as a subchart.
@@ -214,7 +257,7 @@ alternateConfig: {}
 
 image:
   # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
-  repository: otel/opentelemetry-collector-contrib
+  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -235,6 +278,8 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
+  # Automatically mount a ServiceAccount's API credentials?
+  automountServiceAccountToken: true
 
 clusterRole:
   # Specifies whether a clusterRole should be created
@@ -281,6 +326,10 @@ topologySpreadConstraints: []
 # Allows for pod scheduler prioritisation
 priorityClassName: ""
 
+# Allows for pod to use a specific runtime class, e.g. gvisor, kata-containers
+# Also useful for the pod security admissions plugins that rely on runtimeClassName
+runtimeClassName: ""
+
 extraEnvs: []
 extraEnvsFrom: []
 # This also supports template content, which will eventually be converted to yaml.
@@ -288,6 +337,9 @@ extraVolumes: []
 
 # This also supports template content, which will eventually be converted to yaml.
 extraVolumeMounts: []
+
+# This also supports template content, which will eventually be converted to yaml.
+extraManifests: []
 
 # Configuration for ports
 # nodePort is also allowed
@@ -307,38 +359,33 @@ ports:
     hostPort: 4318
     protocol: TCP
   jaeger-compact:
-    enabled: true
+    enabled: false
     containerPort: 6831
     servicePort: 6831
     hostPort: 6831
     protocol: UDP
   jaeger-thrift:
-    enabled: true
+    enabled: false
     containerPort: 14268
     servicePort: 14268
     hostPort: 14268
     protocol: TCP
   jaeger-grpc:
-    enabled: true
+    enabled: false
     containerPort: 14250
     servicePort: 14250
     hostPort: 14250
     protocol: TCP
   zipkin:
-    enabled: true
+    enabled: false
     containerPort: 9411
     servicePort: 9411
     hostPort: 9411
     protocol: TCP
-  prometheus:
-    enabled: true
-    containerPort: 9465
-    servicePort: 9465
-    protocol: TCP
   metrics:
     # The metrics port is disabled by default. However you need to enable the port
     # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
-    enabled: false
+    enabled: true
     containerPort: 8888
     servicePort: 8888
     protocol: TCP
@@ -351,11 +398,18 @@ useGOMEMLIMIT: true
 # Resource limits & requests.
 # It is HIGHLY recommended to set resource limits.
 resources:
-   limits:
-     cpu: 250m
-     memory: 512Mi # TODO-anil: Reduce this
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
 
-podAnnotations: {}
+enableConfigChecksumAnnotation: true
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8888"
+  prometheus.io/path: "/metrics"
 
 podLabels: {}
 
@@ -371,7 +425,7 @@ hostNetwork: false
 hostAliases: []
   # - ip: "1.2.3.4"
   #   hostnames:
-  #     - "my.host.com"
+#     - "my.host.com"
 
 # Pod DNS policy ClusterFirst, ClusterFirstWithHostNet, None, Default, None
 dnsPolicy: ""
@@ -379,10 +433,12 @@ dnsPolicy: ""
 # Custom DNS config. Required when DNS policy is None.
 dnsConfig: {}
 
+# Custom kube scheduler name.
+schedulerName: ""
+
 # only used with deployment mode
 replicaCount: 1
 
-# only used with deployment mode
 revisionHistoryLimit: 10
 
 annotations: {}
@@ -441,36 +497,46 @@ lifecycleHooks: {}
 ##
 livenessProbe:
   # Number of seconds after the container has started before startup, liveness or readiness probes are initiated.
-  initialDelaySeconds: 20
+  # initialDelaySeconds: 1
   # How often in seconds to perform the probe.
-  periodSeconds: 10
+  # periodSeconds: 10
   # Number of seconds after which the probe times out.
-  timeoutSeconds: 2
+  # timeoutSeconds: 1
   # Minimum consecutive failures for the probe to be considered failed after having succeeded.
-  failureThreshold: 1
+  # failureThreshold: 1
   # Duration in seconds the pod needs to terminate gracefully upon probe failure.
-  terminationGracePeriodSeconds: 20
+  # terminationGracePeriodSeconds: 10
   httpGet:
     port: 13133
     path: /
+  initialDelaySeconds: 35
+  periodSeconds: 20
+  timeoutSeconds: 8
+  failureThreshold: 3
+  terminationGracePeriodSeconds: 30
 
 # readiness probe configuration
 # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 ##
 readinessProbe:
   # Number of seconds after the container has started before startup, liveness or readiness probes are initiated.
-  initialDelaySeconds: 20
+  # initialDelaySeconds: 1
   # How often (in seconds) to perform the probe.
-  periodSeconds: 10
+  # periodSeconds: 10
   # Number of seconds after which the probe times out.
-  timeoutSeconds: 2
+  # timeoutSeconds: 1
   # Minimum consecutive successes for the probe to be considered successful after having failed.
-  successThreshold: 3
+  # successThreshold: 1
   # Minimum consecutive failures for the probe to be considered failed after having succeeded.
-  failureThreshold: 1
+  # failureThreshold: 1
   httpGet:
     port: 13133
     path: /
+  initialDelaySeconds: 35
+  periodSeconds: 10
+  timeoutSeconds: 8
+  successThreshold: 2
+  failureThreshold: 3
 
 # startup probe configuration
 # Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -488,15 +554,16 @@ startupProbe: {}
   # terminationGracePeriodSeconds: 10
   # httpGet:
   #   port: 13133
-  #   path: /
+#   path: /
 
 service:
   # Enable the creation of a Service.
   # By default, it's enabled on mode != daemonset.
   # However, to enable it on mode = daemonset, its creation must be explicitly enabled
-  enabled: true
+  # enabled: true
 
   type: ClusterIP
+  # trafficDistribution: PreferClose
   # type: LoadBalancer
   # loadBalancerIP: 1.2.3.4
   # loadBalancerSourceRanges: []
@@ -505,13 +572,8 @@ service:
   # unless other value is explicitly set.
   # Possible values are Cluster or Local (https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip)
   # externalTrafficPolicy: Cluster
-  
-#  # TODO: These might not be useful at all. TODO: DELETE AFTER DEPLOYMENT, THEY DONT HAVE AN EFFECT
-#  annotations:
-#    prometheus.io/scrape: "true"
-#    prometheus.io/path: "/metrics"
-#    prometheus.io/port: "9464"
-#    prometheus.io/scheme: "http"
+
+  annotations: {}
 
   # By default, Service will be created setting 'internalTrafficPolicy: Local' on mode = daemonset
   # unless other value is explicitly set.
@@ -593,6 +655,8 @@ autoscaling:
   behavior: {}
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+  # Supply an array of custom metrics to be used for autoscaling. It includes externalMetrics, objectMetrics, and podsMetrics.
+  additionalMetrics: []
 
 rollout:
   rollingUpdate: {}
@@ -675,4 +739,3 @@ networkPolicy:
 
 # Allow containers to share processes across pod namespace
 shareProcessNamespace: false
-

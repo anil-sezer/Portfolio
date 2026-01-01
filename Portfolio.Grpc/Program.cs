@@ -29,7 +29,7 @@ _ = EnvVars.NOTIFICATION_TELEGRAM_API_KEY;
 _ = EnvVars.NOTIFICATION_TELEGRAM_CHAT_ID;
 
 builder.InitLogsWithSerilog();
-builder.InitOpenTelemetry();
+builder.InitOpenTelemetry("Portfolio.Grpc" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
 
 builder.InitDbWithPostgres();
 

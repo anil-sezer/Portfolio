@@ -14,7 +14,7 @@ _ = EnvVars.ASPNETCORE_ENVIRONMENT;
 _ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
 
 builder.InitLogsWithSerilog();
-builder.InitOpenTelemetry();
+builder.InitOpenTelemetry("Portfolio.Ui" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

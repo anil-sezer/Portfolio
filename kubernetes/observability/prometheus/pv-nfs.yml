@@ -5,10 +5,10 @@ metadata:
   name: prometheus-nfs-pv
 spec:
   capacity:
-    storage: 8Gi # Match the size specified in your Helm values
+    storage: 8Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
   nfs:
     server: 192.168.1.122
-    path: /prometheus
+    path: /mnt/external/k8s/monitoring/prometheus

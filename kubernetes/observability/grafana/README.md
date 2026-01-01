@@ -1,0 +1,1 @@
+﻿helm install grafana grafana/grafana -n observability -f helm-values.yml

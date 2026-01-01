@@ -81,12 +81,14 @@ readinessProbe:
   httpGet:
     path: /api/health
     port: 3000
+  initialDelaySeconds: 240
+  timeoutSeconds: 30
 
 livenessProbe:
   httpGet:
     path: /api/health
     port: 3000
-  initialDelaySeconds: 60
+  initialDelaySeconds: 120
   timeoutSeconds: 30
   failureThreshold: 10
 
@@ -351,13 +353,13 @@ route:
     ## Additional custom rules that can be added to the route
     additionalRules: []
 
-resources: {}
-#  limits:
-#    cpu: 100m
-#    memory: 128Mi
-#  requests:
-#    cpu: 100m
-#    memory: 128Mi
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -415,10 +417,10 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: false
+  enabled: true
   # storageClassName: default
   ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
-  volumeName: ""
+  volumeName: "grafana-nfs-pv"
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -429,7 +431,7 @@ persistence:
   ## Sub-directory of the PV to mount. Can be templated.
   # subPath: ""
   ## Name of an existing PVC. Can be templated.
-  # existingClaim:
+  existingClaim: "grafana-nfs-pvc"
   ## Extra labels to apply to a PVC.
   extraPvcLabels: {}
   disableWarning: false
@@ -488,8 +490,8 @@ initChownData:
         - ALL
 
 # Administrator credentials when not using an existing secret (see below)
-adminUser: admin
-# adminPassword: strongpassword
+adminUser: admin-anil
+adminPassword: uD*x6ArNrPo1HeuD*x6ArNrPo1He
 
 # Use an existing secret for the admin user.
 admin:
@@ -651,9 +653,11 @@ lifecycleHooks: {}
 
 ## Pass the plugins you want installed as a list.
 ##
-plugins: []
+plugins:
+  - grafana-piechart-panel
+  - grafana-worldmap-panel
+  - grafana-clock-panel
   # - digrich-bubblechart-panel
-  # - grafana-clock-panel
   ## You can also use other plugin download URL, as long as they are valid zip files,
   ## and specify the name of the plugin after the semicolon. Like this:
   # - https://grafana.com/api/plugins/marcusolsson-json-datasource/versions/1.3.2/download;marcusolsson-json-datasource
@@ -661,7 +665,15 @@ plugins: []
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
 ##
-datasources: {}
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://my-prometheus-server.observability.svc.cluster.local
+        isDefault: true
 #  datasources.yaml:
 #    apiVersion: 1
 #    datasources:

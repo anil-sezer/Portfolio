@@ -30,9 +30,9 @@
     - name: Fully update Ubuntu/Debian
       ansible.builtin.import_tasks: ./os-and-cli-tools/update-ubuntu-debian.yml
 
-    - name: Copy some useful scripts, including the backup cron code and shutdown markers
-      ansible.builtin.import_tasks: ./stremio/copy-support-scripts.yml
-
+    # -----------------
+    #  Does this work on a cloud server like Hetzner?
+    # -----------------
     - name: Setup watchdog
       ansible.builtin.import_tasks: ./hardware-watchdog/enable-watchdog.yml
 

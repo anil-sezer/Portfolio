@@ -1,7 +1,7 @@
 ---
 - name: Check if oh-my-zsh is installed
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    path: "{{ ansible_facts['env']['HOME'] }}/.oh-my-zsh"
   register: ohmyzsh_installed
 
 - name: Setup Oh My ZSH
@@ -26,7 +26,7 @@
     
     - name: 'Set var: the oh_my_zsh_plugins_path variable'
       ansible.builtin.set_fact:
-        oh_my_zsh_plugins_path: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/"
+        oh_my_zsh_plugins_path: "{{ ansible_facts['env']['HOME'] }}/.oh-my-zsh/custom/plugins/"
       become: false
     
     - name: Install zsh-autosuggestions
@@ -43,8 +43,8 @@
 
     - name: Copy zshrc from control node to managed node
       ansible.builtin.copy:
-        src: "{{ ansible_env.HOME }}/.zshrc"
-        dest: "{{ ansible_env.HOME }}/.zshrc"
+        src: "{{ control_node_homepath }}/.zshrc"
+        dest: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
         mode: "0644"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
@@ -52,8 +52,8 @@
     
     - name: Copy p10k.zsh from control node to managed node
       ansible.builtin.copy:
-        src: "{{ ansible_env.HOME }}/.p10k.zsh"
-        dest: "{{ ansible_env.HOME }}/.p10k.zsh"
+        src: "{{ control_node_homepath }}/.p10k.zsh"
+        dest: "{{ ansible_facts['env']['HOME'] }}/.p10k.zsh"
         mode: "0644"
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"

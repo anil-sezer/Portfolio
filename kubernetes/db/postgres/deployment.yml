@@ -18,13 +18,13 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: postgres
-          image: postgres:16
+          image: postgres:18
           ports:
             - containerPort: 5432
           lifecycle:
             preStop:
               exec:
-                command: [ "/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data", "-m", "fast" ]
+                command: [ "/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data/18/main", "-m", "fast" ]
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -39,10 +39,10 @@ spec:
                   key: SQL_DB_PASSWORD
 
           volumeMounts:
-            - name: postgres-nfs-pvc
-              mountPath: /var/lib/postgresql/data
+            - name: postgres-nfs
+              mountPath: /var/lib/postgresql
               readOnly: false
       volumes:
-        - name: postgres-nfs-pvc
+        - name: postgres-nfs
           persistentVolumeClaim:
-            claimName: postgres-nfs-pvc
+            claimName: postgres-nfs

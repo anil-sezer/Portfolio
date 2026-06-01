@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-svc-nodeport
+  name: postgres-nodeport
   namespace: database
 spec:
   type: NodePort

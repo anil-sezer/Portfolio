@@ -12,6 +12,7 @@
     owner: root
     group: root
   when: not containerd_config_conf.stat.exists
+  become: true
 
 - name: Ensure br_netfilter module is active
   ansible.builtin.lineinfile:
@@ -19,10 +20,12 @@
     regexp: 'br_netfilter'
     line: 'br_netfilter'
   register: br_netfilter_result
+  become: true
 
 - name: Load the br_netfilter kernel module without a reboot
   ansible.builtin.command: modprobe br_netfilter
   when: br_netfilter_result.changed
+  become: true
 
 - name: Ensure overlay module is active
   ansible.builtin.lineinfile:
@@ -30,10 +33,12 @@
     regexp: 'overlay'
     line: 'overlay'
   register: overlay_result
+  become: true
 
 - name: Load the overlay kernel module without a reboot
   ansible.builtin.command: modprobe overlay
   when: overlay_result.changed
+  become: true
 
 - name: Check if kernel modules are successfully loaded
   block:

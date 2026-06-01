@@ -13,8 +13,9 @@
   
   - name: Disable swap if it's enabled
     ansible.builtin.command: sudo sed -i '/ swap / s/^\\(.*\\)$/#\\1/g' /etc/fstab
-    notify:
-      - Reboot device
 
-  - name: Flush handlers (Reboot Device)
-    meta: flush_handlers
+  - name: Reboot device
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+      msg: Rebooting machine in 3600 as timeout
+    become: true

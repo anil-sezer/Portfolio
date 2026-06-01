@@ -1,7 +1,7 @@
 ---
-- name: If .kube dir does exists, then do not continue with kubeadm init.
+- name: If .kube dir does exists, then do not continue with kubeadm init
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.kube"
+    path: "{{ ansible_facts['env']['HOME'] }}/.kube"
   register: kube_dir_stat
 
 - name: Init with kubeadm.
@@ -9,10 +9,12 @@
   block:
     - name: Pull the images for kubeadm.
       ansible.builtin.command: kubeadm config images pull
+      become: true
 
     - name: Init the control node!
       ansible.builtin.command: kubeadm init --pod-network-cidr={{ pod_network_cdr }}
       register: kubeadm_output
+      become: true
 
     - name: Fetch the kubeadm init logs, you might need it.
       ansible.builtin.import_tasks: kubeadm-fetch-init-logs.yml
@@ -21,33 +23,33 @@
 
     - name: Ensure .kube directory exists in the user's home directory.
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.kube"
+        path: "{{ ansible_facts['env']['HOME'] }}/.kube"
         state: directory
         mode: '0755'
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
       become: false
 
     - name: Copy Kubernetes admin.conf to user's .kube/config.
       ansible.builtin.copy:
         src: /etc/kubernetes/admin.conf
-        dest: "{{ ansible_env.HOME }}/.kube/config"
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        dest: "{{ ansible_facts['env']['HOME'] }}/.kube/config"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
         mode: '0644'
         remote_src: true
 
     - name: Ensure ownership of ~/.kube/config is correct.
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.kube/config"
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        path: "{{ ansible_facts['env']['HOME'] }}/.kube/config"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
         mode: '0644'
 
     - name: Fetch kube config file.
       ansible.builtin.fetch:
-        src: "{{ ansible_env.HOME }}/.kube/config"
-        dest: "{{ ansible_env.HOME }}/.kube/"
+        src: "{{ ansible_facts['env']['HOME'] }}/.kube/config"
+        dest: "{{ ansible_facts['env']['HOME'] }}/.kube/"
         flat: true
       become: false
 
@@ -59,8 +61,10 @@
       ansible.builtin.command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
       become: false
 
-# capture this commands output 2 times & add a changed when thing for best practice
-#    # todo: add variable for this setting
+    - name: Install cert-manager to control plane
+      ansible.builtin.command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.yaml
+      become: false
+
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation
     - name: Allow pod deployment on control node
       ansible.builtin.command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
@@ -68,7 +72,8 @@
       register: deploy_pods_on_control_node_command_result
       changed_when: deploy_pods_on_control_node_command_result.rc == 0
       failed_when: deploy_pods_on_control_node_command_result.rc != 0
+      when: deploy_containers_on_control_node == true
 
-# kubectl & kubeadm completion'ı ekle
+# todo: kubectl & kubeadm completion'ı ekle
 # kubectl completion -h
 # kubeadm completion -h

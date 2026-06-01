@@ -1,29 +1,36 @@
 ---
 all:
   hosts:
-    rpi5green:
-      ansible_host: rpi5-green.local # 8GB
-    rpi4blue:
-      ansible_host: rpi4-blue.local # 8GB
+    cinema:
+      ansible_host: 192.168.1.119
+      ansible_user: anilsezer
     rpi4red:
-      ansible_host: rpi4-red-nas.local # 4GB
-#    rpi3Purple:
-#      ansible_host: rpi3-purple.local # 1GB # Camera
-#      ansible_user: pi
+      ansible_host: 192.168.1.120 # 4GB
+      ansible_user: anilsezer
+    rpi5green:
+      ansible_host: 192.168.1.121 # 8GB
+      ansible_user: anilsezer
+    rpi4blue:
+      ansible_host: 192.168.1.122 # 8GB
+      ansible_user: anilsezer
+#    rpi5purple:
+#      ansible_host: pi5-purple.local # 8GB
+#      ansible_user: anilsezer
+#    rpi5gold:
+#      ansible_host: pi5-gold.local # 8GB
+#      ansible_user: anilsezer
 
 control_node:
   hosts:
-    rpi5green:
+#    rpi4red:
 
 worker_node:
   hosts:
-    rpi4blue:
-
-kubernetes_nodes:
-  hosts:
     rpi5green:
     rpi4blue:
+#    rpi5purple:
+#    rpi5gold:
 
-nas:
+home_cinema:
   hosts:
-    rpi4red:
+    cinema:

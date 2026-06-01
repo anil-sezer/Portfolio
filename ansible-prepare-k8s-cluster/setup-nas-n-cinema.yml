@@ -1,0 +1,110 @@
+---
+- name: Verify MAC addresses and product_uuid are unique across all nodes
+  hosts: cinema
+  gather_facts: true
+  tasks:
+    - name: Install first batch of required packages
+      ansible.builtin.apt:
+        pkg:
+          - nfs-common
+          - nfs-kernel-server
+        update_cache: true
+        state: present
+#        install_recommends: true
+      become: true
+
+    - name: Ensure /mnt/nas directory exists
+      ansible.builtin.file:
+        path: /mnt/nas
+        state: directory
+        mode: '0777'
+        owner: root
+      become: true
+
+    - name: Ensure /mnt/nas/ssd directory exists
+      ansible.builtin.file:
+        path: /mnt/nas/ssd
+        state: directory
+        mode: '0777'
+        owner: root
+      become: true
+
+    - name: Ensure /mnt/nas/disk directory exists
+      ansible.builtin.file:
+        path: /mnt/nas/disk
+        state: directory
+        mode: '0777'
+        owner: root
+      become: true
+
+    - name: Add NAS disk entry to /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        line: "UUID=8e0824f3-f857-4ac2-8b62-0a8411fa6432 /mnt/nas/disk ext4 defaults 0 2"
+        state: present
+        backup: yes
+      register: fstab_update
+
+    - name: Verify fstab entry was added
+      ansible.builtin.command: grep -Fx "UUID=8e0824f3-f857-4ac2-8b62-0a8411fa6432 /mnt/nas/disk ext4 defaults 0 2" /etc/fstab
+      register: fstab_check
+      changed_when: false
+      failed_when:
+        - fstab_check.rc != 0
+        - fstab_update.changed  # Only fail if we just changed it but it's not there
+
+    - name: Verify mount point exists
+      ansible.builtin.file:
+        path: /mnt/nas/disk
+        state: directory
+        mode: '0755'
+
+    - name: Test mount the filesystem
+      ansible.builtin.command: mount -a
+      register: mount_test
+      changed_when: false
+      failed_when: mount_test.rc != 0
+      
+    - name: Install NFS server package
+      ansible.builtin.apt:
+        name: nfs-kernel-server
+        state: present
+
+    - name: Ensure mount points exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /mnt/nas/disk
+        - /mnt/nas/ssd
+
+    - name: Configure NFS exports
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: "{{ item }}"
+        create: yes
+        state: present
+      loop:
+        - '/mnt/nas/disk *(rw,sync,no_subtree_check,no_root_squash)'
+        - '/mnt/nas/ssd *(rw,sync,no_subtree_check,no_root_squash)'
+      notify:
+        - reload exports
+        - restart nfs
+
+    - name: Ensure NFS service is enabled and running
+      ansible.builtin.systemd:
+        name: nfs-kernel-server
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: reload exports
+      ansible.builtin.command:
+        cmd: exportfs -ra
+      listen: "restart nfs"
+
+    - name: restart nfs
+      ansible.builtin.systemd:
+        name: nfs-kernel-server
+        state: restarted

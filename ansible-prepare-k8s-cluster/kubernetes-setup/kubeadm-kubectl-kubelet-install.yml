@@ -19,6 +19,7 @@
 
 - name: Install kubeadm kubectl and kubelet if they are not already installed
   when: "'kubelet' not in kubelet_check.stdout and 'kubeadm' not in kubeadm_check.stdout and 'kubectl' not in kubectl_check.stdout"
+  become: true
   block:
     - name: Ensure /etc/apt/keyrings directory exists
       ansible.builtin.file:

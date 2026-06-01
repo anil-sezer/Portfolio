@@ -1,0 +1,109 @@
+﻿# ── Logging ──────────────────────────────────────────────────────────────────
+logs:
+  general:
+    level: INFO
+  access:
+    enabled: true
+
+# ── Global args ───────────────────────────────────────────────────────────────
+additionalArguments:
+  - "--global.sendAnonymousUsage"
+#  - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+#  - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+#  - "--entryPoints.web.http.redirections.entryPoint.permanent=true"
+
+# ── Entrypoints ───────────────────────────────────────────────────────────────
+#ports:
+#  web:
+#    port: 80
+#    http:
+#      redirections:
+#        entryPoint:
+#          to: websecure
+#          scheme: https
+#          permanent: true
+#  websecure:
+#    port: 443
+
+# ── Let's Encrypt (Cloudflare DNS challenge) ──────────────────────────────────
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: msnanil@hotmail.com
+      storage: /data/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 5
+
+# ── Cloudflare API token (injected from a Secret) ────────────────────────────
+env:
+  - name: CF_DNS_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-token   # Remember to create this Secret
+        key: token
+
+# ── Persist acme.json so certs survive pod restarts ──────────────────────────
+persistence:
+  enabled: true
+  name: data
+  path: /data
+  size: 128Mi
+  storageClass: ""
+  volumeName: traefik
+
+deployment:
+  initContainers:
+    - name: fix-acme-permissions
+      image: busybox
+      command: ["sh", "-c", "touch /data/acme.json && chmod 600 /data/acme.json"]
+      volumeMounts:
+        - name: data
+          mountPath: /data
+
+# ── Dashboard ─────────────────────────────────────────────────────────────────
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`dashboard.anil-sezer.com`)
+    entryPoints:
+      - web
+#ingressRoute:
+#  dashboard:
+#    enabled: true
+#    matchRule: Host(`dashboard.anil-sezer.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+#    entryPoints:
+#      - websecure
+#    tls:
+#      certResolver: letsencrypt
+#    middlewares:
+#      - name: traefik-auth
+        
+api:
+  dashboard: true
+#  insecure: false
+
+# ── Providers ─────────────────────────────────────────────────────────────────
+providers:
+  kubernetesGateway:
+    enabled: true
+  kubernetesCRD:
+    allowCrossNamespace: true
+
+# ── Gateway ───────────────────────────────────────────────────────────────────
+gateway:
+  listeners:
+    web:
+      namespacePolicy:
+        from: All
+
+# ── Extra manifests: basic-auth Middleware for the dashboard ──────────────────
+extraObjects:
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: traefik-auth
+      namespace: traefik
+    spec:
+      basicAuth:
+        secret: traefik-dashboard-auth # Remember to create this Secret

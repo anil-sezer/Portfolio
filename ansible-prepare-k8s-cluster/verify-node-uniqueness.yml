@@ -1,0 +1,120 @@
+---
+- name: Verify MAC addresses and product_uuid are unique across all nodes
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: Check if DMI product_uuid is available (x86/UEFI systems)
+      ansible.builtin.stat:
+        path: /sys/class/dmi/id/product_uuid
+      register: dmi_uuid_stat
+      become: true
+
+    - name: Check if device-tree serial is available (Raspberry Pi / ARM)
+      ansible.builtin.stat:
+        path: /proc/device-tree/serial-number
+      register: dt_serial_stat
+
+    - name: Read DMI product_uuid (x86/UEFI)
+      ansible.builtin.command: cat /sys/class/dmi/id/product_uuid
+      become: true
+      register: dmi_uuid_output
+      changed_when: false
+      when: dmi_uuid_stat.stat.exists
+
+    - name: Read device-tree serial-number (Raspberry Pi / ARM)
+      ansible.builtin.shell: |
+        # Strip the trailing null byte that the device-tree file contains
+        tr -d '\0' < /proc/device-tree/serial-number
+      register: dt_serial_output
+      changed_when: false
+      when:
+        - not dmi_uuid_stat.stat.exists
+        - dt_serial_stat.stat.exists
+
+    - name: Fail if no unique ID source is available
+      ansible.builtin.fail:
+        msg: >-
+          Neither /sys/class/dmi/id/product_uuid nor /proc/device-tree/serial-number
+          is available on {{ inventory_hostname }}. Cannot verify node uniqueness.
+      when:
+        - not dmi_uuid_stat.stat.exists
+        - not dt_serial_stat.stat.exists
+
+    - name: Set fact for node unique ID (whichever source was available)
+      ansible.builtin.set_fact:
+        node_unique_id: >-
+          {{
+            (dmi_uuid_output.stdout | trim | lower)
+            if dmi_uuid_stat.stat.exists
+            else (dt_serial_output.stdout | trim | lower)
+          }}
+        node_unique_id_source: >-
+          {{
+            'DMI product_uuid'
+            if dmi_uuid_stat.stat.exists
+            else 'device-tree serial-number'
+          }}
+
+    - name: Get MAC addresses from ip link
+      ansible.builtin.shell: |
+        ip link show | awk '/ether/ {print $2}'
+      register: mac_addresses_output
+      changed_when: false
+
+    - name: Set fact for MAC addresses
+      ansible.builtin.set_fact:
+        node_mac_addresses: "{{ mac_addresses_output.stdout_lines | map('trim') | map('lower') | list }}"
+
+    - name: Aggregate all unique IDs across nodes
+      ansible.builtin.set_fact:
+        all_unique_ids: "{{ hostvars | dict2items
+                            | map(attribute='value')
+                            | selectattr('node_unique_id', 'defined')
+                            | map(attribute='node_unique_id')
+                            | list }}"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Aggregate all MAC addresses across nodes
+      ansible.builtin.set_fact:
+        all_mac_addresses: "{{ hostvars | dict2items
+                               | map(attribute='value')
+                               | selectattr('node_mac_addresses', 'defined')
+                               | map(attribute='node_mac_addresses')
+                               | flatten
+                               | list }}"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Assert all unique IDs are unique
+      ansible.builtin.assert:
+        that:
+          - all_unique_ids | length == all_unique_ids | unique | length
+        fail_msg: >-
+          DUPLICATE NODE ID DETECTED!
+          Values: {{ all_unique_ids }}
+          Duplicates: {{ all_unique_ids | difference(all_unique_ids | unique) | unique }}
+        success_msg: "All node unique IDs are unique across {{ all_unique_ids | length }} node(s)."
+      run_once: true
+      delegate_to: localhost
+
+    - name: Assert all MAC addresses are unique
+      ansible.builtin.assert:
+        that:
+          - all_mac_addresses | length == all_mac_addresses | unique | length
+        fail_msg: >-
+          DUPLICATE MAC ADDRESS DETECTED!
+          All MACs: {{ all_mac_addresses }}
+          Duplicates: {{ all_mac_addresses | difference(all_mac_addresses | unique) | unique }}
+        success_msg: "All MAC addresses are unique across all {{ ansible_play_hosts | length }} node(s)."
+      run_once: true
+      delegate_to: localhost
+
+    - name: Display per-node summary
+      ansible.builtin.debug:
+        msg:
+          - "Host       : {{ inventory_hostname }}"
+          - "ID source  : {{ node_unique_id_source }}"
+          - "Unique ID  : {{ node_unique_id }}"
+          - "MAC addrs  : {{ node_mac_addresses | join(', ') }}"

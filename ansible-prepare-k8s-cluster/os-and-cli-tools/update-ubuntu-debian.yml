@@ -4,9 +4,11 @@
     update_cache: true
     upgrade: dist
   register: package_update_result
-  notify:
-    - Reboot device
   become: true
 
-- name: Flush handlers (Reboot Device)
-  meta: flush_handlers
+- name: Reboot device
+  ansible.builtin.reboot:
+    reboot_timeout: 3600
+    msg: Rebooting machine in 3600 as timeout
+  when: package_update_result.changed
+  become: true

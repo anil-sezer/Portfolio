@@ -2,102 +2,73 @@
 # https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 # https://github.com/containerd/containerd/blob/main/docs/man/containerd-config.toml.5.md
 # https://github.com/containerd/containerd/blob/main/docs/managed-opt.md
+# todo: At the next installation, verify how much of it is needed. These might be old.
 
-- name: Remove Docker if its present
-  ansible.builtin.apt:
-    pkg:
-      - docker
-      - docker-engine
-      - docker.io
-      - containerd
-      - runc
-    update_cache: true
-    state: absent
+# todo: Check this, is this still required? Looks like not.
+- name: Check SystemdCgroup is already true
+  ansible.builtin.command:
+    cmd: grep -E '^SystemdCgroup\s*=\s*true' /etc/containerd/config.toml
+  register: check_systemd_cgroup
+  failed_when: false
+  changed_when: false
+  become: true
 
-- name: Remove existing Docker repo keyring if it exists.
-  ansible.builtin.file:
-    path: /etc/apt/keyrings/docker.gpg
-    state: absent
+- name: Check cri is not in disabled_plugins
+  ansible.builtin.command:
+    cmd: grep -E '"cri"' /etc/containerd/config.toml
+  register: check_cri_disabled
+  failed_when: false
+  changed_when: false
+  become: true
 
-- name: Add the Docker repo keyring for containerd.
-  ansible.builtin.shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+- name: Apply containerd config fixes
+  when: check_systemd_cgroup.rc != 0 or check_cri_disabled.rc == 0
+  become: true
+  block:
+  - name: Ensure /etc/containerd directory exists
+    ansible.builtin.file:
+      path: /etc/containerd
+      state: directory
+      mode: '0755'
+      owner: root
+    become: true
 
-- name: Add the Docker repo keyring for containerd.
-  ansible.builtin.shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - name: Start with a full configuration of containerd
+    ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+    changed_when: true
 
-- name: Install first batch of required packages
-  ansible.builtin.apt:
-    pkg:
-      - containerd.io
-    update_cache: true
-    state: present
-    install_recommends: true
+  - name: Get config.toml files previous setting
+    ansible.builtin.import_tasks: ../generic-tasks/fetch-file.yml
+    vars:
+      file_path_and_name: /etc/containerd/config.toml
+      new_file_path_and_name: "/etc/containerd/config-{{ ansible_hostname }}-default.toml"
 
-- name: Ensure /etc/containerd directory exists
-  ansible.builtin.file:
-    path: /etc/containerd
-    state: directory
-    mode: '0755'
-    owner: root
+  - name: Ensure SystemdCgroup is set to true in containerd config
+    ansible.builtin.lineinfile:
+      path: /etc/containerd/config.toml
+      regexp: '^SystemdCgroup\\s*=\\s*(false|true)'
+      line: 'SystemdCgroup = true'
+      insertafter: '[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]'
+    become: true
 
-- name: Start with a full configuration of containerd
-  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
-  changed_when: true
+  - name: Ensure disabled_plugins does not have cri in it.
+    ansible.builtin.replace:
+      path: /etc/containerd/config.toml
+      regexp: '([\"]cri[\"][,]?)'
+      replace: ''
+      after: 'disabled_plugins ='
+      before: ']'
+    become: true
 
-- name: Get config.toml files previous setting
-  ansible.builtin.import_tasks: ../../generic-tasks/fetch-file.yml
-  vars:
-    file_path_and_name: /etc/containerd/config.toml
-    new_file_path_and_name: "/etc/containerd/config-{{ ansible_hostname }}-default.toml"
-
-- name: Ensure SystemdCgroup is set to true in containerd config
-  ansible.builtin.lineinfile:
-    path: /etc/containerd/config.toml
-    regexp: '^SystemdCgroup\\s*=\\s*(false|true)'
-    line: 'SystemdCgroup = true'
-    insertafter: '[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]'
-
-- name: Ensure disabled_plugins does not have cri in it.
-  ansible.builtin.replace:
-    path: /etc/containerd/config.toml
-    regexp: '([\"]cri[\"][,]?)'
-    replace: ''
-    after: 'disabled_plugins ='
-    before: ']'
-
-# If using Calico, you might need to use this value: "/usr/lib/cni"
-# check the "/opt/cni/bin" and "/usr/lib/cni" for your cli brand.
-# This folder location is also in the flannel or calico cni yaml
-#    - name: Ensure containerd uses correct cni bin dir
-#      ansible.builtin.lineinfile:
-#        path: /etc/containerd/config.toml
-#        regexp: '^bin_dir ='
-#        line: 'bin_dir = "{{ cni_bin_dir }}"'
-#        after: '[plugins."io.containerd.grpc.v1.cri".cni]'
-#        before: '[plugins."io.containerd.grpc.v1.cri".containerd]'
-#
-#    - name: Ensure containerd uses correct cni conf dir
-#      ansible.builtin.lineinfile:
-#        path: /etc/containerd/config.toml
-#        regexp: '^conf_dir ='
-#        line: 'conf_dir = "{{ cni_conf_dir }}"'
-#        after: '[plugins."io.containerd.grpc.v1.cri".cni]'
-#        before: '[plugins."io.containerd.grpc.v1.cri".containerd]'
-
-# TODO: /var/lib/containerd/opt has nothing, should I replace that val with this? Also, path is not a unique variable! There are many path vars!
-# - name: Ensure containerd uses correct whatever that stuff is
-#   ansible.builtin.lineinfile:
-#     path: "{{ containerd_config_path }}"
-#     regexp: '^path ='
-#     line: 'path = "/var/lib/containerd/opt"'
-
-- name: Get config.toml files edited state so we can compare if something goes awry
-  ansible.builtin.import_tasks: ../../generic-tasks/fetch-file.yml
-  vars:
-    file_path_and_name: /etc/containerd/config.toml
-    new_file_path_and_name: /etc/containerd/config-edited.toml
-
-- name: Restart the containerd service
-  ansible.builtin.systemd:
-    name: containerd
-    state: restarted
+  - name: Get config.toml files edited state so we can compare if something goes awry
+    ansible.builtin.import_tasks: ../generic-tasks/fetch-file.yml
+    vars:
+      file_path_and_name: /etc/containerd/config.toml
+      new_file_path_and_name: /etc/containerd/config-edited.toml
+    become: true
+  
+  - name: Restart the containerd service
+    ansible.builtin.systemd:
+      name: containerd
+      state: restarted
+    become: true

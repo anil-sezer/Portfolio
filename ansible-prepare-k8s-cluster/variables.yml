@@ -1,5 +1,7 @@
 ---
-kubernetes_version: v1.31
+arch: "arm64"
+
+kubernetes_version: v1.36
 
 # Containerd settings for flannel. all of those are in the yml file below.
 # https://github.com/flannel-io/flannel/blob/master/Documentation/kube-flannel.yml
@@ -10,11 +12,23 @@ kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
 
 # Tasks that ran on the control & worker planes vary a bit.
 control_plane_ip: 192.168.1.120
+deploy_containers_on_control_node: false
 
 # For Installing some nice to have tools.
 # TODO: Implement these
-install_nice_to_have_tools: false
-install_on_all_nodes: false # Only installs at the control node to reduce the update count.
+install_nice_to_have_tools: true
+install_on_all_nodes: true # Only installs at the control node to reduce the update count.
 
-dustversion: v1.0.0
-procsversion: v0.14.5
+# https://github.com/bootandy/dust
+dustversion: v1.2.4
+# https://github.com/dalance/procs
+procsversion: v0.14.11
+
+# Used for sending oh-my-zsh files from control node to managed nodes.
+control_node_homepath: "/home/anilsezer"
+
+# Containerd versions
+containerd_version: "2.3.0"
+runc_version: "1.3.2"
+cni_version: "1.6.0"
+tmp_dir_containerd: "/tmp/containerd-install"

@@ -1,0 +1,29 @@
+﻿# https://palark.com/blog/installing-fully-fledged-vanilla-kubernetes-on-raspberry-pi
+---
+- name: Install iptables-persistent
+  ansible.builtin.apt:
+    name: iptables-persistent
+    state: present
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: true
+
+- name: Ensure Kubernetes pod subnet rules exist in rules.v4
+  ansible.builtin.blockinfile:
+    path: /etc/iptables/rules.v4
+    create: true
+    block: |
+      *filter
+      :INPUT ACCEPT [0:0]
+      :FORWARD ACCEPT [0:0]
+      :OUTPUT ACCEPT [0:0]
+      -A FORWARD -s 10.1.0.0/16 -j ACCEPT
+      -A FORWARD -d 10.1.0.0/16 -j ACCEPT
+      COMMIT
+  register: iptables_rules
+  become: true
+
+- name: Apply iptables rules immediately
+  ansible.builtin.command: iptables-restore /etc/iptables/rules.v4
+  when: iptables_rules.changed
+  become: true

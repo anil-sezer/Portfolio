@@ -1,8 +1,0 @@
----
-- name: Is swap disabled?
-  ansible.builtin.assert:
-    that:
-      - "ansible_memory_mb.swap.cached == 0"
-      - "ansible_memory_mb.swap.free == 0"
-      - "ansible_memory_mb.swap.total == 0"
-      - "ansible_memory_mb.swap.used == 0"

@@ -1,0 +1,34 @@
+---
+- name: Update all nodes, then set up some quality-of-life tools
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - variables.yml
+
+  tasks:
+    # -----------------------
+    #  Install Core Components
+    # -----------------------
+    - name: Fully update Ubuntu/Debian
+      ansible.builtin.import_tasks: ./os-and-cli-tools/update-ubuntu-debian.yml
+
+    - name: Install some must have components like git, gpg, unzip
+      ansible.builtin.import_tasks: ./os-and-cli-tools/install-core-components.yml
+
+    - name: Setting Oh my ZSH
+      ansible.builtin.import_tasks: ./os-and-cli-tools/install-oh-my-zsh.yml
+
+    - name: Install Cli tools like dust, batcat, fzf and others
+      ansible.builtin.import_tasks: ./os-and-cli-tools/install-cli-tools.yml
+
+    - name: Fully update Ubuntu/Debian
+      ansible.builtin.import_tasks: ./os-and-cli-tools/update-ubuntu-debian.yml
+
+    # -----------------
+    #  Watchdog. Currently not enabled
+    # -----------------
+#    - name: Setup watchdog
+#      ansible.builtin.import_tasks: ./hardware-watchdog/enable-watchdog.yml
+
+#    - name: Add shutdown markers
+#      ansible.builtin.import_tasks: ./hardware-watchdog/add-shutdown-markers.yml

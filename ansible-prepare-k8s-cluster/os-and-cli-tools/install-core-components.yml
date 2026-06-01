@@ -36,3 +36,4 @@
       - ca-certificates
       - bzip2 # unzipping .bz2 files
     state: present
+  become: true

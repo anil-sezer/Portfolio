@@ -1,9 +1,0 @@
----
-- name: Get config.toml files previous setting
-  ansible.builtin.import_tasks: ../../generic-tasks/extract-sandbox-image-urls.yml
-
-- name: Are containerd and kubelet sandbox images are same?
-  ansible.builtin.assert:
-    that: "sandbox_image_at_kubelet == sandbox_image_at_containerd"
-    success_msg: "Sandbox images are equal. Image url: {{ sandbox_image_at_kubelet }}"
-    fail_msg: "Sandbox images are not equal at kubelet and containerd, this might cause problems. Kubelet: {{ sandbox_image_at_kubelet }} Containerd: {{ sandbox_image_at_containerd }}"

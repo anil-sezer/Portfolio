@@ -1,0 +1,80 @@
+---
+- name: Setup Kubernetes cluster
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - variables.yml
+
+  tasks:
+    # -----------------
+    #  Prepare for Kubernetes!
+    # -----------------
+    - name: Create local directory for logs
+      ansible.builtin.file:
+        path: "{{ kubeadm_init_log_dir }}"
+        state: directory
+      delegate_to: localhost
+
+    - name: Disabling swap is a must for Kubernetes
+      ansible.builtin.import_tasks: kubernetes-setup/swap-disable.yml
+
+    - name: Manually enable IPv4 packet forwarding for Kubernetes
+      ansible.builtin.import_tasks: kubernetes-setup/ipv4-kernel.yml
+
+    - name: Manually enable IPv4 packet forwarding for Kubernetes
+      ansible.builtin.import_tasks: kubernetes-setup/ipv4-firewall.yml
+
+    - name: Nodes need to be able to resolve their own hostname to a non-loopback IP. Lets do that.
+      ansible.builtin.import_tasks: kubernetes-setup/edit-etc-host.yml
+
+    - name: Install first batch of required packages
+      ansible.builtin.apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg
+          - gnupg
+          - lsb-release
+          - nfs-common
+        update_cache: true
+        state: present
+        install_recommends: true
+      become: true
+
+    - name: Install containerd
+      ansible.builtin.import_tasks: kubernetes-setup/containerd-install.yml
+
+    - name: Edit containerd configs so it will behave with kubelet
+      ansible.builtin.import_tasks: kubernetes-setup/containerd-config.yml
+
+    - name: Enable some required kernel modules for containerd
+      ansible.builtin.import_tasks: kubernetes-setup/containerd-kernel-modules.yml
+
+    # -----------------
+    #  Install Kubernetes!
+    # -----------------
+
+    - name: Install kubeadm, kubectl and kubelet
+      ansible.builtin.import_tasks: kubernetes-setup/kubeadm-kubectl-kubelet-install.yml
+
+    - name: Let's boot the control plane!
+      ansible.builtin.import_tasks: kubernetes-setup/kubeadm-init-control-node.yml
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+#    - name: Get join command
+#      ansible.builtin.command: kubeadm token create --print-join-command
+#      register: join_command
+#
+#    - name: Join worker nodes
+#      ansible.builtin.command: "{{ join_command.stdout }}"
+#      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    - name: Install kubecolor
+      ansible.builtin.import_tasks: kubernetes-setup/kubecolor-install.yml
+
+# Lets skip MetalLB for a while. It's here and working if I need it.
+#    - name: Setup MetalLB
+#      ansible.builtin.import_tasks: kubernetes-setup/setup-metal-lb.yml
+
+    # todo: Add traefik installation via helm.

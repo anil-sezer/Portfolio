@@ -1,0 +1,203 @@
+---
+# =============================================================================
+# Ansible Tasks: Install containerd (Option 1 – Official Binaries)
+# Target OS  : Ubuntu Server (latest, arm64)
+# Components : containerd + systemd service, runc, CNI plugins
+#
+# Update the version variables below when new releases are available:
+#   containerd : https://github.com/containerd/containerd/releases
+#   runc       : https://github.com/opencontainers/runc/releases
+#   cni_plugins: https://github.com/containernetworking/plugins/releases
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Prep
+# -----------------------------------------------------------------------------
+
+- name: Remove Docker if its present
+  ansible.builtin.apt:
+    pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    update_cache: true
+    state: absent
+  become: true
+
+- name: Create temporary download directory
+  ansible.builtin.file:
+    path: "{{ tmp_dir_containerd }}"
+    state: directory
+    mode: "0755"
+  become: true
+  changed_when: false
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - tar
+    state: present
+    update_cache: true
+  become: true
+
+# -----------------------------------------------------------------------------
+# Step 1 – containerd
+# -----------------------------------------------------------------------------
+
+- name: Check if containerd is installed
+  ansible.builtin.command: containerd --version
+  register: containerd_check
+  failed_when: false
+  changed_when: false
+  
+- name: Download containerd archive
+  ansible.builtin.get_url:
+    url: "https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-{{ arch }}.tar.gz"
+    dest: "{{ tmp_dir_containerd }}/containerd-{{ containerd_version }}-linux-{{ arch }}.tar.gz"
+    checksum: "sha256:https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-{{ arch }}.tar.gz.sha256sum"
+    mode: "0644"
+  become: true
+  when: containerd_check.rc != 0
+
+- name: Extract containerd binaries to /usr/local
+  ansible.builtin.unarchive:
+    src: "{{ tmp_dir_containerd }}/containerd-{{ containerd_version }}-linux-{{ arch }}.tar.gz"
+    dest: /usr/local
+    remote_src: true
+    creates: /usr/local/bin/containerd
+  become: true
+  when: containerd_check.rc != 0
+
+- name: Create systemd directory for containerd service
+  ansible.builtin.file:
+    path: /usr/local/lib/systemd/system
+    state: directory
+    mode: "0755"
+  become: true
+  when: containerd_check.rc != 0
+
+- name: Download containerd systemd service file
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
+    dest: /usr/local/lib/systemd/system/containerd.service
+    mode: "0644"
+  become: true
+  when: containerd_check.rc != 0
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+  when: containerd_check.rc != 0
+
+- name: Enable and start containerd service
+  ansible.builtin.systemd:
+    name: containerd
+    enabled: true
+    state: started
+  become: true
+  when: containerd_check.rc != 0
+
+# -----------------------------------------------------------------------------
+# Step 2 – runc
+# -----------------------------------------------------------------------------
+
+- name: Check if runc is already installed
+  ansible.builtin.stat:
+    path: /usr/local/sbin/runc
+  register: runc_stat
+
+- name: Download runc binary
+  ansible.builtin.get_url:
+    url: "https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.{{ arch }}"
+    dest: "{{ tmp_dir_containerd }}/runc.{{ arch }}"
+    checksum: "sha256:https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.sha256sum"
+    mode: "0755"
+  become: true
+  when: not runc_stat.stat.exists
+
+- name: Install runc to /usr/local/sbin
+  ansible.builtin.copy:
+    src: "{{ tmp_dir_containerd }}/runc.{{ arch }}"
+    dest: /usr/local/sbin/runc
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+  when: not runc_stat.stat.exists
+
+# -----------------------------------------------------------------------------
+# Step 3 – CNI plugins
+# -----------------------------------------------------------------------------
+- name: Check if CNI plugins are already installed
+  ansible.builtin.stat:
+    path: /opt/cni/bin
+  register: cni_stat
+  
+- name: Create CNI bin directory
+  ansible.builtin.file:
+    path: /opt/cni/bin
+    state: directory
+    mode: "0755"
+  become: true
+  when: not cni_stat.stat.exists
+
+- name: Download CNI plugins archive
+  ansible.builtin.get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ cni_version }}/cni-plugins-linux-{{ arch }}-v{{ cni_version }}.tgz"
+    dest: "{{ tmp_dir_containerd }}/cni-plugins-linux-{{ arch }}-v{{ cni_version }}.tgz"
+    checksum: "sha256:https://github.com/containernetworking/plugins/releases/download/v{{ cni_version }}/cni-plugins-linux-{{ arch }}-v{{ cni_version }}.tgz.sha256"
+    mode: "0644"
+  become: true
+  when: not cni_stat.stat.exists
+
+- name: Extract CNI plugins to /opt/cni/bin
+  ansible.builtin.unarchive:
+    src: "{{ tmp_dir_containerd }}/cni-plugins-linux-{{ arch }}-v{{ cni_version }}.tgz"
+    dest: /opt/cni/bin
+    remote_src: true
+    creates: /opt/cni/bin/bridge
+  become: true
+  when: not cni_stat.stat.exists
+
+# -----------------------------------------------------------------------------
+# Verify
+# -----------------------------------------------------------------------------
+
+- name: Verify containerd is running
+  ansible.builtin.systemd:
+    name: containerd
+  register: containerd_service
+  failed_when: containerd_service.status.ActiveState != "active"
+  become: true
+
+- name: Print containerd version
+  ansible.builtin.command: containerd --version
+  register: containerd_ver
+  changed_when: false
+
+- name: Print runc version
+  ansible.builtin.command: runc --version
+  register: runc_ver
+  changed_when: false
+
+- name: Show installed versions
+  ansible.builtin.debug:
+    msg:
+      - "{{ containerd_ver.stdout }}"
+      - "{{ runc_ver.stdout }}"
+
+# -----------------------------------------------------------------------------
+# Cleanup
+# -----------------------------------------------------------------------------
+
+- name: Remove temporary download directory
+  ansible.builtin.file:
+    path: "{{ tmp_dir_containerd }}"
+    state: absent
+  become: true
+  changed_when: false

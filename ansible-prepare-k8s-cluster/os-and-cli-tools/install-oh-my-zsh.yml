@@ -5,7 +5,7 @@
   register: ohmyzsh_installed
 
 - name: Setup Oh My ZSH
-  when: ansible_env.SHELL != '/bin/zsh' and not ohmyzsh_installed.stat.exists
+  when: ansible_facts['env']['SHELL'] != '/bin/zsh' and not ohmyzsh_installed.stat.exists
   block:
     - name: Install zsh
       ansible.builtin.apt:
@@ -16,7 +16,7 @@
     
     - name: Set user shell to zsh
       ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
+        name: "{{ ansible_facts['user_id'] }}"
         shell: /bin/zsh
       become: true
     

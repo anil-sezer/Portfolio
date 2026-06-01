@@ -1,83 +1,26 @@
 ---
-# TODO: test this again in the next Kubernetes version
+- name: Prevent cloud-init from managing /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/cloud/cloud.cfg
+    regexp: '^\s*- {{ item }}$'
+    state: absent
+  loop:
+    - update_etc_hosts
+    - manage_etc_hosts
+  become: true
 
-# TODO: All other nodes hostnames and ip's should be added to the /etc/hosts too!
-# Since this is a small cluster, lets not mess with the CoreDNS configs and keep this part simple.
+- name: Fail if the node IP address fact is not available
+  ansible.builtin.fail:
+    msg: >
+      ansible_facts[default_ipv4][address] is not defined for {{ ansible_hostname }}.
+      Make sure network facts are gathered (gather_facts: true) and
+      the node has a default IPv4 address.
+  when: ansible_facts['default_ipv4']['address'] is not defined
 
-# https://www.reddit.com/r/kubernetes/comments/tava17/edit_etchosts_file_on_nodes_or_just_leave_them_be/
-- name: Check if multiple lines exist in the file
-  ansible.builtin.shell: "grep -Fxq -e '- update_etc_hosts' -e '- manage_etc_hosts' /etc/cloud/cloud.cfg"
-  register: line_check
-  ignore_errors: true
-  changed_when: false
-
-# The entry 127.0.1.1 hostname hostname in /etc/hosts is commonly used in Debian-based systems as
-# a placeholder for the system's hostname (in this case, rpi4-blue) when the machine doesn't have
-# a static or dynamically assigned IP address.
-# Why It's Not Ideal for DNS:
-# 1 - Loopback Address: The 127.0.1.1 IP is part of the loopback range (127.0.0.0/8) and is local to the machine.
-# It's not routable and won't resolve to the node from other devices on the network.
-
-# 2 - Clustered or Networked Environments: In Kubernetes, or any environment where the node's hostname
-# needs to be resolved by other nodes, using 127.0.1.1 in /etc/hosts is problematic because other devices won't be able to resolve it.
-
-# 3 - Default Behavior: The default 127.0.1.1 entry works fine for single-node, isolated systems.
-
-- name: Edit /etc/cloud/cloud.cfg so It will not revert changes at /etc/hosts after restart
-  when: line_check.rc == 0
-  block:
-    - name: Get /etc/cloud/cloud.cfg files default state so we can compare if something goes awry
-      ansible.builtin.import_tasks: ../../generic-tasks/fetch-file.yml
-      vars:
-        file_path_and_name: /etc/cloud/cloud.cfg
-        new_file_path_and_name: "/tmp/cloud-{{ ansible_hostname }}-default.cfg"
-
-    - name: Remove the 'update_etc_hosts' line
-      ansible.builtin.lineinfile:
-        path: /etc/cloud/cloud.cfg
-        regexp: '^\s*- update_etc_hosts$'
-        state: absent
-
-    - name: Remove the 'manage_etc_hosts' line
-      ansible.builtin.lineinfile:
-        path: /etc/cloud/cloud.cfg
-        regexp: '^\s*- manage_etc_hosts$'
-        state: absent
-
-    - name: Get /etc/cloud/cloud.cfg files default state so we can compare if something goes awry
-      ansible.builtin.import_tasks: ../../generic-tasks/fetch-file.yml
-      vars:
-        file_path_and_name: /etc/cloud/cloud.cfg
-        new_file_path_and_name: "/tmp/cloud-{{ ansible_hostname }}-edited.cfg"
-
-- name: Check if the default config is in the /etc/hosts file
-  ansible.builtin.shell: "grep -Fxq '127.0.1.1 {{ ansible_hostname }} {{ ansible_hostname }}' /etc/hosts"
-  register: update_etc_hosts_check
-  ignore_errors: true
-  changed_when: false
-
-- name: Update /etc/hosts so It will be ready for Kubernetes.
-  when: update_etc_hosts_check.rc == 0
-  block:
-    - name: Debug hostname and IP
-      ansible.builtin.debug:
-        msg:
-          - "Hostname: {{ ansible_hostname }}"
-          - "IP Address: {{ ansible_default_ipv4.address }}"
-
-    - name: Remove all comment lines until hostname in /etc/hosts
-      ansible.builtin.replace:
-        path: /etc/hosts
-        regexp: '^(#.*\n)'
-        replace: ''
-        before: '{{ ansible_hostname }}'
-
-    - name: Construct regex for replacing hostname entry
-      ansible.builtin.set_fact:
-        hostname_regex: "^127\\.0\\.1\\.1\\s+{{ ansible_hostname | regex_escape }}\\s+{{ ansible_hostname | regex_escape }}"
-
-    - name: Replace the hostname entry in /etc/hosts with node IP and hostname, for Kube DNS
-      ansible.builtin.replace:
-        path: /etc/hosts
-        regexp: "{{ hostname_regex }}"
-        replace: "{{ ansible_default_ipv4.address }} {{ ansible_hostname }}"
+- name: Replace loopback hostname entry with real IP
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: "^127\\.0\\.1\\.1\\s+{{ ansible_facts['hostname'] | regex_escape }}(\\s|$)"
+    line: "{{ ansible_facts['default_ipv4']['address'] }} {{ ansible_facts['hostname'] }}"
+    state: present
+  become: true

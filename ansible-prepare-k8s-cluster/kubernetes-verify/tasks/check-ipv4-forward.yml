@@ -1,9 +1,0 @@
----
-- name: Check if IP forwarding is enabled
-  ansible.builtin.command: sysctl net.ipv4.ip_forward
-  register: ip_forward_status
-  changed_when: false
-
-- name: Does kernel module list has br_netfilter and overlay?
-  ansible.builtin.assert:
-    that: "'net.ipv4.ip_forward = 1' in ip_forward_status.stdout"

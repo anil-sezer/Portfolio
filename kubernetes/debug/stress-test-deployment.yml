@@ -1,0 +1,19 @@
+﻿# k get pod stress-test -w
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stress-test
+spec:
+  containers:
+    - name: stresser
+      image: ghcr.io/colinianking/stress-ng
+      command: ["stress-ng"]
+      args: ["--cpu", "2", "--vm", "1", "--vm-bytes", "200M", "--timeout", "120s"]
+      resources:
+        requests:
+          cpu: "50m"
+          memory: "128Mi"
+        limits:
+          cpu: "100m"
+          memory: "150Mi"

@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-registry-ingress
+  namespace: image-registry
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: image-registry-limit-body-size-to-2g-middleware@kubernetescrd
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - imgregistry.anil-sezer.com
+      secretName: docker-registry-tls
+  rules:
+    - host: imgregistry.anil-sezer.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: docker-registry-clusterip
+                port:
+                  number: 5000
+            path: /
+            pathType: Prefix

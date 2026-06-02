@@ -1,0 +1,27 @@
+﻿---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngnix
+  namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - ngnix.anil-sezer.com
+      secretName: ngnix-web-tls
+  rules:
+    - host: ngnix.anil-sezer.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: nginx-web
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

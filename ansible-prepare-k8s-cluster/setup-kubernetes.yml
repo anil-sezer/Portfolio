@@ -73,8 +73,8 @@
     - name: Install kubecolor
       ansible.builtin.import_tasks: kubernetes-setup/kubecolor-install.yml
 
-# Lets skip MetalLB for a while. It's here and working if I need it.
-#    - name: Setup MetalLB
-#      ansible.builtin.import_tasks: kubernetes-setup/setup-metal-lb.yml
+    - name: Setup MetalLB
+      ansible.builtin.import_tasks: kubernetes-setup/setup-metal-lb.yml
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
 
     # todo: Add traefik installation via helm.

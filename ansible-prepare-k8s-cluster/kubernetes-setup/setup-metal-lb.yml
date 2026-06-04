@@ -1,11 +1,5 @@
 ---
-# TODO: Set these later.
-# - name: This command is same-ish as the others below. Use the other ones?
-#   ansible.builtin.shell: >
-#     kubectl get configmap kube-proxy -n kube-system -o yaml |
-#     sed -e "s/strictARP: false/strictARP: true/" |
-#     kubectl diff -f - -n kube-system
-#   register:
+# todo: Check if the metal-lb is already installed. This needs to be idempotent. Also only run in control node
 
 - name: Get kube-proxy config.
   ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml
@@ -44,18 +38,13 @@
   become: false
   changed_when: false
 
-# - name: Install metallb via helm
-#   block:
-#     - name: Add the metallb helm repo.
-#       ansible.builtin.command: helm repo add metallb https://metallb.github.io/metallb
-
-#     - name: Install while using the necessarry values.
-#       ansible.builtin.command: helm install metallb metallb/metallb -f values.yaml
-
 - name: Apply metallb configs
   ansible.builtin.command: kubectl apply -f ../../../metallb-config.yml
   register: config_apply_result
   become: false
+
+- name: Install FRR-K8s mode (recommended)
+  ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/config/manifests/metallb-frr-k8s.yaml
 
 - name: Print kubectl apply result
   debug:

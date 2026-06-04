@@ -1,0 +1,39 @@
+﻿authentik:
+  secret_key: "90e05c90fd5cbead22a65e78ba4ce01dca0dabe8dc67ed1478a482bd4517185c397ecc30964931f78d86e473dfedd702a74f"
+  # This sends anonymous usage-data, stack traces on errors and
+  # performance data to authentik.error-reporting.a7k.io, and is fully opt-in
+  error_reporting:
+    enabled: true
+  postgresql:
+    # -- set the postgresql hostname to talk to
+    # if unset and .Values.postgresql.enabled == true, will generate the default
+    # @default -- `{{ .Release.Name }}-postgresql`
+    host: "postgres-clusterip.database.svc.cluster.local"
+    # -- postgresql Database name
+    # @default -- `authentik`
+    name: "authentik"
+    # -- postgresql Username
+    # @default -- `authentik`
+    user: "example-user"
+    # -- postgresql password
+    password: "example-password"
+    # -- postgresql port
+    port: 5432
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - authentik.anil-sezer.com
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    tls:
+      - secretName: "authentik-tls"
+        hosts:
+          - "authentik.anil-sezer.com"
+
+postgresql:
+  enabled: false

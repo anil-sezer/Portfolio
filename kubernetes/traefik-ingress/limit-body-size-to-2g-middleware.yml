@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: limit-body-size-to-2g-middleware
+  namespace: image-registry
+spec:
+  buffering:
+    maxRequestBodyBytes: 2147483648  # 2GB — adjust to your largest expected image layer
+    memRequestBodyBytes: 2097152     # 2MB in memory before spilling to disk
+    retryExpression: "IsNetworkError() && Attempts() < 2"

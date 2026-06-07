@@ -5,10 +5,10 @@ metadata:
   name: docker-registry-ingress
   namespace: image-registry
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: image-registry-limit-body-size-to-2g-middleware@kubernetescrd
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: image-registry-limit-body-size-to-2g-middleware@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:

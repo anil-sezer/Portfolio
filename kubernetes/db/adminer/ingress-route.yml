@@ -1,0 +1,20 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adminer
+  namespace: database
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`adminer.anil-sezer.com`)
+      kind: Rule
+      middlewares:
+        - name: forward-auth
+          namespace: authentik
+      services:
+        - name: adminer
+          port: 8080
+  tls:
+    secretName: adminer-tls

@@ -1,0 +1,28 @@
+﻿---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: uptime
+  namespace: support
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: authentik-forward-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - uptime.anil-sezer.com
+      secretName: uptime-tls
+  rules:
+    - host: uptime.anil-sezer.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: uptime
+                port:
+                  number: 3001
+            path: /
+            pathType: Prefix

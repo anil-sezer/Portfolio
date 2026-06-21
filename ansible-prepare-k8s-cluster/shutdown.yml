@@ -1,0 +1,52 @@
+---
+- name: Shut down all the nodes
+  hosts: k8s_nodes
+  gather_facts: true
+  vars_files:
+    - variables.yml
+  tasks:
+    - name: Drain Kubernetes nodes
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      block:
+        - name: Get list of Kubernetes nodes
+          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
+          register: k8s_nodes
+          changed_when: false
+          ignore_errors: true
+
+        - name: Drain each worker node
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes is succeeded
+            - item != ansible_facts['hostname'] and item != ansible_facts['nodename']
+          ignore_errors: true
+
+        - name: Drain the control node last
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes is succeeded
+            - item == ansible_facts['hostname'] or item == ansible_facts['nodename']
+          ignore_errors: true
+
+    - name: Shut down non-control-plane hosts
+      ansible.builtin.shell: "sleep 2 && shutdown -h now"
+      async: 1
+      poll: 0
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    - name: Pause to allow non-control-plane hosts to shut down
+      ansible.builtin.pause:
+        seconds: 10
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    - name: Shut down the control plane host
+      ansible.builtin.shell: "sleep 2 && shutdown -h now"
+      async: 1
+      poll: 0
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip

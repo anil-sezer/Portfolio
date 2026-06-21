@@ -20,6 +20,12 @@ all:
 #      ansible_host: pi5-gold.local # 8GB
 #      ansible_user: anilsezer
 
+k8s_nodes:
+  hosts:
+    rpi4red:
+    rpi5green:
+    rpi4blue:
+
 control_node:
   hosts:
 #    rpi4red:

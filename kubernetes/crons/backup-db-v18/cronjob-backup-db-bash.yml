@@ -1,0 +1,70 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: database
+spec:
+  schedule: "0 0 * * 0"  # Runs every Sunday at 00:00
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: postgres-backup
+              image: imgregistry.anil-sezer.com/pg_dump:v18
+              env:
+                - name: RETAIN_COUNT
+                  value: "4" # Keep this number of backups
+
+                - name: SQL_DB_NAME
+                  value: "portfolio"
+
+                - name: ENV_NAME
+                  value: "Portfolio-PROD"
+
+                - name: SQL_DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: SQL_DB_HOST
+    
+                - name: SQL_DB_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: SQL_DB_PORT
+    
+                - name: SQL_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: SQL_DB_USER
+    
+                - name: SQL_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: SQL_DB_PASSWORD
+
+                - name: TELEGRAM_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: TELEGRAM_BOT_TOKEN
+
+                - name: TELEGRAM_CHAT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-prod
+                      key: TELEGRAM_CHAT_ID
+
+              volumeMounts:
+                - name: db-backups-nfs
+                  mountPath: /backups
+                  readOnly: false
+          volumes:
+            - name: db-backups-nfs
+              persistentVolumeClaim:
+                claimName: db-backups-nfs

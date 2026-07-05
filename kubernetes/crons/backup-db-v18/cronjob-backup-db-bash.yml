@@ -3,7 +3,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: postgres-backup
-  namespace: database
+  namespace: portfolio
 spec:
   schedule: "0 0 * * 0"  # Runs every Sunday at 00:00
   jobTemplate:
@@ -61,10 +61,10 @@ spec:
                       key: TELEGRAM_CHAT_ID
 
               volumeMounts:
-                - name: db-backups-nfs
+                - name: db-backup-portfolio-nfs
                   mountPath: /backups
                   readOnly: false
           volumes:
-            - name: db-backups-nfs
+            - name: db-backup-portfolio-nfs
               persistentVolumeClaim:
-                claimName: db-backups-nfs
+                claimName: db-backup-portfolio-nfs

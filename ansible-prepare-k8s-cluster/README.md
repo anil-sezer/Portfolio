@@ -8,9 +8,10 @@
 # https://github.com/geerlingguy/raspberry-pi-dramble/tree/master
 
 # Run this:
-ansible-playbook -i inventory.yml verify-node-uniqueness.yml 
-ansible-playbook -i inventory.yml prepare-core-components.yml 
-ansible-playbook -i inventory.yml setup-kubernetes.yml 
+ansible-playbook -i inventory.yml verify-node-uniqueness.yml
+ansible-playbook -i inventory.yml prepare-core-components.yml
+ansible-playbook -i inventory.yml setup-kubernetes.yml
+ansible-playbook -i inventory.yml shutdown.yml
 
 # Dry run:
 ansible-playbook -i inventory.yml setup-kubernetes.yml --check
@@ -24,8 +25,6 @@ ansible-lint setup-kubernetes.yml
 # Post install:
 
 Remember to add cert manager via helm.
-
-ADD NEW NODES TO THE COREDNS AFTER THEY ARE READY, check core-dns-config.yml for details.
 
 TEST CGROUP
 

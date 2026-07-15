@@ -1,6 +1,6 @@
 ---
 - name: Setup Kubernetes cluster
-  hosts: all
+  hosts: k8s_nodes
   gather_facts: true
   vars_files:
     - variables.yml
@@ -72,6 +72,7 @@
 
     - name: Install kubecolor
       ansible.builtin.import_tasks: kubernetes-setup/kubecolor-install.yml
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
 
     - name: Setup MetalLB
       ansible.builtin.import_tasks: kubernetes-setup/setup-metal-lb.yml

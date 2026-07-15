@@ -1,6 +1,7 @@
 ---
-# todo: Check if the metal-lb is already installed. This needs to be idempotent. Also only run in control node
-
+# todo: Check if the metal-lb is already installed. This needs to be idempotent. Also only run in control node.
+# todo: Has a bug rn and I dont wanna address it: 
+# Error loading tasks: failed at splitting arguments, either an unbalanced jinja2 block or quotes: sed -i "s/mode: \"[^"]*\"/mode: \"ipvs\"" /tmp/kube-proxy-temp-config-for-metal-lb.yml
 - name: Get kube-proxy config.
   ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml
   changed_when: false

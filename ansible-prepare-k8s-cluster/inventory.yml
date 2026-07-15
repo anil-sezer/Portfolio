@@ -13,29 +13,31 @@ all:
     rpi4blue:
       ansible_host: 192.168.1.122 # 8GB
       ansible_user: anilsezer
-#    rpi5purple:
-#      ansible_host: pi5-purple.local # 8GB
-#      ansible_user: anilsezer
-#    rpi5gold:
-#      ansible_host: pi5-gold.local # 8GB
-#      ansible_user: anilsezer
+    rpi5gold:
+      ansible_host: 192.168.1.123 # 8GB
+      ansible_user: anilsezer
+    rpi5purple:
+      ansible_host: 192.168.1.124 # 8GB
+      ansible_user: anilsezer
 
 k8s_nodes:
   hosts:
     rpi4red:
     rpi5green:
     rpi4blue:
+    rpi5purple:
+    rpi5gold:
 
 control_node:
   hosts:
-#    rpi4red:
+    rpi4red:
 
 worker_node:
   hosts:
     rpi5green:
     rpi4blue:
-#    rpi5purple:
-#    rpi5gold:
+    rpi5purple:
+    rpi5gold:
 
 home_cinema:
   hosts:

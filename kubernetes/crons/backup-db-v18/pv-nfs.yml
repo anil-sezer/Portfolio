@@ -10,5 +10,5 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: 192.168.1.122
+    server: 192.168.1.119
     path: /mnt/nas/disk/k8s/db-backups/db-backups/postgres/portfolio

@@ -5,12 +5,14 @@ metadata:
   name: postgres-backup
   namespace: portfolio
 spec:
-  schedule: "0 0 * * 0"  # Runs every Sunday at 00:00
+  schedule: "0 1 * * 0"  # Runs every Sunday at 01:00
   jobTemplate:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          imagePullSecrets:
+            - name: regcred
+          restartPolicy: OnFailure
           containers:
             - name: postgres-backup
               image: imgregistry.anil-sezer.com/pg_dump:v18

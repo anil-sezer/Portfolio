@@ -1,48 +1,28 @@
 # From root:
-# docker build -f Portfolio.Grpc/Dockerfile -t portfolio-grpc .
-# https://devblogs.microsoft.com/dotnet/improving-multiplatform-container-support/
-ARG DOTNET_VERSION=9.0
-ARG BUILD_CONFIGURATION=Release
-
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS base
-LABEL maintainer="Anil Sezer - msnanil@hotmail.com"
-
-ARG BUILDOS
-ARG TARGETOS
-ARG BUILDARCH
-ARG TARGETARCH
-ARG BUILDVARIANT
-ARG TARGETVARIANT
-ARG BUILDPLATFORM
-ARG TARGETPLATFORM
-RUN echo "Building on ${BUILDPLATFORM}, targeting ${TARGETPLATFORM}"
-RUN echo "Building on ${BUILDOS} and ${BUILDARCH} with optional variant ${BUILDVARIANT}"
-RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGETVARIANT}"
-
-# USER $APP_UID # todo: https://devblogs.microsoft.com/dotnet/securing-containers-with-rootless/
+# docker buildx build -t imgregistry.anil-sezer.com/portfolio-grpc:latest -f Portfolio.Grpc/Dockerfile --platform linux/amd64,linux/arm64 --push .
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
-
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+ARG TARGETARCH
 WORKDIR /src
+
 COPY protos/ protos/
 COPY Portfolio.Grpc/ Portfolio.Grpc/
 COPY Portfolio.Domain/ Portfolio.Domain/
 COPY Portfolio.Infrastructure/ Portfolio.Infrastructure/
 
-ARG TARGETARCH
-ARG BUILD_CONFIGURATION
-RUN dotnet restore "Portfolio.Grpc/Portfolio.Grpc.csproj" --arch ${TARGETARCH}
+RUN dotnet restore "Portfolio.Grpc/Portfolio.Grpc.csproj" -a $TARGETARCH
 
 WORKDIR /src/Portfolio.Grpc
-RUN dotnet build "Portfolio.Grpc.csproj" --arch ${TARGETARCH} --configuration ${BUILD_CONFIGURATION} --output /app/build
+RUN dotnet build "Portfolio.Grpc.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --output /app/build
 
 FROM build AS publish
-
-ARG TARGETARCH
-ARG BUILD_CONFIGURATION
-RUN dotnet publish --arch ${TARGETARCH} "Portfolio.Grpc.csproj" --configuration ${BUILD_CONFIGURATION} --output /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "Portfolio.Grpc.csproj" -c $BUILD_CONFIGURATION -a $TARGETARCH -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

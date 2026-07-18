@@ -1,30 +1,14 @@
-# docker build -f Portfolio.Ui/Dockerfile -t portfolio-ui .
-# https://devblogs.microsoft.com/dotnet/improving-multiplatform-container-support/
-ARG DOTNET_VERSION=9.0
-ARG BUILD_CONFIGURATION=Release
-
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS base
-LABEL maintainer="Anil Sezer - msnanil@hotmail.com"
-
-ARG BUILDOS
-ARG TARGETOS
-ARG BUILDARCH
-ARG TARGETARCH
-ARG BUILDVARIANT
-ARG TARGETVARIANT
-ARG BUILDPLATFORM
-ARG TARGETPLATFORM
-RUN echo "Building on ${BUILDPLATFORM}, targeting ${TARGETPLATFORM}"
-RUN echo "Building on ${BUILDOS} and ${BUILDARCH} with optional variant ${BUILDVARIANT}"
-RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGETVARIANT}"
-
-# USER $APP_UID # todo: https://devblogs.microsoft.com/dotnet/securing-containers-with-rootless/
+# docker buildx build -t imgregistry.anil-sezer.com/portfolio-ui:latest -f Portfolio.Ui/Dockerfile --platform linux/amd64,linux/arm64 --push .
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
-
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+ARG TARGETARCH
 WORKDIR /src
+
 COPY protos/ protos/
 COPY Portfolio.Ui/ Portfolio.Ui/
 COPY Portfolio.Grpc/ Portfolio.Grpc/
@@ -33,18 +17,15 @@ COPY Portfolio.Infrastructure/ Portfolio.Infrastructure/
 # For preventing this: error NETSDK1152: Found multiple publish output files with the same relative path: /src/Portfolio.Grpc/appsettings.Development.json, /src/Portfolio.Ui/appsettings.Development.json, /src/Portfolio.Grpc/appsettings.json, /src/Portfolio.Ui/appsettings.json. [/src/Polio.Ui/appsettings.json. [/src/Portfolio.Ui/Portfolio.Ui.csproj]
 RUN rm -f Portfolio.Grpc/appsettings.json Portfolio.Grpc/appsettings.Development.json
 
-ARG TARGETARCH
-ARG BUILD_CONFIGURATION
-RUN dotnet restore "Portfolio.Ui/Portfolio.Ui.csproj" --arch ${TARGETARCH}
+RUN dotnet restore "Portfolio.Ui/Portfolio.Ui.csproj" -a $TARGETARCH
 
 WORKDIR /src/Portfolio.Ui
-RUN dotnet build "Portfolio.Ui.csproj" --arch ${TARGETARCH} --configuration ${BUILD_CONFIGURATION} --output /app/build
+RUN dotnet build "Portfolio.Ui.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --output /app/build
+
 
 FROM build AS publish
-
-ARG TARGETARCH
-ARG BUILD_CONFIGURATION
-RUN dotnet publish --arch ${TARGETARCH} "Portfolio.Ui.csproj" --configuration ${BUILD_CONFIGURATION} --output /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./Portfolio.Ui.csproj" -c $BUILD_CONFIGURATION -a $TARGETARCH -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

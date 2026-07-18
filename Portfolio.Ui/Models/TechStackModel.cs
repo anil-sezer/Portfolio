@@ -54,7 +54,7 @@ public class TechStackModel
             },
             new()
             {
-                Name = ".Net 9 & Blazor",
+                Name = ".Net 10 & Blazor",
                 WebsiteLink = "https://dotnet.microsoft.com/",
 
                 ImageAddress = "img/techStack/dotnet.png",

@@ -1,0 +1,59 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otel-http
+  namespace: observability
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: observability-otel-ip-allowlist@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - otel.anilsezer.net
+      secretName: otel-tls
+  rules:
+    - host: otel.anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: otel-collector
+                port:
+                  number: 4318
+            path: /
+            pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otel-grpc
+  namespace: observability
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+    traefik.ingress.kubernetes.io/router.middlewares: observability-otel-ip-allowlist@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - otel-grpc.anilsezer.net
+      secretName: otel-grpc-tls
+  rules:
+    - host: otel-grpc.anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: otel-collector
+                port:
+                  number: 4317
+            path: /
+            pathType: Prefix
+
+

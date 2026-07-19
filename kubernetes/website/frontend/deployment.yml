@@ -59,7 +59,7 @@ spec:
               value: "Europe/Istanbul"
 
             - name: OTEL_COLLECTOR_ENDPOINT
-              value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
+              value: "https://otel.anilsezer.net"
 
             - name: GRPC_BASE_URL
               value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"

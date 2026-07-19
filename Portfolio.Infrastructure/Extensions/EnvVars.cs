@@ -22,14 +22,18 @@ public static class EnvVars
     public static string SQL_DB_PASSWORD => GetValue("SQL_DB_PASSWORD");
     public static string SQL_DB_NAME => GetValue("SQL_DB_NAME");
     
-    // Telemetry
+    // Telemetry (Use HTTP)
     public static string OTEL_COLLECTOR_ENDPOINT => GetValue("OTEL_COLLECTOR_ENDPOINT");
     
     // Environment
     public static string ASPNETCORE_ENVIRONMENT => GetValue("ASPNETCORE_ENVIRONMENT");
     public static bool IsDevelopment() => string.IsNullOrEmpty(ASPNETCORE_ENVIRONMENT) || 
                                           ASPNETCORE_ENVIRONMENT.Equals("Development", StringComparison.OrdinalIgnoreCase);
-    
+
+    public static string GetShortEnvironmentName() => string.IsNullOrEmpty(ASPNETCORE_ENVIRONMENT) || 
+                                          ASPNETCORE_ENVIRONMENT.Equals("Development", StringComparison.OrdinalIgnoreCase) ? "Dev" : 
+                                          ASPNETCORE_ENVIRONMENT.Equals("Production", StringComparison.OrdinalIgnoreCase) ? "Prod" : ASPNETCORE_ENVIRONMENT;
+
     // Helper methods (internal implementation)
     private static string GetValue(string variableName)
     {

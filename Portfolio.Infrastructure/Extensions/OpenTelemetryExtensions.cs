@@ -1,3 +1,4 @@
+using System.Diagnostics.Tracing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
@@ -16,7 +17,12 @@ public static class OpenTelemetryExtensions
     {
         const string serviceVersion = "1.0.0";
 
-        var serviceName = AssemblyHelper.GetStartupProjectsName();
+        if (EnvVars.IsDevelopment())
+        {
+            _ = new OtelDiagnosticListener();
+        }
+
+        var serviceName = AssemblyHelper.GetStartupProjectsName() + " - " + EnvVars.GetShortEnvironmentName() ;
         Action<ResourceBuilder> appResourceBuilder =
             resource => resource
                 .AddContainerDetector()
@@ -68,8 +74,8 @@ public static class OpenTelemetryExtensions
                 .AddGrpcCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri(otelEndpoint);
-                    o.Protocol = OtlpExportProtocol.Grpc;
+                    o.Endpoint = new Uri($"{otelEndpoint.TrimEnd('/')}/v1/traces");
+                    o.Protocol = OtlpExportProtocol.HttpProtobuf;
                     o.ExportProcessorType = ExportProcessorType.Batch;
                     o.BatchExportProcessorOptions = new OpenTelemetry.BatchExportProcessorOptions<System.Diagnostics.Activity>
                     {
@@ -80,27 +86,55 @@ public static class OpenTelemetryExtensions
                     };
                 })
                 // .AddConsoleExporter()
-            ) 
+            )
             .WithMetrics(meterBuilder => meterBuilder
-                    .AddMeter(serviceName)
-                    .AddRuntimeInstrumentation()
-                    .AddProcessInstrumentation()
-                    .AddAspNetCoreInstrumentation()
-                    .SetExemplarFilter(ExemplarFilterType.TraceBased) // todo: What is this ask LLM
-                    .AddOtlpExporter(o =>
+                .AddMeter(serviceName)
+                .AddRuntimeInstrumentation()
+                .AddProcessInstrumentation()
+                .AddAspNetCoreInstrumentation()
+                .SetExemplarFilter(ExemplarFilterType.TraceBased)
+                .AddOtlpExporter(o =>
+                {
+                    o.Endpoint = new Uri($"{otelEndpoint.TrimEnd('/')}/v1/metrics");
+                    o.Protocol = OtlpExportProtocol.HttpProtobuf;
+                    o.ExportProcessorType = ExportProcessorType.Batch;
+                    o.BatchExportProcessorOptions = new OpenTelemetry.BatchExportProcessorOptions<System.Diagnostics.Activity>
                     {
-                        o.Endpoint = new Uri(otelEndpoint);
-                        o.Protocol = OtlpExportProtocol.Grpc;
-                        o.ExportProcessorType = ExportProcessorType.Batch;
-                        o.BatchExportProcessorOptions = new OpenTelemetry.BatchExportProcessorOptions<System.Diagnostics.Activity>
-                        {
-                            MaxQueueSize = 2048,
-                            ScheduledDelayMilliseconds = 5000,
-                            ExporterTimeoutMilliseconds = 30000,
-                            MaxExportBatchSize = 512
-                        };
-                    })
+                        MaxQueueSize = 2048,
+                        ScheduledDelayMilliseconds = 5000,
+                        ExporterTimeoutMilliseconds = 30000,
+                        MaxExportBatchSize = 512
+                    };
+                })
                 // .AddConsoleExporter()
             );
+    }
+}
+
+internal class OtelDiagnosticListener : EventListener
+{
+    protected override void OnEventSourceCreated(EventSource eventSource)
+    {
+        if (eventSource.Name.StartsWith("OpenTelemetry", StringComparison.OrdinalIgnoreCase))
+        {
+            EnableEvents(eventSource, EventLevel.Verbose, EventKeywords.All);
+        }
+    }
+
+    protected override void OnEventWritten(EventWrittenEventArgs eventData)
+    {
+        if (eventData.Message != null)
+        {
+            try
+            {
+                var payload = eventData.Payload != null ? eventData.Payload.ToArray() : Array.Empty<object>();
+                var message = string.Format(eventData.Message, payload);
+                Log.Warning("[OTEL DIAGNOSTIC] {Message}", message);
+            }
+            catch
+            {
+                Log.Warning("[OTEL DIAGNOSTIC] {EventName} - {Message}", eventData.EventName, eventData.Message);
+            }
+        }
     }
 }

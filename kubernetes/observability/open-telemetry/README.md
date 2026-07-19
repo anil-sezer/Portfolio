@@ -2,8 +2,9 @@
 -f helm-values.yml \
 -n observability
 
-helm upgrade otel-collector open-telemetry/opentelemetry-collector \
--f helm-values.yml \
--n observability
+helm upgrade otel-collector open-telemetry/opentelemetry-collector -f helm-values.yml -n observability
 
 helm uninstall otel-collector -n observability
+
+# dry run:
+helm template otel-collector open-telemetry/opentelemetry-collector -f helm-values.yml -n observability > rendered-dry-run.yaml

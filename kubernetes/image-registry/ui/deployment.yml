@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry-ui
+  namespace: image-registry
+  labels:
+    app: docker-registry-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker-registry-ui
+  template:
+    metadata:
+      labels:
+        app: docker-registry-ui
+    spec:
+      containers:
+        - name: web-ui
+          image: joxit/docker-registry-ui:2.6.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: REGISTRY_TITLE
+              value: "Private Docker Registry"
+            - name: NGINX_PROXY_PASS_URL
+              value: "http://docker-registry-clusterip:5000"
+            - name: SINGLE_REGISTRY
+              value: "true"
+            - name: REGISTRY_SECURED
+              value: "true"
+            - name: NGINX_PROXY_HEADER_Authorization
+              valueFrom:
+                secretKeyRef:
+                  name: docker-registry-ui-secret
+                  key: basicAuthHeader
+            - name: DELETE_IMAGES
+              value: "true"
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi

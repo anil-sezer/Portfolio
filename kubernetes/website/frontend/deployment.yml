@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portfolio-ui-deployment
+  name: frontend
   namespace: portfolio
 spec:
   replicas: 1
@@ -16,15 +16,22 @@ spec:
   progressDeadlineSeconds: 120
   selector:
     matchLabels:
-      app: portfolio-ui
+      app: frontend
   template:
     metadata:
       labels:
-        app: portfolio-ui
+        app: frontend
     spec:
+      imagePullSecrets:
+        - name: regcred
+      # Check this out for more security options: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
       containers:
-        - name: portfolio-ui
-          image: anilsezer/portfolio-ui:latest
+        - name: frontend
+          image: imgregistry.anil-sezer.com/portfolio-ui:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -62,4 +69,4 @@ spec:
               value: "https://otel.anilsezer.net"
 
             - name: GRPC_BASE_URL
-              value: "http://portfolio-grpc-service.portfolio.svc.cluster.local:8080"
+              value: "http://grpc.portfolio.svc.cluster.local:8080"

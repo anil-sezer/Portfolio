@@ -2,24 +2,49 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: portfolio-ui-ingress
+  name: frontend
   namespace: portfolio
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: portfolio-redirect-to-canonical@kubernetescrd
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   tls:
     - hosts:
         - anil-sezer.com
+        - anilsezer.net
         - www.anil-sezer.com
-      secretName: portfolio-ingress-tls
+        - www.anilsezer.net
+      secretName: frontend-tls
   rules:
+    - host: anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: www.anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
     - host: anil-sezer.com
       http:
         paths:
           - backend:
               service:
-                name: portfolio-ui-service
+                name: frontend
                 port:
                   number: 80
             path: /
@@ -29,7 +54,7 @@ spec:
         paths:
           - backend:
               service:
-                name: portfolio-ui-service
+                name: frontend
                 port:
                   number: 80
             path: /

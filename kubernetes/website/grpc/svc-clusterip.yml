@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: portfolio-grpc-service
+  name: grpc
   namespace: portfolio
 spec:
   selector:
-    app: portfolio-grpc
+    app: grpc
   ports:
     - name: http
       protocol: TCP

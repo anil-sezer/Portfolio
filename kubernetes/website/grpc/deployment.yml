@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portfolio-grpc-deployment
+  name: grpc
   namespace: portfolio
 spec:
   replicas: 1
@@ -16,16 +16,18 @@ spec:
   progressDeadlineSeconds: 120
   selector:
     matchLabels:
-      app: portfolio-grpc
+      app: grpc
   template:
     metadata:
       labels:
-        app: portfolio-grpc
+        app: grpc
     spec:
+      imagePullSecrets:
+        - name: regcred
       serviceAccountName: k8s-stats-service
       containers:
-        - name: portfolio-grpc
-          image: anilsezer/portfolio-grpc:latest
+        - name: grpc
+          image: imgregistry.anil-sezer.com/portfolio-grpc:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

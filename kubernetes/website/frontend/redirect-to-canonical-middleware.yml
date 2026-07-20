@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-to-canonical
+  namespace: portfolio
+spec:
+  redirectRegex:
+    regex: "^https?://(?:www\\.anil-sezer\\.com|anil-sezer\\.com|www\\.anilsezer\\.net)(?::\\d+)?(/.*)?$"
+    replacement: "https://anilsezer.net${1}"
+    permanent: true

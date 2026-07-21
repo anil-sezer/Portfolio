@@ -1,4 +1,3 @@
-# docker build -t anilsezer/get-daily-images-go-cron:latest . && docker push anilsezer/get-daily-images-go-cron:latest
 FROM golang:1.23.4 AS builder
 LABEL  maintainer="Anil Sezer - msnanil@hotmail.com"
 

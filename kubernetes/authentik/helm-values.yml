@@ -1,5 +1,10 @@
-﻿authentik:
-  secret_key: "90e05c90fd5cbead22a65e78ba4ce01dca0dabe8dc67ed1478a482bd4517185c397ecc30964931f78d86e473dfedd702a74f"
+global:
+  # Automatically load AUTHENTIK_SECRET_KEY, AUTHENTIK_POSTGRESQL__USER and AUTHENTIK_POSTGRESQL__PASSWORD into all pods
+  envFrom:
+    - secretRef:
+        name: authentik-helm-secrets
+
+authentik:
   # This sends anonymous usage-data, stack traces on errors and
   # performance data to authentik.error-reporting.a7k.io, and is fully opt-in
   error_reporting:
@@ -14,9 +19,11 @@
     name: "authentik"
     # -- postgresql Username
     # @default -- `authentik`
-    user: "example-user"
+    # Got user from secret
+    # user: "example-user"
     # -- postgresql password
-    password: "example-password"
+    # Got password from secret
+    # password: "example-password"
     # -- postgresql port
     port: 5432
 
@@ -26,6 +33,7 @@ server:
     ingressClassName: traefik
     hosts:
       - authentik.anil-sezer.com
+      - authentik.anilsezer.net
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
       traefik.ingress.kubernetes.io/router.tls: "true"
@@ -34,6 +42,7 @@ server:
       - secretName: "authentik-tls"
         hosts:
           - "authentik.anil-sezer.com"
+          - "authentik.anilsezer.net"
 
 postgresql:
   enabled: false

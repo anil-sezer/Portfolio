@@ -10,9 +10,8 @@ helm install authentik authentik/authentik \
 --create-namespace
 
 helm upgrade authentik authentik/authentik \
--f helm-values.yml \
---namespace authentik \
---create-namespace
+-f ./kubernetes/authentik/helm-values.yml \
+--namespace authentik
 
 helm uninstall authentik --namespace authentik
 

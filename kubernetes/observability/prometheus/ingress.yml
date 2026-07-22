@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus
+  namespace: observability
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: authentik-forward-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - prometheus.anilsezer.net
+      secretName: prometheus-tls
+  rules:
+    - host: prometheus.anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: prometheus
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

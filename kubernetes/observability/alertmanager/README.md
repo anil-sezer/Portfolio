@@ -1,0 +1,1 @@
+﻿todo: do it later. prometheus helm values installs alertmanager, so maybe use that subchart?

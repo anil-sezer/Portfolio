@@ -32,7 +32,6 @@ public static class DbContextExtensions
     
     private static string GetConnectionStringForPostgres()
     {
-        // todo: Stop using default public schema
         return $"Host={EnvVars.SQL_DB_HOST};Port={EnvVars.SQL_DB_PORT};Username={EnvVars.SQL_DB_USER};Password={EnvVars.SQL_DB_PASSWORD};Database={EnvVars.SQL_DB_NAME};";
     }
     

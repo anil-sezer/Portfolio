@@ -1,4 +1,4 @@
-﻿# Default values for Seq.
+# Default values for Seq.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -18,17 +18,17 @@ acceptEULA: "Y"
 # Seq requires a default admin password in order to initialize a fresh container. Either
 # specify this here, or opt out using `firstRunNoAuthentication: true` (not suitable for production
 # deployment). See the `firstRunAdminPasswordHash` variant below for better confidentiality.
-firstRunNoAuthentication: true
+firstRunNoAuthentication: false
 # firstRunAdminPassword: ""
 #
 # Alternatively, a default admin password can be provided from Kubernetes secret:
-# firstRunAdminPasswordSecret:
-#   name: "seq-admin-password-secret"
-#   key: "password"
+firstRunAdminPasswordSecret:
+  name: "seq-admin-secret"
+  key: "password"
 
 # Further customization of the default security settings.
 # See here for docs on how to create a password hash: https://blog.datalust.co/setting-an-initial-password-when-deploying-seq-to-docker/
-# firstRunAdminUsername: "admin"
+firstRunAdminUsername: "admin"
 # firstRunAdminPasswordHash: ""
 # firstRunRequireAuthenticationForHttpIngestion: true
 #
@@ -118,7 +118,7 @@ service:
 ingress:
   # className: nginx
   annotations: {}
-  # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
   labels: {}
   tls: []
   #  - secretName: chart-example-tls
@@ -130,9 +130,9 @@ ingress:
 networkPolicy:
   enabled: false
   ingress:
-    - {}
+  - {}
   egress:
-    - {}
+  - {}
   # Example which allows DNS resolution:
   # egress:
   #     # Allow dns resolution
@@ -146,7 +146,7 @@ resources: {}
   # We recommend uncommenting these and specifying an explicit memory limit that
   # suits your workload.
   # limits:
-#  memory: 2Gi
+  #  memory: 2Gi
 
 nodeSelector: {}
 
@@ -174,7 +174,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  existingClaim: seq-nfs-pvc
+  existingClaim: seq-nfs
 
   ## Seq data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>

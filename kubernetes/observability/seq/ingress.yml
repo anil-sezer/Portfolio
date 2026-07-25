@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: seq
+  namespace: observability
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: authentik-forward-auth@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - seq.anilsezer.net
+      secretName: seq-tls
+  rules:
+    - host: seq.anilsezer.net
+      http:
+        paths:
+          - backend:
+              service:
+                name: seq
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

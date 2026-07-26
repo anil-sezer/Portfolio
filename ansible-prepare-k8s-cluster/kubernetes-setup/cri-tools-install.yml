@@ -1,0 +1,40 @@
+# todo: Untested ai code
+---
+- name: Install cri-tools and configure crictl
+  become: true
+  block:
+    - name: Ensure /etc/apt/keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Download and convert the Kubernetes apt keyring if not present
+      ansible.builtin.shell: >
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key |
+        gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+    - name: Ensure Kubernetes apt repository is configured
+      ansible.builtin.shell: >
+        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
+        tee /etc/apt/sources.list.d/kubernetes.list
+
+    - name: Install cri-tools
+      ansible.builtin.apt:
+        update_cache: true
+        state: present
+        pkg:
+          - cri-tools
+        install_recommends: true
+
+    - name: Create /etc/crictl.yaml configuration
+      ansible.builtin.copy:
+        dest: /etc/crictl.yaml
+        mode: "0644"
+        content: |
+          runtime-endpoint: unix:///run/containerd/containerd.sock
+          image-endpoint: unix:///run/containerd/containerd.sock
+          timeout: 10
+          debug: false

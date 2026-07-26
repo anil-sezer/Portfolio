@@ -58,6 +58,12 @@
     - name: Install kubeadm, kubectl and kubelet
       ansible.builtin.import_tasks: kubernetes-setup/kubeadm-kubectl-kubelet-install.yml
 
+    - name: Ensure kubelet systemd unit has containerd dependency override
+      ansible.builtin.import_tasks: kubernetes-setup/kubelet-containerd-override.yml
+
+    - name: Install cri-tools and configure crictl
+      ansible.builtin.import_tasks: kubernetes-setup/cri-tools-install.yml
+
     - name: Let's boot the control plane!
       ansible.builtin.import_tasks: kubernetes-setup/kubeadm-init-control-node.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip

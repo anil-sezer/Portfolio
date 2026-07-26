@@ -1,0 +1,25 @@
+# todo: Untested ai code
+---
+- name: Ensure systemd kubelet.service has containerd dependency override
+  become: true
+  block:
+    - name: Ensure /etc/systemd/system/kubelet.service.d directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/system/kubelet.service.d
+        state: directory
+        mode: "0755"
+
+    - name: Create systemd override for kubelet containerd dependency
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/kubelet.service.d/11-containerd.conf
+        mode: "0644"
+        content: |
+          [Unit]
+          Wants=containerd.service
+          After=containerd.service
+      register: kubelet_override
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: kubelet_override.changed

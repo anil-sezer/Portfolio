@@ -24,7 +24,7 @@
 
 #hero:before {
     content: "";
-    background: rgba(5, 13, 24, 0.3);
+    background: var(--bg-hero-overlay);
     position: absolute;
     bottom: 0;
     top: 0;
@@ -45,18 +45,18 @@
     font-size: 64px;
     font-weight: 700;
     line-height: 56px;
-    color: #fff;
+    color: var(--color-white);
 }
 
 #hero p {
-    color: #fff;
+    color: var(--color-white);
     margin-bottom: 50px;
     font-size: 26px;
     font-family: "Poppins", sans-serif;
 }
 
 #hero p {
-    color: #fff;
+    color: var(--color-white);
     padding-bottom: 4px;
     letter-spacing: 1px;
 }
@@ -65,7 +65,7 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
-    color: white;
+    color: var(--color-white);
     z-index: 1;
     padding: 0.5rem 1.4rem 0.5rem 1.4rem;
 }

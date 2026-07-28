@@ -3,9 +3,9 @@
 }
 
 .tech-stack-card {
-    background-color: #f8f9fa;
+    background-color: var(--bg-card-tech);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
     padding: 1rem;
     max-width: 25rem;
     flex: 1 1 25rem;
@@ -26,15 +26,15 @@
     justify-content: center;
     width: 54px;
     height: 54px;
-    background: #fff;
+    background: var(--color-white);
     border-radius: 50%;
     transition: 0.5s;
-    border: 1px solid var(--celestial-blue);
+    border: 1px solid var(--accent-heading-line);
     margin-top: 0.2rem;
 }
 
 #techstack .icon i {
-    color: #fff;
+    color: var(--color-white);
     font-size: 24px;
     line-height: 0;
 }
@@ -44,7 +44,7 @@
 }
 
 #techstack .icon-box:hover .icon i {
-    color: #fff;
+    color: var(--color-white);
 }
 
 #techstack .title {
@@ -55,7 +55,7 @@
 }
 
 #techstack .title a {
-    color: #343a40;
+    color: var(--text-card-title);
 }
 
 #techstack .title a:hover {

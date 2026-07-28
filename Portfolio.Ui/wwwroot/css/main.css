@@ -3,7 +3,7 @@
 --------------------------------------------------------------*/
 body {
     font-family: "Open Sans", sans-serif;
-    color: #272829;
+    color: var(--text-body);
 }
 
 a {
@@ -12,7 +12,7 @@ a {
 }
 
 a:hover {
-    color: #37b3ed;
+    color: var(--color-link-hover);
     text-decoration: none;
 }
 
@@ -61,7 +61,7 @@ section {
 }
 
 .section-bg {
-    background: #f5f8fd;
+    background: var(--bg-section-alt);
 }
 
 .section-title {
@@ -73,7 +73,7 @@ section {
     font-weight: bold;
     padding-bottom: 0.5rem;
     position: relative;
-    color: var(--yale-blue);
+    color: var(--text-heading-primary);
 }
 
 .section-title h2::after {
@@ -82,7 +82,7 @@ section {
     display: block;
     width: 50px;
     height: 3px;
-    background: var(--celestial-blue);
+    background: var(--accent-heading-line);
 }
 
 .section-title p {

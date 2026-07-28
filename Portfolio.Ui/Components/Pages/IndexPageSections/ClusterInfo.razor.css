@@ -1,4 +1,4 @@
-﻿.section-title h2::after {
+.section-title h2::after {
     width: 28.5rem;
 }
 
@@ -8,9 +8,9 @@
     min-width: 20rem;
     display: flex;
     align-items: center;
-    background-color: #f5f8fd;
+    background-color: var(--bg-section-alt);
     border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
     gap: 1.25rem;
 }
 
@@ -28,7 +28,7 @@
 }
 
 .stats .stats-item .counter {
-    color: #1e3a8a;
+    color: var(--text-counter);
     font-size: 2rem;
     font-weight: 700;
     white-space: nowrap;
@@ -36,6 +36,6 @@
 }
 
 .stats .stats-item p {
-    color: color-mix(in srgb, #272829, transparent 40%);
+    color: color-mix(in srgb, var(--text-body), transparent 40%);
     margin: 0.2rem 0 0 0;
 }

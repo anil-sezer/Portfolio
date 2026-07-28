@@ -1,9 +1,118 @@
-﻿/* https://coolors.co/040b14-173b6c-149ddd-99c099-47505f-2d2d2d */
+/* https://coolors.co/040b14-173b6c-149ddd-99c099-47505f-2d2d2d */
 
 :root {
+    /* ==========================================================================
+       Tier 1: Primitive Tokens (Base Color Palette & Raw Values)
+       ========================================================================== */
+
+    /* Legacy / Brand Palette Variables (Preserved) */
     --yale-blue: #173b6c;
     --celestial-blue: #149ddd;
     --cambridge-blue: #99c099;
     --charcoal: #47505f;
     --jet: #2d2d2d;
+
+    /* Brand Palette Scale */
+    --color-celestial-blue: #149ddd;
+    --color-celestial-blue-hover: #37b3ed;
+    --color-celestial-blue-light: #dff3fc;
+    --color-celestial-blue-alt: #2eafec;
+
+    --color-yale-blue: #173b6c;
+    --color-yale-blue-dark: #1f5297;
+    --color-yale-blue-light: #e4edf9;
+
+    --color-blue-dark: #1e3a8a;
+
+    /* Neutrals & Dark Shades */
+    --color-black-night: #040b14;
+    --color-black-heading: #050d18;
+    --color-dark-card: #212431;
+    --color-dark-border: #2c2f3f;
+    --color-dark-body: #272829;
+    --color-dark-title: #343a40;
+    --color-dark-btn: #333333;
+
+    --color-nav-link: #a8a9b4;
+    --color-nav-icon: #6f7180;
+    --color-footer-text: #f4f6fd;
+    --color-footer-credits: #eaebf0;
+
+    /* Light Shades */
+    --color-white: #ffffff;
+    --color-gray-bg: #f5f8fd;
+    --color-gray-card: #f8f9fa;
+
+    /* Feedback & Status Colors */
+    --color-success: #28a745;
+    --color-danger: #dc3545;
+    --color-hsl-success: hsl(143, 100%, 26%);
+    --color-hsl-warning: hsl(43, 100%, 66%);
+    --color-hsl-error: hsl(348, 55%, 49%);
+
+    /* RGB Channels for Alpha Transparencies */
+    --rgb-black-night: 4, 11, 20;
+    --rgb-black-overlay: 5, 13, 24;
+    --rgb-shadow: 0, 0, 0;
+    --rgb-border-dark: 44, 47, 63;
+
+    /* ==========================================================================
+       Tier 2: Semantic Tokens (Functional UI Roles)
+       ========================================================================== */
+
+    /* Layout & Navigation */
+    --bg-header: var(--color-black-night);
+    --bg-footer: var(--color-black-night);
+    --bg-sidebar-social: var(--color-dark-card);
+    --border-profile-img: var(--color-dark-border);
+
+    --text-nav-link: var(--color-nav-link);
+    --text-nav-icon: var(--color-nav-icon);
+    --text-nav-hover: var(--color-white);
+    --icon-nav-hover: var(--color-celestial-blue);
+    --bg-mobile-nav: var(--color-celestial-blue);
+
+    --text-footer: var(--color-footer-text);
+    --text-footer-credits: var(--color-footer-credits);
+
+    /* Typography & Content */
+    --text-body: var(--color-dark-body);
+    --text-heading-primary: var(--color-yale-blue);
+    --text-heading-secondary: var(--color-black-heading);
+    --text-card-title: var(--color-dark-title);
+    --accent-heading-line: var(--color-celestial-blue);
+
+    /* Links & Buttons */
+    --color-link: var(--color-celestial-blue);
+    --color-link-hover: var(--color-celestial-blue-hover);
+    --bg-btn-submit: var(--color-celestial-blue);
+    --bg-btn-submit-hover: var(--color-celestial-blue-hover);
+    --bg-btn-icon: var(--color-dark-btn);
+
+    --bg-back-to-top: var(--color-celestial-blue);
+    --bg-back-to-top-hover: var(--color-celestial-blue-alt);
+    --icon-back-to-top: var(--color-white);
+
+    /* Cards, Items & Sections */
+    --bg-section-alt: var(--color-gray-bg);
+    --bg-card-tech: var(--color-gray-card);
+    --bg-info-icon: var(--color-celestial-blue-light);
+    --bg-timeline-badge: var(--color-yale-blue-light);
+    --border-timeline: var(--color-yale-blue-dark);
+    --text-counter: var(--color-blue-dark);
+
+    /* Overlays & Shadows */
+    --bg-hero-overlay: rgba(var(--rgb-black-overlay), 0.3);
+    --shadow-card: 0 0 24px 0 rgba(var(--rgb-shadow), 0.12);
+    --shadow-soft: 0 2px 4px rgba(var(--rgb-shadow), 0.1);
+    --shadow-alert: 0 4px 6px rgba(var(--rgb-shadow), 0.1);
+    --border-about-img: 0.3rem solid rgba(var(--rgb-border-dark), 0.1);
+
+    /* Form Validation */
+    --clr-success: var(--color-hsl-success);
+    --clr-warning: var(--color-hsl-warning);
+    --clr-error: var(--color-hsl-error);
+    --bg-alert-success: var(--color-success);
+    --bg-alert-danger: var(--color-danger);
 }
+

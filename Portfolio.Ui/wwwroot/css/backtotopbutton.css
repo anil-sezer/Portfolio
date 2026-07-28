@@ -17,13 +17,13 @@
 
 .back-to-top i {
     font-size: 28px;
-    color: #fff;
+    color: var(--icon-back-to-top);
     line-height: 0;
 }
 
 .back-to-top:hover {
-    background: #2eafec;
-    color: #fff;
+    background: var(--bg-back-to-top-hover);
+    color: var(--icon-back-to-top);
 }
 
 .back-to-top.active {

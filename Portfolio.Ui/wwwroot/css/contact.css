@@ -16,9 +16,9 @@
 
 .contact .info {
     padding: 30px;
-    background: #fff;
+    background: var(--color-white);
     width: 100%;
-    box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-card);
 }
 
 .contact .info i {
@@ -27,7 +27,7 @@
     float: left;
     width: 44px;
     height: 44px;
-    background: #dff3fc;
+    background: var(--bg-info-icon);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,7 +40,7 @@
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 5px;
-    color: #050d18;
+    color: var(--text-heading-secondary);
 }
 
 .contact .info p {
@@ -61,8 +61,8 @@
 .contact .info a {
     font-size: 18px;
     display: inline-block;
-    background: #333;
-    color: #fff;
+    background: var(--bg-btn-icon);
+    color: var(--color-white);
     line-height: 1;
     padding: 8px 0;
     border-radius: 50%;
@@ -75,26 +75,19 @@
 
 .contact .info a:hover {
     background: var(--celestial-blue);
-    color: #fff;
+    color: var(--color-white);
 }
 
 .contact .info .email:hover i,
 .contact .info .address:hover i,
 .contact .info .phone:hover i {
     background: var(--celestial-blue);
-    color: #fff;
+    color: var(--color-white);
 }
 
 /*--------------------------------------------------------------
 # Email Form
 --------------------------------------------------------------*/
-@layer general-styling {
-    :root {
-        --clr-success: hsl(143, 100%, 26%);
-        --clr-warning: hsl(43, 100%, 66%);
-        --clr-error: hsl(348, 55%, 49%);
-    }
-}
 
 .contact .email-form input,
 .contact .email-form textarea {
@@ -122,8 +115,8 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 .contact .email-form {
     width: 100%;
     padding: 30px;
-    background: #fff;
-    box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.12);
+    background: var(--color-white);
+    box-shadow: var(--shadow-card);
 }
 
 .contact .email-form .form-group {
@@ -137,19 +130,19 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
     z-index: 1050;
     padding: 15px 20px;
     border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: white;
+    box-shadow: var(--shadow-alert);
+    color: var(--color-white);
     font-size: 16px;
     transition: opacity 4s ease-in-out;
     opacity: 1;
 }
 
 .alert-success {
-    background-color: #28a745;
+    background-color: var(--bg-alert-success);
 }
 
 .alert-danger {
-    background-color: #dc3545;
+    background-color: var(--bg-alert-danger);
 }
 
 .contact .email-form .form-group {
@@ -170,16 +163,16 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 }
 
 .contact .email-form button[type=submit] {
-    background: var(--celestial-blue);
+    background: var(--bg-btn-submit);
     border: 0;
     padding: 10px 24px;
-    color: #fff;
+    color: var(--color-white);
     transition: 0.4s;
     border-radius: 4px;
 }
 
 .contact .email-form button[type=submit]:hover {
-    background: #37b3ed;
+    background: var(--bg-btn-submit-hover);
 }
 
 @keyframes animate-loading {

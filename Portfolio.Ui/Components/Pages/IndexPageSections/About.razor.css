@@ -4,13 +4,13 @@
 
 #about-me-pic {
     border-radius: 0.8rem;
-    border: 0.3rem solid rgba(44, 47, 63, 0.1);
+    border: var(--border-about-img);
 }
 
 .about .content h3 {
     font-weight: 700;
     font-size: 26px;
-    color: var(--yale-blue);
+    color: var(--text-heading-primary);
 }
 
 .about .content ul {
@@ -31,7 +31,7 @@
 .about .content ul i {
     font-size: 16px;
     margin-right: 5px;
-    color: var(--celestial-blue);
+    color: var(--accent-heading-line);
     line-height: 0;
 }
 

@@ -245,7 +245,7 @@ ingressRoute:
         namespace: authentik
     # -- TLS options (e.g. secret containing certificate)
     tls:
-      certResolver: letsencrypt-prod
+      secretName: traefik-dashboard-tls
   healthcheck:
     # -- Create an IngressRoute for the healthcheck probe
     enabled: false

@@ -24,6 +24,8 @@ rbac:
   pspEnabled: false
   pspUseAppArmor: false
   namespaced: false
+  # Only has an effect if namespaced: true is set
+  namespaces: []
   extraRoleRules: []
   # - apiGroups: []
   #   resources: []
@@ -34,8 +36,8 @@ rbac:
   #   verbs: []
 serviceAccount:
   create: true
-  name:
-  nameTest:
+  name: ""
+  nameTest: ""
   ## ServiceAccount labels.
   labels: {}
   ## Service account annotations. Can be templated.
@@ -77,18 +79,22 @@ podDisruptionBudget: {}
 deploymentStrategy:
   type: RollingUpdate
 
+## The maximum time in seconds for a Deployment to make progress before it is considered to be failed.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
+progressDeadlineSeconds: null
+
 readinessProbe:
   httpGet:
     path: /api/health
-    port: 3000
-  initialDelaySeconds: 240
+    port: grafana
+  initialDelaySeconds: 90
   timeoutSeconds: 30
 
 livenessProbe:
   httpGet:
     path: /api/health
-    port: 3000
-  initialDelaySeconds: 120
+    port: grafana
+  initialDelaySeconds: 90
   timeoutSeconds: 30
   failureThreshold: 10
 
@@ -125,7 +131,7 @@ testFramework:
     # -- The Docker registry
     registry: docker.io
     repository: bats/bats
-    tag: "v1.4.1"
+    tag: "1.14.0"
   imagePullPolicy: IfNotPresent
   securityContext: {}
   containerSecurityContext: {}
@@ -142,11 +148,12 @@ dnsPolicy: ~
 dnsConfig: {}
   # nameservers:
   #   - 8.8.8.8
-  #   options:
-  #   - name: ndots
-  #     value: "2"
-  #   - name: edns0
+  # options:
+  # - name: ndots
+  #   value: "2"
+# - name: edns0
 
+hostUsers: ~
 securityContext:
   runAsNonRoot: true
   runAsUser: 472
@@ -155,9 +162,10 @@ securityContext:
 
 containerSecurityContext:
   allowPrivilegeEscalation: false
+  privileged: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   seccompProfile:
     type: RuntimeDefault
 
@@ -172,12 +180,20 @@ extraConfigmapMounts: []
   #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
   #   readOnly: true
-  #   optional: false
+#   optional: false
 
 
 extraEmptyDirMounts: []
   # - name: provisioning-notifiers
-  #   mountPath: /etc/grafana/provisioning/notifiers
+#   mountPath: /etc/grafana/provisioning/notifiers
+
+# Shadow `/usr/share/grafana/data/plugins-bundled` with an emptyDir so plugins
+# listed under `plugins:` install cleanly into `/var/lib/grafana/plugins` instead
+# of failing on the read-only bundled directory shipped in the Grafana image.
+# Required for plugins moved out of core in Grafana 13 (e.g. `elasticsearch`,
+# `cloudwatch`) when listed in `plugins:`. Side effect: any bundled plugin not
+# explicitly listed in `plugins:` will not be available.
+shadowBundledPlugins: false
 
 
 # Apply extra labels to common labels.
@@ -190,7 +206,7 @@ downloadDashboardsImage:
   # -- The Docker registry
   registry: docker.io
   repository: curlimages/curl
-  tag: 8.9.1
+  tag: 8.21.0
   sha: ""
   pullPolicy: IfNotPresent
 
@@ -202,7 +218,7 @@ downloadDashboards:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     seccompProfile:
       type: RuntimeDefault
   envValueFrom: {}
@@ -210,12 +226,12 @@ downloadDashboards:
   #    configMapKeyRef:
   #      name: configmap-name
   #      key: value_key
-
-## Pod Annotations
-# podAnnotations: {}
-
-## ConfigMap Annotations
-# configMapAnnotations: {}
+  
+  ## Pod Annotations
+  # podAnnotations: {}
+  
+  ## ConfigMap Annotations
+  # configMapAnnotations: {}
   # argocd.argoproj.io/sync-options: Replace=true
 
 ## Pod Labels
@@ -242,7 +258,7 @@ service:
   loadBalancerSourceRanges: []
   port: 80
   targetPort: 3000
-    # targetPort: 4181 To be used with a proxy extraContainer
+  # targetPort: 4181 To be used with a proxy extraContainer
   ## Service annotations. Can be templated.
   annotations: {}
   labels: {}
@@ -250,6 +266,9 @@ service:
   # Adds the appProtocol field to the service. This allows to work with istio protocol selection. Ex: "http" or "tcp"
   appProtocol: ""
   sessionAffinity: ""
+  # trafficDistribution allows specifying how traffic is distributed to Service endpoints.
+  # Valid values: "" (default - standard load balancing),"PreferSameZone" (K8s 1.34+), "PreferSameNode" (K8s 1.35+), "PreferClose" (deprecated, use PreferSameZone),
+  trafficDistribution: ""
 
 serviceMonitor:
   ## If true, a ServiceMonitor CR is created for a prometheus operator
@@ -259,50 +278,42 @@ serviceMonitor:
   path: /metrics
   #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
   labels: {}
-  interval: 30s
+  # Set these to override the Prometheus global scrape interval/timeout.
+  # interval: 30s
+  # scrapeTimeout: 30s
   scheme: http
   tlsConfig: {}
-  scrapeTimeout: 30s
   relabelings: []
   metricRelabelings: []
   basicAuth: {}
   targetLabels: []
 
 extraExposePorts: []
- # - name: keycloak
- #   port: 8080
- #   targetPort: 8080
+  # - name: keycloak
+  #   port: 8080
+#   targetPort: 8080
 
 # overrides pod.spec.hostAliases in the grafana deployment's pods
 hostAliases: []
   # - ip: "1.2.3.4"
   #   hostnames:
-  #     - "my.host.com"
+#     - "my.host.com"
 
 ingress:
   enabled: false
-  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
-  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
   # ingressClassName: nginx
   # Values can be templated
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  # kubernetes.io/tls-acme: "true"
   labels: {}
   path: /
-
-  # pathType is only for k8s >= 1.1=
   pathType: Prefix
 
   hosts:
     - chart-example.local
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
-  # - path: /*
-  #   backend:
-  #     serviceName: ssl-redirect
-  #     servicePort: use-annotation
-  ## Or for k8s > 1.19
   # - path: /*
   #   pathType: Prefix
   #   backend:
@@ -347,15 +358,73 @@ route:
           type: PathPrefix
           value: /
 
+    ## Timeouts define the timeouts that can be configured for an HTTP request.
+    ## Ref. https://gateway-api.sigs.k8s.io/api-types/httproute/#timeouts-optional
+    timeouts: {}
+    # request: 10s
+    # backendRequest: 5s
+
+    ## SessionPersistence defines and configures session persistence for the route rule.
+    ## Ref. https://gateway-api.sigs.k8s.io/geps/gep-1619/
+    sessionPersistence: {}
+    # sessionName: grafana-session
+    # type: Cookie
+    # absoluteTimeout: 48h
+    # cookieConfig:
+    #   lifetimeType: Permanent
+
     ## Filters define the filters that are applied to requests that match this rule.
     filters: []
 
     ## Additional custom rules that can be added to the route
     additionalRules: []
 
+    ## httpsRedirect adds a filter for redirecting to https (HTTP 301 Moved Permanently).
+    ## To redirect HTTP traffic to HTTPS, you need to have a Gateway with both HTTP and HTTPS listeners.
+    ## Matches and filters do not take effect if enabled.
+    ## Ref. https://gateway-api.sigs.k8s.io/guides/http-redirect-rewrite/
+    httpsRedirect: false
+
+# -- BETA: Configure Gateway API ListenerSet resources for the chart here.
+# ListenerSet allows attaching additional listeners to an existing Gateway.
+# More listener sets can be added by adding a dictionary key like the 'main' entry.
+# Being BETA this can/will change in the future without notice, do not use unless you want to take that risk
+# [[ref]](https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#listenerset)
+listenerSet:
+  main:
+    # -- Enables or disables the listener set
+    enabled: false
+
+    # -- Set the ListenerSet apiVersion, e.g. gateway.networking.k8s.io/v1
+    apiVersion: gateway.networking.k8s.io/v1
+
+    annotations: {}
+    labels: {}
+
+    # -- Reference to the parent Gateway this ListenerSet attaches to
+    parentRef: {}
+    # name: my-gateway
+    # namespace: default
+    # group: gateway.networking.k8s.io
+    # kind: Gateway
+
+    # -- List of listeners to attach to the parent Gateway
+    listeners: []
+    # - name: https
+    #   port: 443
+    #   protocol: HTTPS
+    #   hostname: grafana.example.com
+    #   tls:
+    #     mode: Terminate
+    #     certificateRefs:
+    #       - name: grafana-tls
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: Same
+
 resources:
   limits:
-    cpu: 1000m
+    cpu: 200m
     memory: 512Mi
   requests:
     cpu: 100m
@@ -420,7 +489,7 @@ persistence:
   enabled: true
   # storageClassName: default
   ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
-  volumeName: "grafana-nfs-pv"
+  volumeName: "grafana-nfs"
   accessModes:
     - ReadWriteOnce
   size: 10Gi
@@ -431,10 +500,16 @@ persistence:
   ## Sub-directory of the PV to mount. Can be templated.
   # subPath: ""
   ## Name of an existing PVC. Can be templated.
-  existingClaim: "grafana-nfs-pvc"
+  existingClaim: "grafana-nfs"
   ## Extra labels to apply to a PVC.
   extraPvcLabels: {}
   disableWarning: false
+  ## Configure StatefulSet persistent volume claim retention policy.
+  ## This is ignored when Grafana is configured to use a Deployment with a PVC.
+  ## By default, Kubernetes uses Retain for both whenDeleted and whenScaled.
+  persistentVolumeClaimRetentionPolicy: {}
+  #  whenDeleted: Retain
+  #  whenScaled: Retain
 
   ## If persistence is not enabled, this allows to mount the
   ## local storage in-memory to improve performance
@@ -463,7 +538,7 @@ initChownData:
     # -- The Docker registry
     registry: docker.io
     repository: library/busybox
-    tag: "1.31.1"
+    tag: "1.38.0"
     sha: ""
     pullPolicy: IfNotPresent
 
@@ -486,17 +561,18 @@ initChownData:
     capabilities:
       add:
         - CHOWN
+        - DAC_OVERRIDE
       drop:
         - ALL
 
 # Administrator credentials when not using an existing secret (see below)
-adminUser: admin-anil
-adminPassword: uD*x6ArNrPo1HeuD*x6ArNrPo1He
+adminUser: admin
+# adminPassword: strongpassword
 
 # Use an existing secret for the admin user.
 admin:
   ## Name of the secret. Can be templated.
-  existingSecret: ""
+  existingSecret: "grafana-admin-secret"
   userKey: admin-user
   passwordKey: admin-password
 
@@ -551,7 +627,7 @@ envValueFrom: {}
   #  ENV_NAME:
   #    configMapKeyRef:
   #      name: configmap-name
-  #      key: value_key
+#      key: value_key
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc. Value is templated.
@@ -608,7 +684,7 @@ extraSecretMounts: []
   #
   # for CSI e.g. Azure Key Vault use the following
   # - name: secrets-store-inline
-  #  mountPath: /run/secrets
+  #  mountPath: /run/secrets/vault.azure.com
   #  readOnly: true
   #  csi:
   #    driver: secrets-store.csi.k8s.io
@@ -616,7 +692,7 @@ extraSecretMounts: []
   #    volumeAttributes:
   #      secretProviderClass: "akv-grafana-spc"
   #    nodePublishSecretRef:                       # Only required when using service principal mode
-  #       name: grafana-akv-creds                  # Only required when using service principal mode
+#       name: grafana-akv-creds                  # Only required when using service principal mode
 
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
@@ -628,7 +704,7 @@ extraVolumeMounts: []
   #   mountPath: /mnt/volume1
   #   readOnly: true
   # - name: grafana-secrets
-  #   mountPath: /mnt/volume2
+#   mountPath: /mnt/volume2
 
 ## Additional Grafana server volumes
 extraVolumes: []
@@ -643,13 +719,13 @@ extraVolumes: []
   #     driver: secrets-store.csi.k8s.io
   #     readOnly: true
   #     volumeAttributes:
-  #       secretProviderClass: "grafana-env-spc"
+#       secretProviderClass: "grafana-env-spc"
 
 ## Container Lifecycle Hooks. Execute a specific bash command or make an HTTP request
 lifecycleHooks: {}
   # postStart:
   #   exec:
-  #     command: []
+#     command: []
 
 ## Pass the plugins you want installed as a list.
 ##
@@ -657,10 +733,9 @@ plugins:
   - grafana-piechart-panel
   - grafana-worldmap-panel
   - grafana-clock-panel
-  # - digrich-bubblechart-panel
   ## You can also use other plugin download URL, as long as they are valid zip files,
-  ## and specify the name of the plugin after the semicolon. Like this:
-  # - https://grafana.com/api/plugins/marcusolsson-json-datasource/versions/1.3.2/download;marcusolsson-json-datasource
+  ## and specify the name of the plugin as prefix, with an version. Like this:
+# - marcusolsson-json-datasource@1.3.24@https://grafana.com/api/plugins/marcusolsson-json-datasource/versions/1.3.24/download
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
@@ -672,7 +747,7 @@ datasources:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://my-prometheus-server.observability.svc.cluster.local
+        url: http://prometheus.observability.svc.cluster.local
         isDefault: true
 #  datasources.yaml:
 #    apiVersion: 1
@@ -784,7 +859,7 @@ alerting: {}
   #     - orgId: 1
   #       name: mti_1
   #       # refer to https://prometheus.io/docs/alerting/latest/configuration/#time_interval-0
-  #       time_intervals: {}
+#       time_intervals: {}
 
 ## Configure notifiers
 ## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
@@ -809,18 +884,18 @@ notifiers: {}
 ##
 ## `path` must be /var/lib/grafana/dashboards/<provider_name>
 ##
-dashboardProviders: {}
-#  dashboardproviders.yaml:
-#    apiVersion: 1
-#    providers:
-#    - name: 'default'
-#      orgId: 1
-#      folder: ''
-#      type: file
-#      disableDeletion: false
-#      editable: true
-#      options:
-#        path: /var/lib/grafana/dashboards/default
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: 'Kubernetes'
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
 
 ## Configure how curl fetches remote dashboards. The beginning dash is required.
 ## NOTE: This sets the default short flags for all dashboards, but these
@@ -839,36 +914,27 @@ defaultCurlOptions: "-skf"
 ## ref: https://grafana.com/dashboards
 ##
 ## dashboards per provider, use provider name as key.
+## For dashboards downloaded via gnetId or url, the optional "title" key overrides
+## the dashboard title in the downloaded JSON so the UI displays your custom title.
 ##
-dashboards: {}
-  # default:
-  #   some-dashboard:
-  #     json: |
-  #       $RAW_JSON
-  #   custom-dashboard:
-  #     file: dashboards/custom-dashboard.json
-  #   prometheus-stats:
-  #     gnetId: 2
-  #     revision: 2
-  #     datasource: Prometheus
-  #   local-dashboard:
-  #     url: https://example.com/repository/test.json
-  #     curlOptions: "-sLf"
-  #     token: ''
-  #   local-dashboard-base64:
-  #     url: https://example.com/repository/test-b64.json
-  #     token: ''
-  #     b64content: true
-  #   local-dashboard-gitlab:
-  #     url: https://example.com/repository/test-gitlab.json
-  #     gitlabToken: ''
-  #   local-dashboard-bitbucket:
-  #     url: https://example.com/repository/test-bitbucket.json
-  #     bearerToken: ''
-  #   local-dashboard-azure:
-  #     url: https://example.com/repository/test-azure.json
-  #     basic: ''
-  #     acceptHeader: '*/*'
+dashboards:
+  default:
+    node-exporter-full:
+      gnetId: 1860
+      revision: 37
+      datasource: Prometheus
+    kubernetes-cluster:
+      gnetId: 15760
+      revision: 1
+      datasource: Prometheus
+    kubernetes-pods:
+      gnetId: 15761
+      revision: 1
+      datasource: Prometheus
+    kubelet-metrics:
+      gnetId: 15762
+      revision: 1
+      datasource: Prometheus
 
 ## Reference to external ConfigMap per provider. Use provider name as key and ConfigMap name as value.
 ## A provider dashboards must be defined either by external ConfigMaps or in values.yaml, not in both.
@@ -895,33 +961,33 @@ grafana.ini:
     check_for_updates: true
   log:
     mode: console
-  grafana_net:
-    url: https://grafana.net
   server:
-    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else }}''{{ end }}"
-## grafana Authentication can be enabled with the following values on grafana.ini
- # server:
-      # The full public facing url you use in browser, used for redirects and emails
- #    root_url:
- # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
- # auth.github:
- #    enabled: false
- #    allow_sign_up: false
- #    scopes: user:email,read:org
- #    auth_url: https://github.com/login/oauth/authorize
- #    token_url: https://github.com/login/oauth/access_token
- #    api_url: https://api.github.com/user
- #    team_ids:
- #    allowed_organizations:
- #    client_id:
- #    client_secret:
-## LDAP Authentication can be enabled with the following values on grafana.ini
-## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
+    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ tpl (.Values.ingress.hosts | first) . }}{{ else if (and .Values.route.main.enabled .Values.route.main.hostnames) }}{{ tpl (.Values.route.main.hostnames | first) . }}{{ else }}''{{ end }}"
+  unified_storage:
+    index_path: /var/lib/grafana-search/bleve
+  ## grafana Authentication can be enabled with the following values on grafana.ini
+  # server:
+  # The full public facing url you use in browser, used for redirects and emails
+  #    root_url:
+  # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
+  # auth.github:
+  #    enabled: false
+  #    allow_sign_up: false
+  #    scopes: user:email,read:org
+  #    auth_url: https://github.com/login/oauth/authorize
+  #    token_url: https://github.com/login/oauth/access_token
+  #    api_url: https://api.github.com/user
+  #    team_ids:
+  #    allowed_organizations:
+  #    client_id:
+  #    client_secret:
+  ## LDAP Authentication can be enabled with the following values on grafana.ini
+  ## NOTE: Grafana will fail to start if the value for ldap.toml is invalid
   # auth.ldap:
   #   enabled: true
   #   allow_sign_up: true
   #   config_file: /etc/grafana/ldap.toml
-## Grafana's alerting configuration
+  ## Grafana's alerting configuration
   # unified_alerting:
   #   enabled: true
   #   rule_version_record_limit: "5"
@@ -971,24 +1037,24 @@ sidecar:
     # -- The Docker registry
     registry: quay.io
     repository: kiwigrid/k8s-sidecar
-    tag: 1.30.10
+    tag: 2.8.1
     sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}
-#   limits:
-#     cpu: 100m
-#     memory: 100Mi
-#   requests:
-#     cpu: 50m
-#     memory: 50Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 100Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 50Mi
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     seccompProfile:
       type: RuntimeDefault
-  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # Set to true to skip tls verification for kube api calls. Can be overridden per sidecar
   # skipTlsVerify: true
   enableUniqueFilenames: false
   readinessProbe: {}
@@ -1014,6 +1080,8 @@ sidecar:
     #      key: value_key
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
+    # Set to true to skip tls verification for kube api calls. Overrides sidecar.skipTlsVerify
+    # skipTlsVerify: true
     # label that the configmaps with alert are marked with (can be templated)
     label: grafana_alert
     # value of label that the configmaps with alert are set to (can be templated)
@@ -1072,6 +1140,16 @@ sidecar:
     # This is needed if skipReload is true, to load any alerts defined at startup time.
     # Deploy the alert sidecar as an initContainer.
     initAlerts: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8080
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional alerts sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the alert sidecar emptyDir volume
@@ -1095,6 +1173,8 @@ sidecar:
     #      key: value_key
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
+    # Set to true to skip tls verification for kube api calls. Overrides sidecar.skipTlsVerify
+    # skipTlsVerify: true
     SCProvider: true
     # label that the configmaps with dashboards are marked with (can be templated)
     label: grafana_dashboard
@@ -1148,6 +1228,19 @@ sidecar:
     # Otherwise, it's executed as is. Shebangs known to work are #!/bin/sh and #!/usr/bin/env python
     script: null
     skipReload: false
+    # This is needed if skipReload is true, to load any dashboards defined at startup time.
+    # Deploy the dashboard sidecar as an initContainer.
+    initDashboards: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8083
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # watchServerTimeout: request to the server, asking it to cleanly close the connection after that.
     # defaults to 60sec; much higher values like 3600 seconds (1h) are feasible for non-Azure K8S
     # watchServerTimeout: 3600
@@ -1199,6 +1292,8 @@ sidecar:
     #      key: value_key
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
+    # Set to true to skip tls verification for kube api calls. Overrides sidecar.skipTlsVerify
+    # skipTlsVerify: true
     # label that the configmaps with datasources are marked with (can be templated)
     label: grafana_datasource
     # value of label that the configmaps with datasources are set to (can be templated)
@@ -1257,6 +1352,16 @@ sidecar:
     # This is needed if skipReload is true, to load any datasources defined at startup time.
     # Deploy the datasources sidecar as an initContainer.
     initDatasources: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8081
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional datasources sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the datasource sidecar emptyDir volume
@@ -1267,6 +1372,8 @@ sidecar:
     env: {}
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
+    # Set to true to skip tls verification for kube api calls. Overrides sidecar.skipTlsVerify
+    # skipTlsVerify: true
     # label that the configmaps with plugins are marked with (can be templated)
     label: grafana_plugin
     # value of label that the configmaps with plugins are set to (can be templated)
@@ -1335,6 +1442,8 @@ sidecar:
     env: {}
     # Do not reprocess already processed unchanged resources on k8s API reconnect.
     # ignoreAlreadyProcessed: true
+    # Set to true to skip tls verification for kube api calls. Overrides sidecar.skipTlsVerify
+    # skipTlsVerify: true
     # label that the configmaps with notifiers are marked with (can be templated)
     label: grafana_notifier
     # value of label that the configmaps with notifiers are set to (can be templated)
@@ -1393,6 +1502,16 @@ sidecar:
     # Deploy the notifier sidecar as an initContainer in addition to a container.
     # This is needed if skipReload is true, to load any notifiers defined at startup time.
     initNotifiers: false
+    # Use native sidecar https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+    # restartPolicy: Always
+    # # only applies to native sidecars
+    # startupProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 8082
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 5
+    #   failureThreshold: 60 # 5 minutes
     # Additional notifiers sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the notifier sidecar emptyDir volume
@@ -1406,9 +1525,13 @@ namespaceOverride: ""
 ##
 revisionHistoryLimit: 10
 
-## Add a seperate remote image renderer deployment/service
+## Add a separate remote image renderer deployment/service
 imageRenderer:
   deploymentStrategy: {}
+  ## The maximum time in seconds for the image renderer Deployment to make progress before it is
+  ## considered to be failed.
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
+  progressDeadlineSeconds: null
   # Enable the image-renderer deployment & service
   enabled: false
   replicas: 1
@@ -1423,6 +1546,10 @@ imageRenderer:
   serverURL: ""
   # The callback url of grafana instances if it is not in the same namespace with the remote image renderer
   renderingCallbackURL: ""
+  # Token used for authentication between Grafana and the remote image renderer.
+  token: ""
+  # Use an existing secret for the image renderer token. Must contain a key named "token".
+  existingSecret: ""
   image:
     # -- The Docker registry
     registry: docker.io
@@ -1436,6 +1563,14 @@ imageRenderer:
     pullSecrets: []
     # image-renderer ImagePullPolicy
     pullPolicy: Always
+  dnsPolicy: ~
+  dnsConfig: {}
+    # nameservers:
+    #   - 8.8.8.8
+    # options:
+    # - name: ndots
+    #   value: "2"
+  # - name: edns0
   # extra environment variables
   env:
     HTTP_HOST: "0.0.0.0"
@@ -1458,11 +1593,13 @@ imageRenderer:
     #  ENV_NAME:
     #    configMapKeyRef:
     #      name: configmap-name
-    #      key: value_key
+  #      key: value_key
 
   # image-renderer deployment serviceAccount
   serviceAccountName: ""
   automountServiceAccountToken: false
+  # image-renderer deployment hostUsers
+  hostUsers: ~
   # image-renderer deployment securityContext
   securityContext: {}
   # image-renderer deployment container securityContext
@@ -1479,6 +1616,8 @@ imageRenderer:
   hostAliases: []
   # image-renderer deployment priority class
   priorityClassName: ''
+  # Path to the healthcheck endpoint. On Image Renderer v5.0.0 or newer, this is '/healthz'. Older versions use '/'.
+  healthcheckPath: '/healthz'
   service:
     # Enable the image-renderer service
     enabled: true
@@ -1497,15 +1636,16 @@ imageRenderer:
     path: /metrics
     #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
     labels: {}
-    interval: 1m
+    # Set these to override the Prometheus global scrape interval/timeout.
+    # interval: 1m
+    # scrapeTimeout: 30s
     scheme: http
     tlsConfig: {}
-    scrapeTimeout: 30s
     relabelings: []
     # See: https://doc.crds.dev/github.com/prometheus-operator/kube-prometheus/monitoring.coreos.com/ServiceMonitor/v1@v0.11.0#spec-targetLabels
     targetLabels: []
       # - targetLabel1
-      # - targetLabel2
+    # - targetLabel2
   # If https is enabled in Grafana, this needs to be set as 'https' to correctly configure the callback used in Grafana
   grafanaProtocol: http
   # In case a sub_path is used this needs to be added to the image renderer callback
@@ -1522,12 +1662,12 @@ imageRenderer:
     # Allow additional services to access image-renderer (eg. Prometheus operator when ServiceMonitor is enabled)
     extraIngressSelectors: []
   resources: {}
-#   limits:
-#     cpu: 100m
-#     memory: 100Mi
-#   requests:
-#     cpu: 50m
-#     memory: 50Mi
+  #   limits:
+  #     cpu: 100m
+  #     memory: 100Mi
+  #   requests:
+  #     cpu: 50m
+  #     memory: 50Mi
   ## Node labels for pod assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
@@ -1561,69 +1701,73 @@ imageRenderer:
   extraVolumes: []
 
 networkPolicy:
-  ## @param networkPolicy.enabled Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
-  ##
+  # -- networkPolicy.enabled Enable creation of NetworkPolicy resources. Only Ingress traffic is filtered for now.
   enabled: false
-  ## @param networkPolicy.allowExternal Don't require client label for connections
-  ## The Policy model to apply. When set to false, only pods with the correct
-  ## client label will have network access to  grafana port defined.
-  ## When true, grafana will accept connections from any source
-  ## (with the correct destination port).
-  ##
-  ingress: true
-  ## @param networkPolicy.ingress When true enables the creation
-  ## an ingress network policy
-  ##
+  # --networkPolicy.allowExternal Don't require client label for connections
+  # The Policy model to apply. When set to false, only pods with the correct
+  # client label will have network access to  grafana port defined.
+  # When true, grafana will accept connections from any source
+  # (with the correct destination port).
+  #
+  ingress: false
+  # -- networkPolicy.ingress When true enables the creation
+  # an ingress network policy
   allowExternal: true
-  ## @param networkPolicy.explicitNamespacesSelector A Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
-  ## If explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
-  ## and that match other criteria, the ones that have the good label, can reach the grafana.
-  ## But sometimes, we want the grafana to be accessible to clients from other namespaces, in this case, we can use this
-  ## LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
-  ##
-  ## Example:
-  ## explicitNamespacesSelector:
-  ##   matchLabels:
-  ##     role: frontend
-  ##   matchExpressions:
-  ##    - {key: role, operator: In, values: [frontend]}
-  ##
+  # -- networkPolicy.explicitNamespacesSelector A Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
+  # If explicitNamespacesSelector is missing or set to {}, only client Pods that are in the networkPolicy's namespace
+  # and that match other criteria, the ones that have the good label, can reach the grafana.
+  # But sometimes, we want the grafana to be accessible to clients from other namespaces, in this case, we can use this
+  # LabelSelector to select these namespaces, note that the networkPolicy's namespace should also be explicitly added.
+  # </br>
+  #
+  # Example:
+  #
+  # ```
+  # explicitNamespacesSelector:
+  #   matchLabels:
+  #     role: frontend
+  #   matchExpressions:
+  #    - {key: role, operator: In, values: [frontend]}
+  # ```
   explicitNamespacesSelector: {}
-  ##
-  ##
-  ##
-  ##
-  ##
-  ##
+  # -- networkPolicy.explicitIpBlocks List of CIDR blocks allowed as ingress sources.
+  # Each entry must be a valid CIDR notation string (e.g. 10.0.0.0/8).
+  # When defined, the specified CIDR ranges are added to the ingress `from` rules
+  # using `ipBlock` entries and complement the other configured ingress sources.
+  # </br>
+  #
+  # Example:
+  #
+  # ```
+  # explicitIpBlocks:
+  #   - 35.191.0.0/16
+  #   - 130.211.0.0/22
+  # ```
+  #
+  explicitIpBlocks: []
+
   egress:
-    ## @param networkPolicy.egress.enabled When enabled, an egress network policy will be
-    ## created allowing grafana to connect to external data sources from kubernetes cluster.
+    # -- networkPolicy.egress.enabled When enabled, an egress network policy will be
+    # created allowing grafana to connect to external data sources from kubernetes cluster.
     enabled: false
-    ##
-    ## @param networkPolicy.egress.blockDNSResolution When enabled, DNS resolution will be blocked
-    ## for all pods in the grafana namespace.
+    # -- networkPolicy.egress.blockDNSResolution When enabled, DNS resolution will be blocked
+    # for all pods in the grafana namespace.
     blockDNSResolution: false
-    ##
-    ## @param networkPolicy.egress.ports Add individual ports to be allowed by the egress
+    # -- networkPolicy.egress.ports Add individual ports to be allowed by the egress
     ports: []
-    ## Add ports to the egress by specifying - port: <port number>
-    ## E.X.
-    ## - port: 80
-    ## - port: 443
-    ##
-    ## @param networkPolicy.egress.to Allow egress traffic to specific destinations
+    # Add ports to the egress by specifying - port: <port number>
+    # E.X.
+    # - port: 80
+    # - port: 443
+    #
+    # -- networkPolicy.egress.to Allow egress traffic to specific destinations
     to: []
-    ## Add destinations to the egress by specifying - ipBlock: <CIDR>
-    ## E.X.
-    ## to:
-    ##  - namespaceSelector:
-    ##    matchExpressions:
-  ##    - {key: role, operator: In, values: [grafana]}
-  ##
-  ##
-  ##
-  ##
-  ##
+    # -- destinations to the egress by specifying - ipBlock: <CIDR>
+    # E.X.
+    # to:
+    #  - namespaceSelector:
+    #    matchExpressions:
+    #    - {key: role, operator: In, values: [grafana]}
 
 # Enable backward compatibility of kubernetes where version below 1.13 doesn't have the enableServiceLinks option
 enableKubeBackwardCompatibility: false
@@ -1665,3 +1809,24 @@ extraObjects: []
 # you can disable this check by setting assertNoLeakedSecrets to false.
 assertNoLeakedSecrets: true
 
+# updateMode options are:
+# Off: n the Off update mode, the VPA recommender still analyzes resource usage and generates recommendations, but these recommendations are not automatically applied to Pods. The recommendations are only stored in the VPA object's .status field.
+# Initial: In Initial mode, VPA only sets resource requests when Pods are first created. It does not update resources for already running Pods, even if recommendations change over time. The recommendations apply only during Pod creation.
+# Recreate: In Recreate mode, VPA actively manages Pod resources by evicting Pods when their current resource requests differ significantly from recommendations. When a Pod is evicted, the workload controller (managing a Deployment, StatefulSet, etc) creates a replacement Pod, and the VPA admission controller applies the updated resource requests to the new Pod.
+# InPlaceOrRecreate: In Recreate mode, VPA actively manages Pod resources by evicting Pods when their current resource requests differ significantly from recommendations. When a Pod is evicted, the workload controller (managing a Deployment, StatefulSet, etc) creates a replacement Pod, and the VPA admission controller applies the updated resource requests to the new Pod.
+# Auto (deprecated): The Auto update mode is deprecated since VPA version 1.4.0. Use Recreate for eviction-based updates, or InPlaceOrRecreate for in-place updates with eviction fallback.
+verticalPodAutoscaler:
+  enabled: false
+  updateMode: "Off"
+  controlledResources:
+    cpu: true
+    memory: true
+
+  # Default safety bounds
+  minAllowed:
+    cpu: "25m"
+    memory: "128Mi"
+
+  maxAllowed:
+    cpu: "1000m"
+    memory: "1Gi"

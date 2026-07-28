@@ -1,1 +1,4 @@
-docker build -t anilsezer/iplookup-cron-go:latest . && docker push anilsezer/iplookup-cron-go:latest
+# This cron is used to determine the countries of visitors to the website.
+
+# Build & push:
+docker buildx build -t imgregistry.anil-sezer.com/iplookup-cron-go:latest --platform linux/amd64,linux/arm64 --push .

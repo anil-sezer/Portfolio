@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ip-lookup-go-cronjob
+  name: ip-lookup-go
   namespace: portfolio
 spec:
   schedule: "*/20 * * * *"  # Runs every 20 minutes
@@ -10,11 +10,13 @@ spec:
     spec:
       template:
         spec:
+          imagePullSecrets:
+            - name: regcred
           containers:
-            - name: ip-lookup-go-app
-              image: anilsezer/iplookup-cron-go:latest
+            - name: ip-lookup-go
+              image: imgregistry.anil-sezer.com/iplookup-cron-go:latest
               env:
               - name: GRPC_BASE_URL
-                value: "portfolio-grpc-service.portfolio.svc.cluster.local:8080"
+                value: "grpc.portfolio.svc.cluster.local:8080"
 
           restartPolicy: Never

@@ -1,84 +1,79 @@
 @page "/Resume"
+@using Portfolio.Ui.Resources
+@inject IStringLocalizer<AppResources> L
 
 <section id="resume" class="resume section-bg">
     <div class="container">
 
         <div class="section-title">
-            <h2>Resume</h2>
+            <h2>@L["Resume_Title"]</h2>
             <p>
-                I'm a dedicated engineer committed to writing clean and efficient systems while always being mindful of deadlines. <br/><br/>
-                I take pride in mentoring junior colleagues, guiding them patiently and deriving satisfaction from watching them grow into proficient engineers. <br/><br/>
-                My enthusiasm for learning never wanes; delving into new systems excites me, and I continuously seek innovative methods to refine my development process.<br/>
-                
-                You can <a href="https://drive.google.com/drive/folders/1iBSn56NqtXe1OL55fs3-oqy53_Xf9veH?usp=sharing" target="_blank" style="font-weight: bold;">download my resume here!</a>
+                @((MarkupString)L["Resume_Subtitle"].Value)
             </p>
         </div>
         
         <!-- First Column -->
         <div class="row">
             <div class="col-lg-6">
-                <h3 class="resume-title">Professional Experience</h3>
+                <h3 class="resume-title">@L["Resume_ProfExp"]</h3>
                 
                 <div class="resume-item">
-                    <h4>DevOps & Backend Software Consultant</h4>
-                    <h5>2024 - Ongoing </h5>
-                    <p><em>Freelance </em></p>
+                    <h4>@L["Resume_Job1_Title"]</h4>
+                    <h5>@L["Resume_Job1_Date"]</h5>
+                    <p><em>@L["Resume_Job1_Company"]</em></p>
                     <ul>
-                        <li>Mostly setting up VPS and self-host systems. Currently Docker gets the most customers for me.</li>
+                        <li>@L["Resume_Job1_Bullet1"]</li>
                     </ul>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Back End Engineer</h4>
-                    <h5>2023 - 2024</h5>
-                    <p><em>Moka United, Istanbul, Turkey </em></p>
+                    <h4>@L["Resume_Job2_Title"]</h4>
+                    <h5>@L["Resume_Job2_Date"]</h5>
+                    <p><em>@L["Resume_Job2_Company"]</em></p>
                     <ul>
-                        <li>Rapidly written mission critical software as a member of the virtual payment developer team.</li>
-                        <li>Developed a new microservices solution for cross-border payments between the United Kingdom and Turkey. </li>
-                        <li>Did security enhancements at the United Payment’s virtual payment team. </li>
-                        <li>Bridged the collaboration between the .Net devs and the DevOps team for transition to a Kubernetes env. </li>
+                        <li>@L["Resume_Job2_Bullet1"]</li>
+                        <li>@L["Resume_Job2_Bullet2"]</li>
+                        <li>@L["Resume_Job2_Bullet3"]</li>
+                        <li>@L["Resume_Job2_Bullet4"]</li>
                     </ul>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Back End Developer</h4>
-                    <h5>2019 - 2023</h5>
-                    <p><em>Social Lift, Istanbul, Turkey </em></p>
+                    <h4>@L["Resume_Job3_Title"]</h4>
+                    <h5>@L["Resume_Job3_Date"]</h5>
+                    <p><em>@L["Resume_Job3_Company"]</em></p>
                     <ul>
-                        <li> Ensured continuous system availability across 3 brands running from the same codebase. </li>
-                        <li> Did the maintenance and enhancement of a complex codebase with a 12-year legacy. </li>
-                        <li> Consistently delivered high-quality code within deadlines. </li>
-                        <li> Frequently integrated modern technologies to the system like Kafka. </li>
+                        <li>@L["Resume_Job3_Bullet1"]</li>
+                        <li>@L["Resume_Job3_Bullet2"]</li>
+                        <li>@L["Resume_Job3_Bullet3"]</li>
+                        <li>@L["Resume_Job3_Bullet4"]</li>
                     </ul>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Call Center Specialist</h4>
-                    <h5>2018</h5>
-                    <p><em>Denizbank, Istanbul, Turkey</em></p>
+                    <h4>@L["Resume_Job4_Title"]</h4>
+                    <h5>@L["Resume_Job4_Date"]</h5>
+                    <p><em>@L["Resume_Job4_Company"]</em></p>
                     <ul>
-                        <li>English banking support to high end customers.</li>
+                        <li>@L["Resume_Job4_Bullet1"]</li>
                     </ul>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Event Organizer</h4>
-                    <h5>2016 - 2017</h5>
-                    <p><em>Freelance, Istanbul, Turkey</em></p>
+                    <h4>@L["Resume_Job5_Title"]</h4>
+                    <h5>@L["Resume_Job5_Date"]</h5>
+                    <p><em>@L["Resume_Job5_Company"]</em></p>
                     <ul>
-                        <li>Event organizing, supervising human resources, IT support.</li>
+                        <li>@L["Resume_Job5_Bullet1"]</li>
                     </ul>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Tourist Guide</h4>
-                    <h5>2016</h5>
-                    <p><em>Bicycle Istanbul, Istanbul, Turkey</em></p>
+                    <h4>@L["Resume_Job6_Title"]</h4>
+                    <h5>@L["Resume_Job6_Date"]</h5>
+                    <p><em>@L["Resume_Job6_Company"]</em></p>
                     <ul>
-                        <li>
-                            Historical Istanbul tours on bicycle! <br/>
-                            The company lost its income and closed after 2016 military coup.
-                        </li>
+                        <li>@((MarkupString)L["Resume_Job6_Bullet1"].Value)</li>
                     </ul>
                 </div>
             </div>
@@ -86,42 +81,42 @@
             <!-- Second Column -->
             <div class="col-lg-6">
 
-                <h3 class="resume-title">Education</h3>
+                <h3 class="resume-title">@L["Resume_Education"]</h3>
                 
                 <div class="resume-item">
-                    <h4>CS50's Introduction to Computer Science</h4>
-                    <p><em>Edx - Harvard</em></p>
+                    <h4>@L["Resume_Edu1_Title"]</h4>
+                    <p><em>@L["Resume_Edu1_School"]</em></p>
                     <h5>2021</h5>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Docker A to Z</h4>
-                    <p><em>Udemy</em></p>
+                    <h4>@L["Resume_Edu2_Title"]</h4>
+                    <p><em>@L["Resume_Edu2_School"]</em></p>
                     <h5>2021</h5>
                 </div>
                 
                 <div class="resume-item">
-                    <h4>Test Driven Development With C#</h4>
-                    <p><em>Pluralsight - 7 courses</em></p>
+                    <h4>@L["Resume_Edu3_Title"]</h4>
+                    <p><em>@L["Resume_Edu3_School"]</em></p>
                     <h5>2020</h5>
                 </div>
 
                 <div class="resume-item">
-                    <h4>Istanbul University</h4>
+                    <h4>@L["Resume_Edu4_Title"]</h4>
                     <h5>2013 - 2018</h5>
-                    <p><em>Business Administration and Management</em></p>
+                    <p><em>@L["Resume_Edu4_Degree"]</em></p>
                 </div>
 
                 <div class="resume-item">
-                    <h4>CSD C and System Programmers Foundation <br/>(C ve Sistem Programcıları Derneği)</h4>
+                    <h4>@((MarkupString)L["Resume_Edu5_Title"].Value)</h4>
                     <h5>2017</h5>
-                    <p><em>C Programming Language</em></p>
+                    <p><em>@L["Resume_Edu5_Degree"]</em></p>
                 </div>
 
                 <div class="resume-item">
-                    <h4>Dr Nurettin Erk Perihan Erk Industry High School</h4>
+                    <h4>@L["Resume_Edu6_Title"]</h4>
                     <h5>2007 - 2011</h5>
-                    <p><em>Web designing & Programming</em></p>
+                    <p><em>@L["Resume_Edu6_Degree"]</em></p>
                 </div>
                 
             </div>

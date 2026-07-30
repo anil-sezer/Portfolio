@@ -1,17 +1,19 @@
 @page "/Hero"
 @using Portfolio.Ui.Models
+@using Portfolio.Ui.Resources
 @using Portfolio.Ui.Services
 @inject BackgroundImageService BackgroundImageService;
+@inject IStringLocalizer<AppResources> L
 
 @if (_backgroundImg != null)
 {
     <section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImg.Url) top center; background-size: cover;" alt="@_backgroundImg.AltText">
         <div class="hero-container">
-            <h1>Anıl Sezer</h1>
-            <p>Hi! I'm a fullstack engineer and here, I showcase my craft!</p>
+            <h1>@L["Hero_Title"]</h1>
+            <p>@L["Hero_Greeting"]</p>
         </div>
         <div class="bing-credit">
-            <b>Background image is by: <br/><a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank">Bing Daily Wallpapers</a></b>
+            <b>@L["Hero_BingCredit"] <br/><a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank">Bing Daily Wallpapers</a></b>
         </div>
     </section>
 }

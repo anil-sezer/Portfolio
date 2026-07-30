@@ -1,4 +1,6 @@
+using System.Globalization;
 using DotNetEnv;
+using Microsoft.AspNetCore.Localization;
 using Portfolio.Ui;
 using Portfolio.Ui.Services;
 using Portfolio.Ui.Components;
@@ -23,6 +25,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddMemoryCache();
 
+// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddLocalization();
+
 builder.InitializeHealthChecks();
 
 builder.InitializeGrpcClients();
@@ -33,6 +38,23 @@ builder.Services.AddSingleton<BackgroundImageService>();
 builder.Services.AddSingleton<LogVisitService>();
 
 var app = builder.Build();
+
+var supportedCultures = new[]
+{
+    new CultureInfo("en-US"),
+    new CultureInfo("en"),
+    new CultureInfo("tr-TR"),
+    new CultureInfo("tr")
+};
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 // todo: check this block later. Never checked it before.
 // Configure the HTTP request pipeline.
@@ -49,6 +71,19 @@ app.MapHealthCheckForUptimeRobot();
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+app.MapGet("/SetCulture", (string culture, string? redirectUri, HttpContext httpContext) =>
+{
+    if (!string.IsNullOrWhiteSpace(culture))
+    {
+        httpContext.Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true, SameSite = SameSiteMode.Lax }
+        );
+    }
+    return Results.LocalRedirect(string.IsNullOrWhiteSpace(redirectUri) ? "/" : redirectUri);
+});
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

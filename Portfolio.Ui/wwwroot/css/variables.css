@@ -50,6 +50,12 @@
     --color-hsl-warning: hsl(43, 100%, 66%);
     --color-hsl-error: hsl(348, 55%, 49%);
 
+    /* Flag / Country Colors */
+    --color-flag-tr: #E30A17;
+    --color-flag-tr-inactive: #FF4D4D;
+    --color-flag-en: #00247D;
+    --color-flag-en-inactive: #6C9EFF;
+
     /* RGB Channels for Alpha Transparencies */
     --rgb-black-night: 4, 11, 20;
     --rgb-black-overlay: 5, 13, 24;
@@ -114,5 +120,11 @@
     --clr-error: var(--color-hsl-error);
     --bg-alert-success: var(--color-success);
     --bg-alert-danger: var(--color-danger);
+
+    /* Language Switcher */
+    --text-lang-tr: var(--color-flag-tr);
+    --text-lang-tr-inactive: var(--color-flag-tr-inactive);
+    --text-lang-en: var(--color-flag-en);
+    --text-lang-en-inactive: var(--color-flag-en-inactive);
 }
 

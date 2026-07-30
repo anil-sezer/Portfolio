@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Navigation -->
+  <data name="Nav_Home" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="Nav_TechStack" xml:space="preserve">
+    <value>Teknoloji</value>
+  </data>
+  <data name="Nav_About" xml:space="preserve">
+    <value>Hakkımda</value>
+  </data>
+  <data name="Nav_Resume" xml:space="preserve">
+    <value>Özgeçmiş</value>
+  </data>
+  <data name="Nav_Contact" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Footer_Bing" xml:space="preserve">
+    <value>Arka plan görseli:</value>
+  </data>
+  <data name="Footer_Favicon" xml:space="preserve">
+    <value>Favicon ikonu:</value>
+  </data>
+
+  <!-- Hero Section -->
+  <data name="Hero_Title" xml:space="preserve">
+    <value>Anıl Sezer</value>
+  </data>
+  <data name="Hero_Greeting" xml:space="preserve">
+    <value>Merhaba! Ben bir yazılım mühendisiyim ve burada çalışmalarımı sergiliyorum!</value>
+  </data>
+  <data name="Hero_BingCredit" xml:space="preserve">
+    <value>Arka plan görseli:</value>
+  </data>
+
+  <!-- Tech Stack Section -->
+  <data name="TechStack_Title" xml:space="preserve">
+    <value>Teknolojik Yetkinlikler</value>
+  </data>
+  <data name="TechStack_Subtitle" xml:space="preserve">
+    <value>Bu sistemin yayınlanmasında kullandığım teknolojiler. Uzmanlık alanlarımı özetlemektedir. &lt;br/&gt; Kaynak kodları &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;GitHub adresimden&lt;/a&gt; inceleyebilirsiniz!</value>
+  </data>
+
+  <!-- About Section -->
+  <data name="About_Title" xml:space="preserve">
+    <value>Hakkımda</value>
+  </data>
+  <data name="About_Subtitle" xml:space="preserve">
+    <value>Full Stack Yazılım Mühendisi</value>
+  </data>
+  <data name="About_Age" xml:space="preserve">
+    <value>Yaş:</value>
+  </data>
+  <data name="About_Mail" xml:space="preserve">
+    <value>E-posta:</value>
+  </data>
+  <data name="About_City" xml:space="preserve">
+    <value>Şehir:</value>
+  </data>
+  <data name="About_CityValue" xml:space="preserve">
+    <value>İstanbul, Türkiye</value>
+  </data>
+  <data name="About_Phone" xml:space="preserve">
+    <value>Telefon:</value>
+  </data>
+  <data name="About_Paragraph1" xml:space="preserve">
+    <value>Herhangi bir alandaki mükemmellik onu sanata dönüştürür; ben de işime bu felsefeyle yaklaşıyorum. Özellikle C#'ın zarafetine duymuş olduğum tutkuyla, geliştirdiğim çözümlerden gurur duyuyorum.</value>
+  </data>
+  <data name="About_Paragraph2" xml:space="preserve">
+    <value>Enerjik bir mühendis olarak, kaliteli sonuçları zamanında teslim etmeye öncelik veriyorum. Temiz ve optimize kod yazma konusunda tutkuluyum. &lt;br/&gt; Kapsamlı test süreçleri, canlı ortamda beklenmedik sorunların yaşanmamasını sağlayan temel prensibimdir.</value>
+  </data>
+  <data name="About_Paragraph3" xml:space="preserve">
+    <value>Gerektiğinde tam otonomiyle hareket edebilir, her zaman uzun vadeli hedeflerle uyumlu çalışırım.</value>
+  </data>
+
+  <!-- Cluster Info Section -->
+  <data name="Cluster_Title" xml:space="preserve">
+    <value>Bu Kubernetes Kümesi Hakkında</value>
+  </data>
+  <data name="Cluster_Subtitle" xml:space="preserve">
+    <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes kümesi üzerinde barındırılmaktadır. Bu kümede çeşitli deneyler yürütmekteyim ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; aracılığıyla alınmaktadır.</value>
+  </data>
+  <data name="Cluster_Pods" xml:space="preserve">
+    <value>Pod</value>
+  </data>
+  <data name="Cluster_PodsDesc" xml:space="preserve">
+    <value>Bu kullanıcı arayüzü ve gRPC arka plan servis podları dahil</value>
+  </data>
+  <data name="Cluster_Services" xml:space="preserve">
+    <value>Servis</value>
+  </data>
+  <data name="Cluster_ServicesDesc" xml:space="preserve">
+    <value>&lt;a href="https://metallb.io/" target="_blank"&gt;MetalLB&lt;/a&gt; yük dengeleyici olarak, &lt;br/&gt; &lt;a href="https://traefik.io/traefik" target="_blank"&gt;Traefik&lt;/a&gt; ingress denetleyicisi olarak, &lt;br/&gt; &lt;a href="https://letsencrypt.org/" target="_blank"&gt;Let's Encrypt&lt;/a&gt; SSL sertifikaları için</value>
+  </data>
+  <data name="Cluster_Deployments" xml:space="preserve">
+    <value>Deployment</value>
+  </data>
+  <data name="Cluster_DeploymentsDesc" xml:space="preserve">
+    <value>Özel bir &lt;a href="https://hub.docker.com/_/registry"&gt;Docker imaj kayıt sunucusu (registry)&lt;/a&gt; dahil</value>
+  </data>
+  <data name="Cluster_CronJobs" xml:space="preserve">
+    <value>Cron Job</value>
+  </data>
+  <data name="Cluster_CronJobsDesc" xml:space="preserve">
+    <value>Günün resmi görselini alma gibi çeşitli zamanlanmış görevler için</value>
+  </data>
+  <data name="Cluster_Nodes" xml:space="preserve">
+    <value>Düğüm (Node)</value>
+  </data>
+  <data name="Cluster_NodesDesc" xml:space="preserve">
+    <value>5 adet Raspberry Pi ve 1 adet NAS kullanıldı. İhtiyaç duyulduğunda kolayca yeni Pi eklenebilir.</value>
+  </data>
+
+  <!-- Resume Section -->
+  <data name="Resume_Title" xml:space="preserve">
+    <value>Özgeçmiş</value>
+  </data>
+  <data name="Resume_Subtitle" xml:space="preserve">
+    <value>Temiz ve verimli sistemler yazmaya adanmış, teslim tarihlerine daima sadık kalan bir mühendisim. &lt;br/&gt;&lt;br/&gt; Genç meslektaşlarıma mentorluk yapmaktan, onlara sabırla rehberlik etmekten ve yetkin mühendislere dönüşmelerini izlemekten gurur duyuyorum. &lt;br/&gt;&lt;br/&gt; Öğrenme tutkum asla azalmıyor; yeni sistemleri incelemek beni heyecanlandırıyor ve geliştirme sürecimi mükemmelleştirmek için sürekli yenilikçi yöntemler arıyorum.&lt;br/&gt; &lt;a href="https://drive.google.com/drive/folders/1iBSn56NqtXe1OL55fs3-oqy53_Xf9veH?usp=sharing" target="_blank" style="font-weight: bold;"&gt;Özgeçmişimi buradan indirebilirsiniz!&lt;/a&gt;</value>
+  </data>
+  <data name="Resume_ProfExp" xml:space="preserve">
+    <value>Profesyonel Deneyim</value>
+  </data>
+  <data name="Resume_Job1_Title" xml:space="preserve">
+    <value>DevOps &amp; Backend Yazılım Danışmanı</value>
+  </data>
+  <data name="Resume_Job1_Date" xml:space="preserve">
+    <value>2024 - Devam Ediyor</value>
+  </data>
+  <data name="Resume_Job1_Company" xml:space="preserve">
+    <value>Serbest Zamanlı</value>
+  </data>
+  <data name="Resume_Job1_Bullet1" xml:space="preserve">
+    <value>Ağırlıklı olarak VPS ve self-host sistem kurulumları. Şu anda en çok Docker kurulumları talep görüyor.</value>
+  </data>
+  <data name="Resume_Job2_Title" xml:space="preserve">
+    <value>Back End Yazılım Mühendisi</value>
+  </data>
+  <data name="Resume_Job2_Date" xml:space="preserve">
+    <value>2023 - 2024</value>
+  </data>
+  <data name="Resume_Job2_Company" xml:space="preserve">
+    <value>Moka United, İstanbul, Türkiye</value>
+  </data>
+  <data name="Resume_Job2_Bullet1" xml:space="preserve">
+    <value>Sanal pos yazılım ekibinin bir üyesi olarak kritik göreve sahip yazılımlar geliştirildi.</value>
+  </data>
+  <data name="Resume_Job2_Bullet2" xml:space="preserve">
+    <value>İngiltere ve Türkiye arasında sınır ötesi ödemeler için yeni bir mikroservis mimarisi geliştirildi.</value>
+  </data>
+  <data name="Resume_Job2_Bullet3" xml:space="preserve">
+    <value>United Payment sanal pos ekibinde güvenlik iyileştirmeleri gerçekleştirildi.</value>
+  </data>
+  <data name="Resume_Job2_Bullet4" xml:space="preserve">
+    <value>Kubernetes ortamına geçiş sürecinde .NET geliştiricileri ile DevOps ekibi arasında köprü görevi üstlenildi.</value>
+  </data>
+  <data name="Resume_Job3_Title" xml:space="preserve">
+    <value>Back End Yazılım Geliştirici</value>
+  </data>
+  <data name="Resume_Job3_Date" xml:space="preserve">
+    <value>2019 - 2023</value>
+  </data>
+  <data name="Resume_Job3_Company" xml:space="preserve">
+    <value>Social Lift, İstanbul, Türkiye</value>
+  </data>
+  <data name="Resume_Job3_Bullet1" xml:space="preserve">
+    <value>Aynı kod tabanından çalışan 3 ayrı markanın kesintisiz sistem kullanılabilirliği sağladım</value>
+  </data>
+  <data name="Resume_Job3_Bullet2" xml:space="preserve">
+    <value>12 yıllık geçmişe sahip karmaşık bir kod tabanının bakımı ve iyileştirmelerini yaptım.</value>
+  </data>
+  <data name="Resume_Job3_Bullet3" xml:space="preserve">
+    <value>Teslim tarihlerine sadık kalınarak sürekli olarak yüksek kaliteli kod sundum.</value>
+  </data>
+  <data name="Resume_Job3_Bullet4" xml:space="preserve">
+    <value>Kafka gibi modern teknolojiler sisteme başarıyla entegre edildi.</value>
+  </data>
+  <data name="Resume_Job4_Title" xml:space="preserve">
+    <value>Çağrı Merkezi Uzmanı</value>
+  </data>
+  <data name="Resume_Job4_Date" xml:space="preserve">
+    <value>2018</value>
+  </data>
+  <data name="Resume_Job4_Company" xml:space="preserve">
+    <value>Denizbank, İstanbul, Türkiye</value>
+  </data>
+  <data name="Resume_Job4_Bullet1" xml:space="preserve">
+    <value>Üst segment müşterilere İngilizce bankacılık desteği.</value>
+  </data>
+  <data name="Resume_Job5_Title" xml:space="preserve">
+    <value>Etkinlik Organizatörü</value>
+  </data>
+  <data name="Resume_Job5_Date" xml:space="preserve">
+    <value>2016 - 2017</value>
+  </data>
+  <data name="Resume_Job5_Company" xml:space="preserve">
+    <value>Serbest Zamanlı, İstanbul, Türkiye</value>
+  </data>
+  <data name="Resume_Job5_Bullet1" xml:space="preserve">
+    <value>Etkinlik organizasyonu, insan kaynakları denetimi, BT desteği.</value>
+  </data>
+  <data name="Resume_Job6_Title" xml:space="preserve">
+    <value>Turist Rehberi</value>
+  </data>
+  <data name="Resume_Job6_Date" xml:space="preserve">
+    <value>2016</value>
+  </data>
+  <data name="Resume_Job6_Company" xml:space="preserve">
+    <value>Bicycle Istanbul, İstanbul, Türkiye</value>
+  </data>
+  <data name="Resume_Job6_Bullet1" xml:space="preserve">
+    <value>Bisikletle tarihi İstanbul turları! &lt;br/&gt; Şirket 2016 darbe girişimi sonrası gelirini kaybederek kapandı.</value>
+  </data>
+
+  <data name="Resume_Education" xml:space="preserve">
+    <value>Eğitim</value>
+  </data>
+  <data name="Resume_Edu1_Title" xml:space="preserve">
+    <value>CS50's Introduction to Computer Science</value>
+  </data>
+  <data name="Resume_Edu1_School" xml:space="preserve">
+    <value>Edx - Harvard</value>
+  </data>
+  <data name="Resume_Edu2_Title" xml:space="preserve">
+    <value>A'dan Z'ye Docker</value>
+  </data>
+  <data name="Resume_Edu2_School" xml:space="preserve">
+    <value>Udemy</value>
+  </data>
+  <data name="Resume_Edu3_Title" xml:space="preserve">
+    <value>Test Driven Development With C#</value>
+  </data>
+  <data name="Resume_Edu3_School" xml:space="preserve">
+    <value>Pluralsight - 7 Kurs</value>
+  </data>
+  <data name="Resume_Edu4_Title" xml:space="preserve">
+    <value>İstanbul Üniversitesi</value>
+  </data>
+  <data name="Resume_Edu4_Degree" xml:space="preserve">
+    <value>İşletme</value>
+  </data>
+  <data name="Resume_Edu5_Title" xml:space="preserve">
+    <value>C ve Sistem Programcıları Derneği (CSD)</value>
+  </data>
+  <data name="Resume_Edu5_Degree" xml:space="preserve">
+    <value>C Programlama Dili</value>
+  </data>
+  <data name="Resume_Edu6_Title" xml:space="preserve">
+    <value>Dr. Nurettin Erk Perihan Erk Teknik ve Endüstri Meslek Lisesi</value>
+  </data>
+  <data name="Resume_Edu6_Degree" xml:space="preserve">
+    <value>Web Tasarımı ve Programlama</value>
+  </data>
+
+  <!-- Contact Section -->
+  <data name="Contact_Title" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Contact_Subtitle" xml:space="preserve">
+    <value>Her türlü sorunuz için çekinmeden iletişime geçebilirsiniz!</value>
+  </data>
+  <data name="Contact_Location" xml:space="preserve">
+    <value>Konum:</value>
+  </data>
+  <data name="Contact_LocationVal" xml:space="preserve">
+    <value>İstanbul, Türkiye</value>
+  </data>
+  <data name="Contact_Email" xml:space="preserve">
+    <value>E-posta:</value>
+  </data>
+  <data name="Contact_Phone" xml:space="preserve">
+    <value>Gsm &amp; WhatsApp:</value>
+  </data>
+  <data name="Contact_YourName" xml:space="preserve">
+    <value>Adınız</value>
+  </data>
+  <data name="Contact_NamePlaceholder" xml:space="preserve">
+    <value>Adınız nedir</value>
+  </data>
+  <data name="Contact_YourEmail" xml:space="preserve">
+    <value>E-postanız</value>
+  </data>
+  <data name="Contact_Subject" xml:space="preserve">
+    <value>Konu</value>
+  </data>
+  <data name="Contact_SubjectPlaceholder" xml:space="preserve">
+    <value>Konu</value>
+  </data>
+  <data name="Contact_Message" xml:space="preserve">
+    <value>Mesajınız</value>
+  </data>
+  <data name="Contact_MessagePlaceholder" xml:space="preserve">
+    <value>Mesajınızı buraya yazabilirsiniz</value>
+  </data>
+  <data name="Contact_Sending" xml:space="preserve">
+    <value>Gönderiliyor...</value>
+  </data>
+  <data name="Contact_SendEmail" xml:space="preserve">
+    <value>E-posta Gönder</value>
+  </data>
+</root>

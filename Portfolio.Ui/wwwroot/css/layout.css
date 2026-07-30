@@ -162,6 +162,33 @@
 }
 
 /*--------------------------------------------------------------
+# Language Switcher
+--------------------------------------------------------------*/
+.language-switcher .lang-tr {
+    color: var(--text-lang-tr);
+    font-weight: 700;
+}
+
+.language-switcher .lang-en {
+    color: var(--text-lang-en);
+    font-weight: 700;
+}
+
+.language-switcher .btn:not(.btn-light) .lang-tr {
+    color: var(--text-lang-tr-inactive);
+    opacity: 0.85;
+}
+
+.language-switcher .btn:not(.btn-light) .lang-en {
+    color: var(--text-lang-en-inactive);
+    opacity: 0.85;
+}
+
+.language-switcher .btn:hover {
+    opacity: 1 !important;
+}
+
+/*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/
 #footer {

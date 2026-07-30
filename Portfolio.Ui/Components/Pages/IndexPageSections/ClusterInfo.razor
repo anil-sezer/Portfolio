@@ -1,6 +1,8 @@
-﻿@using System.Timers
+@using System.Timers
+@using Portfolio.Ui.Resources
 @using Portfolio.Ui.Services
 @inject ClusterStatsService ClusterStatsService;
+@inject IStringLocalizer<AppResources> L
 
 @implements IDisposable
 
@@ -9,10 +11,9 @@
     <div class="container">
         
         <div class="section-title">
-            <h2>About This Kubernetes Cluster</h2>
+            <h2>@L["Cluster_Title"]</h2>
             <p>
-                This website is hosted on a bare metal Kubernetes cluster that I built using Raspberry Pi's.
-                In this cluster I run various experiments and stats you see here are directly taken via <a href="https://github.com/kubernetes-client/csharp">KubernetesClient.</a>
+                @((MarkupString)L["Cluster_Subtitle"].Value)
             </p>
         </div>
 
@@ -24,8 +25,8 @@
                 </div>
 
                 <div class="stats-text-container">
-                    <span class="counter">@animatedPods Pods</span>
-                    <p>Including this UI and gRPC backend pods to present this portfolio</p>
+                    <span class="counter">@animatedPods @L["Cluster_Pods"]</span>
+                    <p>@L["Cluster_PodsDesc"]</p>
                 </div>
             </div>
 
@@ -35,11 +36,9 @@
                 </div>
 
                 <div class="stats-text-container">
-                    <span class="counter">@animatedServices Services</span>
+                    <span class="counter">@animatedServices @L["Cluster_Services"]</span>
                     <p> 
-                        <a href="https://metallb.io/" target="_blank">MetalLB</a> as load balancer, <br/>
-                        <a href="https://traefik.io/traefik" target="_blank">Traefik</a> for ingress controller, <br/>
-                        <a href="https://letsencrypt.org/" target="_blank">Let's Encrypt</a> for certificates
+                        @((MarkupString)L["Cluster_ServicesDesc"].Value)
                     </p>
                 </div>
             </div>
@@ -50,8 +49,8 @@
                 </div>
 
                 <div class="stats-text-container">
-                    <span class="counter">@animatedDeployments Deployments</span>
-                    <p>Including a <a href="https://hub.docker.com/_/registry">Docker private image registry</a></p>
+                    <span class="counter">@animatedDeployments @L["Cluster_Deployments"]</span>
+                    <p>@((MarkupString)L["Cluster_DeploymentsDesc"].Value)</p>
                 </div>
             </div>
 
@@ -61,8 +60,8 @@
                 </div>
 
                 <div class="stats-text-container">
-                    <span class="counter">@animatedCronJobs Cron Jobs</span>
-                    <p>For various tasks like getting image of the day</p>
+                    <span class="counter">@animatedCronJobs @L["Cluster_CronJobs"]</span>
+                    <p>@L["Cluster_CronJobsDesc"]</p>
                 </div>
             </div>
             
@@ -72,8 +71,8 @@
                 </div>
 
                 <div class="stats-text-container">
-                    <span class="counter">@animatedNodes Nodes</span>
-                    <p>Used 5 Raspberry Pi's and a NAS. I can easily add new Pi's when needed.</p>
+                    <span class="counter">@animatedNodes @L["Cluster_Nodes"]</span>
+                    <p>@L["Cluster_NodesDesc"]</p>
                 </div>
             </div>
 

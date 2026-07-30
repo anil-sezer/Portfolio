@@ -1,13 +1,14 @@
 @page "/TechStack"
 @using Portfolio.Ui.Models
+@using Portfolio.Ui.Resources
+@inject IStringLocalizer<AppResources> L
 
 <section id="techstack" class="section-bg">
     <div class="container">
 
         <div class="section-title">
-            <h2>Tech Stack</h2>
-            <p>This is the tech I used to deploy this system. Highlights what I'm proficient at. <br/>
-                You can check the source code at <a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;">my GitHub!</a> </p>
+            <h2>@L["TechStack_Title"]</h2>
+            <p>@((MarkupString)L["TechStack_Subtitle"].Value)</p>
         </div>
         
     <div class="tech-stack-grid">

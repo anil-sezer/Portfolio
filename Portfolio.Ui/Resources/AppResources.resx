@@ -53,7 +53,7 @@
   
   <!-- Navigation -->
   <data name="Nav_Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Photo Of The Day</value>
   </data>
   <data name="Nav_TechStack" xml:space="preserve">
     <value>Tech Stack</value>
@@ -349,5 +349,8 @@
   </data>
   <data name="Contact_SendEmail" xml:space="preserve">
     <value>Send Email</value>
+  </data>
+  <data name="Nav_ClusterInfo" xml:space="preserve">
+    <value>Kubernetes Cluster</value>
   </data>
 </root>

@@ -53,7 +53,7 @@
   
   <!-- Navigation -->
   <data name="Nav_Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Photo Of The Day</value>
   </data>
   <data name="Nav_TechStack" xml:space="preserve">
     <value>Tech Stack</value>
@@ -66,6 +66,9 @@
   </data>
   <data name="Nav_Contact" xml:space="preserve">
     <value>Contact</value>
+  </data>
+  <data name="Nav_ClusterInfo" xml:space="preserve">
+    <value>Kubernetes</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background image is by</value>

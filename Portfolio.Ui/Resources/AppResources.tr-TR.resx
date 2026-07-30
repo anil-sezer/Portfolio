@@ -53,7 +53,7 @@
 
   <!-- Navigation -->
   <data name="Nav_Home" xml:space="preserve">
-    <value>Ana Sayfa</value>
+    <value>Günün Fotoğrafı</value>
   </data>
   <data name="Nav_TechStack" xml:space="preserve">
     <value>Teknoloji</value>
@@ -66,6 +66,9 @@
   </data>
   <data name="Nav_Contact" xml:space="preserve">
     <value>İletişim</value>
+  </data>
+  <data name="Nav_ClusterInfo" xml:space="preserve">
+    <value>Kubernetes</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
     <value>Arka plan görseli:</value>

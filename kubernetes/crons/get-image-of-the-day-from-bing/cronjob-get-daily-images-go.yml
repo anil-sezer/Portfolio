@@ -6,6 +6,7 @@ metadata:
   namespace: portfolio
 spec:
   schedule: "0 2 * * *"  # Every day at 02:00 (2:00 AM)
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

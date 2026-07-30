@@ -2,52 +2,84 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
+	"log"
+	"time"
+
 	"ip-lookup-cron/grpc"
 	"ip-lookup-cron/proto"
 	"ip-lookup-cron/third_party"
-	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("Env file not present")
-	}
+	loadEnvValues()
 
 	ips := grpc.GetIpsToCheckFromGrpc()
-	//ips := grpc.GetTestIps() // todo: add some unit tests?
+	if len(ips) == 0 {
+		log.Println("No IPs to process. Exiting.")
+		return
+	}
 
-	fmt.Println("Got: " + fmt.Sprintf("%d", len(ips)) + " from grpc")
+	processIPs(ips)
 
-	rowsToDeleteCount := 0
+	grpc.SendIpCheckResultsToGrpc(ips)
+
+	logTheResult(ips)
+}
+
+func loadEnvValues() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Env file not present, using system defaults")
+	}
+}
+
+func processIPs(ips []*proto.IpCheckDto) {
+	ipCache := make(map[string]*third_party.IPInfo)
+
 	for _, ip := range ips {
-		if ip.IpAddress == "127.0.0.1" ||
-			ip.IpAddress == "31.223.32.192" {
-			fmt.Println("Will delete this row: " + fmt.Sprintf("%v", ip))
-			rowsToDeleteCount++
+		if isPrivateOrIgnoredIP(ip.IpAddress) {
+			log.Printf("Will delete private/ignored row: %v", ip)
 			ip.Operation = proto.DbOperationForThisRow_DELETE
 			continue
 		}
 
-		ipInfo, err := third_party.GetIPInfo(ip.IpAddress)
-		if err != nil {
-			time.Sleep(time.Second * 10)
-			fmt.Println(err)
-			continue
+		var ipInfo *third_party.IPInfo
+		if cachedInfo, found := ipCache[ip.IpAddress]; found {
+			log.Printf("[CACHE HIT] Reusing lookup for IP: %s", ip.IpAddress)
+			ipInfo = cachedInfo
+		} else {
+			var err error
+			ipInfo, err = third_party.GetIPInfo(ip.IpAddress)
+			if err != nil {
+				log.Printf("Error fetching info for IP %s: %v", ip.IpAddress, err)
+				time.Sleep(10 * time.Second)
+				continue
+			}
+			ipCache[ip.IpAddress] = ipInfo
+			time.Sleep(2 * time.Second)
 		}
 
-		ip.Country = GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
+		ip.Country = fmt.Sprintf("%s - %s", GetFlag(ipInfo.CountryCode), ipInfo.Country)
 		ip.City = ipInfo.City
 		ip.Operation = proto.DbOperationForThisRow_UPDATE
-
-		time.Sleep(time.Second * 2) // Rate limit the request
 	}
+}
 
-	if len(ips) > 0 {
-		grpc.SendIpCheckResultsToGrpc(ips)
+func logTheResult(ips []*proto.IpCheckDto) {
+	deletedCount := countByOperation(ips, proto.DbOperationForThisRow_DELETE)
+	updatedCount := countByOperation(ips, proto.DbOperationForThisRow_UPDATE)
+
+	log.Println("ip-lookup-cron completed successfully.")
+	log.Printf("Total rows: %d | Updated: %d | Deleted: %d\n", len(ips), updatedCount, deletedCount)
+}
+
+func countByOperation(ips []*proto.IpCheckDto, op proto.DbOperationForThisRow) int {
+	count := 0
+	for _, ip := range ips {
+		if ip.Operation == op {
+			count++
+		}
 	}
-
-	fmt.Println("ip-lookup-cron is done.")
-	fmt.Println("Will affect: " + fmt.Sprintf("%d", len(ips)) + " rows")
-	fmt.Println("Will delete: " + fmt.Sprintf("%d", rowsToDeleteCount) + " rows")
+	return count
 }

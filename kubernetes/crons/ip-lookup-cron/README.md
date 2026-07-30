@@ -2,3 +2,6 @@
 
 # Build & push:
 docker buildx build -t imgregistry.anil-sezer.com/iplookup-cron-go:latest --platform linux/amd64,linux/arm64 --push .
+
+# Run tests:
+go test -v ./...

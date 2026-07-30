@@ -26,7 +26,7 @@
     justify-content: center;
     width: 54px;
     height: 54px;
-    background: var(--color-white);
+    background: var(--bg-card);
     border-radius: 50%;
     transition: 0.5s;
     border: 1px solid var(--accent-heading-line);
@@ -40,7 +40,7 @@
 }
 
 #techstack .icon-box:hover .icon {
-    background: var(--celestial-blue);
+    background: var(--color-celestial-blue);
 }
 
 #techstack .icon-box:hover .icon i {
@@ -59,7 +59,7 @@
 }
 
 #techstack .title a:hover {
-    color: var(--celestial-blue);
+    color: var(--color-celestial-blue);
 }
 
 #techstack .description {

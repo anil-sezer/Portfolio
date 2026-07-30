@@ -5,13 +5,6 @@
        Tier 1: Primitive Tokens (Base Color Palette & Raw Values)
        ========================================================================== */
 
-    /* Legacy / Brand Palette Variables (Preserved) */
-    --yale-blue: #173b6c;
-    --celestial-blue: #149ddd;
-    --cambridge-blue: #99c099;
-    --charcoal: #47505f;
-    --jet: #2d2d2d;
-
     /* Brand Palette Scale */
     --color-celestial-blue: #149ddd;
     --color-celestial-blue-hover: #37b3ed;
@@ -100,12 +93,17 @@
     --icon-back-to-top: var(--color-white);
 
     /* Cards, Items & Sections */
-    --bg-section-alt: var(--color-gray-bg);
+    --bg-body: var(--color-white);
+    --bg-card: var(--color-white);
     --bg-card-tech: var(--color-gray-card);
+    --bg-section-alt: var(--color-gray-bg);
     --bg-info-icon: var(--color-celestial-blue-light);
     --bg-timeline-badge: var(--color-yale-blue-light);
     --border-timeline: var(--color-yale-blue-dark);
     --text-counter: var(--color-blue-dark);
+    --bg-input: var(--color-white);
+    --text-input: var(--color-dark-body);
+    --border-input: #cbd5e1;
 
     /* Overlays & Shadows */
     --bg-hero-overlay: rgba(var(--rgb-black-overlay), 0.3);
@@ -127,4 +125,35 @@
     --text-lang-en: var(--color-flag-en);
     --text-lang-en-inactive: var(--color-flag-en-inactive);
 }
+
+/* ==========================================================================
+   Dark Theme Token Overrides
+   ========================================================================== */
+[data-theme="dark"],
+[data-bs-theme="dark"] {
+    /* Typography & Content */
+    --bg-body: #0b1120;
+    --text-body: #94a3b8;
+    --text-heading-primary: #38bdf8;
+    --text-heading-secondary: #f8fafc;
+    --text-card-title: #f1f5f9;
+
+    /* Cards, Items & Sections */
+    --bg-section-alt: #111827;
+    --bg-card: #1e293b;
+    --bg-card-tech: #1e293b;
+    --bg-info-icon: rgba(20, 157, 221, 0.2);
+    --bg-timeline-badge: rgba(30, 82, 151, 0.4);
+    --border-timeline: #38bdf8;
+    --text-counter: #38bdf8;
+    --bg-input: #1e293b;
+    --text-input: #f8fafc;
+    --border-input: #334155;
+
+    /* Overlays & Shadows */
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --border-about-img: 0.3rem solid rgba(255, 255, 255, 0.15);
+}
+
 

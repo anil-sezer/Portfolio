@@ -16,14 +16,16 @@
 
 .contact .info {
     padding: 30px;
-    background: var(--color-white);
+    background: var(--bg-card);
     width: 100%;
     box-shadow: var(--shadow-card);
+    border-radius: 8px;
+    transition: background 0.3s ease;
 }
 
 .contact .info i {
     font-size: 20px;
-    color: var(--celestial-blue);
+    color: var(--color-celestial-blue);
     float: left;
     width: 44px;
     height: 44px;
@@ -47,7 +49,7 @@
     padding: 0 0 10px 60px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: var(--yale-blue);
+    color: var(--text-body);
 }
 
 .contact .info .email p {
@@ -74,14 +76,14 @@
 }
 
 .contact .info a:hover {
-    background: var(--celestial-blue);
+    background: var(--color-celestial-blue);
     color: var(--color-white);
 }
 
 .contact .info .email:hover i,
 .contact .info .address:hover i,
 .contact .info .phone:hover i {
-    background: var(--celestial-blue);
+    background: var(--color-celestial-blue);
     color: var(--color-white);
 }
 
@@ -91,7 +93,9 @@
 
 .contact .email-form input,
 .contact .email-form textarea {
-    outline: 2px solid var(--charcoal);
+    background-color: var(--bg-input);
+    color: var(--text-input);
+    border: 1px solid var(--border-input);
     font-size: 14px;
     box-shadow: none;
 }
@@ -115,9 +119,12 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
 .contact .email-form {
     width: 100%;
     padding: 30px;
-    background: var(--color-white);
+    background: var(--bg-card);
     box-shadow: var(--shadow-card);
+    border-radius: 8px;
+    transition: background 0.3s ease;
 }
+
 
 .contact .email-form .form-group {
     padding-bottom: 8px;

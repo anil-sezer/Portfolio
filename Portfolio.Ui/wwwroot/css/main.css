@@ -4,10 +4,12 @@
 body {
     font-family: "Open Sans", sans-serif;
     color: var(--text-body);
+    background-color: var(--bg-body);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
-    color: var(--celestial-blue);
+    color: var(--color-celestial-blue);
     text-decoration: none;
 }
 

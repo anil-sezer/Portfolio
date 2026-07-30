@@ -52,7 +52,7 @@
 }
 
 #header .profile .social-links a:hover {
-    background: var(--celestial-blue);
+    background: var(--color-celestial-blue);
     color: var(--text-nav-hover);
     text-decoration: none;
 }
@@ -132,7 +132,7 @@
 .nav-menu .active i,
 .nav-menu .active:focus i,
 .nav-menu li:hover>a i {
-    color: var(--celestial-blue);
+    color: var(--color-celestial-blue);
 }
 
 /* Mobile Navigation */
@@ -186,6 +186,38 @@
 
 .language-switcher .btn:hover {
     opacity: 1 !important;
+}
+
+/*--------------------------------------------------------------
+# Theme Toggle Switcher
+--------------------------------------------------------------*/
+.theme-toggle-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.theme-toggle-btn:hover {
+    background-color: var(--color-celestial-blue) !important;
+    border-color: var(--color-celestial-blue) !important;
+}
+
+[data-theme="dark"] .theme-icon-light {
+    display: inline-block !important;
+}
+[data-theme="dark"] .theme-icon-dark {
+    display: none !important;
+}
+
+html:not([data-theme="dark"]) .theme-icon-light {
+    display: none !important;
+}
+html:not([data-theme="dark"]) .theme-icon-dark {
+    display: inline-block !important;
 }
 
 /*--------------------------------------------------------------

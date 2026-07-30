@@ -56,6 +56,6 @@
     border-radius: 50px;
     left: -9px;
     top: 0;
-    background: var(--color-white);
+    background: var(--bg-body);
     border: 2px solid var(--border-timeline);
 }

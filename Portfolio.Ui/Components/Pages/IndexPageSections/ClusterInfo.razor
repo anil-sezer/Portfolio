@@ -99,9 +99,9 @@
     private DateTime animationStart;
     private readonly int animationDuration = 1000; // 1 second
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        try
         {
             var stats = await ClusterStatsService.GetFromCacheAsync();
             targetPodCount = stats.ActivePodCount;
@@ -109,7 +109,31 @@
             targetDeploymentCount = stats.DeploymentCount;
             targetCronJobCount = stats.CronJobCount;
             targetNodeCount = stats.NodeCount;
-            
+
+            // Set initial state to actual numbers so static SSR / AI crawlers see real values
+            animatedPods = targetPodCount;
+            animatedServices = targetServiceCount;
+            animatedDeployments = targetDeploymentCount;
+            animatedCronJobs = targetCronJobCount;
+            animatedNodes = targetNodeCount;
+        }
+        catch
+        {
+            // todo: Fallback gracefully if service is unreachable
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && targetPodCount > 0)
+        {
+            // Reset to 0 when interactive client side renders so human visitors get the count-up animation
+            animatedPods = 0;
+            animatedServices = 0;
+            animatedDeployments = 0;
+            animatedCronJobs = 0;
+            animatedNodes = 0;
+
             await StartAnimationAsync();
         }
     }

@@ -14,21 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
-// Trigger a get value to ensure that the env vars are loaded
-_ = EnvVars.ASPNETCORE_ENVIRONMENT;
-
-_ = EnvVars.SQL_DB_HOST;
-_ = EnvVars.SQL_DB_PORT;
-_ = EnvVars.SQL_DB_USER;
-_ = EnvVars.SQL_DB_NAME;
-_ = EnvVars.SQL_DB_PASSWORD;
-
-_ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
-
-_ = EnvVars.NOTIFICATION_TELEGRAM_API_KEY;
-_ = EnvVars.NOTIFICATION_TELEGRAM_CHAT_ID;
-
 builder.InitLogsWithSerilog();
+
+EnvVars.TestEnvVariablesForBackend();
+
 builder.InitOpenTelemetry("Portfolio.Grpc" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
 
 builder.InitDbWithPostgres();

@@ -11,12 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
-// Trigger a get value to ensure that the env vars are loaded
-_ = EnvVars.GRPC_BASE_URL;
-_ = EnvVars.ASPNETCORE_ENVIRONMENT;
-_ = EnvVars.OTEL_COLLECTOR_ENDPOINT;
-
 builder.InitLogsWithSerilog();
+
+EnvVars.TestEnvVariablesForFrontend();
+
 builder.InitOpenTelemetry("Portfolio.Ui" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
 
 builder.Services.AddRazorComponents()

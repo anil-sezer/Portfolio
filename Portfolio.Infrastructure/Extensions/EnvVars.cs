@@ -10,6 +10,31 @@ namespace Portfolio.Infrastructure.Extensions;
 /// </summary>
 public static class EnvVars
 {
+    public static void TestEnvVariablesForFrontend()
+    {
+        _ = ASPNETCORE_ENVIRONMENT;
+
+        _ = GRPC_BASE_URL;
+
+        _ = OTEL_COLLECTOR_ENDPOINT;
+    }
+    
+    public static void TestEnvVariablesForBackend()
+    {
+        _ = ASPNETCORE_ENVIRONMENT;
+
+        _ = SQL_DB_HOST;
+        _ = SQL_DB_PORT;
+        _ = SQL_DB_USER;
+        _ = SQL_DB_NAME;
+        _ = SQL_DB_PASSWORD;
+
+        _ = OTEL_COLLECTOR_ENDPOINT;
+
+        _ = NOTIFICATION_TELEGRAM_API_KEY;
+        _ = NOTIFICATION_TELEGRAM_CHAT_ID;
+    }
+    
     public static string NOTIFICATION_TELEGRAM_API_KEY => GetValue("NOTIFICATION_TELEGRAM_API_KEY");
     public static string NOTIFICATION_TELEGRAM_CHAT_ID => GetValue("NOTIFICATION_TELEGRAM_CHAT_ID");
     

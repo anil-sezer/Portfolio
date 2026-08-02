@@ -47,6 +47,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.SetupRequestLoggingForBlazor();
+
 app.SetupLocalization();
 
 app.UseAntiforgery();

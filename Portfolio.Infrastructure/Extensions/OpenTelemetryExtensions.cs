@@ -60,6 +60,13 @@ public static class OpenTelemetryExtensions
                     {
                         activity.SetTag("http.response.body.size", response.ContentLength);
                     };
+                    options.Filter = httpContext =>
+                    {
+                        var path = httpContext.Request.Path.Value;
+                        if (string.IsNullOrEmpty(path)) return true;
+
+                        return !HealthCheckExtensions.IsThisPathHealthCheck(path);
+                    };
                 })
                 .AddHttpClientInstrumentation()
                 .AddEntityFrameworkCoreInstrumentation(options =>

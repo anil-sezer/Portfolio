@@ -3,13 +3,22 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Portfolio.Infrastructure.Constants;
 
 namespace Portfolio.Infrastructure.Extensions;
 
 public static class HealthCheckExtensions
 {
+    private const string LivenessCheckPostfix = "/liveness";
+    private const string ReadinessCheckPostfix = "/readiness";
+    private const string ThirdPartyCheckPostfix = "/thirdPartyHealthCheck";
     private const string ReadinessDbCheckName = "ReadinessDbCheck";
+    
+    public static bool IsThisPathHealthCheck(string path)
+    {
+        return path.StartsWith(LivenessCheckPostfix, StringComparison.OrdinalIgnoreCase)
+               || path.StartsWith(ReadinessCheckPostfix, StringComparison.OrdinalIgnoreCase)
+               || path.StartsWith(ThirdPartyCheckPostfix, StringComparison.OrdinalIgnoreCase);
+    }
     
     public static IHealthChecksBuilder InitializeHealthChecks(this WebApplicationBuilder builder)
     {
@@ -25,7 +34,7 @@ public static class HealthCheckExtensions
     
     public static void MapLivenessHealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks("/liveness", new HealthCheckOptions
+        app.MapHealthChecks(LivenessCheckPostfix, new HealthCheckOptions
         {
             Predicate = _ => false, // Always return healthy for liveness
             ResultStatusCodes =
@@ -40,7 +49,7 @@ public static class HealthCheckExtensions
     // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
     public static void MapReadinessHealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks("/readiness", new HealthCheckOptions
+        app.MapHealthChecks(ReadinessCheckPostfix, new HealthCheckOptions
         {
             Predicate = check => check.Name == ReadinessDbCheckName,
             ResultStatusCodes =
@@ -54,7 +63,7 @@ public static class HealthCheckExtensions
     
     public static void MapHealthCheckForUptimeRobot(this WebApplication app)
     {
-        app.MapMethods("/thirdPartyHealthCheck", [HttpMethods.Head], () =>
+        app.MapMethods(ThirdPartyCheckPostfix, [HttpMethods.Head], () =>
         {
             return Results.Ok();
         });

@@ -5,6 +5,7 @@ using Portfolio.Ui;
 using Portfolio.Ui.Services;
 using Portfolio.Ui.Components;
 using Portfolio.Infrastructure.Extensions;
+using Portfolio.Ui.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
@@ -89,29 +90,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-// todo: Extract to its own file?
-// Log 404 and 302 responses. 302 is for this: app.UseStatusCodePagesWithRedirects("/404").
-app.Use(async (context, next) =>
-{
-    await next();
-    if (context.Response.StatusCode is 404 or 302)
-    {
-        Log.Information("4️⃣0️⃣4️⃣ Not Found: {RequestedUrl}", context.Request.Path.ToString());
-        
-        // Get LogVisitService from the service container
-        var logVisitService = context.RequestServices.GetRequiredService<LogVisitService>();
-        var httpContextAccessor = context.RequestServices.GetRequiredService<IHttpContextAccessor>();
-        
-        try
-        {
-            await logVisitService.LogVisitToWebpageAsync(httpContextAccessor);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Failed to log visit for 404/302 response");
-        }
-    }
-});
+app.UseMiddleware<NotFoundLoggingMiddleware>();
 
 try
 {

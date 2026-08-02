@@ -13,10 +13,9 @@ public static class DbContextExtensions
     {
         var connectionString = GetConnectionStringForPostgres();
 
-        var appName = AssemblyHelper.GetStartupProjectsName();
         builder.Services.AddDbContext<PortfolioDbContext>(options =>
         {
-            options.UseNpgsql(connectionString + $";Application Name= {appName}",
+            options.UseNpgsql(connectionString + $";Application Name= {AssemblyHelper.GetServiceName()}",
                 npgsqlOptionsAction: sqlOptions =>
                 {
                     // sqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, dbSchemaName);

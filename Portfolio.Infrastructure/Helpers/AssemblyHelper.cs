@@ -11,7 +11,7 @@ public static class AssemblyHelper
         return GetStartupProjectsName() + " - " + EnvVars.GetShortEnvironmentName() ;
     }
 
-    public static string GetStartupProjectsName()
+    private static string GetStartupProjectsName()
     {
         var entryAssembly = Assembly.GetEntryAssembly();
 

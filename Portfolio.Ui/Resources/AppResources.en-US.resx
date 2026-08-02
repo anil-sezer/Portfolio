@@ -163,7 +163,7 @@
     <value>Nodes</value>
   </data>
   <data name="Cluster_NodesDesc" xml:space="preserve">
-    <value>Used 5 Raspberry Pi's and a NAS. I can easily add new Pi's when needed.</value>
+    <value>Used 5 Raspberry Pi's and a NAS. I can easily add new devices when needed</value>
   </data>
 
   <!-- Resume Section -->

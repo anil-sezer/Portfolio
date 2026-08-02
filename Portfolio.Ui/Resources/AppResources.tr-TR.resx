@@ -139,31 +139,31 @@
     <value>Pod</value>
   </data>
   <data name="Cluster_PodsDesc" xml:space="preserve">
-    <value>Bu kullanıcı arayüzü ve gRPC arka plan servis podları dahil</value>
+    <value>Bu web sitesi, gRPC backend ve diğer tüm podlar dahil</value>
   </data>
   <data name="Cluster_Services" xml:space="preserve">
     <value>Servis</value>
   </data>
   <data name="Cluster_ServicesDesc" xml:space="preserve">
-    <value>&lt;a href="https://metallb.io/" target="_blank"&gt;MetalLB&lt;/a&gt; yük dengeleyici olarak, &lt;br/&gt; &lt;a href="https://traefik.io/traefik" target="_blank"&gt;Traefik&lt;/a&gt; ingress denetleyicisi olarak, &lt;br/&gt; &lt;a href="https://letsencrypt.org/" target="_blank"&gt;Let's Encrypt&lt;/a&gt; SSL sertifikaları için</value>
+    <value>&lt;a href="https://metallb.io/" target="_blank"&gt;MetalLB&lt;/a&gt; load balancer olarak, &lt;br/&gt; &lt;a href="https://traefik.io/traefik" target="_blank"&gt;Traefik&lt;/a&gt; ingress controller olarak, &lt;br/&gt; &lt;a href="https://letsencrypt.org/" target="_blank"&gt;Let's Encrypt&lt;/a&gt; ise SSL sertifikaları için</value>
   </data>
   <data name="Cluster_Deployments" xml:space="preserve">
     <value>Deployment</value>
   </data>
   <data name="Cluster_DeploymentsDesc" xml:space="preserve">
-    <value>Özel bir &lt;a href="https://hub.docker.com/_/registry"&gt;Docker imaj kayıt sunucusu (registry)&lt;/a&gt; dahil</value>
+    <value>Özel bir &lt;a href="https://hub.docker.com/_/registry"&gt;Docker image registry&lt;/a&gt; dahil</value>
   </data>
   <data name="Cluster_CronJobs" xml:space="preserve">
     <value>Cron Job</value>
   </data>
   <data name="Cluster_CronJobsDesc" xml:space="preserve">
-    <value>Günün resmi görselini alma gibi çeşitli zamanlanmış görevler için</value>
+    <value>Bing'den günün resmini kaydetme gibi çeşitli tekrarlayan görevler için</value>
   </data>
   <data name="Cluster_Nodes" xml:space="preserve">
-    <value>Düğüm (Node)</value>
+    <value>Node</value>
   </data>
   <data name="Cluster_NodesDesc" xml:space="preserve">
-    <value>5 adet Raspberry Pi ve 1 adet NAS kullanıldı. İhtiyaç duyulduğunda kolayca yeni Pi eklenebilir.</value>
+    <value>5 adet Raspberry Pi ve 1 adet NAS kullandım. İhtiyaç duyulduğunda kolayca yeni cihaz ekleyebilirim</value>
   </data>
 
   <!-- Resume Section -->

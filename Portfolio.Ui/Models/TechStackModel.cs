@@ -78,6 +78,18 @@ public class TechStackModel
             },
             new()
             {
+                Name = "gRPC",
+                WebsiteLink = "https://grpc.io/",
+
+                ImageAddress = "img/techStack/grpc.png",
+                ImageAltText = "gRPC logo. Just a undercase g and uppercase RPC letters. g has something arrow-ish on its top.",
+                ImageWidth = 32,
+                ImageHeight = 14,
+
+                Description = "Wanted to try something other than REST, used gRPC and liked it."
+            },
+            new()
+            {
                 Name = "PostgreSQL",
                 WebsiteLink = "https://www.postgresql.org/",
 
@@ -90,40 +102,28 @@ public class TechStackModel
             },
             new()
             {
-                Name = "gRPC",
-                WebsiteLink = "https://grpc.io/",
-
-                ImageAddress = "img/techStack/grpc.png",
-                ImageAltText = "gRPC logo. Just a undercase g and uppercase RPC letters. g has something arrow-ish on its top.",
+                Name = "OpenTelemetry",
+                WebsiteLink = "https://opentelemetry.io/",
+            
+                ImageAddress = "img/techStack/opentelemetry.png",
+                ImageAltText = "OpenTelemetry logo. A minimal, blue and orange colored telescope.",
                 ImageWidth = 32,
-                ImageHeight = 14,
-
-                Description = "Wanted to try something other than REST, used gRPC and liked it."
+                ImageHeight = 33,
+            
+                Description = "Traces are a must"
             },
-            // new()
-            // {
-            //     Name = "OpenTelemetry",
-            //     WebsiteLink = "https://opentelemetry.io/",
-            //
-            //     ImageAddress = "img/techStack/opentelemetry.png",
-            //     ImageAltText = "OpenTelemetry logo. A minimal, blue and orange colored telescope.",
-            //     ImageWidth = 32,
-            //     ImageHeight = 33,
-            //
-            //     Description = "Coming soon!"
-            // },
-            // new()
-            // {
-            //     Name = "Prometheus",
-            //     WebsiteLink = "https://prometheus.io/",
-            //
-            //     ImageAddress = "img/techStack/prometheus.png",
-            //     ImageAltText = "Prometheus logo. A nice torch.",
-            //     ImageWidth = 32,
-            //     ImageHeight = 32,
-            //
-            //     Description = "Coming soon!"
-            // },
+            new()
+            {
+                Name = "Prometheus",
+                WebsiteLink = "https://prometheus.io/",
+            
+                ImageAddress = "img/techStack/prometheus.png",
+                ImageAltText = "Prometheus logo. A nice torch.",
+                ImageWidth = 32,
+                ImageHeight = 32,
+            
+                Description = "Using it for 4+ years but I wanna sink more time specifically into it"
+            },
             new()
             {
                 Name = "Grafana",
@@ -134,24 +134,36 @@ public class TechStackModel
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Using it to visualize my data. I like to play with it!"
+                Description = "This cluster wouldn't be complete without mesmerizing dashboards of Grafana"
             },
             new()
             {
-                Name = "Bootstrap",
-                WebsiteLink = "https://getbootstrap.com/",
+                Name = "Jaeger",
+                WebsiteLink = "https://jaegertracing.io/",
 
-                ImageAddress = "img/techStack/bootstrap.png",
-                ImageAltText = "Bootstrap logo. A purple box with a B in it.",
+                ImageAddress = "img/techStack/jaeger.png",
+                ImageAltText = "Jaeger logo. Blue rabbit with a green robin hood hat inspecting 2 human footprints. Drawing style is original. Lines are good.",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Used it to create numerous projects including this and I like it, but after delivering multiple projects I'm gravitating towards other CSS frameworks."
+                Description = ""
+            },
+            new()
+            {
+                Name = "Seq",
+                WebsiteLink = "https://datalust.co/",
+
+                ImageAddress = "img/techStack/seq.png",
+                ImageAltText = "Seq logo. A minimalist design with a blue and white color scheme.",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                Description = "For displaying logs with traces. Has a simple an nice UI."
             },
             new()
             {
                 Name = "Lens",
-                WebsiteLink = "https://k8slens.dev/",
+                WebsiteLink = "https://lenshq.io/",
 
                 ImageAddress = "img/techStack/lens.png",
                 ImageAltText = "Lens logo. A minimalist design. It has white aperture blades in a light blue box.",
@@ -170,20 +182,32 @@ public class TechStackModel
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "It's a must have. It colors all the kubectl output, including logs of the pods!"
+                Description = "Mentioning this because it's a must have. It colors all the kubectl output, including logs of the pods!"
+            },
+            new()
+            {
+                Name = "Elastic Search",
+                WebsiteLink = "https://www.elastic.co/",
+            
+                ImageAddress = "img/techStack/elastic.png",
+                ImageAltText = "Elastic Search logo. Looks like colorful bubbles fused together.",
+                ImageWidth = 32,
+                ImageHeight = 32,
+            
+                Description = "Using for Jaeger for persistency"
+            },
+            new()
+            {
+                Name = "Authentik",
+                WebsiteLink = "https://goauthentik.io/",
+            
+                ImageAddress = "img/techStack/authentik.png",
+                ImageAltText = "It resembles a key and an ethernet port, or an elephant? Honestly its a weird logo. I like its orange though.",
+                ImageWidth = 32,
+                ImageHeight = 32,
+            
+                Description = "Securing access to my panels with it. I don't wanna take chances with security"
             }
-            // new()
-            // {
-            //     Name = "Elastic Search",
-            //     WebsiteLink = "https://www.elastic.co/",
-            //
-            //     ImageAddress = "img/techStack/elastic.png",
-            //     ImageAltText = "Elastic Search logo. Looks like colorful bubbles fused together.",
-            //     ImageWidth = 32,
-            //     ImageHeight = 32,
-            //
-            //     Description = "Coming soon!"
-            // }
         };
     }
 }

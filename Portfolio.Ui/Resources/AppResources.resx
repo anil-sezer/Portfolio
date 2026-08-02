@@ -90,7 +90,7 @@
     <value>Tech Stack</value>
   </data>
   <data name="TechStack_Subtitle" xml:space="preserve">
-    <value>This is the tech I used to deploy this system. Highlights what I'm proficient at. &lt;br/&gt; You can check the source code at &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;my GitHub!&lt;/a&gt;</value>
+    <value>These are the tools I used to deploy this portfolio. Highlights what I'm proficient at. &lt;br/&gt; You can check the source code at &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;my GitHub!&lt;/a&gt;</value>
   </data>
 
   <!-- About Section -->

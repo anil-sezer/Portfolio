@@ -36,8 +36,6 @@ builder.Services.AddSingleton<LogVisitService>();
 
 var app = builder.Build();
 
-app.SetupLocalization();
-
 // todo: check this block later. Never checked it before.
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -47,20 +45,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapLivenessHealthCheck();
-app.MapHealthCheckForUptimeRobot();
-
 app.UseHttpsRedirection();
+
+app.SetupLocalization();
 
 app.UseAntiforgery();
 
+app.UseMiddleware<NotFoundLoggingMiddleware>();
+
+app.MapLivenessHealthCheck();
+app.MapHealthCheckForUptimeRobot();
 app.DefineSetCultureCookieRoute();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-app.UseMiddleware<NotFoundLoggingMiddleware>();
 
 try
 {

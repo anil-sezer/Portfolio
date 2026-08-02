@@ -13,7 +13,7 @@ namespace Portfolio.Infrastructure.Extensions;
 
 public static class OpenTelemetryExtensions
 {
-    public static void InitOpenTelemetry(this WebApplicationBuilder builder, string sourceName)
+    public static void InitOpenTelemetry(this WebApplicationBuilder builder)
     {
         const string serviceVersion = "1.0.0";
 

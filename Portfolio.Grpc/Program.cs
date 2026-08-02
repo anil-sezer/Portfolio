@@ -18,7 +18,7 @@ builder.InitLogsWithSerilog();
 
 EnvVars.TestEnvVariablesForBackend();
 
-builder.InitOpenTelemetry("Portfolio.Grpc" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
+builder.InitOpenTelemetry();
 
 builder.InitDbWithPostgres();
 

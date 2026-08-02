@@ -15,7 +15,7 @@ builder.InitLogsWithSerilog();
 
 EnvVars.TestEnvVariablesForFrontend();
 
-builder.InitOpenTelemetry("Portfolio.Ui" + (builder.Environment.IsDevelopment() ? ".Dev" : ""));
+builder.InitOpenTelemetry();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -24,7 +24,6 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddMemoryCache();
 
-// builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddLocalization();
 
 builder.InitializeHealthChecks();
@@ -92,7 +91,7 @@ app.UseMiddleware<NotFoundLoggingMiddleware>();
 
 try
 {
-    Log.Information("UI Starting");
+    Log.Information("⭐⭐ UI Starting. Can access it from: http://localhost:5002 at dev env. ⭐⭐");
     await app.RunAsync();
 }
 catch (Exception ex)

@@ -1,10 +1,16 @@
 using System.Reflection;
+using Portfolio.Infrastructure.Extensions;
 using Serilog;
 
 namespace Portfolio.Infrastructure.Helpers;
 
 public static class AssemblyHelper
 {
+    public static string GetServiceName()
+    {
+        return GetStartupProjectsName() + " - " + EnvVars.GetShortEnvironmentName() ;
+    }
+
     public static string GetStartupProjectsName()
     {
         var entryAssembly = Assembly.GetEntryAssembly();

@@ -17,12 +17,11 @@ public static class OpenTelemetryExtensions
     {
         const string serviceVersion = "1.0.0";
 
-        if (EnvVars.IsDevelopment())
-        {
-            _ = new OtelDiagnosticListener();
-        }
+        // Enable if you wanna debug OpenTelemetry. Listens to internal events.
+        // if (EnvVars.IsDevelopment())
+        //     _ = new OtelDiagnosticListener();
 
-        var serviceName = AssemblyHelper.GetStartupProjectsName() + " - " + EnvVars.GetShortEnvironmentName() ;
+        var serviceName = AssemblyHelper.GetServiceName();
         Action<ResourceBuilder> appResourceBuilder =
             resource => resource
                 .AddContainerDetector()
@@ -48,32 +47,32 @@ public static class OpenTelemetryExtensions
             .WithTracing(tracerBuilder => tracerBuilder
                 .AddSource(serviceName)
                 .SetSampler(new TraceIdRatioBasedSampler(1.0))
-                .AddAspNetCoreInstrumentation(options =>
+                .AddAspNetCoreInstrumentation(o =>
                 {
-                    options.RecordException = true;
-                    options.EnrichWithHttpRequest = (activity, request) =>
+                    o.RecordException = true;
+                    o.EnrichWithHttpRequest = (activity, request) =>
                     {
                         activity.SetTag("http.request.body.size", request.ContentLength);
                         activity.SetTag("user.id", request.HttpContext.User?.Identity?.Name);
                     };
-                    options.EnrichWithHttpResponse = (activity, response) =>
+                    o.EnrichWithHttpResponse = (activity, response) =>
                     {
                         activity.SetTag("http.response.body.size", response.ContentLength);
                     };
-                    options.Filter = httpContext =>
+                    o.Filter = httpContext =>
                     {
                         var path = httpContext.Request.Path.Value;
                         if (string.IsNullOrEmpty(path)) return true;
 
-                        return !HealthCheckExtensions.IsThisPathHealthCheck(path);
+                        return !HealthCheckExtensions.IsThisPathHealthCheck(path) && !AssetHelper.IsStaticAsset(path);
                     };
                 })
                 .AddHttpClientInstrumentation()
-                .AddEntityFrameworkCoreInstrumentation(options =>
+                .AddEntityFrameworkCoreInstrumentation(o =>
                 {
-                    options.SetDbStatementForText = true;
-                    options.SetDbStatementForStoredProcedure = true;
-                    options.EnrichWithIDbCommand = (activity, command) =>
+                    o.SetDbStatementForText = true;
+                    o.SetDbStatementForStoredProcedure = true;
+                    o.EnrichWithIDbCommand = (activity, command) =>
                     {
                         activity.SetTag("db.command.timeout", command.CommandTimeout);
                     };
@@ -92,7 +91,6 @@ public static class OpenTelemetryExtensions
                         MaxExportBatchSize = 512
                     };
                 })
-                // .AddConsoleExporter()
             )
             .WithMetrics(meterBuilder => meterBuilder
                 .AddMeter(serviceName)
@@ -113,7 +111,6 @@ public static class OpenTelemetryExtensions
                         MaxExportBatchSize = 512
                     };
                 })
-                // .AddConsoleExporter()
             );
     }
 }

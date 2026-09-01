@@ -7,10 +7,10 @@ all:
     rpi4red:
       ansible_host: 192.168.1.120 # 4GB
       ansible_user: anilsezer
-    rpi5green:
+    rpi4blue:
       ansible_host: 192.168.1.121 # 8GB
       ansible_user: anilsezer
-    rpi4blue:
+    rpi5green:
       ansible_host: 192.168.1.122 # 8GB
       ansible_user: anilsezer
     rpi5gold:

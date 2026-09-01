@@ -64,6 +64,9 @@ public static class OpenTelemetryExtensions
                         var path = httpContext.Request.Path.Value;
                         if (string.IsNullOrEmpty(path)) return true;
 
+                        if (path.StartsWith("/_blazor", StringComparison.OrdinalIgnoreCase))
+                            return false;
+
                         return !HealthCheckExtensions.IsThisPathHealthCheck(path) && !AssetHelper.IsStaticAsset(path);
                     };
                 })

@@ -67,6 +67,13 @@ spec:
                 - name: db-backup-portfolio-nfs
                   mountPath: /backups
                   readOnly: false
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
           volumes:
             - name: db-backup-portfolio-nfs
               persistentVolumeClaim:

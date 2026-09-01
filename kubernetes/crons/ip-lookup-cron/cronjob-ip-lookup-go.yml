@@ -19,5 +19,11 @@ spec:
               env:
               - name: GRPC_BASE_URL
                 value: "grpc.portfolio.svc.cluster.local:8080"
-
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
           restartPolicy: Never

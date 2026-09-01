@@ -1223,8 +1223,13 @@ serviceAccount:  # @schema additionalProperties: false
 # -- Additional serviceAccount annotations (e.g. for oidc authentication)
 serviceAccountAnnotations: {}
 
-# -- [Resources](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/) for `traefik` container.
-resources: {}
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
 
 # -- This example pod anti-affinity forces the scheduler to put traefik pods
 # -- on nodes where no other traefik pods are scheduled.

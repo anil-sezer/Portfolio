@@ -70,3 +70,11 @@ spec:
 
             - name: GRPC_BASE_URL
               value: "http://grpc.portfolio.svc.cluster.local:8080"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+

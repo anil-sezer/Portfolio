@@ -42,6 +42,13 @@ spec:
             - name: postgres-nfs
               mountPath: /var/lib/postgresql
               readOnly: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
       volumes:
         - name: postgres-nfs
           persistentVolumeClaim:

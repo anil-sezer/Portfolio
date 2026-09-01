@@ -49,7 +49,12 @@ spec:
               path: /
               port: 5000
           resources:
-            {}
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
           env:
             - name: REGISTRY_HTTP_SECRET
               valueFrom:

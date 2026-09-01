@@ -43,6 +43,22 @@ server:
         hosts:
           - "authentik.anil-sezer.com"
           - "authentik.anilsezer.net"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 250Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
+
+worker:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 250Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
 
 postgresql:
   enabled: false

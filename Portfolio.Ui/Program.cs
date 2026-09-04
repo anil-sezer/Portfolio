@@ -58,6 +58,7 @@ app.UseMiddleware<NotFoundLoggingMiddleware>();
 app.MapLivenessHealthCheck();
 app.MapHealthCheckForUptimeRobot();
 app.DefineSetCultureCookieRoute();
+app.DefineEmailRoute();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

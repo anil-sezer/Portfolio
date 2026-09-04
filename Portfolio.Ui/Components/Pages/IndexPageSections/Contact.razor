@@ -1,10 +1,4 @@
-@page "/Contact"
-@using Portfolio.Grpc
-@using Portfolio.Infrastructure.Constants
-@using Portfolio.Ui.Models
 @using Portfolio.Ui.Resources
-@using Serilog
-@inject SendEmailToAdmin.SendEmailToAdminClient SendEmailToAdminClient;
 @inject IStringLocalizer<AppResources> L
 
 <section id="contact" class="contact">
@@ -40,103 +34,40 @@
             </div>
 
             <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-                <EditForm Model="@_emailFormData" OnValidSubmit="@HandleValidSubmit" class="email-form">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
-                
+                <form id="email-form" class="email-form">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="name">@L["Contact_YourName"]</label>
-                            <InputText id="name" class="form-control" @bind-Value="_emailFormData.Name" placeholder="@L["Contact_NamePlaceholder"]" minlength="@EmailFormModel.NameMinLength"/>
-                            <ValidationMessage For="@(() => _emailFormData.Name)" />
+                            <input id="name" type="text" class="form-control" placeholder="@L["Contact_NamePlaceholder"]" required minlength="3" />
+                            <div class="error-message" id="name-error"></div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="email">@L["Contact_YourEmail"]</label>
-                            <InputText id="email" type="email" class="form-control" @bind-Value="_emailFormData.Email" placeholder="email@address.com"/>
-                            <ValidationMessage For="@(() => _emailFormData.Email)" />
+                            <input id="email" type="email" class="form-control" placeholder="email@address.com" required />
+                            <div class="error-message" id="email-error"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="subject">@L["Contact_Subject"]</label>
-                        <InputText id="subject" class="form-control" @bind-Value="_emailFormData.Subject" placeholder="@L["Contact_SubjectPlaceholder"]" minlength="@EmailFormModel.SubjectMinLength"/>
-                        <ValidationMessage For="@(() => _emailFormData.Subject)" />
+                        <input id="subject" type="text" class="form-control" placeholder="@L["Contact_SubjectPlaceholder"]" required minlength="2" />
+                        <div class="error-message" id="subject-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="message">@L["Contact_Message"]</label>
-                        <InputTextArea id="message" class="form-control" rows="11" @bind-Value="_emailFormData.Message" placeholder="@L["Contact_MessagePlaceholder"]" minlength="@EmailFormModel.MessageMinLength"/>
-                        <ValidationMessage For="@(() => _emailFormData.Message)" />
+                        <textarea id="message" class="form-control" rows="11" placeholder="@L["Contact_MessagePlaceholder"]" required minlength="15"></textarea>
+                        <div class="error-message" id="message-error"></div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary" disabled="@_displaySpinner">
-                            @if (_displaySpinner)
-                            {
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                <span>@L["Contact_Sending"]</span>
-                            }
-                            else
-                            {
-                                <span>@L["Contact_SendEmail"]</span>
-                            }
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            <span id="btn-text">@L["Contact_SendEmail"]</span>
+                            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display: none;"></span>
                         </button>
                     </div>
-                </EditForm>
+                </form>
 
-                @if (_isSuccess.HasValue)
-                {
-                    <div class="floating-alert @(_isSuccess.Value ? "alert-success" : "alert-danger")" id="floating-alert">
-                        @_resultMessage
-                    </div>
-                    <script>
-                        setTimeout(() => {
-                            const alert = document.getElementById('floating-alert');
-                            if (alert) {
-                                alert.style.opacity = '0'; // Fade out
-                                setTimeout(() => alert.style.display = 'none', 500); // Remove from DOM after fade
-                            }
-                        }, 5000); // 5-second delay before fading out
-                    </script>
-                }
+                <div class="floating-alert" id="floating-alert" style="display: none;"></div>
             </div>
         </div>
     </div>
 </section>
-
-@code {
-    private EmailFormModel _emailFormData = new();
-    private bool _displaySpinner = false;
-    private bool? _isSuccess = null;
-    private string _resultMessage = "";
-
-    private async Task HandleValidSubmit()
-    {
-        _displaySpinner = true;
-        _isSuccess = null;
-        _resultMessage = "";
-
-        try
-        {
-            var email = new SendRequest
-            {
-                SenderName = _emailFormData.Name,
-                SenderEmail = _emailFormData.Email,
-                Subject = _emailFormData.Subject,
-                Message = _emailFormData.Message
-            };
-            var result = await SendEmailToAdminClient.SendAsync(email);
-
-            _isSuccess = result.ResultCode == ResultCode.Success;
-            _resultMessage = result.ResultMessage;
-        }
-        catch(Exception e)
-        {
-            Log.Error("Failed to send email! Is grpc down? Exception message: {ExceptionMessage}", e.Message);
-            _isSuccess = false;
-            _resultMessage = DefaultValues.SendEmail_ErrorMessage;
-        }
-        finally
-        {
-            _displaySpinner = false;
-        }
-    }
-}
 

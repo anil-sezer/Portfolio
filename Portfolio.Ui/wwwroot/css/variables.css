@@ -54,6 +54,7 @@
     --rgb-black-overlay: 5, 13, 24;
     --rgb-shadow: 0, 0, 0;
     --rgb-border-dark: 44, 47, 63;
+    --rgb-danger: 220, 53, 69;
 
     /* ==========================================================================
        Tier 2: Semantic Tokens (Functional UI Roles)
@@ -118,6 +119,9 @@
     --clr-error: var(--color-hsl-error);
     --bg-alert-success: var(--color-success);
     --bg-alert-danger: var(--color-danger);
+    --text-input-error: var(--color-danger);
+    --border-input-invalid: var(--color-danger);
+    --shadow-input-invalid: 0 0 0 0.2rem rgba(var(--rgb-danger), 0.25);
 
     /* Language Switcher */
     --text-lang-tr: var(--color-flag-tr);

@@ -115,6 +115,26 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
     outline-color: var(--clr-warning);
 }
 
+.contact .email-form .error-message {
+    display: none;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--text-input-error);
+}
+
+.contact .email-form .error-message.show {
+    display: block;
+}
+
+.contact .email-form .form-control.is-invalid {
+    border-color: var(--border-input-invalid);
+}
+
+.contact .email-form .form-control.is-invalid:focus {
+    border-color: var(--border-input-invalid);
+    box-shadow: var(--shadow-input-invalid);
+}
+
 
 .contact .email-form {
     width: 100%;

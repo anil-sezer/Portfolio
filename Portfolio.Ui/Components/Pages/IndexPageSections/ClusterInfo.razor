@@ -1,15 +1,12 @@
-@using System.Timers
 @using Portfolio.Ui.Resources
 @using Portfolio.Ui.Services
-@inject ClusterStatsService ClusterStatsService;
+@inject ClusterStatsService ClusterStatsService
 @inject IStringLocalizer<AppResources> L
-
-@implements IDisposable
 
 <!-- Stats Section -->
 <section id="clusterInfo" class="stats section">
     <div class="container">
-        
+
         <div class="section-title">
             <h2>@L["Cluster_Title"]</h2>
             <p>
@@ -23,9 +20,8 @@
                 <div class="stats-icon-container">
                     <img src="img/cluster/pod-128.png" alt="Kubernetes Pod" class="stats-icon"/>
                 </div>
-
                 <div class="stats-text-container">
-                    <span class="counter">@animatedPods @L["Cluster_Pods"]</span>
+                    <span class="counter"><span id="pods-count">@_targetPodCount</span> @L["Cluster_Pods"]</span>
                     <p>@L["Cluster_PodsDesc"]</p>
                 </div>
             </div>
@@ -34,10 +30,9 @@
                 <div class="stats-icon-container">
                     <img src="img/cluster/svc-128.png" alt="Kubernetes Service" class="stats-icon"/>
                 </div>
-
                 <div class="stats-text-container">
-                    <span class="counter">@animatedServices @L["Cluster_Services"]</span>
-                    <p> 
+                    <span class="counter"><span id="services-count">@_targetServiceCount</span> @L["Cluster_Services"]</span>
+                    <p>
                         @((MarkupString)L["Cluster_ServicesDesc"].Value)
                     </p>
                 </div>
@@ -47,9 +42,8 @@
                 <div class="stats-icon-container">
                     <img src="img/cluster/deploy-128.png" alt="Kubernetes Deployment" class="stats-icon"/>
                 </div>
-
                 <div class="stats-text-container">
-                    <span class="counter">@animatedDeployments @L["Cluster_Deployments"]</span>
+                    <span class="counter"><span id="deployments-count">@_targetDeploymentCount</span> @L["Cluster_Deployments"]</span>
                     <p>@((MarkupString)L["Cluster_DeploymentsDesc"].Value)</p>
                 </div>
             </div>
@@ -58,20 +52,18 @@
                 <div class="stats-icon-container">
                     <img src="img/cluster/cronjob-128.png" alt="Kubernetes Cron Job" class="stats-icon"/>
                 </div>
-
                 <div class="stats-text-container">
-                    <span class="counter">@animatedCronJobs @L["Cluster_CronJobs"]</span>
+                    <span class="counter"><span id="cronjobs-count">@_targetCronJobCount</span> @L["Cluster_CronJobs"]</span>
                     <p>@L["Cluster_CronJobsDesc"]</p>
                 </div>
             </div>
-            
+
             <div class="stats-item">
                 <div class="stats-icon-container">
                     <img src="img/cluster/node-128.png" alt="Kubernetes Node" class="stats-icon" />
                 </div>
-
                 <div class="stats-text-container">
-                    <span class="counter">@animatedNodes @L["Cluster_Nodes"]</span>
+                    <span class="counter"><span id="nodes-count">@_targetNodeCount</span> @L["Cluster_Nodes"]</span>
                     <p>@L["Cluster_NodesDesc"]</p>
                 </div>
             </div>
@@ -83,93 +75,26 @@
 </section>
 
 @code {
-    private int animatedPods = 0;
-    private int animatedServices = 0;
-    private int animatedDeployments = 0;
-    private int animatedCronJobs = 0;
-    private int animatedNodes = 0;
-
-    private int targetPodCount;
-    private int targetServiceCount;
-    private int targetDeploymentCount;
-    private int targetCronJobCount;
-    private int targetNodeCount;
-
-    private Timer? animationTimer;
-    private DateTime animationStart;
-    private readonly int animationDuration = 1000; // 1 second
+    private int _targetPodCount;
+    private int _targetServiceCount;
+    private int _targetDeploymentCount;
+    private int _targetCronJobCount;
+    private int _targetNodeCount;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             var stats = await ClusterStatsService.GetFromCacheAsync();
-            targetPodCount = stats.ActivePodCount;
-            targetServiceCount = stats.ServiceCount;
-            targetDeploymentCount = stats.DeploymentCount;
-            targetCronJobCount = stats.CronJobCount;
-            targetNodeCount = stats.NodeCount;
-
-            // Set initial state to actual numbers so static SSR / AI crawlers see real values
-            animatedPods = targetPodCount;
-            animatedServices = targetServiceCount;
-            animatedDeployments = targetDeploymentCount;
-            animatedCronJobs = targetCronJobCount;
-            animatedNodes = targetNodeCount;
+            _targetPodCount = stats.ActivePodCount;
+            _targetServiceCount = stats.ServiceCount;
+            _targetDeploymentCount = stats.DeploymentCount;
+            _targetCronJobCount = stats.CronJobCount;
+            _targetNodeCount = stats.NodeCount;
         }
         catch
         {
             // todo: Fallback gracefully if service is unreachable
         }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && targetPodCount > 0)
-        {
-            // Reset to 0 when interactive client side renders so human visitors get the count-up animation
-            animatedPods = 0;
-            animatedServices = 0;
-            animatedDeployments = 0;
-            animatedCronJobs = 0;
-            animatedNodes = 0;
-
-            await StartAnimationAsync();
-        }
-    }
-
-    private async Task StartAnimationAsync()
-    {
-        animationStart = DateTime.Now;
-        animationTimer = new Timer(32); // ~60 FPS
-        animationTimer.Elapsed += UpdateAnimationAsync;
-        animationTimer.Start();
-    }
-
-    // todo: resolve the async void warning
-    private async void UpdateAnimationAsync(object? sender, ElapsedEventArgs e)
-    {
-        var elapsed = (DateTime.Now - animationStart).TotalMilliseconds;
-        var progress = Math.Min(elapsed / animationDuration, 1.0);
-
-        animatedPods = (int)(targetPodCount * progress);
-        animatedServices = (int)(targetServiceCount * progress);
-        animatedDeployments = (int)(targetDeploymentCount * progress);
-        animatedCronJobs = (int)(targetCronJobCount * progress);
-        animatedNodes = (int)(targetNodeCount * progress);
-
-        await InvokeAsync(StateHasChanged);
-
-        if (progress >= 1.0)
-        {
-            animationTimer?.Stop();
-            animationTimer?.Dispose();
-        }
-    }
-
-    public void Dispose()
-    {
-        animationTimer?.Stop();
-        animationTimer?.Dispose();
     }
 }

@@ -12,25 +12,25 @@
           ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
           register: k8s_nodes
           changed_when: false
-          ignore_errors: true
+          failed_when: false
 
         - name: Drain each worker node
           ansible.builtin.command:
             cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
           loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
           when:
-            - k8s_nodes is succeeded
+            - k8s_nodes.rc == 0
             - item != ansible_facts['hostname'] and item != ansible_facts['nodename']
-          ignore_errors: true
+          failed_when: false
 
         - name: Drain the control node last
           ansible.builtin.command:
             cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
           loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
           when:
-            - k8s_nodes is succeeded
+            - k8s_nodes.rc == 0
             - item == ansible_facts['hostname'] or item == ansible_facts['nodename']
-          ignore_errors: true
+          failed_when: false
 
     - name: Shut down non-control-plane hosts
       ansible.builtin.shell: "sleep 2 && shutdown -h now"

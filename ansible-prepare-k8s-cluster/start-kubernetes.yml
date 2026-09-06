@@ -1,0 +1,61 @@
+---
+- name: Start Kubernetes and exit maintenance mode
+  hosts: k8s_nodes
+  gather_facts: true
+  vars_files:
+    - variables.yml
+  tasks:
+    # -------------------------------------------------------------------------
+    # Step 1: Start containerd on all nodes
+    # -------------------------------------------------------------------------
+    - name: Ensure containerd service is started
+      ansible.builtin.systemd:
+        name: containerd
+        state: started
+      become: true
+
+    # -------------------------------------------------------------------------
+    # Step 2: Start kubelet on control plane host first
+    # -------------------------------------------------------------------------
+    - name: Start kubelet on control plane host
+      ansible.builtin.systemd:
+        name: kubelet
+        state: started
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    - name: Wait for Kubernetes API server to become ready on control plane
+      ansible.builtin.command: kubectl get nodes
+      register: api_check
+      until: api_check.rc == 0
+      retries: 30
+      delay: 5
+      changed_when: false
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 3: Start kubelet on worker nodes
+    # -------------------------------------------------------------------------
+    - name: Start kubelet on worker nodes
+      ansible.builtin.systemd:
+        name: kubelet
+        state: started
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 4: Uncordon all nodes from control plane
+    # -------------------------------------------------------------------------
+    - name: Uncordon Kubernetes nodes
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      block:
+        - name: Get list of Kubernetes nodes
+          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
+          register: k8s_nodes
+          changed_when: false
+
+        - name: Uncordon each node
+          ansible.builtin.command:
+            cmd: "kubectl uncordon {{ item }}"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when: k8s_nodes is succeeded

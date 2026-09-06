@@ -1,0 +1,105 @@
+---
+- name: Stop Kubernetes entirely and enter maintenance mode
+  hosts: k8s_nodes
+  gather_facts: true
+  vars_files:
+    - variables.yml
+  tasks:
+    # -------------------------------------------------------------------------
+    # Step 1: Drain all nodes from the control plane
+    # -------------------------------------------------------------------------
+    - name: Drain Kubernetes nodes
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      block:
+        - name: Get list of Kubernetes nodes
+          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
+          register: k8s_nodes
+          changed_when: false
+          failed_when: false
+
+        - name: Notice if Kubernetes API server is already unreachable
+          ansible.builtin.debug:
+            msg: "Kubernetes API server is unreachable (already stopped or port 6443 closed). Skipping drain."
+          when: k8s_nodes.rc != 0
+
+        - name: Drain each worker node
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes.rc == 0
+            - item != ansible_facts['hostname'] and item != ansible_facts['nodename']
+          failed_when: false
+
+        - name: Drain the control node last
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes.rc == 0
+            - item == ansible_facts['hostname'] or item == ansible_facts['nodename']
+          failed_when: false
+
+    # -------------------------------------------------------------------------
+    # Step 2: Stop Kubernetes services & containers on worker nodes
+    # -------------------------------------------------------------------------
+    - name: Stop kubelet on worker nodes
+      ansible.builtin.systemd:
+        name: kubelet
+        state: stopped
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    - name: Stop all running containers and pods on worker nodes
+      ansible.builtin.shell: |
+        containers=$(crictl ps -q)
+        if [ -n "$containers" ]; then
+          crictl stop $containers
+        fi
+        pods=$(crictl pods -q)
+        if [ -n "$pods" ]; then
+          crictl stopp $pods
+        fi
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+      changed_when: false
+      failed_when: false
+
+    - name: Stop containerd on worker nodes
+      ansible.builtin.systemd:
+        name: containerd
+        state: stopped
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 3: Stop Kubernetes services & containers on control plane host
+    # -------------------------------------------------------------------------
+    - name: Stop kubelet on control plane host
+      ansible.builtin.systemd:
+        name: kubelet
+        state: stopped
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    - name: Stop all running containers and pods on control plane host
+      ansible.builtin.shell: |
+        containers=$(crictl ps -q)
+        if [ -n "$containers" ]; then
+          crictl stop $containers
+        fi
+        pods=$(crictl pods -q)
+        if [ -n "$pods" ]; then
+          crictl stopp $pods
+        fi
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      changed_when: false
+      failed_when: false
+
+    - name: Stop containerd on control plane host
+      ansible.builtin.systemd:
+        name: containerd
+        state: stopped
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip

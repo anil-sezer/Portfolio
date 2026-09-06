@@ -59,6 +59,7 @@ app.MapLivenessHealthCheck();
 app.MapHealthCheckForUptimeRobot();
 app.DefineSetCultureCookieRoute();
 app.DefineEmailRoute();
+app.DefineLogVisitRoute();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

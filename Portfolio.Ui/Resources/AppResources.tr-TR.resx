@@ -73,9 +73,6 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Arka plan görseli:</value>
   </data>
-  <data name="Footer_Favicon" xml:space="preserve">
-    <value>Favicon ikonu:</value>
-  </data>
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">

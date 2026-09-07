@@ -70,9 +70,6 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background image is by</value>
   </data>
-  <data name="Footer_Favicon" xml:space="preserve">
-    <value>Favicon by</value>
-  </data>
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">

@@ -16,7 +16,10 @@ https://github.com/geerlingguy/raspberry-pi-dramble/tree/master
 ansible-playbook -i inventory.yml verify-node-uniqueness.yml
 ansible-playbook -i inventory.yml prepare-core-components.yml
 ansible-playbook -i inventory.yml setup-kubernetes.yml
+ansible-playbook -i inventory.yml stop-kubernetes.yml
+ansible-playbook -i inventory.yml start-kubernetes.yml
 ansible-playbook -i inventory.yml shutdown.yml
+ansible-playbook -i inventory.yml check-and-upgrade.yml
 
 # Dry run:
 ansible-playbook -i inventory.yml setup-kubernetes.yml --check

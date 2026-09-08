@@ -87,10 +87,106 @@
 
   <!-- Tech Stack Section -->
   <data name="TechStack_Title" xml:space="preserve">
-    <value>Teknolojik Yetkinlikler</value>
+    <value>Tech Stack</value>
   </data>
   <data name="TechStack_Subtitle" xml:space="preserve">
-    <value>Bu sistemin yayınlanmasında kullandığım teknolojiler. Uzmanlık alanlarımı özetlemektedir. &lt;br/&gt; Kaynak kodları &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;GitHub adresimden&lt;/a&gt; inceleyebilirsiniz!</value>
+    <value>Bu sistemde kullandığım teknolojiler. Uzmanlık alanımın özeti sayılır. &lt;br/&gt; Kodun tamamı &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;GitHub profilimde&lt;/a&gt; açık kaynak.</value>
+  </data>
+  <data name="TechStack_Kubernetes_Alt" xml:space="preserve">
+    <value>Kubernetes logosu. İçinde beyaz gemi dümeni olan mavi altıgen. Minimalist bir marka tasarımı.</value>
+  </data>
+  <data name="TechStack_Kubernetes_Desc" xml:space="preserve">
+    <value>Raspberry Pi 5-4 kümemde gururla barındırılmaktadır! Düğümler &lt;strong&gt;tek bir Ansible komutu&lt;/strong&gt; ile hazırlanır ve küme ayağa kaldırılır</value>
+  </data>
+  <data name="TechStack_Ansible_Alt" xml:space="preserve">
+    <value>Ansible logosu. İçinde stilize A harfi bulunan siyah dolu daire.</value>
+  </data>
+  <data name="TechStack_Ansible_Desc" xml:space="preserve">
+    <value>Tam otomatik Kubernetes cluster kurulumu olmazsa bu lab eksik olurdu. Ansible'ı seviyorum</value>
+  </data>
+  <data name="TechStack_Docker_Alt" xml:space="preserve">
+    <value>Docker logosu. Üzerinde mavi konteynerlar taşıyan sevimli mavi balina.</value>
+  </data>
+  <data name="TechStack_Docker_Desc" xml:space="preserve">
+    <value>Docker imajlarıyla yayınlandı. İmajlarımı Docker Registry v3'de saklıyorum</value>
+  </data>
+  <data name="TechStack_DotNet_Alt" xml:space="preserve">
+    <value>.NET logosu. İçinde .NET Core yazan mor bir daire.</value>
+  </data>
+  <data name="TechStack_DotNet_Desc" xml:space="preserve">
+    <value>Bu proje Domain Driven Design prensipleri göz önünde bulundurularak geliştirildi ve en güncel .Net + Blazor özelliklerini kullanmaktadır.</value>
+  </data>
+  <data name="TechStack_Go_Alt" xml:space="preserve">
+    <value>'GO' yazan mavi harfler.</value>
+  </data>
+  <data name="TechStack_Go_Desc" xml:space="preserve">
+    <value>Sadece YAML ile bir cronjob yazmak pratik olmadığında Go ile yazıyorum. Farklı dilleri deneyip ufkumu genişletmek için.</value>
+  </data>
+  <data name="TechStack_Grpc_Alt" xml:space="preserve">
+    <value>gRPC logosu. Küçük g ve büyük RPC harfleri; g harfinin üzerinde ok benzeri bir simge.</value>
+  </data>
+  <data name="TechStack_Grpc_Desc" xml:space="preserve">
+    <value>REST haricinde bir şeyler denemek istedim, gRPC kullandım ve beğendim.</value>
+  </data>
+  <data name="TechStack_PostgreSql_Alt" xml:space="preserve">
+    <value>PostgreSQL logosu. Mavi dişleri olan mavi bir fil kafası. Minimalist bir logo.</value>
+  </data>
+  <data name="TechStack_PostgreSql_Desc" xml:space="preserve">
+    <value>Mevcut veritabanı. Özelliklerini seviyorum ve üzerinde denemeler yapmaktan keyif alıyorum.</value>
+  </data>
+  <data name="TechStack_OpenTelemetry_Alt" xml:space="preserve">
+    <value>OpenTelemetry logosu. Mavi ve turuncu renklerde minimalist bir teleskop.</value>
+  </data>
+  <data name="TechStack_OpenTelemetry_Desc" xml:space="preserve">
+    <value>Trace verileri olmazsa olmaz</value>
+  </data>
+  <data name="TechStack_Prometheus_Alt" xml:space="preserve">
+    <value>Prometheus logosu. Şık bir meşale.</value>
+  </data>
+  <data name="TechStack_Prometheus_Desc" xml:space="preserve">
+    <value>4 yıldan uzun süredir kullanıyorum ancak özellikle üzerine daha fazla zaman ayırmak istiyorum</value>
+  </data>
+  <data name="TechStack_Grafana_Alt" xml:space="preserve">
+    <value>Grafana logosu. Turuncudan sarıya gradyanlı, geniş uçlu bir spiral.</value>
+  </data>
+  <data name="TechStack_Grafana_Desc" xml:space="preserve">
+    <value>Grafana'nın büyüleyici panoları olmadan bu cluster eksik kalırdı</value>
+  </data>
+  <data name="TechStack_Jaeger_Alt" xml:space="preserve">
+    <value>Jaeger logosu. Yeşil Robin Hood şapkalı, 2 insan ayak izini inceleyen mavi tavşan. Çizim tarzı özgün, çizgileri gayet iyi.</value>
+  </data>
+  <data name="TechStack_Jaeger_Desc" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TechStack_Seq_Alt" xml:space="preserve">
+    <value>Seq logosu. Mavi ve beyaz renk şemasına sahip minimalist bir tasarım.</value>
+  </data>
+  <data name="TechStack_Seq_Desc" xml:space="preserve">
+    <value>Logları trace'ler ile birlikte görüntülemek için. Sade ve şık bir arayüze sahip.</value>
+  </data>
+  <data name="TechStack_Lens_Alt" xml:space="preserve">
+    <value>Lens logosu. Açık mavi bir kutu içinde beyaz diyafram bıçakları olan minimalist bir tasarım.</value>
+  </data>
+  <data name="TechStack_Lens_Desc" xml:space="preserve">
+    <value>Cluster'ı daha rahat bir şekilde gözlemlemek için ideal</value>
+  </data>
+  <data name="TechStack_Kubecolor_Alt" xml:space="preserve">
+    <value>Kubernetes logosu. Çeşitli renklerle doldurulmuş beyaz gemi dümeni olan mavi altıgen.</value>
+  </data>
+  <data name="TechStack_Kubecolor_Desc" xml:space="preserve">
+    <value>Olmazsa olmaz olduğu için buraya da ekledim. Pod logları da dahil olmak üzere tüm kubectl çıktılarını renklendirir!</value>
+  </data>
+  <data name="TechStack_Elasticsearch_Alt" xml:space="preserve">
+    <value>Elasticsearch logosu. Birbirine kaynaşmış renkli baloncuklar</value>
+  </data>
+  <data name="TechStack_Elasticsearch_Desc" xml:space="preserve">
+    <value>Jaeger verisinin silinmemesi için gerekli</value>
+  </data>
+  <data name="TechStack_Authentik_Alt" xml:space="preserve">
+    <value>Anahtar, ethernet portu veya file benziyor? Açıkçası ilginç bir logo. Yine de turuncusunu seviyorum.</value>
+  </data>
+  <data name="TechStack_Authentik_Desc" xml:space="preserve">
+    <value>Panellerime erişimi bununla güvence altına alıyorum</value>
   </data>
 
   <!-- About Section -->
@@ -130,13 +226,13 @@
     <value>Bu Kubernetes Kümesi Hakkında</value>
   </data>
   <data name="Cluster_Subtitle" xml:space="preserve">
-    <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes kümesi üzerinde barındırılmaktadır. Bu kümede çeşitli deneyler yürütmekteyim ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; aracılığıyla alınmaktadır.</value>
+    <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes cluster üzerinde. Bu cihazlar üstünde çeşitli deneyler yürütüyorum ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; cluster'dan.</value>
   </data>
   <data name="Cluster_Pods" xml:space="preserve">
     <value>Pod</value>
   </data>
   <data name="Cluster_PodsDesc" xml:space="preserve">
-    <value>Bu web sitesi, gRPC backend ve diğer tüm podlar dahil</value>
+    <value>Bu web sitesi, gRPC backend'i ve diğer tüm aktif podlar dahil</value>
   </data>
   <data name="Cluster_Services" xml:space="preserve">
     <value>Servis</value>
@@ -160,7 +256,7 @@
     <value>Node</value>
   </data>
   <data name="Cluster_NodesDesc" xml:space="preserve">
-    <value>5 adet Raspberry Pi ve 1 adet NAS kullandım. İhtiyaç duyulduğunda kolayca yeni cihaz ekleyebilirim</value>
+    <value>5 adet Raspberry Pi ve 1 NAS kullandım. Gerektikçe zahmetsizce yeni cihaz ekleyebilirim</value>
   </data>
 
   <!-- Resume Section -->
@@ -298,7 +394,7 @@
     <value>C Programlama Dili</value>
   </data>
   <data name="Resume_Edu6_Title" xml:space="preserve">
-    <value>Dr. Nurettin Erk Perihan Erk Teknik ve Endüstri Meslek Lisesi</value>
+    <value>Dr. Nurettin Erk Perihan Erk Endüstri Meslek Lisesi</value>
   </data>
   <data name="Resume_Edu6_Degree" xml:space="preserve">
     <value>Web Tasarımı ve Programlama</value>

@@ -6,11 +6,11 @@ public class TechStackModel
     public required string WebsiteLink { get; init; }
                 
     public required string ImageAddress { get; init; }
-    public required string ImageAltText { get; init; }
+    public required string ImageAltTextKey { get; init; }
     public required int ImageWidth { get; init; }
     public required int ImageHeight { get; init; }
                 
-    public required string Description { get; init; }
+    public required string DescriptionKey { get; init; }
 
     public static IReadOnlyList<TechStackModel> GetTechStack()
     {
@@ -22,11 +22,11 @@ public class TechStackModel
                 WebsiteLink = "https://kubernetes.io/",
 
                 ImageAddress = "img/techStack/kubernetes.png",
-                ImageAltText = "Kubernetes logo. Blue hexagonal that has a white ship helm inside. A minimalist brand design.",
+                ImageAltTextKey = "TechStack_Kubernetes_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Proudly self-hosted at my Raspberry Pi 5-4 cluster! Nodes are prepared and cluster deployed with a <strong>single Ansible command</strong>."
+                DescriptionKey = "TechStack_Kubernetes_Desc"
             },
             new()
             {
@@ -34,11 +34,11 @@ public class TechStackModel
                 WebsiteLink = "https://www.ansible.com/",
 
                 ImageAddress = "img/techStack/ansible.png",
-                ImageAltText = "Ansible logo. Black filled circle with an odd A letter in it.",
+                ImageAltTextKey = "TechStack_Ansible_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "I felt this Kubernetes setup would be incomplete without fully automating nodes. Also encourages experimentation since I can reset the lab rapidly if things break beyond repair."
+                DescriptionKey = "TechStack_Ansible_Desc"
             },
             new()
             {
@@ -46,11 +46,11 @@ public class TechStackModel
                 WebsiteLink = "https://www.docker.com/",
 
                 ImageAddress = "img/techStack/docker.png",
-                ImageAltText = "Docker logo. A cute blue smiling whale with blue containers on it.",
+                ImageAltTextKey = "TechStack_Docker_Alt",
                 ImageWidth = 45,
                 ImageHeight = 27,
 
-                Description = "Deployed with Docker images. My all public images are at <a href=\"https://hub.docker.com/repositories/anilsezer\" target=\"_blank\">my DockerHub account</a>. My private images are in this cluster, at Docker private image registry."
+                DescriptionKey = "TechStack_Docker_Desc"
             },
             new()
             {
@@ -58,11 +58,11 @@ public class TechStackModel
                 WebsiteLink = "https://dotnet.microsoft.com/",
 
                 ImageAddress = "img/techStack/dotnet.png",
-                ImageAltText = ".NET logo. A purple circle that has .NET Core written in it.",
+                ImageAltTextKey = "TechStack_DotNet_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "This project is created with Domain Driven Design in mind and uses latest .Net + Blazor features."
+                DescriptionKey = "TechStack_DotNet_Desc"
             },
             new()
             {
@@ -70,11 +70,11 @@ public class TechStackModel
                 WebsiteLink = "https://go.dev/",
 
                 ImageAddress = "img/techStack/go.png",
-                ImageAltText = "Blue letters of 'GO'.",
+                ImageAltTextKey = "TechStack_Go_Alt",
                 ImageWidth = 42,
                 ImageHeight = 21,
 
-                Description = "If writing a cron with just yaml is not practical, I write it with Go. For trying out other languages to widen my view."
+                DescriptionKey = "TechStack_Go_Desc"
             },
             new()
             {
@@ -82,11 +82,11 @@ public class TechStackModel
                 WebsiteLink = "https://grpc.io/",
 
                 ImageAddress = "img/techStack/grpc.png",
-                ImageAltText = "gRPC logo. Just a undercase g and uppercase RPC letters. g has something arrow-ish on its top.",
+                ImageAltTextKey = "TechStack_Grpc_Alt",
                 ImageWidth = 32,
                 ImageHeight = 14,
 
-                Description = "Wanted to try something other than REST, used gRPC and liked it."
+                DescriptionKey = "TechStack_Grpc_Desc"
             },
             new()
             {
@@ -94,11 +94,11 @@ public class TechStackModel
                 WebsiteLink = "https://www.postgresql.org/",
 
                 ImageAddress = "img/techStack/postgres.png",
-                ImageAltText = "PostgreSql logo. A blue elephant head with blue tusks. It's a minimalist logo.",
+                ImageAltTextKey = "TechStack_PostgreSql_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Current database. I like Its features and like to experiment with it."
+                DescriptionKey = "TechStack_PostgreSql_Desc"
             },
             new()
             {
@@ -106,11 +106,11 @@ public class TechStackModel
                 WebsiteLink = "https://opentelemetry.io/",
             
                 ImageAddress = "img/techStack/opentelemetry.png",
-                ImageAltText = "OpenTelemetry logo. A minimal, blue and orange colored telescope.",
+                ImageAltTextKey = "TechStack_OpenTelemetry_Alt",
                 ImageWidth = 32,
                 ImageHeight = 33,
             
-                Description = "Traces are a must"
+                DescriptionKey = "TechStack_OpenTelemetry_Desc"
             },
             new()
             {
@@ -118,11 +118,11 @@ public class TechStackModel
                 WebsiteLink = "https://prometheus.io/",
             
                 ImageAddress = "img/techStack/prometheus.png",
-                ImageAltText = "Prometheus logo. A nice torch.",
+                ImageAltTextKey = "TechStack_Prometheus_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
             
-                Description = "Using it for 4+ years but I wanna sink more time specifically into it"
+                DescriptionKey = "TechStack_Prometheus_Desc"
             },
             new()
             {
@@ -130,11 +130,11 @@ public class TechStackModel
                 WebsiteLink = "https://grafana.com/",
 
                 ImageAddress = "img/techStack/grafana.png",
-                ImageAltText = "Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.",
+                ImageAltTextKey = "TechStack_Grafana_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "This cluster wouldn't be complete without mesmerizing dashboards of Grafana"
+                DescriptionKey = "TechStack_Grafana_Desc"
             },
             new()
             {
@@ -142,11 +142,11 @@ public class TechStackModel
                 WebsiteLink = "https://jaegertracing.io/",
 
                 ImageAddress = "img/techStack/jaeger.png",
-                ImageAltText = "Jaeger logo. Blue rabbit with a green robin hood hat inspecting 2 human footprints. Drawing style is original. Lines are good.",
+                ImageAltTextKey = "TechStack_Jaeger_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = ""
+                DescriptionKey = "TechStack_Jaeger_Desc"
             },
             new()
             {
@@ -154,11 +154,11 @@ public class TechStackModel
                 WebsiteLink = "https://datalust.co/",
 
                 ImageAddress = "img/techStack/seq.png",
-                ImageAltText = "Seq logo. A minimalist design with a blue and white color scheme.",
+                ImageAltTextKey = "TechStack_Seq_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "For displaying logs with traces. Has a simple an nice UI."
+                DescriptionKey = "TechStack_Seq_Desc"
             },
             new()
             {
@@ -166,11 +166,11 @@ public class TechStackModel
                 WebsiteLink = "https://lenshq.io/",
 
                 ImageAddress = "img/techStack/lens.png",
-                ImageAltText = "Lens logo. A minimalist design. It has white aperture blades in a light blue box.",
+                ImageAltTextKey = "TechStack_Lens_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Using it to observe the cluster in a more graphical way. Thinking about trying K9s later. Especially for colored logs."
+                DescriptionKey = "TechStack_Lens_Desc"
             },
             new()
             {
@@ -178,11 +178,11 @@ public class TechStackModel
                 WebsiteLink = "https://kubecolor.github.io/",
 
                 ImageAddress = "img/techStack/kubecolor.png",
-                ImageAltText = "Kubernetes logo. A blue hexagonal that has a white ship helm inside. Helm is filled with various colors.",
+                ImageAltTextKey = "TechStack_Kubecolor_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
 
-                Description = "Mentioning this because it's a must have. It colors all the kubectl output, including logs of the pods!"
+                DescriptionKey = "TechStack_Kubecolor_Desc"
             },
             new()
             {
@@ -190,11 +190,11 @@ public class TechStackModel
                 WebsiteLink = "https://www.elastic.co/",
             
                 ImageAddress = "img/techStack/elastic.png",
-                ImageAltText = "Elastic Search logo. Looks like colorful bubbles fused together.",
+                ImageAltTextKey = "TechStack_Elasticsearch_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
             
-                Description = "Using for Jaeger for persistency"
+                DescriptionKey = "TechStack_Elasticsearch_Desc"
             },
             new()
             {
@@ -202,11 +202,11 @@ public class TechStackModel
                 WebsiteLink = "https://goauthentik.io/",
             
                 ImageAddress = "img/techStack/authentik.png",
-                ImageAltText = "It resembles a key and an ethernet port, or an elephant? Honestly its a weird logo. I like its orange though.",
+                ImageAltTextKey = "TechStack_Authentik_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
             
-                Description = "Securing access to my panels with it. I don't wanna take chances with security"
+                DescriptionKey = "TechStack_Authentik_Desc"
             }
         };
     }

@@ -2,28 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adminer
+  name: adminneo
   namespace: database
   labels:
-    app: adminer
+    app: adminneo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: adminer
+      app: adminneo
   template:
     metadata:
       labels:
-        app: adminer
+        app: adminneo
     spec:
       containers:
-        - name: adminer
-          image: adminer:latest
+        - name: adminneo
+          image: adminneoorg/adminneo:latest
           ports:
             - containerPort: 8080
           env:
-            - name: ADMINER_DEFAULT_SERVER
+            - name: NEO_DEFAULT_SERVER
               value: "postgres-clusterip.database.svc.cluster.local"
+            - name: NEO_DEFAULT_DRIVER
+              value: "pgsql"
           resources:
             requests:
               cpu: 50m

@@ -71,7 +71,7 @@
     <value>Kubernetes Cluster</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
-    <value>Background image is by</value>
+    <value>Background images are from:</value>
   </data>
   <data name="Footer_TechStackGradient" xml:space="preserve">
     <value>Tech stack section Gradient from:</value>
@@ -83,7 +83,7 @@
     <value>Anıl Sezer</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>Hi! I'm a fullstack engineer and here, I showcase my craft!</value>
+    <value>Hi! I'm a fullstack engineer and here, I demonstrate my skills</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Background image is by:</value>

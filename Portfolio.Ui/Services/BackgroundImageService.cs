@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Memory;
+using Portfolio.Infrastructure.Extensions;
 using Portfolio.Ui.Models;
 
 
@@ -14,6 +15,9 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
 
     private async Task<BackgroundImageModel> GetFromDbAsync()
     {
+        if(EnvVars.IsDevelopment())
+            return new() { Url = FallbackBackgroundImage, AltText = FallbackAltText, Source = ImageOfTheDaySource.Bing };
+        
         var response = await backgroundImagesClient.GetAsync(new Empty());
         Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(backgroundImagesClient.GetAsync), response.Url);
 

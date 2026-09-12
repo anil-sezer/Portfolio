@@ -6,23 +6,27 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 300px;
+    width: var(--sidebar-width);
     transition: all ease-in-out 0.5s;
     z-index: 9997;
-    padding: 0 15px;
+    padding: 0 12px 80px 12px;
     background: var(--bg-header);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #header .profile img {
     margin: 15px auto;
     display: block;
-    width: 120px;
-    border: 8px solid var(--border-profile-img);
+    width: 90%;
+    max-width: 90%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 6px solid var(--border-profile-img);
 }
 
 #header .profile h1 {
-    font-size: 24px;
+    font-size: 20px;
     margin: 0;
     padding: 0;
     font-weight: 600;
@@ -37,17 +41,17 @@
 }
 
 #header .profile .social-links a {
-    font-size: 18px;
+    font-size: 16px;
     display: inline-block;
     background: var(--bg-sidebar-social);
     color: var(--text-nav-hover);
     line-height: 1;
-    padding: 8px 0;
+    padding: 6px 0;
     margin-right: 4px;
     border-radius: 50%;
     text-align: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     transition: 0.3s;
 }
 
@@ -59,7 +63,7 @@
 
 @media (max-width: 1199px) {
     #header {
-        left: -300px;
+        left: calc(-1 * var(--sidebar-width));
     }
 
     #main {
@@ -78,7 +82,7 @@
 --------------------------------------------------------------*/
 /* Desktop Navigation */
 .nav-menu {
-    padding: 30px 0 0 0;
+    padding: 18px 0 0 0;
 }
 
 .nav-menu * {
@@ -97,14 +101,14 @@
     display: flex;
     align-items: center;
     color: var(--text-nav-link);
-    padding: 12px 15px;
-    margin-bottom: 8px;
+    padding: 8px 12px;
+    margin-bottom: 3px;
     transition: 0.3s;
-    font-size: 15px;
+    font-size: 14.5px;
 }
 @media (max-width: 1199px) {
     .nav-menu a{
-        padding: 2px 15px;
+        padding: 4px 12px;
         margin-bottom: 0;
     }
     .flex-column{
@@ -114,8 +118,8 @@
 
 .nav-menu a i,
 .nav-menu a:focus i {
-    font-size: 24px;
-    padding-right: 8px;
+    font-size: 20px;
+    padding-right: 10px;
     color: var(--text-nav-icon);
 }
 
@@ -224,15 +228,20 @@ html:not([data-theme="dark"]) .theme-icon-dark {
 # Footer
 --------------------------------------------------------------*/
 #footer {
-    padding: 15px;
+    padding: 10px 12px;
     color: var(--text-footer);
-    font-size: 14px;
+    font-size: 12px;
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 300px;
+    width: var(--sidebar-width);
     z-index: 9999;
     background: var(--bg-footer);
+}
+
+#footer .container {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 #footer .copyright {
@@ -240,9 +249,9 @@ html:not([data-theme="dark"]) .theme-icon-dark {
 }
 
 #footer .credits {
-    padding-top: 5px;
+    padding-top: 2px;
     text-align: center;
-    font-size: 13px;
+    font-size: 11.5px;
     color: var(--text-footer-credits);
 }
 

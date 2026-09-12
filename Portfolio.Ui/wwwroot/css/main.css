@@ -28,7 +28,7 @@ h6 {
 }
 
 #main {
-    margin-left: 300px;
+    margin-left: var(--sidebar-width);
 }
 
 .container,
@@ -39,7 +39,7 @@ h6 {
 
 @media (max-width: 1199px) {
     #header {
-        left: -300px;
+        left: calc(-1 * var(--sidebar-width));
     }
 
     #main {

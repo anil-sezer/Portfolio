@@ -11,7 +11,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-left: 300px; /* Add padding to account for sidebar width */
+    padding-left: var(--sidebar-width); /* Add padding to account for sidebar width */
     box-sizing: border-box; /* Include padding in width calculation */
 }
 

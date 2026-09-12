@@ -1,15 +1,103 @@
-.section-title h2::after {
+#techstack {
+    position: relative;
+    overflow: hidden;
+    background: var(--gradient-sky-artwork, linear-gradient(
+        98deg,
+        #ff8039 0%,
+        #ff7848 10%,
+        #fe7656 20%,
+        #f16b60 30%,
+        #da5f66 38%,
+        #a6596d 46%,
+        #6b5d6e 54%,
+        #3c5b6b 62%,
+        #145269 72%,
+        #024765 84%,
+        #013c5e 93%,
+        #012f4c 100%
+    ));
+}
+
+#techstack .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Vintage film grain / noise overlay */
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    z-index: 1;
+}
+
+/* Starfield across right side */
+.stars-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+/* Crescent Moon at the twilight transition line */
+.moon {
+    position: absolute;
+    top: 36px;
+    left: 48%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    box-shadow: -4px 1px 0 1px #fff0d6;
+    transform: rotate(-18deg);
+    filter: drop-shadow(0 0 6px rgba(255, 225, 175, 0.85));
+    pointer-events: none;
+    z-index: 1;
+}
+
+#techstack .section-title h2 {
+    color: var(--color-white);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+#techstack .section-title h2::after {
     width: 9.3rem;
+    background: var(--color-white);
+}
+
+#techstack .section-title p {
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .tech-stack-card {
-    background-color: var(--bg-card-tech);
+    background-color: color-mix(in srgb, var(--bg-card-tech) 88%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
     padding: 1rem;
     max-width: 25rem;
     flex: 1 1 25rem;
     min-width: 300px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tech-stack-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
 .tech-stack-grid {

@@ -71,7 +71,10 @@
     <value>Kubernetes</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
-    <value>Arka plan görseli:</value>
+    <value>Arka plan görselleri:</value>
+  </data>
+  <data name="Footer_TechStackGradient" xml:space="preserve">
+    <value>Tech stack alanındaki gradyen:</value>
   </data>
 
   <!-- Hero Section -->

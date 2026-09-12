@@ -105,6 +105,21 @@
     --bg-input: var(--color-white);
     --text-input: var(--color-dark-body);
     --border-input: #cbd5e1;
+    --gradient-sky-artwork: linear-gradient(
+        98deg,
+        #ff8039 0%,
+        #ff7848 10%,
+        #fe7656 20%,
+        #f16b60 30%,
+        #da5f66 38%,
+        #a6596d 46%,
+        #6b5d6e 54%,
+        #3c5b6b 62%,
+        #145269 72%,
+        #024765 84%,
+        #013c5e 93%,
+        #012f4c 100%
+    );
 
     /* Overlays & Shadows */
     --bg-hero-overlay: rgba(var(--rgb-black-overlay), 0.3);

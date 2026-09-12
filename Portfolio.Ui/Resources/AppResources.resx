@@ -73,6 +73,10 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background image is by</value>
   </data>
+  <data name="Footer_TechStackGradient" xml:space="preserve">
+    <value>Tech stack section Gradient from:</value>
+  </data>
+
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">

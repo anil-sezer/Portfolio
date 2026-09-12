@@ -2,60 +2,405 @@
     width: 6.6rem;
 }
 
-.resume .resume-title {
-    font-size: 26px;
-    font-weight: 700;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: var(--text-heading-secondary);
+/* ==========================================================================
+   Intro Card & Download Action
+   ========================================================================== */
+.resume-intro-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
 }
 
-.resume .resume-item {
-    padding: 0 0 20px 20px;
-    margin-top: -2px;
-    border-left: 2px solid var(--border-timeline);
+.resume-intro-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--color-celestial-blue) 0%, #38bdf8 100%);
+}
+
+.intro-text p {
+    line-height: 1.65;
+    font-size: 0.98rem;
+    color: var(--text-body);
+}
+
+.btn-cv-download {
+    background: var(--color-celestial-blue);
+    color: #ffffff;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.92rem;
+    padding: 10px 22px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(20, 157, 221, 0.25);
+    white-space: nowrap;
+}
+
+.btn-cv-download:hover {
+    background: var(--color-celestial-blue-hover);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(20, 157, 221, 0.4);
+}
+
+/* ==========================================================================
+   Fast Stats Metric Ribbon
+   ========================================================================== */
+.stat-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.stat-box {
+    background: var(--bg-card);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 14px;
+    padding: 16px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-counter, var(--color-celestial-blue));
+    font-family: "Poppins", sans-serif;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Bento Cards
+   ========================================================================== */
+.bento-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 16px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     position: relative;
 }
 
-.resume .resume-item h4 {
-    line-height: 18px;
-    font-size: 18px;
-    font-weight: 600;
+.bento-card:hover {
+    border-color: var(--color-celestial-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -4px rgba(20, 157, 221, 0.18);
+}
+
+.bento-card.highlight {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(20, 157, 221, 0.05) 100%);
+    border-color: rgba(20, 157, 221, 0.35);
+}
+
+/* Status Beacon */
+.status-beacon {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
     text-transform: uppercase;
-    font-family: "Poppins", sans-serif;
+    letter-spacing: 0.6px;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.beacon-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    animation: beacon-pulse 1.8s infinite;
+}
+
+@keyframes beacon-pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Typography in Bento */
+.bento-role-title {
+    font-size: 1.22rem;
+    font-weight: 700;
     color: var(--text-heading-secondary);
-    margin-bottom: 10px;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 4px;
 }
 
-.resume .resume-item h5 {
-    font-size: 16px;
-    background: var(--bg-timeline-badge);
-    padding: 5px 15px;
-    display: inline-block;
+.bento-company-tag {
+    color: var(--color-celestial-blue);
     font-weight: 600;
-    margin-bottom: 10px;
+    font-size: 0.92rem;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
-.resume .resume-item ul {
+.bento-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    background: var(--bg-timeline-badge);
+    color: var(--text-heading-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.bento-bullets {
+    list-style: none;
+    padding-left: 0;
+    margin: 12px 0 16px;
+    flex-grow: 1;
+}
+
+.bento-bullets li {
+    position: relative;
     padding-left: 20px;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text-body);
 }
 
-.resume .resume-item ul li {
-    padding-bottom: 10px;
-}
-
-.resume .resume-item:last-child {
-    padding-bottom: 0;
-}
-
-.resume .resume-item::before {
-    content: "";
+.bento-bullets li::before {
+    content: "→";
     position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50px;
-    left: -9px;
-    top: 0;
-    background: var(--bg-body);
-    border: 2px solid var(--border-timeline);
+    left: 2px;
+    color: var(--color-celestial-blue);
+    font-weight: 700;
+}
+
+.bento-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.bento-tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--bg-section-alt);
+    color: var(--text-body);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+/* ==========================================================================
+   Certifications & Degrees Bento Sub-components
+   ========================================================================== */
+.bento-section-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-heading-primary);
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+}
+
+.cert-counter-badge {
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: var(--bg-timeline-badge);
+    color: var(--text-heading-primary);
+}
+
+.cert-bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.cert-item-row {
+    background: var(--bg-section-alt);
+    border: 1px solid rgba(128, 128, 128, 0.12);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s ease;
+}
+
+.cert-item-row:hover {
+    transform: translateX(3px);
+}
+
+.cert-item-info h5 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin: 0 0 2px;
+    color: var(--text-heading-secondary);
+}
+
+.cert-item-info span {
+    font-size: 0.82rem;
+    color: var(--color-celestial-blue);
+    font-weight: 500;
+}
+
+.cert-year-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+    background: var(--bg-timeline-badge);
+    color: var(--text-heading-primary);
+    white-space: nowrap;
+}
+
+.edu-item-row {
+    background: var(--bg-section-alt);
+    border: 1px solid rgba(128, 128, 128, 0.12);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: transform 0.2s ease;
+}
+
+.edu-item-row:hover {
+    transform: translateX(3px);
+}
+
+.edu-item-row h5 {
+    font-size: 0.95rem;
+    color: var(--text-heading-secondary);
+}
+
+.edu-degree-subtitle {
+    color: var(--color-celestial-blue);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.edu-date-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+    background: var(--bg-timeline-badge);
+    color: var(--text-heading-primary);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   Earlier Career Collapsible Accordion Drawer
+   ========================================================================== */
+.earlier-accordion-item {
+    background: var(--bg-card);
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    border-radius: 14px !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.earlier-accordion-btn {
+    background: var(--bg-card);
+    color: var(--text-heading-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: none !important;
+    padding: 16px 20px;
+}
+
+.earlier-accordion-btn:not(.collapsed) {
+    background: var(--bg-section-alt);
+    color: var(--text-heading-primary);
+}
+
+.earlier-accordion-body {
+    background: var(--bg-card);
+    padding: 20px;
+}
+
+.earlier-role-card {
+    background: var(--bg-section-alt);
+    border: 1px solid rgba(128, 128, 128, 0.12);
+    border-radius: 10px;
+    padding: 14px;
+    height: 100%;
+}
+
+.earlier-role-card h6 {
+    color: var(--text-heading-secondary);
+}
+
+.earlier-date-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--bg-timeline-badge);
+    color: var(--text-heading-primary);
+    white-space: nowrap;
+}
+
+.earlier-company {
+    font-size: 0.84rem;
+    color: var(--color-celestial-blue);
+    font-weight: 600;
+}
+
+.earlier-bullets {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    font-size: 0.86rem;
+    color: var(--text-body);
+}
+
+.earlier-bullets li {
+    position: relative;
+    padding-left: 14px;
+    line-height: 1.5;
+}
+
+.earlier-bullets li::before {
+    content: "•";
+    position: absolute;
+    left: 2px;
+    color: var(--color-celestial-blue);
 }

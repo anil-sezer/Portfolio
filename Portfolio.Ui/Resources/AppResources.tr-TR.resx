@@ -267,7 +267,46 @@
     <value>Özgeçmiş</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>Temiz ve verimli sistemler yazmaya adanmış, teslim tarihlerine daima sadık kalan bir mühendisim. &lt;br/&gt;&lt;br/&gt; Genç meslektaşlarıma mentorluk yapmaktan, onlara sabırla rehberlik etmekten ve yetkin mühendislere dönüşmelerini izlemekten gurur duyuyorum. &lt;br/&gt;&lt;br/&gt; Öğrenme tutkum asla azalmıyor; yeni sistemleri incelemek beni heyecanlandırıyor ve geliştirme sürecimi mükemmelleştirmek için sürekli yenilikçi yöntemler arıyorum.&lt;br/&gt; &lt;a href="https://drive.google.com/drive/folders/1iBSn56NqtXe1OL55fs3-oqy53_Xf9veH?usp=sharing" target="_blank" style="font-weight: bold;"&gt;Özgeçmişimi buradan indirebilirsiniz!&lt;/a&gt;</value>
+    <value>Temiz ve verimli sistemler yazmaya adanmış, teslim tarihlerine daima sadık kalan bir mühendisim. &lt;br/&gt;&lt;br/&gt; Genç meslektaşlarıma mentorluk yapmaktan, onlara sabırla rehberlik etmekten ve yetkin mühendislere dönüşmelerini izlemekten gurur duyuyorum. &lt;br/&gt;&lt;br/&gt; Öğrenme tutkum asla azalmıyor; yeni sistemleri incelemek beni heyecanlandırıyor ve geliştirme sürecimi mükemmelleştirmek için sürekli yenilikçi yöntemler arıyorum.</value>
+  </data>
+  <data name="Resume_DownloadCV" xml:space="preserve">
+    <value>Özgeçmişi İndir</value>
+  </data>
+  <data name="Resume_ActiveStatus" xml:space="preserve">
+    <value>Aktif Rolüm</value>
+  </data>
+  <data name="Resume_Certifications_Title" xml:space="preserve">
+    <value>Sertifikalar ve Eğitimler</value>
+  </data>
+  <data name="Resume_Academic_Title" xml:space="preserve">
+    <value>Akademik Eğitim</value>
+  </data>
+  <data name="Resume_EarlierCareer_Title" xml:space="preserve">
+    <value>Önceki Kariyer Deneyimi (2016 - 2018)</value>
+  </data>
+  <data name="Resume_Stat_Software" xml:space="preserve">
+    <value>Yıl Yazılım Deneyimi</value>
+  </data>
+  <data name="Resume_Stat_Kubernetes" xml:space="preserve">
+    <value>Yıl Kubernetes Deneyimi</value>
+  </data>
+  <data name="Resume_Stat_IoT" xml:space="preserve">
+    <value>Yıl IoT Deneyimi</value>
+  </data>
+  <data name="Resume_Stat_SoftSkills" xml:space="preserve">
+    <value>Yıl Mentorluk ve İletişim</value>
+  </data>
+  <data name="Resume_Credentials_Badge" xml:space="preserve">
+    <value>Sertifika</value>
+  </data>
+  <data name="Resume_CurrentJob_Title" xml:space="preserve">
+    <value>Teknoloji Direktörü</value>
+  </data>
+  <data name="Resume_CurrentJob_Date" xml:space="preserve">
+    <value>2025 - Halen</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
+    <value>Detaylar gizlilik anlaşması gereği saklı tutulmaktadır.</value>
   </data>
   <data name="Resume_ProfExp" xml:space="preserve">
     <value>Profesyonel Deneyim</value>
@@ -276,7 +315,7 @@
     <value>DevOps &amp; Backend Yazılım Danışmanı</value>
   </data>
   <data name="Resume_Job1_Date" xml:space="preserve">
-    <value>2024 - Devam Ediyor</value>
+    <value>2024 - 2025</value>
   </data>
   <data name="Resume_Job1_Company" xml:space="preserve">
     <value>Serbest Zamanlı</value>

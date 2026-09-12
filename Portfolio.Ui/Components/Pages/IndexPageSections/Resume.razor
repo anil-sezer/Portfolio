@@ -1,3 +1,4 @@
+@using Portfolio.Ui.Models
 @using Portfolio.Ui.Resources
 @inject IStringLocalizer<AppResources> L
 
@@ -6,119 +7,180 @@
 
         <div class="section-title">
             <h2>@L["Resume_Title"]</h2>
-            <p>
-                @((MarkupString)L["Resume_Subtitle"].Value)
-            </p>
         </div>
-        
-        <!-- First Column -->
-        <div class="row">
-            <div class="col-lg-6">
-                <h3 class="resume-title">@L["Resume_ProfExp"]</h3>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job1_Title"]</h4>
-                    <h5>@L["Resume_Job1_Date"]</h5>
-                    <p><em>@L["Resume_Job1_Company"]</em></p>
-                    <ul>
-                        <li>@L["Resume_Job1_Bullet1"]</li>
-                    </ul>
+
+        <!-- Bio Summary & Download Action Card -->
+        <div class="resume-intro-card">
+            <div class="intro-text">
+                <p class="mb-0">
+                    @((MarkupString)L["Resume_Subtitle"].Value)
+                </p>
+            </div>
+            <div class="d-flex justify-content-start mt-3">
+                <a href="@ResumeModel.CvDownloadUrl" target="_blank" rel="noopener noreferrer" class="btn-cv-download">
+                    <i class="bi bi-file-earmark-pdf"></i> @L["Resume_DownloadCV"]
+                </a>
+            </div>
+        </div>
+
+        <!-- Fast Stats Metric Ribbon -->
+        <div class="stat-banner">
+            @foreach (var stat in ResumeModel.GetResumeStats())
+            {
+                <div class="stat-box">
+                    <div class="stat-value">@stat.Value</div>
+                    <div class="stat-label">@L[stat.LabelKey]</div>
                 </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job2_Title"]</h4>
-                    <h5>@L["Resume_Job2_Date"]</h5>
-                    <p><em>@L["Resume_Job2_Company"]</em></p>
-                    <ul>
-                        <li>@L["Resume_Job2_Bullet1"]</li>
-                        <li>@L["Resume_Job2_Bullet2"]</li>
-                        <li>@L["Resume_Job2_Bullet3"]</li>
-                        <li>@L["Resume_Job2_Bullet4"]</li>
+            }
+        </div>
+
+        <!-- Bento Grid Layout -->
+        <div class="row g-4">
+
+            <!-- Active Role Hero Card (Full Width) -->
+            @{
+                var activeRole = ResumeModel.GetActiveRole();
+            }
+            <div class="col-12">
+                <div class="bento-card highlight">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                        <div>
+                            <span class="status-beacon"><span class="beacon-dot"></span> @L["Resume_ActiveStatus"]</span>
+                            <h3 class="bento-role-title mt-2">@L[activeRole.RoleTitleKey]</h3>
+                            <div class="bento-company-tag">@L[activeRole.CompanyKey]</div>
+                        </div>
+                        <span class="bento-date"><i class="bi bi-calendar3"></i> @L[activeRole.DateKey]</span>
+                    </div>
+                    <ul class="bento-bullets">
+                        @foreach (var bulletKey in activeRole.BulletKeys)
+                        {
+                            <li>@((MarkupString)L[bulletKey].Value)</li>
+                        }
                     </ul>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job3_Title"]</h4>
-                    <h5>@L["Resume_Job3_Date"]</h5>
-                    <p><em>@L["Resume_Job3_Company"]</em></p>
-                    <ul>
-                        <li>@L["Resume_Job3_Bullet1"]</li>
-                        <li>@L["Resume_Job3_Bullet2"]</li>
-                        <li>@L["Resume_Job3_Bullet3"]</li>
-                        <li>@L["Resume_Job3_Bullet4"]</li>
-                    </ul>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job4_Title"]</h4>
-                    <h5>@L["Resume_Job4_Date"]</h5>
-                    <p><em>@L["Resume_Job4_Company"]</em></p>
-                    <ul>
-                        <li>@L["Resume_Job4_Bullet1"]</li>
-                    </ul>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job5_Title"]</h4>
-                    <h5>@L["Resume_Job5_Date"]</h5>
-                    <p><em>@L["Resume_Job5_Company"]</em></p>
-                    <ul>
-                        <li>@L["Resume_Job5_Bullet1"]</li>
-                    </ul>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Job6_Title"]</h4>
-                    <h5>@L["Resume_Job6_Date"]</h5>
-                    <p><em>@L["Resume_Job6_Company"]</em></p>
-                    <ul>
-                        <li>@((MarkupString)L["Resume_Job6_Bullet1"].Value)</li>
-                    </ul>
+                    <div class="bento-tags">
+                        @foreach (var tag in activeRole.TechTags)
+                        {
+                            <span class="bento-tag">@tag</span>
+                        }
+                    </div>
                 </div>
             </div>
-            
-            <!-- Second Column -->
-            <div class="col-lg-6">
 
-                <h3 class="resume-title">@L["Resume_Education"]</h3>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Edu1_Title"]</h4>
-                    <p><em>@L["Resume_Edu1_School"]</em></p>
-                    <h5>2021</h5>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Edu2_Title"]</h4>
-                    <p><em>@L["Resume_Edu2_School"]</em></p>
-                    <h5>2021</h5>
-                </div>
-                
-                <div class="resume-item">
-                    <h4>@L["Resume_Edu3_Title"]</h4>
-                    <p><em>@L["Resume_Edu3_School"]</em></p>
-                    <h5>2020</h5>
-                </div>
-
-                <div class="resume-item">
-                    <h4>@L["Resume_Edu4_Title"]</h4>
-                    <h5>2013 - 2018</h5>
-                    <p><em>@L["Resume_Edu4_Degree"]</em></p>
-                </div>
-
-                <div class="resume-item">
-                    <h4>@((MarkupString)L["Resume_Edu5_Title"].Value)</h4>
-                    <h5>2017</h5>
-                    <p><em>@L["Resume_Edu5_Degree"]</em></p>
-                </div>
-
-                <div class="resume-item">
-                    <h4>@L["Resume_Edu6_Title"]</h4>
-                    <h5>2007 - 2011</h5>
-                    <p><em>@L["Resume_Edu6_Degree"]</em></p>
-                </div>
-                
+            <!-- Left Column: Core Engineering Roles -->
+            <div class="col-lg-6 d-flex flex-column gap-4">
+                @foreach (var role in ResumeModel.GetCoreEngineeringRoles())
+                {
+                    <div class="bento-card">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                            <div>
+                                <h3 class="bento-role-title">@L[role.RoleTitleKey]</h3>
+                                <div class="bento-company-tag">@L[role.CompanyKey]</div>
+                            </div>
+                            <span class="bento-date"><i class="bi bi-calendar3"></i> @L[role.DateKey]</span>
+                        </div>
+                        <ul class="bento-bullets">
+                            @foreach (var bulletKey in role.BulletKeys)
+                            {
+                                <li>@((MarkupString)L[bulletKey].Value)</li>
+                            }
+                        </ul>
+                        <div class="bento-tags">
+                            @foreach (var tag in role.TechTags)
+                            {
+                                <span class="bento-tag">@tag</span>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
+
+            <!-- Right Column: Certifications & Degrees -->
+            <div class="col-lg-6 d-flex flex-column gap-4">
+
+                <!-- Certifications Bento -->
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="bento-section-heading">
+                            <i class="bi bi-patch-check-fill me-2"></i> @L["Resume_Certifications_Title"]
+                        </h4>
+                        <span class="cert-counter-badge">@ResumeModel.GetCertifications().Count @L["Resume_Credentials_Badge"]</span>
+                    </div>
+
+                    <div class="cert-bento-grid">
+                        @foreach (var cert in ResumeModel.GetCertifications())
+                        {
+                            <div class="cert-item-row">
+                                <div class="cert-item-info">
+                                    <h5>@((MarkupString)L[cert.TitleKey].Value)</h5>
+                                    <span>@((MarkupString)L[cert.IssuerKey].Value)</span>
+                                </div>
+                                <span class="cert-year-badge">@cert.Year</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Academic Degrees Bento -->
+                <div class="bento-card">
+                    <h4 class="bento-section-heading mb-3">
+                        <i class="bi bi-mortarboard-fill me-2"></i> @L["Resume_Academic_Title"]
+                    </h4>
+
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var edu in ResumeModel.GetAcademicDegrees())
+                        {
+                            <div class="edu-item-row">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">@L[edu.InstitutionKey]</h5>
+                                        <div class="edu-degree-subtitle">@L[edu.DegreeKey]</div>
+                                    </div>
+                                    <span class="edu-date-badge">@edu.DateRange</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom: Earlier Career Background Collapsible Drawer -->
+            <div class="col-12 mt-2">
+                <div class="accordion" id="earlierCareerAccordion">
+                    <div class="accordion-item earlier-accordion-item">
+                        <h2 class="accordion-header" id="headingEarlierCareer">
+                            <button class="accordion-button collapsed earlier-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEarlierCareer" aria-expanded="false" aria-controls="collapseEarlierCareer">
+                                <i class="bi bi-clock-history me-2"></i> @L["Resume_EarlierCareer_Title"]
+                            </button>
+                        </h2>
+                        <div id="collapseEarlierCareer" class="accordion-collapse collapse" aria-labelledby="headingEarlierCareer" data-bs-parent="#earlierCareerAccordion">
+                            <div class="accordion-body earlier-accordion-body">
+                                <div class="row g-3">
+                                    @foreach (var role in ResumeModel.GetEarlierCareerRoles())
+                                    {
+                                        <div class="col-md-4">
+                                            <div class="earlier-role-card">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <h6 class="fw-bold mb-0">@L[role.RoleTitleKey]</h6>
+                                                    <span class="earlier-date-badge">@L[role.DateKey]</span>
+                                                </div>
+                                                <div class="earlier-company mb-2">@L[role.CompanyKey]</div>
+                                                <ul class="earlier-bullets">
+                                                    @foreach (var bulletKey in role.BulletKeys)
+                                                    {
+                                                        <li>@((MarkupString)L[bulletKey].Value)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>

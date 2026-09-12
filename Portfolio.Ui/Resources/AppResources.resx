@@ -268,7 +268,46 @@
     <value>Resume</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>I'm a dedicated engineer committed to writing clean and efficient systems while always being mindful of deadlines. &lt;br/&gt;&lt;br/&gt; I take pride in mentoring junior colleagues, guiding them patiently and deriving satisfaction from watching them grow into proficient engineers. &lt;br/&gt;&lt;br/&gt; My enthusiasm for learning never wanes; delving into new systems excites me, and I continuously seek innovative methods to refine my development process.&lt;br/&gt; You can &lt;a href="https://drive.google.com/drive/folders/1iBSn56NqtXe1OL55fs3-oqy53_Xf9veH?usp=sharing" target="_blank" style="font-weight: bold;"&gt;download my resume here!&lt;/a&gt;</value>
+    <value>I'm a dedicated engineer committed to writing clean and efficient systems while always being mindful of deadlines. &lt;br/&gt;&lt;br/&gt; I take pride in mentoring junior colleagues, guiding them patiently and deriving satisfaction from watching them grow into proficient engineers. &lt;br/&gt;&lt;br/&gt; My enthusiasm for learning never wanes; delving into new systems excites me, and I continuously seek innovative methods to refine my development process.</value>
+  </data>
+  <data name="Resume_DownloadCV" xml:space="preserve">
+    <value>Download CV</value>
+  </data>
+  <data name="Resume_ActiveStatus" xml:space="preserve">
+    <value>My Active Role</value>
+  </data>
+  <data name="Resume_Certifications_Title" xml:space="preserve">
+    <value>Certifications &amp; Training</value>
+  </data>
+  <data name="Resume_Academic_Title" xml:space="preserve">
+    <value>Academic Degrees</value>
+  </data>
+  <data name="Resume_EarlierCareer_Title" xml:space="preserve">
+    <value>Earlier Career Experience (2016 - 2018)</value>
+  </data>
+  <data name="Resume_Stat_Software" xml:space="preserve">
+    <value>Years Software Experience</value>
+  </data>
+  <data name="Resume_Stat_Kubernetes" xml:space="preserve">
+    <value>Years Kubernetes Experience</value>
+  </data>
+  <data name="Resume_Stat_IoT" xml:space="preserve">
+    <value>Years IoT Experience</value>
+  </data>
+  <data name="Resume_Stat_SoftSkills" xml:space="preserve">
+    <value>Years Mentorship &amp; Soft Skills</value>
+  </data>
+  <data name="Resume_Credentials_Badge" xml:space="preserve">
+    <value>Credentials</value>
+  </data>
+  <data name="Resume_CurrentJob_Title" xml:space="preserve">
+    <value>Chief Technology Officer</value>
+  </data>
+  <data name="Resume_CurrentJob_Date" xml:space="preserve">
+    <value>2025 - Ongoing</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
+    <value>Details are witheld under NDA.</value>
   </data>
   <data name="Resume_ProfExp" xml:space="preserve">
     <value>Professional Experience</value>
@@ -277,7 +316,7 @@
     <value>DevOps &amp; Backend Software Consultant</value>
   </data>
   <data name="Resume_Job1_Date" xml:space="preserve">
-    <value>2024 - Ongoing</value>
+    <value>2024 - 2025</value>
   </data>
   <data name="Resume_Job1_Company" xml:space="preserve">
     <value>Freelance</value>

@@ -57,7 +57,7 @@ app.UseMiddleware<NotFoundLoggingMiddleware>();
 
 app.MapLivenessHealthCheck();
 app.MapHealthCheckForUptimeRobot();
-app.DefineSetCultureCookieRoute();
+app.DefineEnglishRedirectRoute();
 app.DefineEmailRoute();
 app.DefineLogVisitRoute();
 

@@ -1,5 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Portfolio.Ui.Localization;
 
 namespace Portfolio.Ui.Extensions;
 
@@ -24,23 +25,16 @@ public static class LocalizationExtensions
                 SupportedUICultures = supportedCultures
             };
 
+            // Use URL-based culture detection instead of cookies for SEO
+            localizationOptions.RequestCultureProviders.Clear();
+            localizationOptions.RequestCultureProviders.Add(new UrlSegmentCultureProvider());
+
             app.UseRequestLocalization(localizationOptions);
         }
 
-        public void DefineSetCultureCookieRoute()
+        public void DefineEnglishRedirectRoute()
         {
-            app.MapGet("/SetCulture", (string culture, string? redirectUri, HttpContext httpContext) =>
-            {
-                if (!string.IsNullOrWhiteSpace(culture))
-                {
-                    httpContext.Response.Cookies.Append(
-                        CookieRequestCultureProvider.DefaultCookieName,
-                        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), IsEssential = true, SameSite = SameSiteMode.Lax }
-                    );
-                }
-                return Results.LocalRedirect(string.IsNullOrWhiteSpace(redirectUri) ? "/" : redirectUri);
-            });
+            app.MapGet("/en", () => Results.Redirect("/", permanent: true));
         }
     }
 }

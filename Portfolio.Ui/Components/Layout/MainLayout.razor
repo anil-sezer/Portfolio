@@ -2,7 +2,6 @@
 @using Portfolio.Ui.Resources
 @inherits LayoutComponentBase
 @inject IStringLocalizer<AppResources> L
-@inject NavigationManager Navigation
 
 <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
 <script src="js/mobilenavtoggle.js"></script>
@@ -16,21 +15,20 @@
             
             @{
                 var currentCulture = CultureInfo.CurrentUICulture.Name;
-                var relativeUrl = Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri));
                 var isTr = currentCulture.StartsWith("tr", StringComparison.OrdinalIgnoreCase);
                 var isEn = currentCulture.StartsWith("en", StringComparison.OrdinalIgnoreCase);
             }
 
             <div class="d-flex justify-content-center align-items-center gap-2 mt-2 mb-1">
                 <div class="language-switcher btn-group btn-group-sm rounded-pill p-1 bg-dark bg-opacity-50 border border-secondary" role="group" aria-label="Language switcher">
-                    <a href="/SetCulture?culture=tr-TR&redirectUri=@relativeUrl" 
+                    <a href="/tr" 
                        class="btn rounded-pill px-2 py-0 border-0 @(isTr ? "btn-light shadow-sm" : "")" 
                        title="Türkçe" 
                        lang="tr"
                        aria-current="@(isTr ? "true" : "false")">
                         <span class="lang-tr">TR</span>
                     </a>
-                    <a href="/SetCulture?culture=en-US&redirectUri=@relativeUrl" 
+                    <a href="/" 
                        class="btn rounded-pill px-2 py-0 border-0 @(isEn ? "btn-light shadow-sm" : "")" 
                        title="English" 
                        lang="en"

@@ -1,5 +1,9 @@
+@using System.Globalization
+@using Portfolio.Ui.Resources
+@inject IStringLocalizer<AppResources> L
+
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-bs-theme="dark">
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" data-theme="dark" data-bs-theme="dark">
 
 <head>
     <meta charset="utf-8"/>
@@ -25,36 +29,33 @@
 
     <link href=" https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css " rel="stylesheet">
 
-    @* <ImportMap/> *@
-    @* <link rel="icon" type="image/png" href="favicon.png"/> *@
-    @* <HeadOutlet/> *@
-
     @{
-        const string title = "Anil Sezer's Portfolio";
-        const string description = "Made with love on my bare-metal setup! This project is a showcase of my technical expertise. Code is at www.github.com/anil-sezer/Portfolio";
-
-        const string host = "https://www.anil-sezer.com/";
-        const string imageUrl = host + "img/pp_pic.jpeg";
-        // todo: Blazor does not support doing it like this. Why is beyond me. Find a workaround and do it like this:
-        // todo: Also write a test for this?
-        // var request = this.Request;
-        // var host = request.Scheme + "://" + request.Host.Value;
-        // var imageUrl = host + "img/pp_pic.jpeg";
+        var isTurkish = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "tr";
+        const string host = "https://anil-sezer.com";
+        var canonicalUrl = isTurkish ? host + "/tr" : host + "/";
+        var imageUrl = host + "/img/pp_pic.jpeg";
+        var title = L["Meta_Title"].Value;
+        var description = L["Meta_Description"].Value;
     }
 
     <title>@title</title>
     <meta name="author" content="Anıl Sezer">
-    <meta content="@description" name="description">
-    <meta content=".Net Core, Kubernetes, Portfolio, Backend Engineer, Developer" name="keywords">
+    <meta name="description" content="@description">
+    <meta name="keywords" content=".Net Core, Kubernetes, Portfolio, Backend Engineer, Developer">
 
+    <!-- SEO: Canonical & Hreflang -->
+    <link rel="canonical" href="@canonicalUrl" />
+    <link rel="alternate" hreflang="en" href="@(host)/" />
+    <link rel="alternate" hreflang="tr" href="@(host)/tr" />
+    <link rel="alternate" hreflang="x-default" href="@(host)/" />
 
-    <meta content="@description" name="description">
     <!-- Open Graph Tags -->
     <meta property="og:title" content="@title">
     <meta property="og:description" content="@description">
     <meta property="og:image" content="@imageUrl">
-    <meta property="og:url" content="@host">
+    <meta property="og:url" content="@canonicalUrl">
     <meta property="og:type" content="website"/>
+    <meta property="og:locale" content="@(isTurkish ? "tr_TR" : "en_US")" />
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">

@@ -67,6 +67,10 @@
 }
 
 #techstack .section-title h2 {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: var(--color-white);
     color: var(--color-white);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }

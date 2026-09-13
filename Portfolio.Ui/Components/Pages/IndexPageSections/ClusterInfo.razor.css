@@ -28,11 +28,14 @@
 }
 
 .stats .stats-item .counter {
-    color: var(--text-counter);
     font-size: 2rem;
     font-weight: 700;
     white-space: nowrap;
     margin: 0;
+    background: linear-gradient(to right, var(--text-counter), var(--text-counter-fade));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .stats .stats-item p {

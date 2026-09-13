@@ -15,8 +15,6 @@
     --color-yale-blue-dark: #1f5297;
     --color-yale-blue-light: #e4edf9;
 
-    --color-blue-dark: #1e3a8a;
-
     /* Neutrals & Dark Shades */
     --color-black-night: #040b14;
     --color-black-heading: #050d18;
@@ -82,6 +80,7 @@
     --text-heading-secondary: var(--color-black-heading);
     --text-card-title: var(--color-dark-title);
     --accent-heading-line: var(--color-celestial-blue);
+    --text-heading-primary-fade: color-mix(in srgb, var(--text-heading-secondary) 70%, var(--text-heading-primary));
 
     /* Links & Buttons */
     --color-link: var(--color-celestial-blue);
@@ -102,7 +101,8 @@
     --bg-info-icon: var(--color-celestial-blue-light);
     --bg-timeline-badge: var(--color-yale-blue-light);
     --border-timeline: var(--color-yale-blue-dark);
-    --text-counter: var(--color-blue-dark);
+    --text-counter: var(--color-celestial-blue);
+    --text-counter-fade: var(--color-celestial-blue-hover);
     --bg-input: var(--color-white);
     --text-input: var(--color-dark-body);
     --border-input: #cbd5e1;
@@ -154,7 +154,7 @@
     /* Typography & Content */
     --bg-body: #0b1120;
     --text-body: #94a3b8;
-    --text-heading-primary: #38bdf8;
+    --text-heading-primary: var(--color-celestial-blue);
     --text-heading-secondary: #f8fafc;
     --text-card-title: #f1f5f9;
 
@@ -164,8 +164,7 @@
     --bg-card-tech: #1e293b;
     --bg-info-icon: rgba(20, 157, 221, 0.2);
     --bg-timeline-badge: rgba(30, 82, 151, 0.4);
-    --border-timeline: #38bdf8;
-    --text-counter: #38bdf8;
+    --border-timeline: var(--color-celestial-blue);
     --bg-input: #1e293b;
     --text-input: #f8fafc;
     --border-input: #334155;

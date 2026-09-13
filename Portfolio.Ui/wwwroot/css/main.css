@@ -75,7 +75,10 @@ section {
     font-weight: bold;
     padding-bottom: 0.5rem;
     position: relative;
-    color: var(--text-heading-primary);
+    background: linear-gradient(to right, var(--text-heading-primary), var(--text-heading-primary-fade));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .section-title h2::after {

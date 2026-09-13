@@ -94,49 +94,26 @@
                 }
             </div>
 
-            <!-- Right Column: Certifications & Degrees -->
+            <!-- Right Column: Certifications, Books & Degrees -->
             <div class="col-lg-6 d-flex flex-column gap-4">
 
-                <!-- Certifications Bento -->
                 <div class="bento-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="bento-section-heading">
                             <i class="bi bi-patch-check-fill me-2"></i> @L["Resume_Certifications_Title"]
                         </h4>
-                        <span class="cert-counter-badge">@ResumeModel.GetCertifications().Count @L["Resume_Credentials_Badge"]</span>
+                        <span class="cert-counter-badge">@ResumeModel.GetCredentials().Count @L["Resume_Credentials_Badge"]</span>
                     </div>
 
                     <div class="cert-bento-grid">
-                        @foreach (var cert in ResumeModel.GetCertifications())
+                        @foreach (var cred in ResumeModel.GetCredentials())
                         {
                             <div class="cert-item-row">
                                 <div class="cert-item-info">
-                                    <h5>@((MarkupString)L[cert.TitleKey].Value)</h5>
-                                    <span>@((MarkupString)L[cert.IssuerKey].Value)</span>
+                                    <h5>@((MarkupString)L[cred.TitleKey].Value)</h5>
+                                    <span>@((MarkupString)L[cred.SubtitleKey].Value)</span>
                                 </div>
-                                <span class="cert-year-badge">@cert.Year</span>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Academic Degrees Bento -->
-                <div class="bento-card">
-                    <h4 class="bento-section-heading mb-3">
-                        <i class="bi bi-mortarboard-fill me-2"></i> @L["Resume_Academic_Title"]
-                    </h4>
-
-                    <div class="d-flex flex-column gap-3">
-                        @foreach (var edu in ResumeModel.GetAcademicDegrees())
-                        {
-                            <div class="edu-item-row">
-                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                    <div>
-                                        <h5 class="fw-bold mb-1">@L[edu.InstitutionKey]</h5>
-                                        <div class="edu-degree-subtitle">@L[edu.DegreeKey]</div>
-                                    </div>
-                                    <span class="edu-date-badge">@edu.DateRange</span>
-                                </div>
+                                <span class="cert-year-badge">@cred.Year</span>
                             </div>
                         }
                     </div>

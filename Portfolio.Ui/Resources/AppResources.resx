@@ -284,12 +284,7 @@
   <data name="Resume_ActiveStatus" xml:space="preserve">
     <value>My Active Role</value>
   </data>
-  <data name="Resume_Certifications_Title" xml:space="preserve">
-    <value>Certifications &amp; Training</value>
-  </data>
-  <data name="Resume_Academic_Title" xml:space="preserve">
-    <value>Academic Degrees</value>
-  </data>
+
   <data name="Resume_EarlierCareer_Title" xml:space="preserve">
     <value>Earlier Career Experience (2016 - 2018)</value>
   </data>
@@ -414,44 +409,66 @@
     <value>Historical Istanbul tours on bicycle! &lt;br/&gt; The company lost its income and closed after 2016 military coup.</value>
   </data>
 
-  <data name="Resume_Education" xml:space="preserve">
-    <value>Education</value>
+  <!-- Certs, books, degrees -->
+  <data name="Resume_Certifications_Title" xml:space="preserve">
+    <value>Certifications, Books &amp; Degrees</value>
   </data>
-  <data name="Resume_Edu1_Title" xml:space="preserve">
+  <data name="Resume_Edu_Cs50_Title" xml:space="preserve">
     <value>CS50's Introduction to Computer Science</value>
   </data>
-  <data name="Resume_Edu1_School" xml:space="preserve">
-    <value>Edx - Harvard</value>
+  <data name="Resume_Cs50_SchoolAndTeacherName" xml:space="preserve">
+    <value>Harvard(Edx), by David Malan</value>
   </data>
-  <data name="Resume_Edu2_Title" xml:space="preserve">
+  <data name="Resume_DockerAToZ_Title" xml:space="preserve">
     <value>Docker A to Z</value>
   </data>
-  <data name="Resume_Edu2_School" xml:space="preserve">
-    <value>Udemy</value>
+  <data name="Resume_Edu2_SchoolAndTeacherName" xml:space="preserve">
+    <value>Udemy, by Özgür Öztürk</value>
   </data>
-  <data name="Resume_Edu3_Title" xml:space="preserve">
+  <data name="Resume_PluralSight_Title" xml:space="preserve">
     <value>Test Driven Development With C#</value>
   </data>
-  <data name="Resume_Edu3_School" xml:space="preserve">
-    <value>Pluralsight - 7 courses</value>
+  <data name="Resume_PluralSight_OrgName" xml:space="preserve">
+    <value>Pluralsight</value>
   </data>
-  <data name="Resume_Edu4_Title" xml:space="preserve">
+  <data name="Resume_University_Title" xml:space="preserve">
     <value>Istanbul University</value>
   </data>
-  <data name="Resume_Edu4_Degree" xml:space="preserve">
+  <data name="Resume_University_Major" xml:space="preserve">
     <value>Business Administration and Management</value>
   </data>
   <data name="Resume_Edu5_Title" xml:space="preserve">
-    <value>CSD C and System Programmers Foundation &lt;br/&gt;(C ve Sistem Programcıları Derneği)</value>
+    <value>CSD C and System Programmers Foundation</value>
   </data>
-  <data name="Resume_Edu5_Degree" xml:space="preserve">
+  <data name="Resume_CLanguage_OrgName" xml:space="preserve">
     <value>C Programming Language</value>
   </data>
-  <data name="Resume_Edu6_Title" xml:space="preserve">
+  <data name="Resume_HighSchool_Title" xml:space="preserve">
     <value>Dr Nurettin Erk Perihan Erk Industry High School</value>
   </data>
-  <data name="Resume_Edu6_Degree" xml:space="preserve">
+  <data name="Resume_HighSchool_Speciality" xml:space="preserve">
     <value>Web designing &amp; Programming</value>
+  </data>
+  <data name="Resume_Books_Title" xml:space="preserve">
+    <value>Books I&apos;ve Read</value>
+  </data>
+  <data name="Resume_KubernetesUpAndRunning_Title" xml:space="preserve">
+    <value>Kubernetes Up &amp; Running</value>
+  </data>
+  <data name="Resume_KubernetesUpAndRunning_Authors" xml:space="preserve">
+    <value>Written by: Burns, Beda &amp; Hightower</value>
+  </data>
+  <data name="Resume_DomainDrivenDesign_Title" xml:space="preserve">
+    <value>Domain-Driven Design: Tackling Complexity in the Heart of Software</value>
+  </data>
+  <data name="Resume_DomainDrivenDesign_Author" xml:space="preserve">
+    <value>Written by: Eric Evans</value>
+  </data>
+  <data name="Resume_Cpp_Title" xml:space="preserve">
+    <value>Programming Principles and Practice Using C++</value>
+  </data>
+  <data name="Resume_Cpp_Author" xml:space="preserve">
+    <value>Written by: Bjarne Stroustrup</value>
   </data>
 
   <!-- Contact Section -->

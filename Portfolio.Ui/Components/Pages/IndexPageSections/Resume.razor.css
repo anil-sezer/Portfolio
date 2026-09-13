@@ -249,8 +249,10 @@
 }
 
 .cert-bento-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
     gap: 10px;
 }
 

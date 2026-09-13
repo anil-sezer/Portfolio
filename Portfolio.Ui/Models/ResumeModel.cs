@@ -11,18 +11,11 @@ public class WorkExperienceModel
     public bool IsEarlyCareer { get; init; }
 }
 
-public class CertificationModel
+public class CredentialModel
 {
     public required string TitleKey { get; init; }
-    public required string IssuerKey { get; init; }
+    public required string SubtitleKey { get; init; }
     public required string Year { get; init; }
-}
-
-public class EducationDegreeModel
-{
-    public required string InstitutionKey { get; init; }
-    public required string DegreeKey { get; init; }
-    public required string DateRange { get; init; }
 }
 
 public class ResumeStatModel
@@ -138,53 +131,64 @@ public static class ResumeModel
         };
     }
 
-    public static IReadOnlyList<CertificationModel> GetCertifications()
+    public static IReadOnlyList<CredentialModel> GetCredentials()
     {
-        return new List<CertificationModel>
+        return new List<CredentialModel>
         {
             new()
             {
-                TitleKey = "Resume_Edu1_Title",
-                IssuerKey = "Resume_Edu1_School",
+                TitleKey = "Resume_KubernetesUpAndRunning_Title",
+                SubtitleKey = "Resume_KubernetesUpAndRunning_Authors",
+                Year = "2023",
+            },
+            new()
+            {
+                TitleKey = "Resume_DomainDrivenDesign_Title",
+                SubtitleKey = "Resume_DomainDrivenDesign_Author",
+                Year = "2023",
+            },
+            new()
+            {
+                TitleKey = "Resume_Edu_Cs50_Title",
+                SubtitleKey = "Resume_Cs50_SchoolAndTeacherName",
                 Year = "2021",
             },
             new()
             {
-                TitleKey = "Resume_Edu2_Title",
-                IssuerKey = "Resume_Edu2_School",
+                TitleKey = "Resume_DockerAToZ_Title",
+                SubtitleKey = "Resume_Edu2_SchoolAndTeacherName",
                 Year = "2021",
             },
             new()
             {
-                TitleKey = "Resume_Edu3_Title",
-                IssuerKey = "Resume_Edu3_School",
+                TitleKey = "Resume_PluralSight_Title",
+                SubtitleKey = "Resume_PluralSight_OrgName",
                 Year = "2020",
             },
             new()
             {
-                TitleKey = "Resume_Edu5_Degree",
-                IssuerKey = "Resume_Edu5_Title",
+                TitleKey = "Resume_CLanguage_OrgName",
+                SubtitleKey = "Resume_Edu5_Title",
                 Year = "2017",
-            }
-        };
-    }
-
-    public static IReadOnlyList<EducationDegreeModel> GetAcademicDegrees()
-    {
-        return new List<EducationDegreeModel>
-        {
-            new()
-            {
-                InstitutionKey = "Resume_Edu4_Title",
-                DegreeKey = "Resume_Edu4_Degree",
-                DateRange = "2013 - 2018",
             },
             new()
             {
-                InstitutionKey = "Resume_Edu6_Title",
-                DegreeKey = "Resume_Edu6_Degree",
-                DateRange = "2007 - 2011",
-            }
+                TitleKey = "Resume_Cpp_Title",
+                SubtitleKey = "Resume_Cpp_Author",
+                Year = "2015",
+            },
+            new()
+            {
+                TitleKey = "Resume_University_Title",
+                SubtitleKey = "Resume_University_Major",
+                Year = "2013 - 2018",
+            },
+            new()
+            {
+                TitleKey = "Resume_HighSchool_Title",
+                SubtitleKey = "Resume_HighSchool_Speciality",
+                Year = "2007 - 2011",
+            },
         };
     }
 

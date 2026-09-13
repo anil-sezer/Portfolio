@@ -303,6 +303,9 @@
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
     <value>Chief Technology Officer</value>
   </data>
+  <data name="Resume_CurrentJob_Company" xml:space="preserve">
+    <value>MTB Teknoloji</value>
+  </data>
   <data name="Resume_CurrentJob_Date" xml:space="preserve">
     <value>2025 - Ongoing</value>
   </data>

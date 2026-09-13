@@ -302,6 +302,9 @@
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
     <value>Teknoloji Direktörü</value>
   </data>
+  <data name="Resume_CurrentJob_Company" xml:space="preserve">
+    <value>MTB Teknoloji</value>
+  </data>
   <data name="Resume_CurrentJob_Date" xml:space="preserve">
     <value>2025 - Halen</value>
   </data>

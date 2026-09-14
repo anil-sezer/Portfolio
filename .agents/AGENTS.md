@@ -2,7 +2,8 @@
 
 ## ⚠️ Mandatory Rules of Engagement
 
-1. **Helm Execution Environment**:
+1. Do not run dotnet build for every small thing. Use it less.
+2. **Helm Execution Environment**:
    * **Helm commands MUST ALWAYS be run inside WSL** (e.g., `wsl helm <command>`). Never execute `helm` directly from standard Windows PowerShell.
 2. **Kubectl Execution Environment**:
    * `kubectl` commands can be executed on standard Windows PowerShell CLI or WSL.

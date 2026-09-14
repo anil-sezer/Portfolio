@@ -234,7 +234,7 @@
 
   <!-- Cluster Info Section -->
   <data name="Cluster_Title" xml:space="preserve">
-    <value>Bu Kubernetes Kümesi Hakkında</value>
+    <value>Kubernetes Kümem</value>
   </data>
   <data name="Cluster_Subtitle" xml:space="preserve">
     <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes cluster üzerinde. Bu cihazlar üstünde çeşitli deneyler yürütüyorum ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; cluster'dan.</value>

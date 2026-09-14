@@ -82,7 +82,7 @@
     <value>Anıl Sezer — Full Stack Engineer &amp; Portfolio</value>
   </data>
   <data name="Meta_Description" xml:space="preserve">
-    <value>The system runs on my bare-metal cluster. This project showcases technical expertise. Code is at: www.github.com/anil-sezer/Portfolio</value>
+    <value>This system runs on my bare-metal cluster. This project showcases technical expertise. Code is at: www.github.com/anil-sezer/Portfolio</value>
   </data>
 
 
@@ -235,7 +235,7 @@
 
   <!-- Cluster Info Section -->
   <data name="Cluster_Title" xml:space="preserve">
-    <value>About This Kubernetes Cluster</value>
+    <value>My Kubernetes Cluster</value>
   </data>
   <data name="Cluster_Subtitle" xml:space="preserve">
     <value>This website is hosted on a bare metal Kubernetes cluster that I built using Raspberry Pi's. In this cluster I run various experiments and stats you see here are directly taken via &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient.&lt;/a&gt;</value>

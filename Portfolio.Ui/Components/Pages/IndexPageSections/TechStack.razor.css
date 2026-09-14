@@ -76,7 +76,6 @@
 }
 
 #techstack .section-title h2::after {
-    width: 9.3rem;
     background: var(--color-white);
 }
 

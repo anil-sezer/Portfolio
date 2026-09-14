@@ -80,7 +80,7 @@
     --text-heading-secondary: var(--color-black-heading);
     --text-card-title: var(--color-dark-title);
     --accent-heading-line: var(--color-celestial-blue);
-    --text-heading-primary-fade: color-mix(in srgb, var(--text-heading-secondary) 70%, var(--text-heading-primary));
+    --text-heading-primary-fade: var(--color-yale-blue-dark);
 
     /* Links & Buttons */
     --color-link: var(--color-celestial-blue);
@@ -157,6 +157,7 @@
     --text-heading-primary: var(--color-celestial-blue);
     --text-heading-secondary: #f8fafc;
     --text-card-title: #f1f5f9;
+    --text-heading-primary-fade: var(--color-celestial-blue-hover);
 
     /* Cards, Items & Sections */
     --bg-section-alt: #111827;

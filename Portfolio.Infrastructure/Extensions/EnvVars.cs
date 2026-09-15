@@ -1,4 +1,4 @@
-﻿using Portfolio.Infrastructure.Exceptions;
+using Portfolio.Infrastructure.Exceptions;
 using Serilog;
 
 // ReSharper disable InconsistentNaming
@@ -16,7 +16,8 @@ public static class EnvVars
 
         _ = GRPC_BASE_URL;
 
-        _ = OTEL_COLLECTOR_ENDPOINT;
+        if (!IsDevelopment())
+            _ = OTEL_COLLECTOR_ENDPOINT;
     }
     
     public static void TestEnvVariablesForBackend()
@@ -29,7 +30,8 @@ public static class EnvVars
         _ = SQL_DB_NAME;
         _ = SQL_DB_PASSWORD;
 
-        _ = OTEL_COLLECTOR_ENDPOINT;
+        if (!IsDevelopment())
+            _ = OTEL_COLLECTOR_ENDPOINT;
 
         _ = NOTIFICATION_TELEGRAM_API_KEY;
         _ = NOTIFICATION_TELEGRAM_CHAT_ID;

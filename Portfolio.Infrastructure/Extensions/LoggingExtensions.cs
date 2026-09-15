@@ -10,24 +10,30 @@ public static class LoggingExtensions
 {
     public static void InitLogsWithSerilog(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSerilog((services, lc) => lc
-            .ReadFrom.Services(services) // enables DI-aware enrichers/sinks
-            .MinimumLevel.Information()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
-            .MinimumLevel.Override("Grpc", LogEventLevel.Warning)
-            .Enrich.FromLogContext() // For UseSerilogRequestLogging?
-            .WriteTo.Console()
-            .WriteTo.OpenTelemetry(o =>
+        builder.Services.AddSerilog((services, lc) =>
+        {
+            lc.ReadFrom.Services(services) // enables DI-aware enrichers/sinks
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
+                .MinimumLevel.Override("Grpc", LogEventLevel.Warning)
+                .Enrich.FromLogContext() // For UseSerilogRequestLogging?
+                .WriteTo.Console();
+
+            if (!EnvVars.IsDevelopment())
             {
-                o.Endpoint = $"{EnvVars.OTEL_COLLECTOR_ENDPOINT.TrimEnd('/')}/v1/logs";
-                o.Protocol = OtlpProtocol.HttpProtobuf;
-                o.ResourceAttributes = new Dictionary<string, object>
+                lc.WriteTo.OpenTelemetry(o =>
                 {
-                    ["service.name"] = AssemblyHelper.GetServiceName()
-                };
-            }));
+                    o.Endpoint = $"{EnvVars.OTEL_COLLECTOR_ENDPOINT.TrimEnd('/')}/v1/logs";
+                    o.Protocol = OtlpProtocol.HttpProtobuf;
+                    o.ResourceAttributes = new Dictionary<string, object>
+                    {
+                        ["service.name"] = AssemblyHelper.GetServiceName()
+                    };
+                });
+            }
+        });
     }
 
     public static void SetupRequestLoggingForBlazor(this WebApplication app)

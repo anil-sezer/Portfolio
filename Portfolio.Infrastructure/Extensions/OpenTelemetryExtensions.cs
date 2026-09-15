@@ -15,6 +15,12 @@ public static class OpenTelemetryExtensions
 {
     public static void InitOpenTelemetry(this WebApplicationBuilder builder)
     {
+        if (EnvVars.IsDevelopment())
+        {
+            Log.Information("Skipping OpenTelemetry initialization in Development environment for faster startup");
+            return;
+        }
+
         const string serviceVersion = "1.0.0";
 
         // Enable if you wanna debug OpenTelemetry. Listens to internal events.

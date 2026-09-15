@@ -39,18 +39,19 @@ public static class DbContextExtensions
         if (!EnvVars.IsDevelopment())
             return;
 
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
-    
-        try
+        _ = Task.Run(async () =>
         {
-            context.Database.Migrate();
-            Log.Information("Database migrations applied successfully");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred while migrating the database");
-            throw;
-        }
+            try
+            {
+                using var scope = app.Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+                await context.Database.MigrateAsync();
+                Log.Information("Database migrations applied successfully in background");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while migrating the database in background");
+            }
+        });
     }
 }

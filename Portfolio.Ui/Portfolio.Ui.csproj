@@ -16,6 +16,7 @@
     <ItemGroup>
         <PackageReference Include="Google.Protobuf" Version="3.35.1" />
         <PackageReference Include="Grpc.Net.Client" Version="2.80.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.80.0" />
         <PackageReference Include="Grpc.Tools" Version="2.82.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -24,7 +25,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Portfolio.Grpc\Portfolio.Grpc.csproj" />
+        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Client" />
+        <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Client" />
+        <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Client" />
+        <Protobuf Include="..\protos\k8s_stats.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
+      <ProjectReference Include="..\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

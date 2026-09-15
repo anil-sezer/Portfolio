@@ -20,8 +20,10 @@ Made with love, by using **Domain Driven Design** from [Eric Evans!](https://ddd
 8. `Prometheus:` Using it for 4+ years but I wanna sink more time specifically into it
 9. `Grafana:` This cluster wouldn't be complete without mesmerizing dashboards of Grafana
 
-Used this template for front end: https://bootstrapmade.com/demo/iPortfolio/
+Map is chosen from this website: https://leaflet-extras.github.io/leaflet-providers/preview/
+
+
 
 Setting up and correctly managing a k8s cluster on bare metal was hard. But the experience was refreshing:
 
-![It's a joke about my struggles with the cluster](we-thought-it-would-be-easy.webp)
+![It's a joke about struggles I had with the cluster](we-thought-it-would-be-easy.webp)

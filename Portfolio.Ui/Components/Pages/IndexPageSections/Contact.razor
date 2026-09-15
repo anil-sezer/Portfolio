@@ -6,68 +6,212 @@
 
         <div id="contact-title" class="section-title">
             <h2>@L["Contact_Title"]</h2>
-            <p>@L["Contact_Subtitle"]</p><br/>
+            <p>@L["Contact_Subtitle"]</p>
         </div>
 
-        <div class="row">
-            <div class="col-lg-5 d-flex align-items-stretch">
-                <div class="info">
-                    <div class="address">
-                        <i class="bi bi-geo-alt"></i>
-                        <h4>@L["Contact_Location"]</h4>
-                        <p>@L["Contact_LocationVal"]</p>
+        <div class="row g-4 align-items-stretch">
+            <!-- Left Column: Quick Connect Hub -->
+            <div class="col-lg-5 d-flex flex-column">
+                <div class="contact-info-card d-flex flex-column h-100">
+                    <!-- Contact Channels -->
+                    <div class="contact-channels">
+                        <!-- Email Tile -->
+                        <div class="channel-item">
+                            <div class="channel-icon">
+                                <i class="bi bi-envelope-at-fill"></i>
+                            </div>
+                            <div class="channel-content">
+                                <h4>@L["Contact_Email"]</h4>
+                                <a href="mailto:msnanil@hotmail.com" class="channel-link" title="@L["Contact_SendEmailDirect"]">msnanil@hotmail.com</a>
+                            </div>
+                            <div class="channel-actions">
+                                <button type="button" 
+                                        class="btn-action copy-btn" 
+                                        data-copy="msnanil@hotmail.com" 
+                                        title="@L["Contact_CopyEmail"]"
+                                        aria-label="@L["Contact_CopyEmail"]">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                                <a href="mailto:msnanil@hotmail.com" 
+                                   class="btn-action" 
+                                   title="@L["Contact_SendEmailDirect"]"
+                                   aria-label="@L["Contact_SendEmailDirect"]">
+                                    <i class="bi bi-send-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Phone / WhatsApp Tile -->
+                        <div class="channel-item">
+                            <div class="channel-icon">
+                                <i class="bi bi-telephone-fill"></i>
+                            </div>
+                            <div class="channel-content">
+                                <h4>@L["Contact_Phone"]</h4>
+                                <a href="tel:+905316275329" class="channel-link" title="@L["Contact_CallPhone"]">+90 531 627 53 29</a>
+                            </div>
+                            <div class="channel-actions">
+                                <button type="button" 
+                                        class="btn-action copy-btn" 
+                                        data-copy="+90 531 627 53 29" 
+                                        title="@L["Contact_CopyEmail"]"
+                                        aria-label="Copy phone number">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                                <a href="https://wa.me/905316275329" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="btn-action whatsapp-action" 
+                                   title="@L["Contact_WhatsAppDirect"]"
+                                   aria-label="@L["Contact_WhatsAppDirect"]">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Location Tile -->
+                        <div class="channel-item">
+                            <div class="channel-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="channel-content">
+                                <h4>@L["Contact_Location"]</h4>
+                                <p class="channel-text mb-0">@L["Contact_LocationVal"]</p>
+                            </div>
+                            <div class="channel-badge">
+                                <div class="timezone-badge d-flex align-items-center gap-2" title="@L["Contact_TimezoneBadge"]">
+                                    <i class="bi bi-clock"></i>
+                                    <div class="d-flex flex-column text-end">
+                                        <span class="clock-time"><span id="istanbul-hour">--</span><span class="clock-colon">:</span><span id="istanbul-minute">--</span></span>
+                                        <span class="clock-zone">GMT+3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="email">
-                        <i class="bi bi-envelope"></i>
-                        <h4>@L["Contact_Email"]</h4>
-                        <p>msnanil@hotmail.com</p>
+                    <!-- Map Section (Fills remaining height) -->
+                    <div class="contact-map-section mt-3 pt-3 border-top d-flex flex-column flex-grow-1">
+                        <div id="contact-map" class="map-container flex-grow-1"></div>
                     </div>
-
-                    <div class="phone">
-                        <i class="bi bi-phone"></i>
-                        <h4>@L["Contact_Phone"]</h4>
-                        <p>+90 531 627 53 29</p>
-                    </div>
-                    <iframe alt="Map of Istanbul, covers all of this mega city. It's radius might be more than 200 km" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyCZvkrT_CC5SEH3xOhsZm7QB1aPsX5QCRI&center=41.012922,28.991611&zoom=8&language=en" frameborder="0" loading="lazy" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
                 </div>
             </div>
 
-            <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-                <form id="email-form" class="email-form">
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="name">@L["Contact_YourName"]</label>
-                            <input id="name" type="text" class="form-control" placeholder="@L["Contact_NamePlaceholder"]" required minlength="3" />
-                            <div class="error-message" id="name-error"></div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="email">@L["Contact_YourEmail"]</label>
-                            <input id="email" type="email" class="form-control" placeholder="email@address.com" required />
-                            <div class="error-message" id="email-error"></div>
-                        </div>
+            <!-- Right Column: Modernized Contact Form -->
+            <div class="col-lg-7 d-flex align-items-stretch">
+                <div class="contact-form-card w-100">
+                    <div class="form-header mb-3">
+                        <h3 class="form-title">@L["Contact_FormTitle"]</h3>
+                        <p class="form-subtitle text-muted small">@L["Contact_Subtitle"]</p>
                     </div>
-                    <div class="form-group">
-                        <label for="subject">@L["Contact_Subject"]</label>
-                        <input id="subject" type="text" class="form-control" placeholder="@L["Contact_SubjectPlaceholder"]" required minlength="2" />
-                        <div class="error-message" id="subject-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">@L["Contact_Message"]</label>
-                        <textarea id="message" class="form-control" rows="11" placeholder="@L["Contact_MessagePlaceholder"]" required minlength="15"></textarea>
-                        <div class="error-message" id="message-error"></div>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary" id="submit-btn">
-                            <span id="btn-text">@L["Contact_SendEmail"]</span>
-                            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display: none;"></span>
+
+                    <!-- Quick Subject Chips -->
+                    <div class="subject-chips mb-3" role="group" aria-label="Quick subject selector">
+                        <button type="button" class="chip-btn" data-subject="@L["Contact_ChipJob"]">
+                            @L["Contact_ChipJob"]
+                        </button>
+                        <button type="button" class="chip-btn" data-subject="@L["Contact_ChipConsulting"]">
+                            @L["Contact_ChipConsulting"]
+                        </button>
+                        <button type="button" class="chip-btn" data-subject="@L["Contact_ChipHello"]">
+                            @L["Contact_ChipHello"]
                         </button>
                     </div>
-                </form>
 
-                <div class="floating-alert" id="floating-alert" style="display: none;"></div>
+                    <form id="email-form" class="email-form-modern" novalidate>
+                        <!-- Inline Alert Container -->
+                        <div id="form-alert" class="form-alert d-none" role="alert" aria-live="polite">
+                            <i id="form-alert-icon" class="bi me-2"></i>
+                            <span id="form-alert-message"></span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">@L["Contact_YourName"]</label>
+                                <div class="input-wrapper">
+                                    <i class="bi bi-person input-icon"></i>
+                                    <input id="name" 
+                                           name="name"
+                                           type="text" 
+                                           class="form-control" 
+                                           placeholder="@L["Contact_NamePlaceholder"]" 
+                                           required 
+                                           minlength="3" 
+                                           autocomplete="name" />
+                                </div>
+                                <div class="error-message" id="name-error"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">@L["Contact_YourEmail"]</label>
+                                <div class="input-wrapper">
+                                    <i class="bi bi-envelope input-icon"></i>
+                                    <input id="email" 
+                                           name="email"
+                                           type="email" 
+                                           class="form-control" 
+                                           placeholder="name@domain.com" 
+                                           required 
+                                           autocomplete="email" />
+                                </div>
+                                <div class="error-message" id="email-error"></div>
+                            </div>
+                            <div class="col-12">
+                                <label for="subject" class="form-label">@L["Contact_Subject"]</label>
+                                <div class="input-wrapper">
+                                    <i class="bi bi-chat-left-dots input-icon"></i>
+                                    <input id="subject" 
+                                           name="subject"
+                                           type="text" 
+                                           class="form-control" 
+                                           placeholder="@L["Contact_SubjectPlaceholder"]" 
+                                           required 
+                                           minlength="2" />
+                                </div>
+                                <div class="error-message" id="subject-error"></div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="message" class="form-label mb-0">@L["Contact_Message"]</label>
+                                    <span id="char-counter" class="char-counter small text-muted">0 / 15 min</span>
+                                </div>
+                                <div class="input-wrapper">
+                                    <textarea id="message" 
+                                              name="message"
+                                              class="form-control" 
+                                              rows="6" 
+                                              placeholder="@L["Contact_MessagePlaceholder"]" 
+                                              required 
+                                              minlength="15"></textarea>
+                                </div>
+                                <div class="error-message" id="message-error"></div>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <button type="submit" class="btn btn-submit w-100" id="submit-btn">
+                                    <span id="btn-text">
+                                        <i class="bi bi-send-fill me-2"></i>@L["Contact_SendEmail"]
+                                    </span>
+                                    <span id="btn-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                                    <span id="btn-loading-text" class="d-none">@L["Contact_Sending"]</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Global Toast for Copy feedback -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="copyToast" class="toast align-items-center text-bg-dark border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                <span id="copyToastText">@L["Contact_Copied"]</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 

@@ -1,213 +1,452 @@
 /*--------------------------------------------------------------
-# Contact
+# Contact Section Modern Styles
 --------------------------------------------------------------*/
-/* 
-    todo: Looks like <EditForm> does not accept isolated css files like: Contact.razor.css 
-     I'm too lazy to figure out why, so I'm just going to use Contact components css from here. 
-*/
-
-#contact-title h2::after {
-    width: 6.9rem;
-}
 
 .contact {
-    padding-bottom: 130px;
+    padding-bottom: 100px;
 }
 
-.contact .info {
-    padding: 30px;
+/* Base Cards */
+.contact-info-card,
+.contact-form-card {
     background: var(--bg-card);
-    width: 100%;
     box-shadow: var(--shadow-card);
-    border-radius: 8px;
-    transition: background 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 32px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.contact .info i {
-    font-size: 20px;
-    color: var(--color-celestial-blue);
-    float: left;
+.channel-badge {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.timezone-badge {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-body);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-input);
+    white-space: nowrap;
+}
+
+.timezone-badge .clock-time {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--text-heading-secondary);
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+}
+
+.timezone-badge .clock-zone {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--text-body);
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.timezone-badge .clock-colon {
+    display: inline-block;
+    animation: clock-pulse 2s ease-in-out infinite;
+}
+
+@keyframes clock-pulse {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+[data-theme="dark"] .timezone-badge,
+[data-bs-theme="dark"] .timezone-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Contact Channels */
+.contact-channels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.channel-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-input);
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+[data-theme="dark"] .channel-item,
+[data-bs-theme="dark"] .channel-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.channel-item:hover {
+    border-color: var(--color-celestial-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.channel-icon {
     width: 44px;
     height: 44px;
+    border-radius: 10px;
     background: var(--bg-info-icon);
+    color: var(--color-celestial-blue);
     display: flex;
-    justify-content: center;
     align-items: center;
-    border-radius: 50px;
-    transition: all 0.3s ease-in-out;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-.contact .info h4 {
-    padding: 0 0 0 60px;
-    font-size: 22px;
+.channel-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.channel-content h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-body);
+    margin-bottom: 2px;
     font-weight: 600;
-    margin-bottom: 5px;
+}
+
+.channel-link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-heading-secondary);
+    text-decoration: none;
+    word-break: break-word;
+    transition: color 0.2s ease;
+}
+
+.channel-link:hover {
+    color: var(--color-celestial-blue);
+}
+
+.channel-text {
+    font-size: 15px;
+    font-weight: 500;
     color: var(--text-heading-secondary);
 }
 
-.contact .info p {
-    padding: 0 0 10px 60px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: var(--text-body);
+.channel-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.contact .info .email p {
-    padding-top: 5px;
-}
-
-.contact .info {
-    padding-left: 60px;
-}
-
-.contact .info a {
-    font-size: 18px;
-    display: inline-block;
-    background: var(--bg-btn-icon);
-    color: var(--color-white);
-    line-height: 1;
-    padding: 8px 0;
-    border-radius: 50%;
-    text-align: center;
+.btn-action {
     width: 36px;
     height: 36px;
-    transition: 0.3s;
-    margin-right: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-input);
+    background: var(--bg-card);
+    color: var(--text-body);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 15px;
 }
 
-.contact .info a:hover {
+[data-theme="dark"] .btn-action,
+[data-bs-theme="dark"] .btn-action {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.btn-action:hover {
     background: var(--color-celestial-blue);
-    color: var(--color-white);
+    color: #ffffff;
+    border-color: var(--color-celestial-blue);
+    transform: scale(1.08);
 }
 
-.contact .info .email:hover i,
-.contact .info .address:hover i,
-.contact .info .phone:hover i {
+.btn-action.whatsapp-action:hover {
+    background: #25D366;
+    border-color: #25D366;
+    color: #ffffff;
+}
+
+/* Map Section */
+.contact-map-section {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.map-container {
+    position: relative;
+    width: 100%;
+    min-height: 260px;
+    height: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-input);
+    background: #000000;
+}
+
+@media (min-width: 992px) {
+    .map-container {
+        height: 100%;
+        min-height: 220px;
+    }
+}
+
+[data-theme="dark"] .map-container,
+[data-bs-theme="dark"] .map-container {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.map-container .leaflet-container {
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    border-radius: 10px;
+}
+
+.custom-leaflet-pin {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Astronomy Pulsing Star (Supernova) Marker */
+.marker-celestial-star {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.marker-celestial-star .star-glow {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(20, 157, 221, 0.55) 40%, transparent 70%);
+    animation: starBreathing 2.2s ease-in-out infinite alternate;
+}
+
+.marker-celestial-star .star-crosshair {
+    position: absolute;
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1;
+    text-shadow: 0 0 10px #00f2fe, 0 0 20px #149ddd;
+    transform: scale(1.1);
+    pointer-events: none;
+    user-select: none;
+}
+
+@keyframes starBreathing {
+    0% {
+        transform: scale(0.75);
+        opacity: 0.65;
+    }
+    100% {
+        transform: scale(1.35);
+        opacity: 1;
+    }
+}
+
+
+
+/* Form Styles */
+.form-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-heading-secondary);
+    margin-bottom: 2px;
+}
+
+/* Subject Chips */
+.subject-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-input);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+    color: var(--text-body);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+[data-theme="dark"] .chip-btn,
+[data-bs-theme="dark"] .chip-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chip-btn:hover,
+.chip-btn.active {
     background: var(--color-celestial-blue);
-    color: var(--color-white);
+    border-color: var(--color-celestial-blue);
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
-/*--------------------------------------------------------------
-# Email Form
---------------------------------------------------------------*/
+/* Input Fields */
+.email-form-modern .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-heading-secondary);
+    margin-bottom: 6px;
+}
 
-.contact .email-form input,
-.contact .email-form textarea {
+.email-form-modern .input-wrapper {
+    position: relative;
+}
+
+.email-form-modern .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-nav-icon);
+    pointer-events: none;
+    font-size: 16px;
+}
+
+.email-form-modern input.form-control {
+    padding-left: 42px;
+    height: 46px;
     background-color: var(--bg-input);
     color: var(--text-input);
     border: 1px solid var(--border-input);
+    border-radius: 8px;
     font-size: 14px;
     box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input.form-control:not(:placeholder-shown):valid,
-textarea.form-control:not(:placeholder-shown):valid {
-    outline-color: var(--clr-success);
+.email-form-modern textarea.form-control {
+    padding: 12px 14px;
+    background-color: var(--bg-input);
+    color: var(--text-input);
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: none;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input.form-control:not(:placeholder-shown):invalid,
-textarea.form-control:not(:placeholder-shown):invalid {
-    outline-color: var(--clr-error);
+.email-form-modern input.form-control:focus,
+.email-form-modern textarea.form-control:focus {
+    border-color: var(--color-celestial-blue);
+    box-shadow: 0 0 0 3px rgba(20, 157, 221, 0.18);
 }
 
-input.form-control:focus:not(:placeholder-shown):invalid,
-textarea.form-control:focus:not(:placeholder-shown):invalid {
-    outline-color: var(--clr-warning);
+.email-form-modern .form-control.is-invalid {
+    border-color: var(--clr-error) !important;
 }
 
-.contact .email-form .error-message {
+.email-form-modern .form-control.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25) !important;
+}
+
+.email-form-modern .error-message {
     display: none;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: var(--text-input-error);
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--clr-error);
 }
 
-.contact .email-form .error-message.show {
+.email-form-modern .error-message.show {
     display: block;
 }
 
-.contact .email-form .form-control.is-invalid {
-    border-color: var(--border-input-invalid);
+.char-counter.valid {
+    color: var(--clr-success) !important;
 }
 
-.contact .email-form .form-control.is-invalid:focus {
-    border-color: var(--border-input-invalid);
-    box-shadow: var(--shadow-input-invalid);
-}
-
-
-.contact .email-form {
-    width: 100%;
-    padding: 30px;
-    background: var(--bg-card);
-    box-shadow: var(--shadow-card);
-    border-radius: 8px;
-    transition: background 0.3s ease;
-}
-
-
-.contact .email-form .form-group {
-    padding-bottom: 8px;
-}
-
-.floating-alert {
-    position: fixed;
-    top: 50px;
-    right: 50px;
-    z-index: 1050;
-    padding: 15px 20px;
-    border-radius: 5px;
-    box-shadow: var(--shadow-alert);
-    color: var(--color-white);
-    font-size: 16px;
-    transition: opacity 4s ease-in-out;
-    opacity: 1;
-}
-
-.alert-success {
-    background-color: var(--bg-alert-success);
-}
-
-.alert-danger {
-    background-color: var(--bg-alert-danger);
-}
-
-.contact .email-form .form-group {
-    margin-bottom: 15px;
-}
-
-.contact .email-form label {
-    padding-bottom: 8px;
-}
-
-.contact .email-form input {
-    height: 44px;
-}
-
-.contact .email-form textarea {
-    padding: 10px 15px;
-    height: auto;
-}
-
-.contact .email-form button[type=submit] {
+/* Submit Button */
+.btn-submit {
     background: var(--bg-btn-submit);
+    color: #ffffff;
     border: 0;
-    padding: 10px 24px;
-    color: var(--color-white);
-    transition: 0.4s;
-    border-radius: 4px;
+    height: 48px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(20, 157, 221, 0.25);
 }
 
-.contact .email-form button[type=submit]:hover {
+.btn-submit:hover:not(:disabled) {
     background: var(--bg-btn-submit-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(20, 157, 221, 0.35);
 }
 
-@keyframes animate-loading {
-    0% {
-        transform: rotate(0deg);
+.btn-submit:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+/* Inline Form Alert */
+.form-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.form-alert-success {
+    background-color: rgba(40, 167, 69, 0.12);
+    border: 1px solid var(--color-success);
+    color: #28a745;
+}
+
+.form-alert-danger {
+    background-color: rgba(220, 53, 69, 0.12);
+    border: 1px solid var(--color-danger);
+    color: #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .contact-info-card,
+    .contact-form-card {
+        padding: 20px 18px;
     }
 
-    100% {
-        transform: rotate(360deg);
+    .channel-item {
+        padding: 12px 14px;
     }
 }

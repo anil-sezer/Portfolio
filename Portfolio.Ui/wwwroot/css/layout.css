@@ -111,7 +111,7 @@
         padding: 4px 12px;
         margin-bottom: 0;
     }
-    .flex-column{
+    .nav-menu .flex-column{
         align-items: center;
     }
 }

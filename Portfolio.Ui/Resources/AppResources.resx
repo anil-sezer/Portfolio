@@ -517,4 +517,52 @@
   <data name="Contact_SendEmail" xml:space="preserve">
     <value>Send Email</value>
   </data>
+  <data name="Contact_StatusBadge" xml:space="preserve">
+    <value>Available for new opportunities</value>
+  </data>
+  <data name="Contact_TimezoneBadge" xml:space="preserve">
+    <value>Istanbul (GMT+3)</value>
+  </data>
+  <data name="Contact_DirectConnect" xml:space="preserve">
+    <value>Direct Channels</value>
+  </data>
+  <data name="Contact_CopyEmail" xml:space="preserve">
+    <value>Copy email address</value>
+  </data>
+  <data name="Contact_Copied" xml:space="preserve">
+    <value>Copied to clipboard!</value>
+  </data>
+  <data name="Contact_SendEmailDirect" xml:space="preserve">
+    <value>Open in email client</value>
+  </data>
+  <data name="Contact_WhatsAppDirect" xml:space="preserve">
+    <value>Chat on WhatsApp</value>
+  </data>
+  <data name="Contact_CallPhone" xml:space="preserve">
+    <value>Call phone</value>
+  </data>
+  <data name="Contact_SocialTitle" xml:space="preserve">
+    <value>Social &amp; Code</value>
+  </data>
+  <data name="Contact_ChipJob" xml:space="preserve">
+    <value>💼 Job Opportunity</value>
+  </data>
+  <data name="Contact_ChipConsulting" xml:space="preserve">
+    <value>🚀 Consulting / Freelance</value>
+  </data>
+  <data name="Contact_ChipHello" xml:space="preserve">
+    <value>👋 Say Hi</value>
+  </data>
+  <data name="Contact_FormTitle" xml:space="preserve">
+    <value>Send a Message</value>
+  </data>
+  <data name="Contact_RequiredError" xml:space="preserve">
+    <value>This field is required</value>
+  </data>
+  <data name="Contact_EmailError" xml:space="preserve">
+    <value>Please enter a valid email address</value>
+  </data>
+  <data name="Contact_MinLengthError" xml:space="preserve">
+    <value>Must be at least {0} characters</value>
+  </data>
 </root>

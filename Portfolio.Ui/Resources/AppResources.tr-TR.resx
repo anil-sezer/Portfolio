@@ -515,4 +515,52 @@
   <data name="Contact_SendEmail" xml:space="preserve">
     <value>E-posta Gönder</value>
   </data>
+  <data name="Contact_StatusBadge" xml:space="preserve">
+    <value>Yeni fırsatlara ve projelere açık</value>
+  </data>
+  <data name="Contact_TimezoneBadge" xml:space="preserve">
+    <value>İstanbul (GMT+3)</value>
+  </data>
+  <data name="Contact_DirectConnect" xml:space="preserve">
+    <value>Hızlı İletişim</value>
+  </data>
+  <data name="Contact_CopyEmail" xml:space="preserve">
+    <value>E-posta adresini kopyala</value>
+  </data>
+  <data name="Contact_Copied" xml:space="preserve">
+    <value>Panoya kopyalandı!</value>
+  </data>
+  <data name="Contact_SendEmailDirect" xml:space="preserve">
+    <value>E-posta istemcisinde aç</value>
+  </data>
+  <data name="Contact_WhatsAppDirect" xml:space="preserve">
+    <value>WhatsApp'tan Yaz</value>
+  </data>
+  <data name="Contact_CallPhone" xml:space="preserve">
+    <value>Telefonla Ara</value>
+  </data>
+  <data name="Contact_SocialTitle" xml:space="preserve">
+    <value>Sosyal &amp; Kod</value>
+  </data>
+  <data name="Contact_ChipJob" xml:space="preserve">
+    <value>💼 İş Fırsatı</value>
+  </data>
+  <data name="Contact_ChipConsulting" xml:space="preserve">
+    <value>🚀 Danışmanlık / Freelance</value>
+  </data>
+  <data name="Contact_ChipHello" xml:space="preserve">
+    <value>👋 Merhaba</value>
+  </data>
+  <data name="Contact_FormTitle" xml:space="preserve">
+    <value>Mesaj Gönderin</value>
+  </data>
+  <data name="Contact_RequiredError" xml:space="preserve">
+    <value>Bu alan zorunludur</value>
+  </data>
+  <data name="Contact_EmailError" xml:space="preserve">
+    <value>Lütfen geçerli bir e-posta adresi girin</value>
+  </data>
+  <data name="Contact_MinLengthError" xml:space="preserve">
+    <value>En az {0} karakter olmalıdır</value>
+  </data>
 </root>

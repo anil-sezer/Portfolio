@@ -300,9 +300,6 @@
   <data name="Resume_Stat_SoftSkills" xml:space="preserve">
     <value>Years Mentorship &amp; Soft Skills</value>
   </data>
-  <data name="Resume_Credentials_Badge" xml:space="preserve">
-    <value>Credentials</value>
-  </data>
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
     <value>Chief Technology Officer</value>
   </data>
@@ -551,7 +548,7 @@
     <value>🚀 Consulting / Freelance</value>
   </data>
   <data name="Contact_ChipHello" xml:space="preserve">
-    <value>👋 Say Hi</value>
+    <value>👋 Hi</value>
   </data>
   <data name="Contact_FormTitle" xml:space="preserve">
     <value>Send a Message</value>

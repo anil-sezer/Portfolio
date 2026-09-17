@@ -298,9 +298,6 @@
   <data name="Resume_Stat_SoftSkills" xml:space="preserve">
     <value>Yıl Mentorluk ve İletişim</value>
   </data>
-  <data name="Resume_Credentials_Badge" xml:space="preserve">
-    <value>Sertifika</value>
-  </data>
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
     <value>Teknoloji Direktörü</value>
   </data>

@@ -237,15 +237,6 @@
     margin: 0;
 }
 
-.cert-counter-badge {
-    font-size: 0.76rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: var(--bg-timeline-badge);
-    color: var(--text-heading-primary);
-}
-
 .cert-bento-grid {
     display: flex;
     flex-direction: column;

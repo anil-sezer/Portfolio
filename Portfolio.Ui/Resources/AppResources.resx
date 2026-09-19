@@ -405,6 +405,36 @@
   <data name="Resume_Job6_Bullet1" xml:space="preserve">
     <value>Historical Istanbul tours on bicycle! &lt;br/&gt; The company lost its income and closed after 2016 military coup.</value>
   </data>
+  <data name="Resume_Supervisor_Title" xml:space="preserve">
+    <value>Supervisor</value>
+  </data>
+  <data name="Resume_Supervisor_Date" xml:space="preserve">
+    <value>2013 - 2015</value>
+  </data>
+  <data name="Resume_Supervisor_Company" xml:space="preserve">
+    <value>2K Kaliteli Kurumsal İnsan Kaynakları, Istanbul, Turkey</value>
+  </data>
+  <data name="Resume_Supervisor_Bullet1" xml:space="preserve">
+    <value>We worked on an event-based model. &lt;br/&gt;The first event I attended concluded with me being awarded a newly launched device by the Philips executives I collaborated with, followed by a job offer.</value>
+  </data>
+
+  <data name="Resume_Job_ItIntern_Title" xml:space="preserve">
+    <value>IT Intern</value>
+  </data>
+  <data name="Resume_ItIntern_Date" xml:space="preserve">
+    <value>2010 - 2011</value>
+  </data>
+  <data name="Resume_ItIntern_Company" xml:space="preserve">
+    <value>ING Bank General Directorate, Istanbul, Turkey</value>
+  </data>
+  <data name="Resume_ItIntern_Bullet1" xml:space="preserve">
+    <value>Company-wide and branch IT support.</value>
+  </data>
+  <data name="Resume_ItIntern_Bullet2" xml:space="preserve">
+    <value>Had to regin when the company was relocated to a far place.</value>
+  </data>
+
+  
 
   <!-- Certs, books, degrees -->
   <data name="Resume_Certifications_Title" xml:space="preserve">

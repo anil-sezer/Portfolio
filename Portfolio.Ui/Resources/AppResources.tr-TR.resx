@@ -404,6 +404,35 @@
     <value>Bisikletle tarihi İstanbul turları! &lt;br/&gt; Şirket 2016 darbe girişimi sonrası gelirini kaybederek kapandı.</value>
   </data>
 
+  <data name="Resume_Job_Supervisor_Title" xml:space="preserve">
+    <value>Ekip sorumlusu</value>
+  </data>
+  <data name="Resume_Supervisor_Date" xml:space="preserve">
+    <value>2013 - 2015</value>
+  </data>
+  <data name="Resume_Supervisor_Company" xml:space="preserve">
+    <value>2K Kaliteli Kurumsal İnsan Kaynakları, Istanbul, Turkey</value>
+  </data>
+  <data name="Resume_Supervisor_Bullet1" xml:space="preserve">
+    <value>Event tabanlı bir model üzerinde çalıştık. &lt;br/&gt; Katıldığım ilk etkinlik, Philips yöneticileriyle iş birliği yaparak yeni piyasaya sürülen bir cihaz almayı ve ardından bir iş teklifini sonuçlandı.</value>
+  </data>
+
+  <data name="Resume_Job_ItIntern_Title" xml:space="preserve">
+    <value>IT Stajyeri</value>
+  </data>
+  <data name="Resume_ItIntern_Date" xml:space="preserve">
+    <value>2010 - 2011</value>
+  </data>
+  <data name="Resume_ItIntern_Company" xml:space="preserve">
+    <value>ING Bank Genel Müdürlük, Istanbul, Türkiye</value>
+  </data>
+  <data name="Resume_ItIntern_Bullet1" xml:space="preserve">
+    <value>Şirket geneli ve bayiliklere IT desteği. Şirket uzağa taşınınca ayrıldım.</value>
+  </data>
+  <data name="Resume_ItIntern_Bullet2" xml:space="preserve">
+    <value>Şirket uzağa taşınınca ayrıldım mecburen.</value>
+  </data>
+
   <!-- Certs, books, degrees -->
   <data name="Resume_Certifications_Title" xml:space="preserve">
     <value>Sertifikalar, Kitaplar ve Diplomalar</value>

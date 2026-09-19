@@ -127,6 +127,26 @@ public static class ResumeModel
                 TechTags = new[] { "Guided Tours", "Public Communication" },
                 IsActive = false,
                 IsEarlyCareer = true
+            },
+            new()
+            {
+                RoleTitleKey = "Resume_Supervisor_Title",
+                CompanyKey = "Resume_Supervisor_Company",
+                DateKey = "Resume_Supervisor_Date",
+                BulletKeys = ["Resume_Supervisor_Bullet1"],
+                TechTags = [],
+                IsActive = false,
+                IsEarlyCareer = true
+            },
+            new()
+            {
+                RoleTitleKey = "Resume_Job_ItIntern_Title",
+                CompanyKey = "Resume_ItIntern_Company",
+                DateKey = "Resume_ItIntern_Date",
+                BulletKeys = ["Resume_ItIntern_Bullet1", "Resume_ItIntern_Bullet2"],
+                TechTags = [],
+                IsActive = false,
+                IsEarlyCareer = true
             }
         };
     }

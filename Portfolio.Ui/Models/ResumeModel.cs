@@ -35,8 +35,8 @@ public static class ResumeModel
             RoleTitleKey = "Resume_CurrentJob_Title",
             CompanyKey = "Resume_CurrentJob_Company",
             DateKey = "Resume_CurrentJob_Date",
-            BulletKeys = new[] { "Resume_CurrentJob_Bullet1" },
-            TechTags = new[] { "Management", "IoT", "Full-stack development", "DevOps", "Infrastructure" },
+            BulletKeys = ["Resume_CurrentJob_Bullet1"],
+            TechTags = ["Management", "IoT", "Full-stack development", "DevOps", "Infrastructure"],
             IsActive = true,
             IsEarlyCareer = false
         };
@@ -51,10 +51,10 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job1_Title",
                 CompanyKey = "Resume_Job1_Company",
                 DateKey = "Resume_Job1_Date",
-                BulletKeys = new[]
-                {
-                    "Resume_Job1_Bullet1",
-                },
+                BulletKeys =
+                [
+                    "Resume_Job1_Bullet1"
+                ],
                 TechTags = new[] { "Docker", "VPS & Linux", "Self-Hosting", "DevOps", "Infrastructure" },
                 IsActive = false,
                 IsEarlyCareer = false
@@ -64,14 +64,14 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job2_Title",
                 CompanyKey = "Resume_Job2_Company",
                 DateKey = "Resume_Job2_Date",
-                BulletKeys = new[]
-                {
+                BulletKeys =
+                [
                     "Resume_Job2_Bullet1",
                     "Resume_Job2_Bullet2",
                     "Resume_Job2_Bullet3",
                     "Resume_Job2_Bullet4"
-                },
-                TechTags = new[] { ".NET Core", "C#", "Kubernetes", "Microservices", "Fintech", "Security" },
+                ],
+                TechTags = [".NET Core", "C#", "Kubernetes", "Microservices", "Fintech", "Security"],
                 IsActive = false,
                 IsEarlyCareer = false
             },
@@ -80,14 +80,14 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job3_Title",
                 CompanyKey = "Resume_Job3_Company",
                 DateKey = "Resume_Job3_Date",
-                BulletKeys = new[]
-                {
+                BulletKeys =
+                [
                     "Resume_Job3_Bullet1",
                     "Resume_Job3_Bullet2",
                     "Resume_Job3_Bullet3",
                     "Resume_Job3_Bullet4"
-                },
-                TechTags = new[] { "C#", ".NET", "Apache Kafka", "Multi-Tenancy", "High Availability" },
+                ],
+                TechTags = ["C#", ".NET", "Apache Kafka", "Multi-Tenancy", "High Availability"],
                 IsActive = false,
                 IsEarlyCareer = false
             }
@@ -103,8 +103,8 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job4_Title",
                 CompanyKey = "Resume_Job4_Company",
                 DateKey = "Resume_Job4_Date",
-                BulletKeys = new[] { "Resume_Job4_Bullet1" },
-                TechTags = new[] { "Banking", "Customer Service", "English Support" },
+                BulletKeys = ["Resume_Job4_Bullet1"],
+                TechTags = ["Banking", "Customer Service", "English Support"],
                 IsActive = false,
                 IsEarlyCareer = true
             },
@@ -113,8 +113,8 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job5_Title",
                 CompanyKey = "Resume_Job5_Company",
                 DateKey = "Resume_Job5_Date",
-                BulletKeys = new[] { "Resume_Job5_Bullet1" },
-                TechTags = new[] { "Operations", "Team Supervision", "IT Support" },
+                BulletKeys = ["Resume_Job5_Bullet1"],
+                TechTags = ["Operations", "Team Supervision", "IT Support"],
                 IsActive = false,
                 IsEarlyCareer = true
             },
@@ -123,8 +123,8 @@ public static class ResumeModel
                 RoleTitleKey = "Resume_Job6_Title",
                 CompanyKey = "Resume_Job6_Company",
                 DateKey = "Resume_Job6_Date",
-                BulletKeys = new[] { "Resume_Job6_Bullet1" },
-                TechTags = new[] { "Guided Tours", "Public Communication" },
+                BulletKeys = ["Resume_Job6_Bullet1"],
+                TechTags = ["Guided Tours", "Public Communication"],
                 IsActive = false,
                 IsEarlyCareer = true
             },

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Portfolio.Infrastructure.Constants;
+using Portfolio.Ui.Extensions;
 
 namespace Portfolio.Ui.Factories;
 
@@ -22,7 +23,7 @@ public static class ClientInfoRequestFactory
             Webdriver           = GetValueOrDefault(viaJavascript, "webdriver", false),
             CookieEnabled       = GetValueOrDefault(viaJavascript, "cookieEnabled", false),
             MaxTouchPoints      = GetValueOrDefault(viaJavascript, "maxTouchPoints", DefaultValues.EmptyForInt),
-            IpAddress           = GetIpAddress(httpContextAccessor),
+            IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
             Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
         };
@@ -45,7 +46,7 @@ public static class ClientInfoRequestFactory
             Webdriver           = false,
             CookieEnabled       = false,
             MaxTouchPoints      = DefaultValues.EmptyForInt,
-            IpAddress           = GetIpAddress(httpContextAccessor),
+            IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
             Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
         };
@@ -54,7 +55,7 @@ public static class ClientInfoRequestFactory
     private static string GetValueOrDefault(Dictionary<string, string> data, string key, string defaultValue = "")
         => data.TryGetValue(key, out var value) ? value : defaultValue;
 
-    private static T GetValueOrDefault<T>(Dictionary<string, string> data, string key, T defaultValue = default)
+    private static T? GetValueOrDefault<T>(Dictionary<string, string> data, string key, T? defaultValue = default)
     {
         if (data.TryGetValue(key, out var value) && value is not null)
         {
@@ -62,22 +63,13 @@ public static class ClientInfoRequestFactory
             {
                 return (T)Convert.ChangeType(value, typeof(T));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Warning(e, "Error while converting {Value} to {Type}", value, typeof(T));
                 return defaultValue; // Prevent crashes on invalid types
             }
         }
         return defaultValue;
-    }
-
-    private static string GetIpAddress(IHttpContextAccessor httpContextAccessor)
-    {
-        var headers = httpContextAccessor.HttpContext?.Request.Headers;
-        if (headers is null)
-            return "";
-        
-        return headers.TryGetValue("X-Real-IP", out var value) ? value.ToString() : "";
     }
     
     private static string GetRequestedPage(IHttpContextAccessor httpContextAccessor)

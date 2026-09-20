@@ -1,19 +1,18 @@
-(function () {
-    'use strict';
+import { HttpMethod, HttpStatus, HttpHeaders } from './constants.js';
 
-    function initContactSection() {
-        initClock();
-        initCopyButtons();
-        initSubjectChips();
-        initCharCounter();
-        
-        const form = document.getElementById('email-form');
-        if (form) {
-            initFormSubmission(form);
-        }
-        
-        initMap();
+function initContactSection() {
+    initClock();
+    initCopyButtons();
+    initSubjectChips();
+    initCharCounter();
+    
+    const form = document.getElementById('email-form');
+    if (form) {
+        initFormSubmission(form);
     }
+    
+    initMap();
+}
 
     // 1. Live Istanbul Clock (Europe/Istanbul - UTC+3)
     function initClock() {
@@ -147,6 +146,7 @@
 
     // 5. Form Submission and Validation
     function initFormSubmission(form) {
+        const sendUrl = form.dataset.sendUrl;
         const submitBtn = document.getElementById('submit-btn');
         const btnText = document.getElementById('btn-text');
         const btnSpinner = document.getElementById('btn-spinner');
@@ -210,6 +210,9 @@
             // Set loading state
             setSubmitting(true);
 
+            const tokenEl = form.querySelector('input[name="__RequestVerificationToken"]') || document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenEl ? tokenEl.value : '';
+
             const payload = {
                 name: document.getElementById('name').value.trim(),
                 email: document.getElementById('email').value.trim(),
@@ -218,13 +221,28 @@
             };
 
             try {
-                const response = await fetch('/api/email/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                const headers = {
+                    [HttpHeaders.CONTENT_TYPE]: 'application/json'
+                };
+                if (token) {
+                    headers[HttpHeaders.X_CSRF_TOKEN] = token;
+                }
+
+                const response = await fetch(sendUrl, {
+                    method: HttpMethod.POST,
+                    headers: headers,
                     body: JSON.stringify(payload)
                 });
+
+                if (response.status === HttpStatus.TOO_MANY_REQUESTS) {
+                    showAlert('danger', 'Too many requests. Please wait a moment before trying again.');
+                    return;
+                }
+
+                if (!response.ok) {
+                    showAlert('danger', 'Unable to send message. Please try again later.');
+                    return;
+                }
 
                 const result = await response.json();
 
@@ -394,4 +412,3 @@
     }
 
     document.addEventListener('blazor:enhancedload', initContactSection);
-})();

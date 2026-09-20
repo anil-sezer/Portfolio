@@ -4,13 +4,8 @@ namespace Portfolio.Ui.Extensions;
 
 public static class EmailApiExtensions
 {
-    public static void DefineEmailRoute(this WebApplication app)
-    {
-        app.MapPost("/api/email/send", SendEmail)
-            .WithName("SendEmail");
-    }
 
-    private static async Task<EmailSendResponse> SendEmail(
+    public static async Task<EmailSendResponse> SendEmail(
         EmailFormModel request,
         SendEmailToAdmin.SendEmailToAdminClient emailClient)
     {

@@ -1,3 +1,4 @@
+@using Portfolio.Ui.Extensions
 @using Portfolio.Ui.Resources
 @inject IStringLocalizer<AppResources> L
 
@@ -118,7 +119,9 @@
                         </button>
                     </div>
 
-                    <form id="email-form" class="email-form-modern" novalidate>
+                    <form id="email-form" class="email-form-modern" novalidatedata-send-url="@ApiEndpointExtensions.EmailRoute">
+                        <AntiforgeryToken />
+
                         <!-- Inline Alert Container -->
                         <div id="form-alert" class="form-alert d-none" role="alert" aria-live="polite">
                             <i id="form-alert-icon" class="bi me-2"></i>

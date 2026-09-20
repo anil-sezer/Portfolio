@@ -1,5 +1,6 @@
 @using System.Globalization
 @using Portfolio.Ui.Resources
+@using Portfolio.Ui.Extensions
 @inject IStringLocalizer<AppResources> L
 
 <!DOCTYPE html>
@@ -69,17 +70,18 @@
     <HeadOutlet />
 </head>
 
-<body>
+<body data-log-visit-url="@ApiEndpointExtensions.LogVisitRoute">
+<AntiforgeryToken />
 <Routes />
 <script src="_framework/blazor.web.js"></script>
 <script src="lib/oneko/oneko.js"></script>
 <script src="js/backtotop.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js" integrity="sha256-MgH13bFTTNqsnuEoqNPBLDaqxjGH+lCpqrukmXc8Ppg=" crossorigin="anonymous"></script>
-<script src="js/contact.js"></script>
+<script src="js/contact.js" type="module"></script>
 <script src="js/navobserver.js"></script>
 <script src="js/clusterInfo.js" type="module"></script>
-<script src="js/logVisits.js"></script>
+<script src="js/logVisits.js" type="module"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 

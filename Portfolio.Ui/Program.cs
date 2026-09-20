@@ -2,6 +2,7 @@ using DotNetEnv;
 using Portfolio.Ui;
 using Portfolio.Ui.Services;
 using Portfolio.Ui.Components;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
 using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Middlewares;
@@ -34,6 +35,13 @@ builder.Services.AddScoped<ClusterStatsService>();
 builder.Services.AddScoped<BackgroundImageService>();
 builder.Services.AddScoped<LogVisitService>();
 
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = HeaderConstants.XsrfToken;
+});
+
+builder.Services.AddAppRateLimiting();
+
 var app = builder.Build();
 
 // todo: check this block later. Never checked it before.
@@ -51,6 +59,8 @@ app.SetupRequestLoggingForBlazor();
 
 app.SetupLocalization();
 
+app.UseRateLimiter();
+
 app.UseAntiforgery();
 
 app.UseMiddleware<NotFoundLoggingMiddleware>();
@@ -58,8 +68,7 @@ app.UseMiddleware<NotFoundLoggingMiddleware>();
 app.MapLivenessHealthCheck();
 app.MapHealthCheckForUptimeRobot();
 app.DefineEnglishRedirectRoute();
-app.DefineEmailRoute();
-app.DefineLogVisitRoute();
+app.MapApiEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

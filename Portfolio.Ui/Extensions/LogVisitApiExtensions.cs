@@ -4,13 +4,7 @@ namespace Portfolio.Ui.Extensions;
 
 public static class LogVisitApiExtensions
 {
-    public static void DefineLogVisitRoute(this WebApplication app)
-    {
-        app.MapPost("/api/visits/log", LogVisit)
-            .WithName("LogVisit");
-    }
-
-    private static async Task<IResult> LogVisit(
+    public static async Task<IResult> LogVisit(
         Dictionary<string, string> viaJavascript,
         LogVisitService logVisitService,
         IHttpContextAccessor httpContextAccessor)

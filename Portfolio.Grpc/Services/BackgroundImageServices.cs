@@ -2,7 +2,7 @@ using Portfolio.Domain.Interfaces.Repositories;
 
 namespace Portfolio.Grpc.Services;
 
-public class BackgroundImageServices(IImageOfTheDayRepository repository) : BackgroundImages.BackgroundImagesBase
+public class BackgroundImageServices(IImageOfTheDayRepository repository, HttpClient httpClient) : BackgroundImages.BackgroundImagesBase
 {
     public override async Task<BackgroundImageDetails> Get(Empty empty, ServerCallContext context)
     {
@@ -34,13 +34,10 @@ public class BackgroundImageServices(IImageOfTheDayRepository repository) : Back
 
         try
         {
-            using var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(5);
-            
             // todo: will this work for all sources?
             // Use HEAD request to check if URL is accessible without downloading content
-            using var response = await httpClient.SendAsync(
-                new HttpRequestMessage(HttpMethod.Head, url));
+            using var request = new HttpRequestMessage(HttpMethod.Head, url);
+            using var response = await httpClient.SendAsync(request);
             
             return response.IsSuccessStatusCode;
         }

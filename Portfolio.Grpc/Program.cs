@@ -32,8 +32,14 @@ builder.Services.AddScoped<IRequestLogRepository, RequestLogRepository>();
 builder.Services.AddScoped<INotificationToAdminRepository, NotificationToAdminRepository>();
 
 // Factories
-builder.Services.AddScoped<INotificationProvider, NotificationProviderTelegram>();
+builder.Services.AddHttpClient<INotificationProvider, NotificationProviderTelegram>();
 builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
+
+// HTTP Clients
+builder.Services.AddHttpClient<BackgroundImageServices>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
 
 // Background Services
 builder.Services.AddHostedService<DatabaseOperationQueueWorker>();

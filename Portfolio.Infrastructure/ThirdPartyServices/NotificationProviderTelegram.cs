@@ -8,7 +8,7 @@ using Serilog;
 
 namespace Portfolio.Infrastructure.ThirdPartyServices;
 
-public class NotificationProviderTelegram : INotificationProvider
+public class NotificationProviderTelegram(HttpClient httpClient) : INotificationProvider
 {
     public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto)
     {
@@ -23,7 +23,6 @@ public class NotificationProviderTelegram : INotificationProvider
         };
 
         var content = new FormUrlEncodedContent(payload);
-        var httpClient = new HttpClient();
         try
         {
             var response = await httpClient.PostAsync(url, content);

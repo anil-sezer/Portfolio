@@ -1,36 +1,21 @@
-﻿using k8s;
+using k8s;
 
 namespace Portfolio.Grpc.Services;
 
 // ReSharper disable once InconsistentNaming
-public class K8sStatsService: K8sStats.K8sStatsBase
+public class K8sStatsService(IKubernetes client) : K8sStats.K8sStatsBase
 {
-    private readonly IKubernetes _client;
-
-    public K8sStatsService()
-    {
-        KubernetesClientConfiguration config;
-    
-        if (KubernetesClientConfiguration.IsInCluster())
-            config = KubernetesClientConfiguration.InClusterConfig();
-        else
-            config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
-    
-        _client = new Kubernetes(config);
-    }
 
     public override async Task<GetK8sStatsResponse> Get(Empty request, ServerCallContext context)
     {
         try
         {
             // Get all resources in parallel because why not, let's try if it speeds up the process or does something odd.
-            var podsTask = _client.CoreV1.ListPodForAllNamespacesAsync();
-            var servicesTask = _client.CoreV1.ListServiceForAllNamespacesAsync();
-            var nodesTask = _client.CoreV1.ListNodeAsync();
-            var deploymentsTask = _client.AppsV1.ListDeploymentForAllNamespacesAsync();
-            var cronJobsTask = _client.BatchV1.ListCronJobForAllNamespacesAsync();
-
-            await Task.WhenAll(podsTask, servicesTask, nodesTask, deploymentsTask);
+            var podsTask = client.CoreV1.ListPodForAllNamespacesAsync();
+            var servicesTask = client.CoreV1.ListServiceForAllNamespacesAsync();
+            var nodesTask = client.CoreV1.ListNodeAsync();
+            var deploymentsTask = client.AppsV1.ListDeploymentForAllNamespacesAsync();
+            var cronJobsTask = client.BatchV1.ListCronJobForAllNamespacesAsync();
 
             await Task.WhenAll(podsTask, servicesTask, nodesTask, deploymentsTask, cronJobsTask);
 

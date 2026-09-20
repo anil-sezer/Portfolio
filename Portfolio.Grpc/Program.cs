@@ -44,6 +44,8 @@ builder.Services.AddHttpClient<BackgroundImageServices>(client =>
 // Background Services
 builder.Services.AddHostedService<DatabaseOperationQueueWorker>();
 
+builder.SetupKubernetesClient();
+
 var app = builder.Build();
 
 app.MapLivenessHealthCheck();

@@ -73,9 +73,6 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background images are from:</value>
   </data>
-  <data name="Footer_TechStackGradient" xml:space="preserve">
-    <value>Tech stack section Gradient from:</value>
-  </data>
 
   <!-- SEO Meta Tags -->
   <data name="Meta_Title" xml:space="preserve">
@@ -312,9 +309,6 @@
   <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
     <value>Details are witheld under NDA.</value>
   </data>
-  <data name="Resume_ProfExp" xml:space="preserve">
-    <value>Professional Experience</value>
-  </data>
   <data name="Resume_Job1_Title" xml:space="preserve">
     <value>DevOps &amp; Backend Software Consultant</value>
   </data>
@@ -476,9 +470,6 @@
   <data name="Resume_HighSchool_Speciality" xml:space="preserve">
     <value>Web designing &amp; Programming</value>
   </data>
-  <data name="Resume_Books_Title" xml:space="preserve">
-    <value>Books I&apos;ve Read</value>
-  </data>
   <data name="Resume_KubernetesUpAndRunning_Title" xml:space="preserve">
     <value>Kubernetes Up &amp; Running</value>
   </data>
@@ -544,14 +535,8 @@
   <data name="Contact_SendEmail" xml:space="preserve">
     <value>Send Email</value>
   </data>
-  <data name="Contact_StatusBadge" xml:space="preserve">
-    <value>Available for new opportunities</value>
-  </data>
   <data name="Contact_TimezoneBadge" xml:space="preserve">
     <value>Istanbul (GMT+3)</value>
-  </data>
-  <data name="Contact_DirectConnect" xml:space="preserve">
-    <value>Direct Channels</value>
   </data>
   <data name="Contact_CopyEmail" xml:space="preserve">
     <value>Copy email address</value>
@@ -568,9 +553,6 @@
   <data name="Contact_CallPhone" xml:space="preserve">
     <value>Call phone</value>
   </data>
-  <data name="Contact_SocialTitle" xml:space="preserve">
-    <value>Social &amp; Code</value>
-  </data>
   <data name="Contact_ChipJob" xml:space="preserve">
     <value>💼 Job Opportunity</value>
   </data>
@@ -582,14 +564,5 @@
   </data>
   <data name="Contact_FormTitle" xml:space="preserve">
     <value>Send a Message</value>
-  </data>
-  <data name="Contact_RequiredError" xml:space="preserve">
-    <value>This field is required</value>
-  </data>
-  <data name="Contact_EmailError" xml:space="preserve">
-    <value>Please enter a valid email address</value>
-  </data>
-  <data name="Contact_MinLengthError" xml:space="preserve">
-    <value>Must be at least {0} characters</value>
   </data>
 </root>

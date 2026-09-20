@@ -73,9 +73,6 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Arka plan görselleri:</value>
   </data>
-  <data name="Footer_TechStackGradient" xml:space="preserve">
-    <value>Tech stack alanındaki gradyen:</value>
-  </data>
 
   <!-- SEO Meta Tags -->
   <data name="Meta_Title" xml:space="preserve">
@@ -310,9 +307,6 @@
   <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
     <value>Detaylar gizlilik anlaşması gereği saklı tutulmaktadır.</value>
   </data>
-  <data name="Resume_ProfExp" xml:space="preserve">
-    <value>Profesyonel Deneyim</value>
-  </data>
   <data name="Resume_Job1_Title" xml:space="preserve">
     <value>DevOps &amp; Backend Yazılım Danışmanı</value>
   </data>
@@ -404,7 +398,7 @@
     <value>Bisikletle tarihi İstanbul turları! &lt;br/&gt; Şirket 2016 darbe girişimi sonrası gelirini kaybederek kapandı.</value>
   </data>
 
-  <data name="Resume_Job_Supervisor_Title" xml:space="preserve">
+  <data name="Resume_Supervisor_Title" xml:space="preserve">
     <value>Ekip sorumlusu</value>
   </data>
   <data name="Resume_Supervisor_Date" xml:space="preserve">
@@ -473,9 +467,6 @@
   <data name="Resume_HighSchool_Speciality" xml:space="preserve">
     <value>Web Tasarımı ve Programlama</value>
   </data>
-  <data name="Resume_Books_Title" xml:space="preserve">
-    <value>Okuduğum Kitaplar</value>
-  </data>
   <data name="Resume_KubernetesUpAndRunning_Title" xml:space="preserve">
     <value>Kubernetes Up &amp; Running</value>
   </data>
@@ -541,14 +532,8 @@
   <data name="Contact_SendEmail" xml:space="preserve">
     <value>E-posta Gönder</value>
   </data>
-  <data name="Contact_StatusBadge" xml:space="preserve">
-    <value>Yeni fırsatlara ve projelere açık</value>
-  </data>
   <data name="Contact_TimezoneBadge" xml:space="preserve">
     <value>İstanbul (GMT+3)</value>
-  </data>
-  <data name="Contact_DirectConnect" xml:space="preserve">
-    <value>Hızlı İletişim</value>
   </data>
   <data name="Contact_CopyEmail" xml:space="preserve">
     <value>E-posta adresini kopyala</value>
@@ -565,9 +550,6 @@
   <data name="Contact_CallPhone" xml:space="preserve">
     <value>Telefonla Ara</value>
   </data>
-  <data name="Contact_SocialTitle" xml:space="preserve">
-    <value>Sosyal &amp; Kod</value>
-  </data>
   <data name="Contact_ChipJob" xml:space="preserve">
     <value>💼 İş Fırsatı</value>
   </data>
@@ -579,14 +561,5 @@
   </data>
   <data name="Contact_FormTitle" xml:space="preserve">
     <value>Mesaj Gönderin</value>
-  </data>
-  <data name="Contact_RequiredError" xml:space="preserve">
-    <value>Bu alan zorunludur</value>
-  </data>
-  <data name="Contact_EmailError" xml:space="preserve">
-    <value>Lütfen geçerli bir e-posta adresi girin</value>
-  </data>
-  <data name="Contact_MinLengthError" xml:space="preserve">
-    <value>En az {0} karakter olmalıdır</value>
   </data>
 </root>

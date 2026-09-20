@@ -30,9 +30,9 @@ builder.InitializeHealthChecks();
 builder.InitializeGrpcClients();
 
 // Services
-builder.Services.AddSingleton<ClusterStatsService>();
-builder.Services.AddSingleton<BackgroundImageService>();
-builder.Services.AddSingleton<LogVisitService>();
+builder.Services.AddScoped<ClusterStatsService>();
+builder.Services.AddScoped<BackgroundImageService>();
+builder.Services.AddScoped<LogVisitService>();
 
 var app = builder.Build();
 

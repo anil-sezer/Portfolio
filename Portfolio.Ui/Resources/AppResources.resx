@@ -428,7 +428,88 @@
     <value>Had to regin when the company was relocated to a far place.</value>
   </data>
 
-  
+  <!-- Tech Tags -->
+  <data name="Resume_Tag_Management" xml:space="preserve">
+    <value>Management</value>
+  </data>
+  <data name="Resume_Tag_IoT" xml:space="preserve">
+    <value>IoT</value>
+  </data>
+  <data name="Resume_Tag_Backend" xml:space="preserve">
+    <value>Backend</value>
+  </data>
+  <data name="Resume_Tag_AppDevelopment" xml:space="preserve">
+    <value>App Development</value>
+  </data>
+  <data name="Resume_Tag_DevOps" xml:space="preserve">
+    <value>DevOps</value>
+  </data>
+  <data name="Resume_Tag_Docker" xml:space="preserve">
+    <value>Docker</value>
+  </data>
+  <data name="Resume_Tag_VpsAndLinux" xml:space="preserve">
+    <value>VPS &amp; Linux</value>
+  </data>
+  <data name="Resume_Tag_SelfHosting" xml:space="preserve">
+    <value>Self-Hosting</value>
+  </data>
+  <data name="Resume_Tag_Infrastructure" xml:space="preserve">
+    <value>Infrastructure</value>
+  </data>
+  <data name="Resume_Tag_DotNetCore" xml:space="preserve">
+    <value>.NET Core</value>
+  </data>
+  <data name="Resume_Tag_CSharp" xml:space="preserve">
+    <value>C#</value>
+  </data>
+  <data name="Resume_Tag_Kubernetes" xml:space="preserve">
+    <value>Kubernetes</value>
+  </data>
+  <data name="Resume_Tag_Microservices" xml:space="preserve">
+    <value>Microservices</value>
+  </data>
+  <data name="Resume_Tag_Fintech" xml:space="preserve">
+    <value>Fintech</value>
+  </data>
+  <data name="Resume_Tag_Security" xml:space="preserve">
+    <value>Security</value>
+  </data>
+  <data name="Resume_Tag_DotNet" xml:space="preserve">
+    <value>.NET</value>
+  </data>
+  <data name="Resume_Tag_ApacheKafka" xml:space="preserve">
+    <value>Apache Kafka</value>
+  </data>
+  <data name="Resume_Tag_MultiTenancy" xml:space="preserve">
+    <value>Multi-Tenancy</value>
+  </data>
+  <data name="Resume_Tag_HighAvailability" xml:space="preserve">
+    <value>High Availability</value>
+  </data>
+  <data name="Resume_Tag_Banking" xml:space="preserve">
+    <value>Banking</value>
+  </data>
+  <data name="Resume_Tag_CustomerService" xml:space="preserve">
+    <value>Customer Service</value>
+  </data>
+  <data name="Resume_Tag_EnglishSupport" xml:space="preserve">
+    <value>English Support</value>
+  </data>
+  <data name="Resume_Tag_Operations" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="Resume_Tag_TeamSupervision" xml:space="preserve">
+    <value>Team Supervision</value>
+  </data>
+  <data name="Resume_Tag_ITSupport" xml:space="preserve">
+    <value>IT Support</value>
+  </data>
+  <data name="Resume_Tag_GuidedTours" xml:space="preserve">
+    <value>Guided Tours</value>
+  </data>
+  <data name="Resume_Tag_PublicCommunication" xml:space="preserve">
+    <value>Public Communication</value>
+  </data>
 
   <!-- Certs, books, degrees -->
   <data name="Resume_Certifications_Title" xml:space="preserve">

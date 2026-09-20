@@ -36,7 +36,7 @@ public static class ResumeModel
             CompanyKey = "Resume_CurrentJob_Company",
             DateKey = "Resume_CurrentJob_Date",
             BulletKeys = ["Resume_CurrentJob_Bullet1"],
-            TechTags = ["Management", "IoT", "Full-stack development", "DevOps", "Infrastructure"],
+            TechTags = ["Resume_Tag_Management", "Resume_Tag_IoT", "Resume_Tag_Backend", "Resume_Tag_AppDevelopment", "Resume_Tag_DevOps"],
             IsActive = true,
             IsEarlyCareer = false
         };
@@ -55,7 +55,7 @@ public static class ResumeModel
                 [
                     "Resume_Job1_Bullet1"
                 ],
-                TechTags = new[] { "Docker", "VPS & Linux", "Self-Hosting", "DevOps", "Infrastructure" },
+                TechTags = ["Resume_Tag_Docker", "Resume_Tag_VpsAndLinux", "Resume_Tag_SelfHosting", "Resume_Tag_DevOps", "Resume_Tag_Infrastructure"],
                 IsActive = false,
                 IsEarlyCareer = false
             },
@@ -71,7 +71,7 @@ public static class ResumeModel
                     "Resume_Job2_Bullet3",
                     "Resume_Job2_Bullet4"
                 ],
-                TechTags = [".NET Core", "C#", "Kubernetes", "Microservices", "Fintech", "Security"],
+                TechTags = ["Resume_Tag_DotNetCore", "Resume_Tag_CSharp", "Resume_Tag_Kubernetes", "Resume_Tag_Microservices", "Resume_Tag_Fintech", "Resume_Tag_Security"],
                 IsActive = false,
                 IsEarlyCareer = false
             },
@@ -87,7 +87,7 @@ public static class ResumeModel
                     "Resume_Job3_Bullet3",
                     "Resume_Job3_Bullet4"
                 ],
-                TechTags = ["C#", ".NET", "Apache Kafka", "Multi-Tenancy", "High Availability"],
+                TechTags = ["Resume_Tag_CSharp", "Resume_Tag_DotNet", "Resume_Tag_ApacheKafka", "Resume_Tag_MultiTenancy", "Resume_Tag_HighAvailability"],
                 IsActive = false,
                 IsEarlyCareer = false
             }
@@ -104,7 +104,7 @@ public static class ResumeModel
                 CompanyKey = "Resume_Job4_Company",
                 DateKey = "Resume_Job4_Date",
                 BulletKeys = ["Resume_Job4_Bullet1"],
-                TechTags = ["Banking", "Customer Service", "English Support"],
+                TechTags = ["Resume_Tag_Banking", "Resume_Tag_CustomerService", "Resume_Tag_EnglishSupport"],
                 IsActive = false,
                 IsEarlyCareer = true
             },
@@ -114,7 +114,7 @@ public static class ResumeModel
                 CompanyKey = "Resume_Job5_Company",
                 DateKey = "Resume_Job5_Date",
                 BulletKeys = ["Resume_Job5_Bullet1"],
-                TechTags = ["Operations", "Team Supervision", "IT Support"],
+                TechTags = ["Resume_Tag_Operations", "Resume_Tag_TeamSupervision", "Resume_Tag_ITSupport"],
                 IsActive = false,
                 IsEarlyCareer = true
             },
@@ -124,7 +124,7 @@ public static class ResumeModel
                 CompanyKey = "Resume_Job6_Company",
                 DateKey = "Resume_Job6_Date",
                 BulletKeys = ["Resume_Job6_Bullet1"],
-                TechTags = ["Guided Tours", "Public Communication"],
+                TechTags = ["Resume_Tag_GuidedTours", "Resume_Tag_PublicCommunication"],
                 IsActive = false,
                 IsEarlyCareer = true
             },

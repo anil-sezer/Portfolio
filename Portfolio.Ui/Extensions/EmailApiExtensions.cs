@@ -7,7 +7,8 @@ public static class EmailApiExtensions
 
     public static async Task<EmailSendResponse> SendEmail(
         EmailFormModel request,
-        SendEmailToAdmin.SendEmailToAdminClient emailClient)
+        SendEmailToAdmin.SendEmailToAdminClient emailClient,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -19,12 +20,21 @@ public static class EmailApiExtensions
                 Message = request.Message
             };
 
-            var result = await emailClient.SendAsync(grpcRequest);
+            var result = await emailClient.SendAsync(grpcRequest, cancellationToken: cancellationToken);
 
             return new EmailSendResponse
             {
                 Success = result.ResultCode == ResultCode.Success,
                 Message = result.ResultMessage
+            };
+        }
+        catch (OperationCanceledException)
+        {
+            Log.Warning("Email sending request was canceled");
+            return new EmailSendResponse
+            {
+                Success = false,
+                Message = "Request was cancelled."
             };
         }
         catch (Exception ex)

@@ -4,5 +4,5 @@ namespace Portfolio.Domain.Interfaces.ThirdPartyServices;
 
 public interface INotificationProvider
 { 
-    Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto);
+    Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto, CancellationToken cancellationToken = default);
 }

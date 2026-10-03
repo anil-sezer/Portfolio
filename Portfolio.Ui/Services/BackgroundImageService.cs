@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Infrastructure.Extensions;
 using Portfolio.Ui.Models;
@@ -13,12 +13,12 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
     
     private const string CacheKey = "background_image";
 
-    private async Task<BackgroundImageModel> GetFromDbAsync()
+    private async Task<BackgroundImageModel> GetFromDbAsync(CancellationToken cancellationToken = default)
     {
         if(EnvVars.IsDevelopment())
             return new() { Url = FallbackBackgroundImage, AltText = FallbackAltText, Source = ImageOfTheDaySource.Bing };
         
-        var response = await backgroundImagesClient.GetAsync(new Empty());
+        var response = await backgroundImagesClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
         Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(backgroundImagesClient.GetAsync), response.Url);
 
         if (response.Source == ImageOfTheDaySource.None)
@@ -39,7 +39,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
         };
     }
     
-    public async Task<BackgroundImageModel> GetFromCacheAsync()
+    public async Task<BackgroundImageModel> GetFromCacheAsync(CancellationToken cancellationToken = default)
     {
         if (memoryCache.TryGetValue(CacheKey, out BackgroundImageModel? cachedImage) && cachedImage != null)
         {
@@ -47,7 +47,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
             return cachedImage;
         }
 
-        var image = await GetFromDbAsync();
+        var image = await GetFromDbAsync(cancellationToken);
         
         var cacheOptions = new MemoryCacheEntryOptions
         {

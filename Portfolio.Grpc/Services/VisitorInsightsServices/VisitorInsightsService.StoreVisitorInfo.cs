@@ -9,7 +9,7 @@ public partial class VisitorInsightsService
     {
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
         
-        await DatabaseOperationQueueWorker.EnqueueAsync(new LogVisitorInfoQueuedOperation{Request = r});
+        await DatabaseOperationQueueWorker.EnqueueAsync(new LogVisitorInfoQueuedOperation{Request = r}, context.CancellationToken);
         
         return new Empty();
     }

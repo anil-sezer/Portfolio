@@ -9,7 +9,7 @@ namespace Portfolio.Infrastructure.ThirdPartyServices;
 
 public class NotificationProviderTelegram(HttpClient httpClient) : INotificationProvider
 {
-    public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto)
+    public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
         dto.Message = AdaptMessageForTelegram(dto);
         
@@ -24,7 +24,7 @@ public class NotificationProviderTelegram(HttpClient httpClient) : INotification
         var content = new FormUrlEncodedContent(payload);
         try
         {
-            var response = await httpClient.PostAsync(url, content);
+            var response = await httpClient.PostAsync(url, content, cancellationToken);
             response.EnsureSuccessStatusCode();
             
             return new SendNotificationResultDto

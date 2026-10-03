@@ -14,7 +14,7 @@ public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient ht
 
     public override async Task<Empty> Persist(BackgroundImageDetails imgToPersist, ServerCallContext context)
     {
-        var urlWorks = await CheckUrlAsync(imgToPersist.Url);
+        var urlWorks = await CheckUrlAsync(imgToPersist.Url, context.CancellationToken);
 
         dbContext.DailyImages.Add(new DailyImage
         {
@@ -54,7 +54,7 @@ public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient ht
         };
     }
     
-    private async Task<bool> CheckUrlAsync(string url)
+    private async Task<bool> CheckUrlAsync(string url, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url))
             return false;
@@ -64,7 +64,7 @@ public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient ht
             // todo: will this work for all sources?
             // Use HEAD request to check if URL is accessible without downloading content
             using var request = new HttpRequestMessage(HttpMethod.Head, url);
-            using var response = await httpClient.SendAsync(request);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
             
             return response.IsSuccessStatusCode;
         }

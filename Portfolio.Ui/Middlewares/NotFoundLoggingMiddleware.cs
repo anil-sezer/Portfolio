@@ -14,7 +14,11 @@ public class NotFoundLoggingMiddleware(RequestDelegate next)
 
             try
             {
-                await logVisitService.LogVisitToWebpageAsync(httpContextAccessor);
+                await logVisitService.LogVisitToWebpageAsync(httpContextAccessor, context.RequestAborted);
+            }
+            catch (OperationCanceledException)
+            {
+                // Request was aborted by the client, ignore
             }
             catch (Exception ex)
             {

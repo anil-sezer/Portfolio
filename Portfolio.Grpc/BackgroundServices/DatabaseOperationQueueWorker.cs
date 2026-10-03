@@ -7,9 +7,9 @@ public class DatabaseOperationQueueWorker(IServiceProvider serviceProvider) : Ba
 {
     private static readonly Channel<IDatabaseOperationQueueWorker> Channel = System.Threading.Channels.Channel.CreateUnbounded<IDatabaseOperationQueueWorker>();
 
-    public static async Task EnqueueAsync<T>(T operation) where T : IDatabaseOperationQueueWorker
+    public static async Task EnqueueAsync<T>(T operation, CancellationToken cancellationToken = default) where T : IDatabaseOperationQueueWorker
     {
-        await Channel.Writer.WriteAsync(operation);
+        await Channel.Writer.WriteAsync(operation, cancellationToken);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

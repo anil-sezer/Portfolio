@@ -11,11 +11,11 @@ public class K8sStatsService(IKubernetes client) : K8sStats.K8sStatsBase
         try
         {
             // Get all resources in parallel because why not, let's try if it speeds up the process or does something odd.
-            var podsTask = client.CoreV1.ListPodForAllNamespacesAsync();
-            var servicesTask = client.CoreV1.ListServiceForAllNamespacesAsync();
-            var nodesTask = client.CoreV1.ListNodeAsync();
-            var deploymentsTask = client.AppsV1.ListDeploymentForAllNamespacesAsync();
-            var cronJobsTask = client.BatchV1.ListCronJobForAllNamespacesAsync();
+            var podsTask = client.CoreV1.ListPodForAllNamespacesAsync(cancellationToken: context.CancellationToken);
+            var servicesTask = client.CoreV1.ListServiceForAllNamespacesAsync(cancellationToken: context.CancellationToken);
+            var nodesTask = client.CoreV1.ListNodeAsync(cancellationToken: context.CancellationToken);
+            var deploymentsTask = client.AppsV1.ListDeploymentForAllNamespacesAsync(cancellationToken: context.CancellationToken);
+            var cronJobsTask = client.BatchV1.ListCronJobForAllNamespacesAsync(cancellationToken: context.CancellationToken);
 
             await Task.WhenAll(podsTask, servicesTask, nodesTask, deploymentsTask, cronJobsTask);
 

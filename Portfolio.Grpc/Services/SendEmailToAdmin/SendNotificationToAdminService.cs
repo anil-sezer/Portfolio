@@ -26,7 +26,7 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
             };
         }
         
-        var result = await SendNotificationToAdminAsync(emailDto);
+        var result = await SendNotificationToAdminAsync(emailDto, context.CancellationToken);
         if (result.IsItSentSuccessfully == false)
         {
             Log.Error("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
@@ -58,10 +58,10 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
         };
     }
 
-    private async Task<SendNotificationResultDto> SendNotificationToAdminAsync(NotificationDto dto)
+    private async Task<SendNotificationResultDto> SendNotificationToAdminAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
         var emailProvider = notificationProviderFactory.GetProvider(nameof(NotificationProviderTelegram));
-        return await emailProvider.SendNotificationAsync(dto);
+        return await emailProvider.SendNotificationAsync(dto, cancellationToken);
     }
 
     private Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto, CancellationToken cancellationToken = default)

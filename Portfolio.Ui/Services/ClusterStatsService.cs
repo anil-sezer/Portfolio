@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Portfolio.Ui.Services;
@@ -7,7 +7,7 @@ public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemory
 {
     private const string CacheKey = "k8s_stats";
     
-    public async Task<GetK8sStatsResponse> GetFromCacheAsync()
+    public async Task<GetK8sStatsResponse> GetFromCacheAsync(CancellationToken cancellationToken = default)
     {
         if (memoryCache.TryGetValue(CacheKey, out GetK8sStatsResponse? cachedStats) && cachedStats != null)
         {
@@ -15,7 +15,7 @@ public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemory
             return cachedStats;
         }
 
-        var stats = await GetFromGrpcAsync();
+        var stats = await GetFromGrpcAsync(cancellationToken);
         
         var cacheOptions = new MemoryCacheEntryOptions
         {
@@ -28,9 +28,9 @@ public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemory
         return stats;
     }
     
-    private async Task<GetK8sStatsResponse> GetFromGrpcAsync()
+    private async Task<GetK8sStatsResponse> GetFromGrpcAsync(CancellationToken cancellationToken = default)
     {
-        var response = await k8SStatsClient.GetAsync(new Empty());
+        var response = await k8SStatsClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
         Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
 
         return response;

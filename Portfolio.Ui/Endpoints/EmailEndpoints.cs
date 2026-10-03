@@ -1,11 +1,21 @@
+using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Models;
 
-namespace Portfolio.Ui.Extensions;
+namespace Portfolio.Ui.Endpoints;
 
-public static class EmailApiExtensions
+public static class EmailEndpoints
 {
+    public const string Route = "/api/email/send";
 
-    public static async Task<EmailSendResponse> SendEmail(
+    public static void MapEmailEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapPost(Route, SendEmail)
+            .WithName("SendEmail")
+            .RequireAntiforgeryToken()
+            .RequireRateLimiting(RateLimiterExtensions.EmailSendPolicy);
+    }
+
+    private static async Task<EmailSendResponse> SendEmail(
         EmailFormModel request,
         SendEmailToAdmin.SendEmailToAdminClient emailClient,
         CancellationToken cancellationToken)

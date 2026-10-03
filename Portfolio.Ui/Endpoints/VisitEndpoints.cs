@@ -1,11 +1,21 @@
-using System.Net;
+using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Services;
 
-namespace Portfolio.Ui.Extensions;
+namespace Portfolio.Ui.Endpoints;
 
-public static class LogVisitApiExtensions
+public static class VisitEndpoints
 {
-    public static async Task<IResult> LogVisit(
+    public const string Route = "/api/visits/log";
+
+    public static void MapVisitEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapPost(Route, LogVisit)
+            .WithName("LogVisit")
+            .RequireAntiforgeryToken()
+            .RequireRateLimiting(RateLimiterExtensions.VisitLogPolicy);
+    }
+
+    private static async Task<IResult> LogVisit(
         Dictionary<string, string> viaJavascript,
         LogVisitService logVisitService,
         IHttpContextAccessor httpContextAccessor,

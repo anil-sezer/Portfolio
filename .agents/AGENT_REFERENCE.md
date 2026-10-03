@@ -136,7 +136,8 @@ c:\Repositories\Portfolio\
 │   ├── Program.cs                          # Blazor Web App setup, endpoints, middlewares, caching
 │   ├── Dockerfile                          # Multi-stage build for linux/amd64 & linux/arm64
 │   ├── Components/Pages/                   # Home.razor, Error.razor, and IndexPageSections (About, ClusterInfo, etc.)
-│   ├── Extensions/                         # EmailApiExtensions, LogVisitApiExtensions, Localization
+│   ├── Endpoints/                          # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
+│   ├── Extensions/                         # ApiEndpointExtensions, Localization, RateLimiter
 │   ├── Services/                           # ClusterStatsService (5-min cache), BackgroundImageService (23-hr cache)
 │   ├── Resources/                          # Localization resx files (English and Turkish tr-TR)
 │   └── wwwroot/                            # Static assets, CSS, JS scripts, oneko cat mascot

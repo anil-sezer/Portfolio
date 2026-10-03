@@ -1,6 +1,5 @@
 using DotNetEnv;
 using Portfolio.Ui;
-using Portfolio.Ui.Services;
 using Portfolio.Ui.Components;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
@@ -30,10 +29,7 @@ builder.InitializeHealthChecks();
 
 builder.InitializeGrpcClients();
 
-// Services
-builder.Services.AddScoped<ClusterStatsService>();
-builder.Services.AddScoped<BackgroundImageService>();
-builder.Services.AddScoped<LogVisitService>();
+builder.InitializeServices();
 
 builder.Services.AddAntiforgery(options =>
 {
@@ -44,12 +40,9 @@ builder.Services.AddAppRateLimiting();
 
 var app = builder.Build();
 
-// todo: check this block later. Never checked it before.
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

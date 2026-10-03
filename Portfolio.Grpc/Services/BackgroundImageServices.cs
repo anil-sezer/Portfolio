@@ -5,22 +5,22 @@ namespace Portfolio.Grpc.Services;
 
 public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient httpClient) : BackgroundImages.BackgroundImagesBase
 {
-    public override async Task<BackgroundImageDetails> Get(Empty empty, ServerCallContext context)
+    public override async Task<BackgroundImageDetails> Get(Empty request, ServerCallContext context)
     {
         var img = await GetLatestBackgroundImageDetailsAsync(context.CancellationToken);
         
         return new BackgroundImageDetails { Url = img.ImageUrl, Source = (ImageOfTheDaySource)img.Source, AltText = img.AltText};
     }
 
-    public override async Task<Empty> Persist(BackgroundImageDetails imgToPersist, ServerCallContext context)
+    public override async Task<Empty> Persist(BackgroundImageDetails request, ServerCallContext context)
     {
-        var urlWorks = await CheckUrlAsync(imgToPersist.Url, context.CancellationToken);
+        var urlWorks = await CheckUrlAsync(request.Url, context.CancellationToken);
 
         dbContext.DailyImages.Add(new DailyImage
         {
-            AltText = imgToPersist.AltText,
-            ImageUrl = imgToPersist.Url,
-            Source = (Domain.Enums.ImageOfTheDaySource)imgToPersist.Source,
+            AltText = request.AltText,
+            ImageUrl = request.Url,
+            Source = (Domain.Enums.ImageOfTheDaySource)request.Source,
             DoIPreferToDisplayThis = urlWorks,
             UrlWorks = urlWorks
         });

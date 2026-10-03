@@ -159,56 +159,56 @@ public static class ResumeModel
             {
                 TitleKey = "Resume_KubernetesUpAndRunning_Title",
                 SubtitleKey = "Resume_KubernetesUpAndRunning_Authors",
-                Year = "2023",
+                Year = "2023"
             },
             new()
             {
                 TitleKey = "Resume_DomainDrivenDesign_Title",
                 SubtitleKey = "Resume_DomainDrivenDesign_Author",
-                Year = "2023",
+                Year = "2023"
             },
             new()
             {
                 TitleKey = "Resume_Edu_Cs50_Title",
                 SubtitleKey = "Resume_Cs50_SchoolAndTeacherName",
-                Year = "2021",
+                Year = "2021"
             },
             new()
             {
                 TitleKey = "Resume_DockerAToZ_Title",
                 SubtitleKey = "Resume_Edu2_SchoolAndTeacherName",
-                Year = "2021",
+                Year = "2021"
             },
             new()
             {
                 TitleKey = "Resume_PluralSight_Title",
                 SubtitleKey = "Resume_PluralSight_OrgName",
-                Year = "2020",
+                Year = "2020"
             },
             new()
             {
                 TitleKey = "Resume_CLanguage_OrgName",
                 SubtitleKey = "Resume_Edu5_Title",
-                Year = "2017",
+                Year = "2017"
             },
             new()
             {
                 TitleKey = "Resume_Cpp_Title",
                 SubtitleKey = "Resume_Cpp_Author",
-                Year = "2015",
+                Year = "2015"
             },
             new()
             {
                 TitleKey = "Resume_University_Title",
                 SubtitleKey = "Resume_University_Major",
-                Year = "2013 - 2018",
+                Year = "2013 - 2018"
             },
             new()
             {
                 TitleKey = "Resume_HighSchool_Title",
                 SubtitleKey = "Resume_HighSchool_Speciality",
-                Year = "2007 - 2011",
-            },
+                Year = "2007 - 2011"
+            }
         };
     }
 

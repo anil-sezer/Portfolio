@@ -1,6 +1,6 @@
-﻿using Portfolio.Infrastructure.Extensions;
+using Portfolio.Infrastructure.Extensions;
 
-namespace Portfolio.Ui;
+namespace Portfolio.Ui.Extensions;
 
 public static class GrpcClientRegistration
 {

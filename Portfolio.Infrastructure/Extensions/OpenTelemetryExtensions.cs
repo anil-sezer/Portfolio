@@ -59,7 +59,7 @@ public static class OpenTelemetryExtensions
                     o.EnrichWithHttpRequest = (activity, request) =>
                     {
                         activity.SetTag("http.request.body.size", request.ContentLength);
-                        activity.SetTag("user.id", request.HttpContext.User?.Identity?.Name);
+                        activity.SetTag("user.id", request.HttpContext.User.Identity?.Name);
                     };
                     o.EnrichWithHttpResponse = (activity, response) =>
                     {
@@ -136,18 +136,18 @@ internal class OtelDiagnosticListener : EventListener
 
     protected override void OnEventWritten(EventWrittenEventArgs eventData)
     {
-        if (eventData.Message != null)
+        if (eventData.Message == null) 
+            return;
+        
+        try
         {
-            try
-            {
-                var payload = eventData.Payload != null ? eventData.Payload.ToArray() : Array.Empty<object>();
-                var message = string.Format(eventData.Message, payload);
-                Log.Warning("[OTEL DIAGNOSTIC] {Message}", message);
-            }
-            catch
-            {
-                Log.Warning("[OTEL DIAGNOSTIC] {EventName} - {Message}", eventData.EventName, eventData.Message);
-            }
+            var payload = eventData.Payload != null ? eventData.Payload.ToArray() : [];
+            var message = string.Format(eventData.Message, payload);
+            Log.Warning("[OTEL DIAGNOSTIC] {Message}", message);
+        }
+        catch
+        {
+            Log.Warning("[OTEL DIAGNOSTIC] {EventName} - {Message}", eventData.EventName, eventData.Message);
         }
     }
 }

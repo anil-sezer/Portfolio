@@ -15,12 +15,8 @@ public static class DbContextExtensions
 
         builder.Services.AddDbContext<PortfolioDbContext>(options =>
         {
-            options.UseNpgsql(connectionString + $";Application Name= {AssemblyHelper.GetServiceName()}",
-                npgsqlOptionsAction: sqlOptions =>
-                {
-                    // sqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, dbSchemaName);
-                    // sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
-                }).UseSnakeCaseNamingConvention();
+            options.UseNpgsql(connectionString + $";Application Name= {AssemblyHelper.GetServiceName()}");
+            options.UseSnakeCaseNamingConvention();
 
             if (!builder.Environment.IsDevelopment()) return;
             

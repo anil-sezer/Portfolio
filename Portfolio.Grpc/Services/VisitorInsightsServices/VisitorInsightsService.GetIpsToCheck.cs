@@ -5,9 +5,9 @@ namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
 public partial class VisitorInsightsService
 {
-    public override async Task<GetIpsToCheckResponse> GetIpsToCheck(Empty r, ServerCallContext context)
+    public override async Task<GetIpsToCheckResponse> GetIpsToCheck(Empty request, ServerCallContext context)
     {
-        Log.Information("Request to log: {Log}", JsonSerializer.Serialize(r));
+        Log.Information("Request to log: {Log}", JsonSerializer.Serialize(request));
 
         var ips = await dbContext.RequestLogs
             .Where(x => x.ClientIp != "" && x.City == "" && x.Country == "")

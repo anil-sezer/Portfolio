@@ -291,7 +291,7 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
    protoc --proto_path=protos --go_out=. --go-grpc_out=. protos/<proto_file>.proto
    ```
 3. Update or implement the C# gRPC service in [Portfolio.Grpc/Services/](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Services/).
-4. Register the gRPC client in [Portfolio.Ui/GrpcClientRegistration.cs](file:///c:/Repositories/Portfolio/Portfolio.Ui/GrpcClientRegistration.cs).
+4. Register the gRPC client in [Portfolio.Ui/Extensions/GrpcClientRegistration.cs](file:///c:/Repositories/Portfolio/Portfolio.Ui/Extensions/GrpcClientRegistration.cs).
 5. Verify build: `dotnet build Portfolio.sln`.
 
 ### Runbook C: Building & Deploying Docker Containers to the Cluster

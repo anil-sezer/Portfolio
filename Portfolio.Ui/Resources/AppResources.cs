@@ -1,7 +1,7 @@
 namespace Portfolio.Ui.Resources;
 
 /// <summary>
-/// Dummy marker class for ASP.NET Core IStringLocalizer<AppResources>
+/// Marker type for ASP.NET Core shared localization.
 /// </summary>
 public class AppResources
 {

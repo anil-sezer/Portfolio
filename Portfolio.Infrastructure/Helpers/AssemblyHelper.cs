@@ -19,7 +19,7 @@ public static class AssemblyHelper
         {
             Log.Warning("Could not get the name of the startup project via Assembly.GetEntryAssembly()");
             var stackTrace = new System.Diagnostics.StackTrace(true);
-            var callingAssembly = stackTrace.GetFrames()?.LastOrDefault()?.GetMethod()?.Module.Assembly;
+            var callingAssembly = stackTrace.GetFrames().LastOrDefault()?.GetMethod()?.Module.Assembly;
 
             if (callingAssembly != null)
             {

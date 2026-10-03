@@ -11,11 +11,11 @@ namespace Portfolio.Grpc.Services.SendEmailToAdmin;
 public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotificationProviderFactory notificationProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
     // todo: I wanna use MediatR here
-    public override async Task<SendResponse> Send(SendRequest r, ServerCallContext context)
+    public override async Task<SendResponse> Send(SendRequest request, ServerCallContext context)
     {
-        Log.Information("📧 Request to log: {Log}", JsonSerializer.Serialize(r));
+        Log.Information("📧 Request to log: {Log}", JsonSerializer.Serialize(request));
         
-        var emailDto = MapToEmailDto(r);
+        var emailDto = MapToEmailDto(request);
 
         if (await IsThisEmailAlreadySentAtLastHourAsync(emailDto, context.CancellationToken))
         {
@@ -27,7 +27,7 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
         }
         
         var result = await SendNotificationToAdminAsync(emailDto, context.CancellationToken);
-        if (result.IsItSentSuccessfully == false)
+        if (!result.IsItSentSuccessfully)
         {
             Log.Error("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
             await StoreNotificationAtDb(emailDto, false, context.CancellationToken);

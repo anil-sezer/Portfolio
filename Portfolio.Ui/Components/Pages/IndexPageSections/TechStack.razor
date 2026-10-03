@@ -1,7 +1,5 @@
 @using System.Globalization
 @using Portfolio.Ui.Models
-@using Portfolio.Ui.Resources
-@inject IStringLocalizer<AppResources> L
 
 <section id="techstack">
     <!-- Film Grain Texture Overlay -->
@@ -65,7 +63,7 @@
     {
         var rand = new Random(42);
         var list = new Star[160];
-        for (int i = 0; i < 160; i++)
+        for (var i = 0; i < 160; i++)
         {
             var x = 45.0 + rand.NextDouble() * 54.0;
             var y = 0.5 + rand.NextDouble() * 98.5;

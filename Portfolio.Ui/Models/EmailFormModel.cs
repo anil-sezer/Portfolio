@@ -4,9 +4,9 @@ namespace Portfolio.Ui.Models;
 
 public class EmailFormModel
 {
-    public const int NameMinLength = 3;
-    public const int SubjectMinLength = 2;
-    public const int MessageMinLength = 15;
+    private const int NameMinLength = 3;
+    private const int SubjectMinLength = 2;
+    private const int MessageMinLength = 15;
     
     [Required(ErrorMessage = "Name is required.")]
     [MinLength(NameMinLength, ErrorMessage = "{0} must be at least {1} characters.")]

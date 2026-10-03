@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 
 namespace Portfolio.Ui.Localization;

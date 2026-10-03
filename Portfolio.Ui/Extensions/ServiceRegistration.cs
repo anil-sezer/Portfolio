@@ -1,6 +1,6 @@
 using Portfolio.Ui.Services;
 
-namespace Portfolio.Ui;
+namespace Portfolio.Ui.Extensions;
 
 public static class ServiceRegistration
 {

@@ -20,52 +20,58 @@ public static class HealthCheckExtensions
                || path.StartsWith(ThirdPartyCheckPostfix, StringComparison.OrdinalIgnoreCase);
     }
     
-    public static IHealthChecksBuilder InitializeHealthChecks(this WebApplicationBuilder builder)
+    extension(WebApplicationBuilder builder)
     {
-        return builder.Services
-            .AddHealthChecks();
-    }
-    
-    public static void AddHealthChecksForEndpointAndDb(this WebApplicationBuilder builder)
-    {
-        builder.InitializeHealthChecks()
-            .AddDbContextCheck<PortfolioDbContext>(failureStatus: HealthStatus.Degraded, name: ReadinessDbCheckName);
-    }
-    
-    public static void MapLivenessHealthCheck(this WebApplication app)
-    {
-        app.MapHealthChecks(LivenessCheckPostfix, new HealthCheckOptions
+        public IHealthChecksBuilder InitializeHealthChecks()
         {
-            Predicate = _ => false, // Always return healthy for liveness
-            ResultStatusCodes =
+            return builder.Services
+                .AddHealthChecks();
+        }
+
+        public void AddHealthChecksForEndpointAndDb()
+        {
+            builder.InitializeHealthChecks()
+                .AddDbContextCheck<PortfolioDbContext>(failureStatus: HealthStatus.Degraded, name: ReadinessDbCheckName);
+        }
+    }
+
+    extension(WebApplication app)
+    {
+        public void MapLivenessHealthCheck()
+        {
+            app.MapHealthChecks(LivenessCheckPostfix, new HealthCheckOptions
             {
-                [HealthStatus.Healthy] = StatusCodes.Status200OK,
-                [HealthStatus.Degraded] = StatusCodes.Status200OK, // Liveness doesn't degrade
-                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-            }
-        });
-    }
-    
-    // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
-    public static void MapReadinessHealthCheck(this WebApplication app)
-    {
-        app.MapHealthChecks(ReadinessCheckPostfix, new HealthCheckOptions
+                Predicate = _ => false, // Always return healthy for liveness
+                ResultStatusCodes =
+                {
+                    [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                    [HealthStatus.Degraded] = StatusCodes.Status200OK, // Liveness doesn't degrade
+                    [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                }
+            });
+        }
+
+        // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
+        public void MapReadinessHealthCheck()
         {
-            Predicate = check => check.Name == ReadinessDbCheckName,
-            ResultStatusCodes =
+            app.MapHealthChecks(ReadinessCheckPostfix, new HealthCheckOptions
             {
-                [HealthStatus.Healthy] = StatusCodes.Status200OK,
-                [HealthStatus.Degraded] = StatusCodes.Status206PartialContent,
-                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-            }
-        });
-    }
-    
-    public static void MapHealthCheckForUptimeRobot(this WebApplication app)
-    {
-        app.MapMethods(ThirdPartyCheckPostfix, [HttpMethods.Head], () =>
+                Predicate = check => check.Name == ReadinessDbCheckName,
+                ResultStatusCodes =
+                {
+                    [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                    [HealthStatus.Degraded] = StatusCodes.Status206PartialContent,
+                    [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                }
+            });
+        }
+
+        public void MapHealthCheckForUptimeRobot()
         {
-            return Results.Ok();
-        });
+            app.MapMethods(ThirdPartyCheckPostfix, [HttpMethods.Head], () =>
+            {
+                return Results.Ok();
+            });
+        }
     }
 }

@@ -26,14 +26,14 @@ public static class EmailApiExtensions
                 result.ResultCode == ResultCode.Success,
                 result.ResultMessage);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-            Log.Warning("Email sending request was canceled");
+            Log.Warning(ex, "Email sending request was canceled");
             return new EmailSendResponse(false, "Request was cancelled.");
         }
         catch (Exception ex)
         {
-            Log.Error("Failed to send email: {ExceptionMessage}", ex.Message);
+            Log.Error(ex, "Failed to send email");
             return new EmailSendResponse(
                 false,
                 "An error occurred while sending your email. Please try again later.");

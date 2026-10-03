@@ -1,5 +1,5 @@
-﻿using Portfolio.Domain.Interfaces.BackgroundServices;
-using Portfolio.Domain.Interfaces.Repositories;
+using Portfolio.Domain.Interfaces.BackgroundServices;
+using Portfolio.Infrastructure;
 
 namespace Portfolio.Grpc.BackgroundServices;
 
@@ -7,11 +7,11 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
 {
     public required StoreVisitorInfoRequest Request { get; init; }
 
-    public async Task ExecuteAsync(IServiceProvider serviceProvider)
+    public async Task ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
     {
-        var repo = serviceProvider.GetRequiredService<IRequestLogRepository>();
+        var dbContext = serviceProvider.GetRequiredService<PortfolioDbContext>();
         
-        await repo.CreateAsync(new RequestLog
+        dbContext.RequestLogs.Add(new RequestLog
         {
             OnLine              = Request.OnLine,
             Platform            = Request.Platform,
@@ -33,5 +33,7 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
             ClientIp     = Request.IpAddress,
             RequestedUrl = Request.RequestedUrl
         });
+
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

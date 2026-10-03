@@ -1,14 +1,14 @@
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Enums;
-using Portfolio.Domain.Interfaces.Repositories;
-using Portfolio.Domain.Interfaces.Repositories.Dtos;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
+using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.ThirdPartyServices;
 
 namespace Portfolio.Grpc.Services.SendEmailToAdmin;
 
-public class SendNotificationToAdminService(INotificationToAdminRepository notificationToAdminRepo, INotificationProviderFactory notificationProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
+public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotificationProviderFactory notificationProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
     // todo: I wanna use MediatR here
     public override async Task<SendResponse> Send(SendRequest r, ServerCallContext context)
@@ -17,7 +17,7 @@ public class SendNotificationToAdminService(INotificationToAdminRepository notif
         
         var emailDto = MapToEmailDto(r);
 
-        if (await notificationToAdminRepo.IsThisEmailAlreadySentAtLastHourAsync(emailDto))
+        if (await IsThisEmailAlreadySentAtLastHourAsync(emailDto, context.CancellationToken))
         {
             return new SendResponse
             {
@@ -30,7 +30,7 @@ public class SendNotificationToAdminService(INotificationToAdminRepository notif
         if (result.IsItSentSuccessfully == false)
         {
             Log.Error("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
-            await StoreNotificationAtDb(emailDto, false);
+            await StoreNotificationAtDb(emailDto, false, context.CancellationToken);
             return new SendResponse
             {
                 ResultCode = ResultCode.Error,
@@ -38,7 +38,7 @@ public class SendNotificationToAdminService(INotificationToAdminRepository notif
             };
         }
 
-        await StoreNotificationAtDb(emailDto, true);
+        await StoreNotificationAtDb(emailDto, true, context.CancellationToken);
         return new SendResponse
         {
             ResultCode = ResultCode.Success,
@@ -64,9 +64,19 @@ public class SendNotificationToAdminService(INotificationToAdminRepository notif
         return await emailProvider.SendNotificationAsync(dto);
     }
 
-    private async Task StoreNotificationAtDb(NotificationDto dto, bool isItSentSuccessfully)
+    private Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
-        await notificationToAdminRepo.CreateAsync(new NotificationToAdmin
+        return dbContext.NotificationsToAdmin
+            .AnyAsync(x => x.Name == dto.Name &&
+                           x.EmailAddress == dto.EmailAddress &&
+                           x.Subject == dto.Subject &&
+                           x.Message == dto.Message &&
+                           x.CreatedAt > DateTime.UtcNow.AddHours(-1), cancellationToken);
+    }
+
+    private async Task StoreNotificationAtDb(NotificationDto dto, bool isItSentSuccessfully, CancellationToken cancellationToken = default)
+    {
+        dbContext.NotificationsToAdmin.Add(new NotificationToAdmin
         {
             Name = dto.Name,
             EmailAddress = dto.EmailAddress,
@@ -74,5 +84,7 @@ public class SendNotificationToAdminService(INotificationToAdminRepository notif
             Message = dto.Message,
             IsItSentSuccessfully = isItSentSuccessfully
         });
+
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

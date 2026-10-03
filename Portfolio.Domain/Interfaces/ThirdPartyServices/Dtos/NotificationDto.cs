@@ -1,6 +1,6 @@
 using Portfolio.Domain.Enums;
 
-namespace Portfolio.Domain.Interfaces.Repositories.Dtos;
+namespace Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
 
 public class NotificationDto
 {

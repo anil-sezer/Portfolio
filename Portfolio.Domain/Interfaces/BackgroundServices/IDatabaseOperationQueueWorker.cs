@@ -1,6 +1,6 @@
-﻿namespace Portfolio.Domain.Interfaces.BackgroundServices;
+namespace Portfolio.Domain.Interfaces.BackgroundServices;
 
 public interface IDatabaseOperationQueueWorker
 {
-    Task ExecuteAsync(IServiceProvider serviceProvider);
+    Task ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken = default);
 }

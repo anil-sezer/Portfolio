@@ -1,5 +1,5 @@
-using Portfolio.Domain.Interfaces.Repositories;
+using Portfolio.Infrastructure;
 
 namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
-public partial class VisitorInsightsService(IRequestLogRepository requestLogRepository) : VisitorInsights.VisitorInsightsBase;
+public partial class VisitorInsightsService(PortfolioDbContext dbContext) : VisitorInsights.VisitorInsightsBase;

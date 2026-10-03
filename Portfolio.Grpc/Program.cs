@@ -1,5 +1,4 @@
 using DotNetEnv;
-using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.BackgroundServices;
 using Portfolio.Grpc.Services;
@@ -7,7 +6,6 @@ using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
 using Portfolio.Grpc.Services.VisitorInsightsServices;
 using Portfolio.Infrastructure.Extensions;
-using Portfolio.Infrastructure.Repositories;
 using Portfolio.Infrastructure.ThirdPartyServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,11 +23,6 @@ builder.InitDbWithPostgres();
 builder.AddHealthChecksForEndpointAndDb();
 
 builder.Services.AddGrpc();
-
-// Repositories
-builder.Services.AddScoped<IImageOfTheDayRepository, ImageOfTheDayRepository>();
-builder.Services.AddScoped<IRequestLogRepository, RequestLogRepository>();
-builder.Services.AddScoped<INotificationToAdminRepository, NotificationToAdminRepository>();
 
 // Factories
 builder.Services.AddHttpClient<INotificationProvider, NotificationProviderTelegram>();

@@ -22,35 +22,21 @@ public static class EmailApiExtensions
 
             var result = await emailClient.SendAsync(grpcRequest, cancellationToken: cancellationToken);
 
-            return new EmailSendResponse
-            {
-                Success = result.ResultCode == ResultCode.Success,
-                Message = result.ResultMessage
-            };
+            return new EmailSendResponse(
+                result.ResultCode == ResultCode.Success,
+                result.ResultMessage);
         }
         catch (OperationCanceledException)
         {
             Log.Warning("Email sending request was canceled");
-            return new EmailSendResponse
-            {
-                Success = false,
-                Message = "Request was cancelled."
-            };
+            return new EmailSendResponse(false, "Request was cancelled.");
         }
         catch (Exception ex)
         {
             Log.Error("Failed to send email: {ExceptionMessage}", ex.Message);
-            return new EmailSendResponse
-            {
-                Success = false,
-                Message = "An error occurred while sending your email. Please try again later."
-            };
+            return new EmailSendResponse(
+                false,
+                "An error occurred while sending your email. Please try again later.");
         }
     }
-}
-
-public class EmailSendResponse
-{
-    public bool Success { get; set; }
-    public string Message { get; set; } = null!;
 }

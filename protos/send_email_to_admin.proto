@@ -4,7 +4,6 @@ option csharp_namespace = "Portfolio.Grpc";
 
 package client_info;
 
-import "google/protobuf/empty.proto";
 
 service SendEmailToAdmin {
   rpc Send (SendRequest) returns (SendResponse);
@@ -19,7 +18,6 @@ message SendRequest {
 
 message SendResponse {
   ResultCode resultCode = 1;
-  string resultMessage = 2;
 }
 
 enum ResultCode {

@@ -645,4 +645,19 @@
   <data name="Contact_FormTitle" xml:space="preserve">
     <value>Mesaj Gönderin</value>
   </data>
+  <data name="Contact_SuccessMessage" xml:space="preserve">
+    <value>E-posta gönderildi! Tez zamanda okuyacağım, teşekkürler!</value>
+  </data>
+  <data name="Contact_ForbiddenMessage" xml:space="preserve">
+    <value>Bu e-postayı son bir saat içinde zaten gönderdiniz. Bana ulaşmak için diğer yöntemleri deneyelim mi?</value>
+  </data>
+  <data name="Contact_ErrorMessage" xml:space="preserve">
+    <value>Benim tarafta bir hata oluştu. Kendime bir bildirim gönderdim ve en kısa sürede düzelteceğim, teşekkürler!</value>
+  </data>
+  <data name="Contact_RateLimitMessage" xml:space="preserve">
+    <value>Çok fazla istek yapıldı. Lütfen tekrar denemeden önce biraz bekleyin.</value>
+  </data>
+  <data name="Contact_NetworkErrorMessage" xml:space="preserve">
+    <value>Beklenmeyen bir ağ hatası oluştu. Lütfen daha sonra tekrar deneyin.</value>
+  </data>
 </root>

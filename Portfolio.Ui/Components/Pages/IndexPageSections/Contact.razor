@@ -116,7 +116,15 @@
                         </button>
                     </div>
 
-                    <form id="email-form" class="email-form-modern" novalidatedata-send-url="@EmailEndpoints.Route">
+                    <form id="email-form" 
+                          class="email-form-modern" 
+                          novalidate 
+                          data-send-url="@EmailEndpoints.Route"
+                          data-msg-success="@L["Contact_SuccessMessage"]"
+                          data-msg-forbidden="@L["Contact_ForbiddenMessage"]"
+                          data-msg-error="@L["Contact_ErrorMessage"]"
+                          data-msg-rate-limit="@L["Contact_RateLimitMessage"]"
+                          data-msg-network-error="@L["Contact_NetworkErrorMessage"]">
                         <AntiforgeryToken />
 
                         <!-- Inline Alert Container -->

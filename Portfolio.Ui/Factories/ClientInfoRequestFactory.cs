@@ -22,7 +22,7 @@ public static class ClientInfoRequestFactory
             HardwareConcurrency = GetValueOrDefault(viaJavascript, "hardwareConcurrency"),
             Webdriver           = GetValueOrDefault(viaJavascript, "webdriver", false),
             CookieEnabled       = GetValueOrDefault(viaJavascript, "cookieEnabled", false),
-            MaxTouchPoints      = GetValueOrDefault(viaJavascript, "maxTouchPoints", DefaultValues.EmptyForInt),
+            MaxTouchPoints      = GetValueOrDefault(viaJavascript, "maxTouchPoints", -1),
             IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
             Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
@@ -45,7 +45,7 @@ public static class ClientInfoRequestFactory
             HardwareConcurrency = string.Empty,
             Webdriver           = false,
             CookieEnabled       = false,
-            MaxTouchPoints      = DefaultValues.EmptyForInt,
+            MaxTouchPoints      = -1,
             IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
             Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)

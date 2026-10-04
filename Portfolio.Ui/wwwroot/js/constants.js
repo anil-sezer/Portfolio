@@ -16,3 +16,9 @@ export const HttpHeaders = Object.freeze({
     CONTENT_TYPE: 'Content-Type',
     X_CSRF_TOKEN: 'X-CSRF-TOKEN'
 });
+
+export const ResultCode = Object.freeze({
+    SUCCESS: 0,
+    ERROR: 1,
+    FORBIDDEN: 2
+});

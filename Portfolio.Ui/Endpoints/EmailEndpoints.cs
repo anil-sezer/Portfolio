@@ -34,19 +34,17 @@ public static class EmailEndpoints
 
             return new EmailSendResponse(
                 result.ResultCode == ResultCode.Success,
-                result.ResultMessage);
+                result.ResultCode);
         }
         catch (OperationCanceledException ex)
         {
             Log.Warning(ex, "Email sending request was canceled");
-            return new EmailSendResponse(false, "Request was cancelled.");
+            return new EmailSendResponse(false, ResultCode.Error);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to send email");
-            return new EmailSendResponse(
-                false,
-                "An error occurred while sending your email. Please try again later.");
+            return new EmailSendResponse(false, ResultCode.Error);
         }
     }
 }

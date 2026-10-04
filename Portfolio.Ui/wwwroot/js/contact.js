@@ -1,4 +1,4 @@
-import { HttpMethod, HttpStatus, HttpHeaders } from './constants.js';
+import { HttpMethod, HttpStatus, HttpHeaders, ResultCode } from './constants.js';
 
 function initContactSection() {
     initClock();
@@ -155,6 +155,12 @@ function initContactSection() {
         const alertIcon = document.getElementById('form-alert-icon');
         const alertMsg = document.getElementById('form-alert-message');
 
+        const msgSuccess = form.dataset.msgSuccess || 'Thank you! Your message has been sent successfully.';
+        const msgForbidden = form.dataset.msgForbidden || 'You already sent this mail. Lets try other methods to reach me eh?';
+        const msgError = form.dataset.msgError || 'Unable to send message. Please try again later.';
+        const msgRateLimit = form.dataset.msgRateLimit || 'Too many requests. Please wait a moment before trying again.';
+        const msgNetworkError = form.dataset.msgNetworkError || 'An unexpected network error occurred. Please try again later.';
+
         const fields = [
             { id: 'name', min: 3, isEmail: false },
             { id: 'email', min: null, isEmail: true },
@@ -235,18 +241,21 @@ function initContactSection() {
                 });
 
                 if (response.status === HttpStatus.TOO_MANY_REQUESTS) {
-                    showAlert('danger', 'Too many requests. Please wait a moment before trying again.');
+                    showAlert('danger', msgRateLimit);
                     return;
                 }
 
                 if (!response.ok) {
-                    showAlert('danger', 'Unable to send message. Please try again later.');
+                    showAlert('danger', msgError);
                     return;
                 }
 
                 const result = await response.json();
 
-                if (result.success) {
+                const isSuccess = result.success || result.resultCode === ResultCode.SUCCESS || result.resultCode === 'SUCCESS' || result.resultCode === 'Success';
+                const isForbidden = result.resultCode === ResultCode.FORBIDDEN || result.resultCode === 'FORBIDDEN' || result.resultCode === 'Forbidden';
+
+                if (isSuccess) {
                     form.reset();
                     clearAllErrors(fields);
                     document.querySelectorAll('.chip-btn').forEach((c) => c.classList.remove('active'));
@@ -255,12 +264,14 @@ function initContactSection() {
                         counterEl.textContent = '0 / 15 min';
                         counterEl.classList.remove('valid');
                     }
-                    showAlert('success', result.message || 'Thank you! Your message has been sent successfully.');
+                    showAlert('success', msgSuccess);
+                } else if (isForbidden) {
+                    showAlert('danger', msgForbidden);
                 } else {
-                    showAlert('danger', result.message || 'Unable to send message. Please try again later.');
+                    showAlert('danger', msgError);
                 }
             } catch (error) {
-                showAlert('danger', 'An unexpected network error occurred. Please try again later.');
+                showAlert('danger', msgNetworkError);
             } finally {
                 setSubmitting(false);
             }

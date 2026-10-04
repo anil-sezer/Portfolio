@@ -646,4 +646,19 @@
   <data name="Contact_FormTitle" xml:space="preserve">
     <value>Send a Message</value>
   </data>
+  <data name="Contact_SuccessMessage" xml:space="preserve">
+    <value>Email sent! I will read it soon as I can, thanks!</value>
+  </data>
+  <data name="Contact_ForbiddenMessage" xml:space="preserve">
+    <value>You already sent this mail. Lets try other methods to reach me eh?</value>
+  </data>
+  <data name="Contact_ErrorMessage" xml:space="preserve">
+    <value>It seems there is an error at my side. I sent a notification to myself and will fix this soon as I can, thanks!</value>
+  </data>
+  <data name="Contact_RateLimitMessage" xml:space="preserve">
+    <value>Too many requests. Please wait a moment before trying again.</value>
+  </data>
+  <data name="Contact_NetworkErrorMessage" xml:space="preserve">
+    <value>An unexpected network error occurred. Please try again later.</value>
+  </data>
 </root>

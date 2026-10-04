@@ -21,8 +21,7 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
         {
             return new SendResponse
             {
-                ResultCode = ResultCode.Forbidden,
-                ResultMessage = "You already sent this mail. Lets try other methods to reach me eh?"
+                ResultCode = ResultCode.Forbidden
             };
         }
         
@@ -33,16 +32,14 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
             await StoreNotificationAtDb(emailDto, false, context.CancellationToken);
             return new SendResponse
             {
-                ResultCode = ResultCode.Error,
-                ResultMessage = DefaultValues.SendEmail_ErrorMessage
+                ResultCode = ResultCode.Error
             };
         }
 
         await StoreNotificationAtDb(emailDto, true, context.CancellationToken);
         return new SendResponse
         {
-            ResultCode = ResultCode.Success,
-            ResultMessage = "Email sent successfully! I will read it soon as I can, thanks!"
+            ResultCode = ResultCode.Success
         };
     }
 

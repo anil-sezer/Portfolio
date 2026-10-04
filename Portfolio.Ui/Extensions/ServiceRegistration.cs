@@ -1,3 +1,4 @@
+using Portfolio.Ui.BackgroundServices;
 using Portfolio.Ui.Services;
 
 namespace Portfolio.Ui.Extensions;
@@ -9,5 +10,7 @@ public static class ServiceRegistration
         builder.Services.AddScoped<ClusterStatsService>();
         builder.Services.AddScoped<BackgroundImageService>();
         builder.Services.AddScoped<LogVisitService>();
+
+        builder.Services.AddHostedService<ClusterStatsWarmupService>();
     }
 }

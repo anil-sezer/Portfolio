@@ -6,32 +6,36 @@ namespace Portfolio.Ui.Services;
 public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemoryCache memoryCache)
 {
     private const string CacheKey = "k8s_stats";
-    
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
+
     public async Task<GetK8sStatsResponse> GetFromCacheAsync(CancellationToken cancellationToken = default)
     {
         if (memoryCache.TryGetValue(CacheKey, out GetK8sStatsResponse? cachedStats) && cachedStats != null)
-        {
-            Log.Information("📦 K8s stats retrieved from cache");
             return cachedStats;
-        }
 
+        // Fallback on initial call or rare cache miss before first background refresh finishes
+        return await RefreshCacheAsync(cancellationToken);
+    }
+
+    public async Task<GetK8sStatsResponse> RefreshCacheAsync(CancellationToken cancellationToken = default)
+    {
         var stats = await GetFromGrpcAsync(cancellationToken);
-        
+
         var cacheOptions = new MemoryCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            AbsoluteExpirationRelativeToNow = CacheExpiration
         };
-        
+
         memoryCache.Set(CacheKey, stats, cacheOptions);
-        Log.Information("💾 K8s stats added to cache with 5-min expiration");
-        
+        Log.Information("💾 K8s stats updated in cache");
+
         return stats;
     }
-    
+
     private async Task<GetK8sStatsResponse> GetFromGrpcAsync(CancellationToken cancellationToken = default)
     {
         var response = await k8SStatsClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
-        Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
+        Log.Information("📨 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
 
         return response;
     }

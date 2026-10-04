@@ -15,8 +15,7 @@ EnvVars.TestEnvVariablesForFrontend();
 
 builder.InitOpenTelemetry();
 
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -63,8 +62,7 @@ app.DefineEnglishRedirectRoute();
 app.MapApiEndpoints();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>();
 
 try
 {

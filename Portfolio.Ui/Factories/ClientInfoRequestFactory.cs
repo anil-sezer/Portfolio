@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Ui.Extensions;
@@ -25,19 +26,21 @@ public static class ClientInfoRequestFactory
             MaxTouchPoints      = GetValueOrDefault(viaJavascript, "maxTouchPoints", -1),
             IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
-            Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
+            Extras              = GetRequestHeadersAsJson(httpContextAccessor)
         };
     }
 
     public static StoreVisitorInfoRequest Create(IHttpContextAccessor httpContextAccessor)
     {
+        var headers = httpContextAccessor.HttpContext?.Request.Headers;
+
         return new StoreVisitorInfoRequest
         {
-            Language            = string.Empty,
-            Platform            = string.Empty,
-            Referrer            = string.Empty,
-            UserAgent           = string.Empty,
-            DoNotTrack          = string.Empty,
+            Language            = GetHeaderValue(headers, "Accept-Language"),
+            Platform            = GetHeaderValue(headers, "Sec-CH-UA-Platform").Trim('"'),
+            Referrer            = GetReferrerHeader(headers),
+            UserAgent           = GetHeaderValue(headers, "User-Agent"),
+            DoNotTrack          = GetHeaderValue(headers, "DNT"),
             Connection          = string.Empty,
             Resolution          = string.Empty,
             DeviceMemory        = string.Empty,
@@ -48,8 +51,86 @@ public static class ClientInfoRequestFactory
             MaxTouchPoints      = -1,
             IpAddress           = httpContextAccessor.GetClientIpAddress(),
             RequestedUrl        = GetRequestedPage(httpContextAccessor),
-            Extras              = GetAllRequestHeadersAsJson(httpContextAccessor)
+            Extras              = GetRequestHeadersAsJson(httpContextAccessor)
         };
+    }
+
+    private static string GetHeaderValue(IHeaderDictionary? headers, string headerName)
+    {
+        if (headers is not null && headers.TryGetValue(headerName, out var value) && !string.IsNullOrWhiteSpace(value))
+        {
+            return value.ToString();
+        }
+
+        return string.Empty;
+    }
+
+    private static string GetReferrerHeader(IHeaderDictionary? headers)
+    {
+        if (headers is null)
+        {
+            return string.Empty;
+        }
+
+        if (headers.TryGetValue("Referer", out var referer) && !string.IsNullOrWhiteSpace(referer))
+        {
+            return referer.ToString();
+        }
+
+        if (headers.TryGetValue("Referrer", out var referrer) && !string.IsNullOrWhiteSpace(referrer))
+        {
+            return referrer.ToString();
+        }
+
+        return string.Empty;
+    }
+
+    private static readonly FrozenSet<string> UnsafeHeaders = new[]
+    {
+        "Cookie",
+        "Set-Cookie",
+        "Authorization",
+        "Proxy-Authorization",
+        "Proxy-Authenticate",
+        "WWW-Authenticate",
+        HeaderConstants.XsrfToken,
+        "X-XSRF-TOKEN",
+        "RequestVerificationToken",
+        "__RequestVerificationToken",
+        "X-Api-Key",
+        "ApiKey",
+        "X-Auth-Token",
+        "X-Access-Token",
+        "Token",
+        "Secret",
+        "X-Secret",
+        "X-ARR-ClientCert",
+        "X-Forwarded-Tls-Client-Cert"
+    }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+
+    private static bool IsUnsafeHeader(string headerName)
+    {
+        if (string.IsNullOrWhiteSpace(headerName))
+        {
+            return true;
+        }
+
+        if (UnsafeHeaders.Contains(headerName))
+        {
+            return true;
+        }
+
+        if (headerName.Contains("token", StringComparison.OrdinalIgnoreCase) ||
+            headerName.Contains("auth", StringComparison.OrdinalIgnoreCase) ||
+            headerName.Contains("secret", StringComparison.OrdinalIgnoreCase) ||
+            headerName.Contains("password", StringComparison.OrdinalIgnoreCase) ||
+            headerName.Contains("apikey", StringComparison.OrdinalIgnoreCase) ||
+            headerName.Contains("cookie", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static string GetValueOrDefault(Dictionary<string, string> data, string key, string defaultValue = "")
@@ -83,17 +164,29 @@ public static class ClientInfoRequestFactory
         return fullUrl;
     }
 
-    private static string GetAllRequestHeadersAsJson(IHttpContextAccessor httpContextAccessor)
+    private static string GetRequestHeadersAsJson(IHttpContextAccessor httpContextAccessor)
     {
         try
         {
             var headers = httpContextAccessor.HttpContext?.Request.Headers;
-            return JsonSerializer.Serialize(headers);
+            if (headers is null || headers.Count == 0)
+            {
+                return "{}";
+            }
+
+            var allowedHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (key, value) in headers)
+            {
+                if (!IsUnsafeHeader(key))
+                    allowedHeaders[key] = value.ToString();
+            }
+
+            return JsonSerializer.Serialize(allowedHeaders);
         }
         catch (Exception e)
         {
-            Log.Error("Error while serializing headers: {Error}", e.Message);
-            return "";
+            Log.Error(e, "Error while serializing request headers: {Error}", e.Message);
+            return "{}";
         }
     }
 }

@@ -3,17 +3,17 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://anil-sezer.com/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://anil-sezer.com/" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://anil-sezer.com/tr" />
+    <loc>https://anilsezer.net/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://anilsezer.net/" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://anil-sezer.net/tr" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
   </url>
 
   <url>
-    <loc>https://anil-sezer.com/tr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://anil-sezer.com/" />
-    <xhtml:link rel="alternate" hreflang="tr" href="https://anil-sezer.com/tr" />
+    <loc>https://anilsezer.net/tr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://anilsezer.net/" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://anilsezer.net/tr" />
     <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
   </url>

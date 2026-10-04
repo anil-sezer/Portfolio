@@ -4,21 +4,22 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
+        <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="8.10.0" />
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.9" />
+        <PackageReference Include="Grpc.Core.Api" Version="2.80.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.10" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
-        <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="coverlet.collector" Version="10.0.1">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

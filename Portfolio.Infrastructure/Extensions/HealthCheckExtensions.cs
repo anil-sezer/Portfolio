@@ -31,7 +31,30 @@ public static class HealthCheckExtensions
         public void AddHealthChecksForEndpointAndDb()
         {
             builder.InitializeHealthChecks()
-                .AddDbContextCheck<PortfolioDbContext>(failureStatus: HealthStatus.Degraded, name: ReadinessDbCheckName);
+                .AddCheck("LiveCheck", () => HealthCheckResult.Healthy("Live"), tags: ["live"])
+                .AddDbContextCheck<PortfolioDbContext>(
+                    failureStatus: HealthStatus.Degraded,
+                    name: ReadinessDbCheckName,
+                    tags: ["ready"]);
+        }
+
+        public void AddGrpcHealthChecksWithServices()
+        {
+            builder.Services.Configure<HealthCheckPublisherOptions>(options =>
+            {
+                options.Delay = TimeSpan.Zero;
+                options.Period = TimeSpan.FromSeconds(10);
+            });
+
+            builder.Services.AddGrpcHealthChecks(options =>
+            {
+                // Default service ("") checks general health
+                options.Services.Map("", _ => true);
+                // "ready" service checks dependencies (database)
+                options.Services.Map("ready", r => r.Tags.Contains("ready"));
+                // "live" service performs liveness check
+                options.Services.Map("live", r => r.Tags.Contains("live"));
+            });
         }
     }
 
@@ -51,12 +74,11 @@ public static class HealthCheckExtensions
             });
         }
 
-        // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
         public void MapReadinessHealthCheck()
         {
             app.MapHealthChecks(ReadinessCheckPostfix, new HealthCheckOptions
             {
-                Predicate = check => check.Name == ReadinessDbCheckName,
+                Predicate = check => check.Tags.Contains("ready") || check.Name == ReadinessDbCheckName,
                 ResultStatusCodes =
                 {
                     [HealthStatus.Healthy] = StatusCodes.Status200OK,

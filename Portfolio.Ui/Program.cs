@@ -23,7 +23,11 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddLocalization();
 
-builder.InitializeHealthChecks();
+builder.InitializeHealthChecks()
+    .AddCheck<Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck>(
+        name: Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck.CheckName,
+        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
+        tags: ["ready"]);
 
 builder.InitializeGrpcClients();
 
@@ -57,6 +61,7 @@ app.UseAntiforgery();
 app.UseMiddleware<NotFoundLoggingMiddleware>();
 
 app.MapLivenessHealthCheck();
+app.MapReadinessHealthCheck();
 app.MapHealthCheckForUptimeRobot();
 app.DefineEnglishRedirectRoute();
 app.MapApiEndpoints();

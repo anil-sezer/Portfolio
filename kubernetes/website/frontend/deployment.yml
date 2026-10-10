@@ -49,15 +49,14 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 60
             failureThreshold: 3
-# todo: create a grpc connection readiness probe?
-#          readinessProbe:
-#            httpGet:
-#              path: /readiness
-#              port: 8080
-#            initialDelaySeconds: 60
-#            timeoutSeconds: 1
-#            periodSeconds: 60
-#            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 2
+            periodSeconds: 30
+            failureThreshold: 3
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"

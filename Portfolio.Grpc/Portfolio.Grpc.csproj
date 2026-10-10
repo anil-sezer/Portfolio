@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.84.0" />
         <PackageReference Include="KubernetesClient" Version="19.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
           <PrivateAssets>all</PrivateAssets>
@@ -17,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Both"/>
+        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Both" />
         <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Both" />
         <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Both" />
         <Protobuf Include="..\protos\k8s_stats.proto" GrpcServices="Both" />

@@ -22,5 +22,9 @@ public static class GrpcClientRegistration
         {
             o.Address = new Uri(EnvVars.GRPC_BASE_URL);
         });
+        builder.Services.AddGrpcClient<global::Grpc.Health.V1.Health.HealthClient>(o =>
+        {
+            o.Address = new Uri(EnvVars.GRPC_BASE_URL);
+        });
     }
 }

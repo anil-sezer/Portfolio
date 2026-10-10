@@ -23,6 +23,7 @@ builder.InitDbWithPostgres();
 builder.AddHealthChecksForEndpointAndDb();
 
 builder.Services.AddGrpc();
+builder.AddGrpcHealthChecksWithServices();
 
 // Factories
 builder.Services.AddHttpClient<INotificationProvider, NotificationProviderTelegram>();
@@ -43,6 +44,7 @@ var app = builder.Build();
 
 app.MapLivenessHealthCheck();
 app.MapReadinessHealthCheck();
+app.MapGrpcHealthChecksService();
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<BackgroundImageServices>();

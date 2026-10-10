@@ -1,4 +1,3 @@
-# From root:
 # docker buildx build -t imgregistry.anil-sezer.com/portfolio-grpc:latest -f Portfolio.Grpc/Dockerfile --platform linux/amd64,linux/arm64 --push .
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID

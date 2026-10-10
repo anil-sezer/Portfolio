@@ -31,27 +31,27 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-#          startupProbe:
-#            httpGet:
-#              path: /liveness
-#              port: 8080
-#            failureThreshold: 30
-#            periodSeconds: 10
-#          livenessProbe:
-#            httpGet:
-#              path: /liveness
-#              port: 8080
-#            timeoutSeconds: 1
-#            periodSeconds: 60
-#            failureThreshold: 3
-#          readinessProbe:
-#            httpGet:
-#              path: /readiness
-#              port: 8080
-#            initialDelaySeconds: 60
-#            timeoutSeconds: 1
-#            periodSeconds: 60
-#            failureThreshold: 3
+          startupProbe:
+            grpc:
+              port: 8080
+              service: live
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            grpc:
+              port: 8080
+              service: live
+            timeoutSeconds: 2
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            grpc:
+              port: 8080
+              service: ready
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 30
+            failureThreshold: 3
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"

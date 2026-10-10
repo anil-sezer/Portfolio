@@ -30,24 +30,24 @@ public static class DbContextExtensions
         return $"Host={EnvVars.SQL_DB_HOST};Port={EnvVars.SQL_DB_PORT};Username={EnvVars.SQL_DB_USER};Password={EnvVars.SQL_DB_PASSWORD};Database={EnvVars.SQL_DB_NAME};";
     }
     
-    public static void AutoMigrateInDevEnv(this WebApplication app)
+    public static async Task AutoMigrateInDevEnvAsync(this WebApplication app, CancellationToken cancellationToken = default)
     {
         if (!EnvVars.IsDevelopment())
             return;
 
-        _ = Task.Run(async () =>
+        try
         {
-            try
-            {
-                using var scope = app.Services.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
-                await context.Database.MigrateAsync();
-                Log.Information("Database migrations applied successfully in background");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occurred while migrating the database in background");
-            }
-        });
+            Log.Information("Applying database migrations in development environment...");
+            await using var scope = app.Services.CreateAsyncScope();
+            var context = scope.ServiceProvider.GetService<PortfolioDbContext>();
+
+            await context.Database.MigrateAsync(cancellationToken);
+            Log.Information("Database migrations applied successfully");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred while applying database migrations in development environment");
+            throw;
+        }
     }
 }

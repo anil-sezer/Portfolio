@@ -63,7 +63,7 @@ public static class LoggingExtensions
         {
             Log.Information(startupMessage ?? "✅ App Starting");
             if (autoMigrate)
-                app.AutoMigrateInDevEnv();
+                await app.AutoMigrateInDevEnvAsync();
             
             await app.RunAsync();
         }

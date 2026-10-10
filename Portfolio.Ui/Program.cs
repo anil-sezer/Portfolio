@@ -69,17 +69,5 @@ app.MapApiEndpoints();
 app.MapStaticAssets();
 app.MapRazorComponents<App>();
 
-try
-{
-    Log.Information("⭐⭐ UI Starting. Can access it from: http://localhost:5002 at dev env. ⭐⭐");
-    await app.RunAsync();
-}
-catch (Exception ex)
-{
-    Log.Error(ex, "Unhandled exception");
-}
-finally
-{
-    await Log.CloseAndFlushAsync();
-}
+await app.RunTheAppWithProperLoggingAsync("⭐⭐ UI Starting. Can access it from: http://localhost:5002 at dev env. ⭐⭐");
 

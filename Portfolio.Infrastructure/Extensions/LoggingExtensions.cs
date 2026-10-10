@@ -18,7 +18,7 @@ public static class LoggingExtensions
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
                 .MinimumLevel.Override("Grpc", LogEventLevel.Warning)
-                .Enrich.FromLogContext() // For UseSerilogRequestLogging?
+                .Enrich.FromLogContext() // todo: For UseSerilogRequestLogging?
                 .WriteTo.Console();
 
             if (!EnvVars.IsDevelopment())
@@ -55,5 +55,25 @@ public static class LoggingExtensions
                 return LogEventLevel.Information;
             };
         });
+    }
+    
+    public static async Task RunTheAppWithProperLoggingAsync(this WebApplication app, string? startupMessage = null, bool autoMigrate = false)
+    {
+        try
+        {
+            Log.Information(startupMessage ?? "✅ App Starting");
+            if (autoMigrate)
+                app.AutoMigrateInDevEnv();
+            
+            await app.RunAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "❌ The app failed to start");
+        }
+        finally
+        {
+            await Log.CloseAndFlushAsync();
+        }
     }
 }

@@ -57,17 +57,5 @@ app.MapGet("/",
     () =>
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
-try
-{
-    Log.Information("✅ App Starting");
-    app.AutoMigrateInDevEnv();
-    app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "❌ The app failed to start");
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+
+await app.RunTheAppWithProperLoggingAsync(autoMigrate: true);

@@ -13,7 +13,7 @@
      docker buildx build -t imgregistry.anil-sezer.com/<image-name>:<tag> --platform linux/amd64,linux/arm64 --push .
      ```
 4. **Target Framework & SDK**:
-   * All .NET projects target `net10.0` (SDK 10.0.2 pinned in `global.json`). Always test builds with `dotnet build Portfolio.sln`.
+   * All .NET projects target `net10.0` (SDK 10.0.100 pinned in `global.json`). Always test builds with `dotnet build Portfolio.sln`.
 5. **Database Migrations Prohibition**:
    * **Agents must NEVER create or add database migrations** (never run `dotnet ef migrations add`). Database schema migrations are strictly managed manually by the human maintainer.
 6. **Synchronized Enums Across Languages**:

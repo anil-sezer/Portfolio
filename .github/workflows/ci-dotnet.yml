@@ -1,0 +1,49 @@
+---
+name: ci-dotnet
+
+on:
+  push:
+    branches:
+      - "prod"
+    paths:
+      - "Portfolio.**"
+      - "protos/**"
+      - "global.json"
+      - "Portfolio.sln"
+      - ".github/workflows/ci-dotnet.yml"
+  pull_request:
+    branches:
+      - "prod"
+    paths:
+      - "Portfolio.**"
+      - "protos/**"
+      - "global.json"
+      - "Portfolio.sln"
+      - ".github/workflows/ci-dotnet.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-dotnet-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build-and-test:
+    name: Build & Test (.NET 10)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore Portfolio.sln
+
+      - name: Build solution (Release)
+        run: dotnet build Portfolio.sln --configuration Release --no-restore
+
+      - name: Run unit & integration tests
+        run: dotnet test Portfolio.sln --configuration Release --no-build --verbosity normal

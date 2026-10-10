@@ -41,7 +41,7 @@ All AI agents operating in this repository **must** adhere to these non-negotiab
    > docker buildx build -t imgregistry.anil-sezer.com/<image-name>:<tag> --platform linux/amd64,linux/arm64 --push .
    > ```
 4. **Target Framework & SDK**:
-   > All .NET projects target `net10.0` with SDK pinned in [global.json](file:///c:/Repositories/Portfolio/global.json) (`10.0.2` rollForward `latestMinor`). Always verify builds with `dotnet build Portfolio.sln`.
+   > All .NET projects target `net10.0` with SDK pinned in [global.json](file:///c:/Repositories/Portfolio/global.json) (`10.0.100` rollForward `latestMinor`). Always verify builds with `dotnet build Portfolio.sln`.
 5. **Database Migrations Prohibition**:
    > [!CAUTION]
    > **Agents must NEVER create or add database migrations** (never run `dotnet ef migrations add`). Database schema migrations are strictly managed manually by the repository maintainer.

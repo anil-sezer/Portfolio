@@ -1,0 +1,49 @@
+---
+name: ci-go
+
+on:
+  push:
+    branches:
+      - "prod"
+    paths:
+      - "kubernetes/crons/**"
+      - ".github/workflows/ci-go.yml"
+  pull_request:
+    branches:
+      - "prod"
+    paths:
+      - "kubernetes/crons/**"
+      - ".github/workflows/ci-go.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-go-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test-and-lint:
+    name: Test & Lint (Go Crons)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache-dependency-path: |
+            kubernetes/crons/**/go.sum
+
+      - name: Vet & Test ip-lookup-cron
+        working-directory: kubernetes/crons/ip-lookup-cron
+        run: |
+          go vet ./...
+          go test -v ./...
+
+      - name: Vet, Test & Build get-image-of-the-day-from-bing
+        working-directory: kubernetes/crons/get-image-of-the-day-from-bing
+        run: |
+          go vet ./...
+          go test -v ./...
+          go build -v ./...

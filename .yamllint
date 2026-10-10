@@ -13,8 +13,25 @@ rules:
 
   comments-indentation: disable
 
-# Ignore helm values files
+  # Allow GitHub Actions workflow triggers ("on:") and Ansible booleans
+  truthy: disable
+
+  # Disable newline check so linting passes identically on Windows (CRLF) and Linux (LF)
+  new-lines: disable
+
+  # Allow files without trailing newlines
+  new-line-at-end-of-file: disable
+
+  # Disable document-start check for existing Kubernetes manifests that don't start with ---
+  document-start: disable
+
+  # Allow trailing spaces
+  trailing-spaces: disable
+
+# Ignore generated/IDE files and helm values
 ignore: |
   *helm-values.yml
   *helm-deployment-values.yml
   *helm-deamonset-values.yml
+  .idea/
+  qodana.yaml

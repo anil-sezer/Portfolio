@@ -55,5 +55,3 @@ spec:
                   number: 4317
             path: /
             pathType: Prefix
-
-

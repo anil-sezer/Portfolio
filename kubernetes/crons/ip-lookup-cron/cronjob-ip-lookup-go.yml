@@ -17,8 +17,8 @@ spec:
             - name: ip-lookup-go
               image: imgregistry.anil-sezer.com/iplookup-cron-go:latest
               env:
-              - name: GRPC_BASE_URL
-                value: "grpc.portfolio.svc.cluster.local:8080"
+                - name: GRPC_BASE_URL
+                  value: "grpc.portfolio.svc.cluster.local:8080"
               resources:
                 requests:
                   cpu: 10m

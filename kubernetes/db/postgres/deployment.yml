@@ -24,7 +24,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: [ "/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data/18/main", "-m", "fast" ]
+                command: ["/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data/18/main", "-m", "fast"]
           env:
             - name: POSTGRES_USER
               valueFrom:

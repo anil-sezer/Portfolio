@@ -165,4 +165,27 @@ public class VisitorInsightsServiceTests
         // Assert
         await act.Should().NotThrowAsync();
     }
+
+    [Fact]
+    public async Task GetIpsToCheck_LimitsResultsToMaxBatchSize()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var service = new VisitorInsightsService(dbContext);
+        var context = TestServerCallContext.Create();
+
+        var logs = Enumerable.Range(1, VisitorInsightsService.MaxBatchSize + 15)
+            .Select(i => CreateRequestLog($"10.0.0.{i % 250}", "", ""))
+            .ToArray();
+
+        dbContext.RequestLogs.AddRange(logs);
+        await dbContext.SaveChangesAsync();
+
+        // Act
+        var response = await service.GetIpsToCheck(new Empty(), context);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Ips.Should().HaveCount(VisitorInsightsService.MaxBatchSize);
+    }
 }

@@ -33,6 +33,7 @@ public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient ht
     private async Task<DailyImage> GetLatestBackgroundImageDetailsAsync(CancellationToken cancellationToken = default)
     {
         var img = await dbContext.DailyImages
+            .AsNoTracking()
             .Where(x => x.UrlWorks && x.DoIPreferToDisplayThis)
             .OrderByDescending(x => x.Id)
             .FirstOrDefaultAsync(cancellationToken);

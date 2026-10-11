@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using Portfolio.Infrastructure.Helpers;
 using Serilog;
 
@@ -15,7 +16,10 @@ public static class DbContextExtensions
 
         builder.Services.AddDbContext<PortfolioDbContext>(options =>
         {
-            options.UseNpgsql(connectionString + $";Application Name= {AssemblyHelper.GetServiceName()}");
+            options.UseNpgsql(connectionString, npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure();
+            });
             options.UseSnakeCaseNamingConvention();
 
             if (!builder.Environment.IsDevelopment()) return;
@@ -25,9 +29,19 @@ public static class DbContextExtensions
         });
     }
     
-    private static string GetConnectionStringForPostgres()
+    public static string GetConnectionStringForPostgres()
     {
-        return $"Host={EnvVars.SQL_DB_HOST};Port={EnvVars.SQL_DB_PORT};Username={EnvVars.SQL_DB_USER};Password={EnvVars.SQL_DB_PASSWORD};Database={EnvVars.SQL_DB_NAME};";
+        var connectionStringBuilder = new NpgsqlConnectionStringBuilder
+        {
+            Host = EnvVars.SQL_DB_HOST,
+            Port = EnvVars.SQL_DB_PORT,
+            Username = EnvVars.SQL_DB_USER,
+            Password = EnvVars.SQL_DB_PASSWORD,
+            Database = EnvVars.SQL_DB_NAME,
+            ApplicationName = AssemblyHelper.GetServiceName()
+        };
+
+        return connectionStringBuilder.ConnectionString;
     }
     
     public static async Task AutoMigrateInDevEnvAsync(this WebApplication app, CancellationToken cancellationToken = default)
@@ -40,6 +54,8 @@ public static class DbContextExtensions
             Log.Information("Applying database migrations in development environment...");
             await using var scope = app.Services.CreateAsyncScope();
             var context = scope.ServiceProvider.GetService<PortfolioDbContext>();
+            if (context is null || !context.Database.IsRelational())
+                return;
 
             await context.Database.MigrateAsync(cancellationToken);
             Log.Information("Database migrations applied successfully");

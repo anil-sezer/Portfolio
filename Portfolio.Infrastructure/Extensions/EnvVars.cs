@@ -44,7 +44,7 @@ public static class EnvVars
 
     // Database
     public static string SQL_DB_HOST => GetValue("SQL_DB_HOST");
-    public static string SQL_DB_PORT => GetValue("SQL_DB_PORT");
+    public static int SQL_DB_PORT => GetValue<int>("SQL_DB_PORT");
     public static string SQL_DB_USER => GetValue("SQL_DB_USER");
     public static string SQL_DB_PASSWORD => GetValue("SQL_DB_PASSWORD");
     public static string SQL_DB_NAME => GetValue("SQL_DB_NAME");

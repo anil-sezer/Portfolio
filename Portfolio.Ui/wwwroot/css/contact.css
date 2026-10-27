@@ -120,6 +120,7 @@
     min-width: 0;
 }
 
+.channel-content h3,
 .channel-content h4 {
     font-size: 12px;
     text-transform: uppercase;

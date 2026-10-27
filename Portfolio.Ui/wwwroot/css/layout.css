@@ -165,6 +165,7 @@
     line-height: 0;
     border-radius: 50px;
     cursor: pointer;
+    padding: 0;
 }
 
 .mobile-nav-active #header {

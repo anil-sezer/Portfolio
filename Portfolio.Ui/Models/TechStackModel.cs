@@ -11,6 +11,7 @@ public class TechStackModel
     public required int ImageHeight { get; init; }
                 
     public required string DescriptionKey { get; init; }
+    public string? AriaLabel { get; init; }
 
     public static IReadOnlyList<TechStackModel> GetTechStack()
     {
@@ -74,7 +75,8 @@ public class TechStackModel
                 ImageWidth = 42,
                 ImageHeight = 21,
 
-                DescriptionKey = "TechStack_Go_Desc"
+                DescriptionKey = "TechStack_Go_Desc",
+                AriaLabel = "Go programming language"
             },
             new()
             {

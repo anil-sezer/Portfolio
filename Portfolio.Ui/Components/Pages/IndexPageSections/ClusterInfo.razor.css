@@ -36,6 +36,11 @@
 }
 
 .stats .stats-item p {
-    color: color-mix(in srgb, var(--text-body), transparent 40%);
+    color: var(--text-body);
     margin: 0.2rem 0 0 0;
+}
+
+.stats .stats-item p a,
+.section-title p a {
+    text-decoration: underline;
 }

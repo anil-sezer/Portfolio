@@ -100,6 +100,7 @@
     --bg-section-alt: var(--color-gray-bg);
     --bg-info-icon: var(--color-celestial-blue-light);
     --bg-timeline-badge: var(--color-yale-blue-light);
+    --text-timeline-badge: var(--color-yale-blue);
     --border-timeline: var(--color-yale-blue-dark);
     --text-counter: var(--color-celestial-blue);
     --text-counter-fade: var(--color-celestial-blue-hover);
@@ -165,6 +166,7 @@
     --bg-card-tech: #1e293b;
     --bg-info-icon: rgba(20, 157, 221, 0.2);
     --bg-timeline-badge: rgba(30, 82, 151, 0.4);
+    --text-timeline-badge: #38bdf8;
     --border-timeline: var(--color-celestial-blue);
     --bg-input: #1e293b;
     --text-input: #f8fafc;

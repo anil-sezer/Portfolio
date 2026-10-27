@@ -1,10 +1,14 @@
 @using System.Globalization
 @inherits LayoutComponentBase
 
-<span class="mobile-nav-toggle d-xl-none">
+<button type="button" 
+        class="mobile-nav-toggle d-xl-none" 
+        aria-label="Toggle navigation" 
+        aria-expanded="false" 
+        aria-controls="header">
     <BsIcon Name="list" Class="mobile-nav-icon-list" />
     <BsIcon Name="x" Class="mobile-nav-icon-close" />
-</span>
+</button>
 
 <header id="header">
     <div class="d-flex flex-column">
@@ -62,8 +66,8 @@
 
 
             <div class="social-links mt-2 text-center">
-                <a href="https://github.com/anil-sezer" target="_blank"><BsIcon Name="github" /></a>
-                <a href="https://www.linkedin.com/in/anil-sezer/" target="_blank"><BsIcon Name="linkedin" /></a>
+                <a href="https://github.com/anil-sezer" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><BsIcon Name="github" /></a>
+                <a href="https://www.linkedin.com/in/anil-sezer/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><BsIcon Name="linkedin" /></a>
             </div>
         </div>
 
@@ -86,11 +90,11 @@
     <div class="container">
         <div class="credits">
             <b>@L["Footer_Bing"] <br/>
-                <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank">Bing Daily Wallpapers</a></b> <br/>
+                <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank" rel="noopener noreferrer">Bing Daily Wallpapers</a></b> <br/>
             <b>Tech stack section Gradient from: 
-                <a href="https://x.com/POSTWOOK/status/2097037189049925818" target="_blank">Post Wook</a></b>
+                <a href="https://x.com/POSTWOOK/status/2097037189049925818" target="_blank" rel="noopener noreferrer">Post Wook</a></b>
         </div>
     </div>
 </footer>
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><BsIcon Name="arrow-up-short" /></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center" aria-label="Back to top"><BsIcon Name="arrow-up-short" /></a>

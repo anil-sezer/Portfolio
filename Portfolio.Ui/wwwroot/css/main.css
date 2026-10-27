@@ -18,6 +18,14 @@ a:hover {
     text-decoration: none;
 }
 
+p a {
+    text-decoration: underline;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
 .bi {
     display: inline-block;
     width: 1em;

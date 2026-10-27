@@ -21,7 +21,11 @@
 
     on('click', '.mobile-nav-toggle', function(e) {
         e.stopPropagation()
-        select('body').classList.toggle('mobile-nav-active')
+        const isActive = select('body').classList.toggle('mobile-nav-active')
+        const toggle = select('.mobile-nav-toggle')
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', isActive ? 'true' : 'false')
+        }
     })
 
     // Function to close mobile nav
@@ -30,6 +34,10 @@
 
         if (body.classList.contains('mobile-nav-active')) {
             body.classList.remove('mobile-nav-active')
+            const toggle = select('.mobile-nav-toggle')
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', 'false')
+            }
         }
     }
 

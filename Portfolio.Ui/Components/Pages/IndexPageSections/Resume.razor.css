@@ -176,7 +176,7 @@
     padding: 4px 10px;
     border-radius: 16px;
     background: var(--bg-timeline-badge);
-    color: var(--text-heading-primary);
+    color: var(--text-timeline-badge);
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -280,7 +280,7 @@
     padding: 3px 8px;
     border-radius: 8px;
     background: var(--bg-timeline-badge);
-    color: var(--text-heading-primary);
+    color: var(--text-timeline-badge);
     white-space: nowrap;
 }
 
@@ -313,7 +313,7 @@
     padding: 3px 8px;
     border-radius: 8px;
     background: var(--bg-timeline-badge);
-    color: var(--text-heading-primary);
+    color: var(--text-timeline-badge);
     white-space: nowrap;
 }
 
@@ -365,7 +365,7 @@
     padding: 2px 7px;
     border-radius: 6px;
     background: var(--bg-timeline-badge);
-    color: var(--text-heading-primary);
+    color: var(--text-timeline-badge);
     white-space: nowrap;
 }
 

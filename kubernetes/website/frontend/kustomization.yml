@@ -9,3 +9,4 @@ resources:
   - ingress.yml
   - svc-clusterip.yml
   - redirect-to-canonical-middleware.yml
+  - compress-middleware.yml

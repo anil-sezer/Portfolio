@@ -15,7 +15,8 @@
     transition: all 0.4s;
 }
 
-.back-to-top i {
+.back-to-top i,
+.back-to-top .bi {
     font-size: 28px;
     color: var(--icon-back-to-top);
     line-height: 0;

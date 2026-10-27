@@ -16,7 +16,7 @@
             </div>
             <div class="d-flex justify-content-start mt-3">
                 <a href="@ResumeModel.CvDownloadUrl" target="_blank" rel="noopener noreferrer" class="btn-cv-download">
-                    <i class="bi bi-file-earmark-pdf"></i> @L["Resume_DownloadCV"]
+                    <BsIcon Name="file-earmark-pdf" /> @L["Resume_DownloadCV"]
                 </a>
             </div>
         </div>
@@ -47,7 +47,7 @@
                             <h3 class="bento-role-title mt-2">@L[activeRole.RoleTitleKey]</h3>
                             <div class="bento-company-tag">@L[activeRole.CompanyKey]</div>
                         </div>
-                        <span class="bento-date"><i class="bi bi-calendar3"></i> @L[activeRole.DateKey]</span>
+                        <span class="bento-date"><BsIcon Name="calendar3" /> @L[activeRole.DateKey]</span>
                     </div>
                     <ul class="bento-bullets">
                         @foreach (var bulletKey in activeRole.BulletKeys)
@@ -74,7 +74,7 @@
                                 <h3 class="bento-role-title">@L[role.RoleTitleKey]</h3>
                                 <div class="bento-company-tag">@L[role.CompanyKey]</div>
                             </div>
-                            <span class="bento-date"><i class="bi bi-calendar3"></i> @L[role.DateKey]</span>
+                            <span class="bento-date"><BsIcon Name="calendar3" /> @L[role.DateKey]</span>
                         </div>
                         <ul class="bento-bullets">
                             @foreach (var bulletKey in role.BulletKeys)
@@ -98,7 +98,7 @@
                 <div class="bento-card">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="bento-section-heading">
-                            <i class="bi bi-patch-check-fill me-2"></i> @L["Resume_Certifications_Title"]
+                            <BsIcon Name="patch-check-fill" Class="me-2" /> @L["Resume_Certifications_Title"]
                         </h4>
                     </div>
 
@@ -124,7 +124,7 @@
                     <div class="accordion-item earlier-accordion-item">
                         <h2 class="accordion-header" id="headingEarlierCareer">
                             <button class="accordion-button collapsed earlier-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEarlierCareer" aria-expanded="false" aria-controls="collapseEarlierCareer">
-                                <i class="bi bi-clock-history me-2"></i> @L["Resume_EarlierCareer_Title"]
+                                <BsIcon Name="clock-history" Class="me-2" /> @L["Resume_EarlierCareer_Title"]
                             </button>
                         </h2>
                         <div id="collapseEarlierCareer" class="accordion-collapse collapse" aria-labelledby="headingEarlierCareer" data-bs-parent="#earlierCareerAccordion">

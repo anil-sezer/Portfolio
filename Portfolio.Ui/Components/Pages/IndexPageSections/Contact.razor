@@ -16,7 +16,7 @@
                         <!-- Email Tile -->
                         <div class="channel-item">
                             <div class="channel-icon">
-                                <i class="bi bi-envelope-at-fill"></i>
+                                <BsIcon Name="envelope-at-fill" />
                             </div>
                             <div class="channel-content">
                                 <h4>@L["Contact_Email"]</h4>
@@ -28,13 +28,14 @@
                                         data-copy="msnanil@hotmail.com" 
                                         title="@L["Contact_CopyEmail"]"
                                         aria-label="@L["Contact_CopyEmail"]">
-                                    <i class="bi bi-clipboard"></i>
+                                    <BsIcon Name="clipboard" Class="copy-icon-default" />
+                                    <BsIcon Name="check2" Class="copy-icon-copied text-success d-none" />
                                 </button>
                                 <a href="mailto:msnanil@hotmail.com" 
                                    class="btn-action" 
                                    title="@L["Contact_SendEmailDirect"]"
                                    aria-label="@L["Contact_SendEmailDirect"]">
-                                    <i class="bi bi-send-fill"></i>
+                                    <BsIcon Name="send-fill" />
                                 </a>
                             </div>
                         </div>
@@ -42,7 +43,7 @@
                         <!-- Phone / WhatsApp Tile -->
                         <div class="channel-item">
                             <div class="channel-icon">
-                                <i class="bi bi-telephone-fill"></i>
+                                <BsIcon Name="telephone-fill" />
                             </div>
                             <div class="channel-content">
                                 <h4>@L["Contact_Phone"]</h4>
@@ -54,7 +55,8 @@
                                         data-copy="+90 531 627 53 29" 
                                         title="@L["Contact_CopyEmail"]"
                                         aria-label="Copy phone number">
-                                    <i class="bi bi-clipboard"></i>
+                                    <BsIcon Name="clipboard" Class="copy-icon-default" />
+                                    <BsIcon Name="check2" Class="copy-icon-copied text-success d-none" />
                                 </button>
                                 <a href="https://wa.me/905316275329" 
                                    target="_blank" 
@@ -62,7 +64,7 @@
                                    class="btn-action whatsapp-action" 
                                    title="@L["Contact_WhatsAppDirect"]"
                                    aria-label="@L["Contact_WhatsAppDirect"]">
-                                    <i class="bi bi-whatsapp"></i>
+                                    <BsIcon Name="whatsapp" />
                                 </a>
                             </div>
                         </div>
@@ -70,7 +72,7 @@
                         <!-- Location Tile -->
                         <div class="channel-item">
                             <div class="channel-icon">
-                                <i class="bi bi-geo-alt-fill"></i>
+                                <BsIcon Name="geo-alt-fill" />
                             </div>
                             <div class="channel-content">
                                 <h4>@L["Contact_Location"]</h4>
@@ -78,7 +80,7 @@
                             </div>
                             <div class="channel-badge">
                                 <div class="timezone-badge d-flex align-items-center gap-2" title="@L["Contact_TimezoneBadge"]">
-                                    <i class="bi bi-clock"></i>
+                                    <BsIcon Name="clock" />
                                     <div class="d-flex flex-column text-end">
                                         <span class="clock-time"><span id="istanbul-hour">--</span><span class="clock-colon">:</span><span id="istanbul-minute">--</span></span>
                                         <span class="clock-zone">GMT+3</span>
@@ -129,7 +131,8 @@
 
                         <!-- Inline Alert Container -->
                         <div id="form-alert" class="form-alert d-none" role="alert" aria-live="polite">
-                            <i id="form-alert-icon" class="bi me-2"></i>
+                            <BsIcon Name="check-circle-fill" id="form-alert-icon-success" Class="me-2 d-none" />
+                            <BsIcon Name="exclamation-triangle-fill" id="form-alert-icon-danger" Class="me-2 d-none" />
                             <span id="form-alert-message"></span>
                         </div>
 
@@ -137,7 +140,7 @@
                             <div class="col-md-6">
                                 <label for="name" class="form-label">@L["Contact_YourName"]</label>
                                 <div class="input-wrapper">
-                                    <i class="bi bi-person input-icon"></i>
+                                    <BsIcon Name="person" Class="input-icon" />
                                     <input id="name" 
                                            name="name"
                                            type="text" 
@@ -152,7 +155,7 @@
                             <div class="col-md-6">
                                 <label for="email" class="form-label">@L["Contact_YourEmail"]</label>
                                 <div class="input-wrapper">
-                                    <i class="bi bi-envelope input-icon"></i>
+                                    <BsIcon Name="envelope" Class="input-icon" />
                                     <input id="email" 
                                            name="email"
                                            type="email" 
@@ -166,7 +169,7 @@
                             <div class="col-12">
                                 <label for="subject" class="form-label">@L["Contact_Subject"]</label>
                                 <div class="input-wrapper">
-                                    <i class="bi bi-chat-left-dots input-icon"></i>
+                                    <BsIcon Name="chat-left-dots" Class="input-icon" />
                                     <input id="subject" 
                                            name="subject"
                                            type="text" 
@@ -196,7 +199,7 @@
                             <div class="col-12 pt-2">
                                 <button type="submit" class="btn btn-submit w-100" id="submit-btn">
                                     <span id="btn-text">
-                                        <i class="bi bi-send-fill me-2"></i>@L["Contact_SendEmail"]
+                                        <BsIcon Name="send-fill" Class="me-2" />@L["Contact_SendEmail"]
                                     </span>
                                     <span id="btn-spinner" class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
                                     <span id="btn-loading-text" class="d-none">@L["Contact_Sending"]</span>
@@ -215,7 +218,7 @@
     <div id="copyToast" class="toast align-items-center text-bg-dark border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body d-flex align-items-center gap-2">
-                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                <BsIcon Name="check-circle-fill" Class="text-success fs-5" />
                 <span id="copyToastText">@L["Contact_Copied"]</span>
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>

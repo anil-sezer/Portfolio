@@ -66,12 +66,14 @@ function initContactSection() {
                     await navigator.clipboard.writeText(textToCopy);
 
                     // Visual feedback on button
-                    const icon = btn.querySelector('i');
-                    if (icon) {
-                        const originalClass = icon.className;
-                        icon.className = 'bi bi-check2 text-success';
+                    const defaultIcon = btn.querySelector('.copy-icon-default');
+                    const copiedIcon = btn.querySelector('.copy-icon-copied');
+                    if (defaultIcon && copiedIcon) {
+                        defaultIcon.classList.add('d-none');
+                        copiedIcon.classList.remove('d-none');
                         setTimeout(() => {
-                            icon.className = originalClass;
+                            copiedIcon.classList.add('d-none');
+                            defaultIcon.classList.remove('d-none');
                         }, 2000);
                     }
 
@@ -152,7 +154,8 @@ function initContactSection() {
         const btnSpinner = document.getElementById('btn-spinner');
         const btnLoadingText = document.getElementById('btn-loading-text');
         const alertBox = document.getElementById('form-alert');
-        const alertIcon = document.getElementById('form-alert-icon');
+        const alertIconSuccess = document.getElementById('form-alert-icon-success');
+        const alertIconDanger = document.getElementById('form-alert-icon-danger');
         const alertMsg = document.getElementById('form-alert-message');
 
         const msgSuccess = form.dataset.msgSuccess || 'Thank you! Your message has been sent successfully.';
@@ -286,10 +289,11 @@ function initContactSection() {
         }
 
         function showAlert(type, message) {
-            if (!alertBox || !alertIcon || !alertMsg) return;
+            if (!alertBox || !alertMsg) return;
 
             alertBox.className = `form-alert form-alert-${type}`;
-            alertIcon.className = type === 'success' ? 'bi bi-check-circle-fill me-2' : 'bi bi-exclamation-triangle-fill me-2';
+            if (alertIconSuccess) alertIconSuccess.classList.toggle('d-none', type !== 'success');
+            if (alertIconDanger) alertIconDanger.classList.toggle('d-none', type === 'success');
             alertMsg.textContent = message;
             alertBox.classList.remove('d-none');
             alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

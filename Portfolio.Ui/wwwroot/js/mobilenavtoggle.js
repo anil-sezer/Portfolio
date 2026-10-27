@@ -22,19 +22,14 @@
     on('click', '.mobile-nav-toggle', function(e) {
         e.stopPropagation()
         select('body').classList.toggle('mobile-nav-active')
-        this.classList.toggle('bi-list')
-        this.classList.toggle('bi-x')
     })
 
     // Function to close mobile nav
     const closeMobileNav = () => {
         const body = select('body')
-        const toggle = select('.mobile-nav-toggle')
 
         if (body.classList.contains('mobile-nav-active')) {
             body.classList.remove('mobile-nav-active')
-            toggle.classList.remove('bi-x')
-            toggle.classList.add('bi-list')
         }
     }
 

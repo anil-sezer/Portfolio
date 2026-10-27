@@ -117,9 +117,11 @@
 }
 
 .nav-menu a i,
-.nav-menu a:focus i {
+.nav-menu a:focus i,
+.nav-menu a .bi,
+.nav-menu a:focus .bi {
     font-size: 20px;
-    padding-right: 10px;
+    margin-right: 10px;
     color: var(--text-nav-icon);
 }
 
@@ -135,7 +137,11 @@
 .nav-menu a:hover i,
 .nav-menu .active i,
 .nav-menu .active:focus i,
-.nav-menu li:hover>a i {
+.nav-menu li:hover>a i,
+.nav-menu a:hover .bi,
+.nav-menu .active .bi,
+.nav-menu .active:focus .bi,
+.nav-menu li:hover>a .bi {
     color: var(--color-celestial-blue);
 }
 
@@ -163,6 +169,18 @@
 
 .mobile-nav-active #header {
     left: 0;
+}
+
+.mobile-nav-toggle .mobile-nav-icon-close {
+    display: none;
+}
+
+.mobile-nav-active .mobile-nav-toggle .mobile-nav-icon-list {
+    display: none;
+}
+
+.mobile-nav-active .mobile-nav-toggle .mobile-nav-icon-close {
+    display: inline-block;
 }
 
 /*--------------------------------------------------------------

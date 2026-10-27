@@ -26,7 +26,8 @@
     margin-right: 10px;
 }
 
-.about .content ul i {
+.about .content ul i,
+.about .content ul ::deep .bi {
     font-size: 16px;
     margin-right: 5px;
     color: var(--accent-heading-line);

@@ -10,7 +10,18 @@
     <div class="d-flex flex-column">
 
         <div class="profile">
-            <img src="img/pp_pic.jpeg" class="img-fluid rounded-circle" alt="My profile pic. Lush forest background with me, turned to camera and slightly smiling."/>
+            <picture class="d-block">
+                <source type="image/avif" srcset="img/pp_pic-120.avif 1x, img/pp_pic-240.avif 2x" />
+                <source type="image/webp" srcset="img/pp_pic-120.webp 1x, img/pp_pic-240.webp 2x" />
+                <img src="img/pp_pic-120.jpg"
+                     srcset="img/pp_pic-120.jpg 1x, img/pp_pic-240.jpg 2x"
+                     width="120"
+                     height="120"
+                     class="img-fluid rounded-circle"
+                     alt="My profile pic. Lush forest background with me, turned to camera and slightly smiling."
+                     loading="lazy"
+                     decoding="async" />
+            </picture>
             <h1 class="text-light"><a asp-page="@nameof(Index)">Anıl Sezer</a></h1>
             
             @{

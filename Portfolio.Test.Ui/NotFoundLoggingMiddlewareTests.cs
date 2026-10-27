@@ -8,6 +8,7 @@ using Portfolio.Grpc;
 using Portfolio.Test.Shared;
 using Portfolio.Ui.Middlewares;
 using Portfolio.Ui.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Ui;
 
@@ -31,7 +32,7 @@ public class NotFoundLoggingMiddlewareTests
                 It.IsAny<CancellationToken>()))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(new Empty()));
 
-        var logService = new LogVisitService(mockClient.Object);
+        var logService = new LogVisitService(mockClient.Object, NullLogger<LogVisitService>.Instance);
 
         return (context, mockAccessor, mockClient, logService);
     }
@@ -44,7 +45,7 @@ public class NotFoundLoggingMiddlewareTests
         // Arrange
         var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
         RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -67,7 +68,7 @@ public class NotFoundLoggingMiddlewareTests
         // Arrange
         var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
         RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -93,7 +94,7 @@ public class NotFoundLoggingMiddlewareTests
             .Throws(new RpcException(new Status(StatusCode.Unavailable, "Service unavailable")));
 
         RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         var act = async () => await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -115,7 +116,7 @@ public class NotFoundLoggingMiddlewareTests
             .Throws(new OperationCanceledException());
 
         RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         var act = async () => await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -134,7 +135,7 @@ public class NotFoundLoggingMiddlewareTests
             ctx.Response.StatusCode = 404;
             return Task.CompletedTask;
         };
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -153,7 +154,7 @@ public class NotFoundLoggingMiddlewareTests
         // Arrange
         var (context, mockAccessor, _, logService) = CreateContextAndServices(200);
         RequestDelegate next = _ => throw new InvalidOperationException("Downstream middleware error");
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         var act = async () => await middleware.InvokeAsync(context, logService, mockAccessor.Object);
@@ -173,7 +174,7 @@ public class NotFoundLoggingMiddlewareTests
         // Arrange
         var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
         RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next);
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
         // Act
         await middleware.InvokeAsync(context, logService, mockAccessor.Object);

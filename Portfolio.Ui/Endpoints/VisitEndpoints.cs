@@ -19,6 +19,7 @@ public static class VisitEndpoints
         Dictionary<string, string> viaJavascript,
         LogVisitService logVisitService,
         IHttpContextAccessor httpContextAccessor,
+        ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -32,7 +33,8 @@ public static class VisitEndpoints
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to log visit info via API");
+            var logger = loggerFactory.CreateLogger("Portfolio.Ui.Endpoints.VisitEndpoints");
+            logger.LogError(ex, "Failed to log visit info via API");
             return Results.StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

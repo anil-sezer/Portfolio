@@ -6,6 +6,7 @@ using Portfolio.Domain.Entities;
 using Portfolio.Grpc;
 using Portfolio.Grpc.Services;
 using Portfolio.Test.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 using DomainSource = Portfolio.Domain.Enums.ImageOfTheDaySource;
 using GrpcSource = Portfolio.Grpc.ImageOfTheDaySource;
 
@@ -20,7 +21,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         // Older image
@@ -82,7 +83,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         // Act
@@ -102,7 +103,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails
@@ -132,7 +133,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.NotFound);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails
@@ -160,7 +161,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails
@@ -188,7 +189,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler((_, _) => throw new HttpRequestException("DNS resolution failed"));
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails
@@ -217,7 +218,7 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(dbContext, httpClient);
+        var service = new BackgroundImageServices(dbContext, httpClient, NullLogger<BackgroundImageServices>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails

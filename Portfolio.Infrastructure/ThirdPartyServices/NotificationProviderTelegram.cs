@@ -3,11 +3,11 @@ using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
 using Portfolio.Infrastructure.Extensions;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Portfolio.Infrastructure.ThirdPartyServices;
 
-public class NotificationProviderTelegram(HttpClient httpClient) : INotificationProvider
+public class NotificationProviderTelegram(HttpClient httpClient, ILogger<NotificationProviderTelegram> logger) : INotificationProvider
 {
     public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
@@ -35,7 +35,7 @@ public class NotificationProviderTelegram(HttpClient httpClient) : INotification
         }
         catch (Exception e)
         {
-            Log.Fatal("Failed to send Telegram notification: {Message}", e.Message);
+            logger.LogError(e, "Failed to send Telegram notification: {Message}", e.Message);
             
             return new SendNotificationResultDto
             {

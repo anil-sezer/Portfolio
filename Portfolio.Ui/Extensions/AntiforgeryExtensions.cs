@@ -12,7 +12,8 @@ public static class AntiforgeryExtensions
             var isValid = await antiforgery.IsRequestValidAsync(context.HttpContext);
             if (!isValid)
             {
-                Log.Warning("Antiforgery token validation failed for {Path} from {ClientIp}",
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("AntiforgeryValidation");
+                logger.LogWarning("Antiforgery token validation failed for {Path} from {ClientIp}",
                     context.HttpContext.Request.Path,
                     context.HttpContext.GetClientIpAddress());
                 return Results.BadRequest(new { message = "Antiforgery token validation failed." });

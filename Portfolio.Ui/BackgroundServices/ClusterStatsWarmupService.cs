@@ -2,7 +2,7 @@ using Portfolio.Ui.Services;
 
 namespace Portfolio.Ui.BackgroundServices;
 
-public class ClusterStatsWarmupService(IServiceProvider serviceProvider) : BackgroundService
+public class ClusterStatsWarmupService(IServiceProvider serviceProvider, ILogger<ClusterStatsWarmupService> logger) : BackgroundService
 {
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(30);
 
@@ -33,7 +33,7 @@ public class ClusterStatsWarmupService(IServiceProvider serviceProvider) : Backg
         }
         catch (Exception ex)
         {
-            Log.Warning(ex, "Failed to refresh cluster stats in background: {Message}", ex.Message);
+            logger.LogWarning(ex, "Failed to refresh cluster stats in background: {Message}", ex.Message);
         }
     }
 }

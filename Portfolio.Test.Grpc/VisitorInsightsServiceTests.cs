@@ -4,6 +4,7 @@ using Portfolio.Domain.Entities;
 using Portfolio.Grpc;
 using Portfolio.Grpc.Services.VisitorInsightsServices;
 using Portfolio.Test.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Grpc;
 
@@ -36,7 +37,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Matching: IP present, city and country empty
@@ -73,7 +74,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Act
@@ -89,7 +90,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         var log1 = CreateRequestLog("1.1.1.1", "", "");
@@ -113,7 +114,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         var log = CreateRequestLog("198.51.100.10", "", "");
@@ -146,7 +147,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new PersistCheckedIpsRequest();
@@ -171,7 +172,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext);
+        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
         var context = TestServerCallContext.Create();
 
         var logs = Enumerable.Range(1, VisitorInsightsService.MaxBatchSize + 15)

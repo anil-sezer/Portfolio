@@ -3,8 +3,14 @@ using Portfolio.Infrastructure;
 
 namespace Portfolio.Grpc.Services;
 
-public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient httpClient) : BackgroundImages.BackgroundImagesBase
+public partial class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient httpClient, ILogger<BackgroundImageServices> logger) : BackgroundImages.BackgroundImagesBase
 {
+    [LoggerMessage(EventId = 1001, Level = LogLevel.Information, Message = "Serving this background image: {ImageUrl}")]
+    private static partial void LogServingBackgroundImage(ILogger logger, string imageUrl);
+
+    [LoggerMessage(EventId = 1002, Level = LogLevel.Error, Message = "Cannot get a background image from the database. Frontend will decide what to serve.")]
+    private static partial void LogMissingBackgroundImage(ILogger logger);
+
     public override async Task<BackgroundImageDetails> Get(Empty request, ServerCallContext context)
     {
         var img = await GetLatestBackgroundImageDetailsAsync(context.CancellationToken);
@@ -40,11 +46,11 @@ public class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient ht
 
         if (img != null)
         {
-            Log.Information("Serving this background image: {ImageUrl}", img.ImageUrl);
+            LogServingBackgroundImage(logger, img.ImageUrl);
             return img;
         }
 
-        Log.Error("Cannot get a background image from the database. Frontend will decide what to serve.");
+        LogMissingBackgroundImage(logger);
         return new DailyImage
         {
             ImageUrl = "",

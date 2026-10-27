@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
@@ -8,12 +7,12 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 
 namespace Portfolio.Grpc.Services.SendEmailToAdmin;
 
-public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotificationProviderFactory notificationProviderFactory): Grpc.SendEmailToAdmin.SendEmailToAdminBase
+public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotificationProviderFactory notificationProviderFactory, ILogger<SendNotificationToAdminService> logger): Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
     // todo: I wanna use MediatR here
     public override async Task<SendResponse> Send(SendRequest request, ServerCallContext context)
     {
-        Log.Information("📧 Request to log: {Log}", JsonSerializer.Serialize(request));
+        logger.LogInformation("📧 Contact notification received for subject: {Subject}", request.Subject);
         
         var emailDto = MapToEmailDto(request);
 
@@ -28,7 +27,7 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
         var result = await SendNotificationToAdminAsync(emailDto, context.CancellationToken);
         if (!result.IsItSentSuccessfully)
         {
-            Log.Error("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
+            logger.LogError("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
             await StoreNotificationAtDb(emailDto, false, context.CancellationToken);
             return new SendResponse
             {

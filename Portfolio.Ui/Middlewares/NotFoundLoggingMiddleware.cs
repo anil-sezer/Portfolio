@@ -2,7 +2,7 @@ using Portfolio.Ui.Services;
 
 namespace Portfolio.Ui.Middlewares;
 
-public class NotFoundLoggingMiddleware(RequestDelegate next)
+public class NotFoundLoggingMiddleware(RequestDelegate next, ILogger<NotFoundLoggingMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context, LogVisitService logVisitService, IHttpContextAccessor httpContextAccessor)
     {
@@ -10,7 +10,7 @@ public class NotFoundLoggingMiddleware(RequestDelegate next)
 
         if (context.Response.StatusCode is 404 or 302)
         {
-            Log.Information("🚫 Not Found: {RequestedUrl}", context.Request.Path.ToString());
+            logger.LogInformation("🚫 Not Found: {RequestedUrl}", context.Request.Path.ToString());
 
             try
             {
@@ -22,7 +22,7 @@ public class NotFoundLoggingMiddleware(RequestDelegate next)
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to log visit for 404/302 response");
+                logger.LogError(ex, "Failed to log visit for 404/302 response");
             }
         }
     }

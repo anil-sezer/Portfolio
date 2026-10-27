@@ -7,6 +7,7 @@ using Portfolio.Grpc;
 using Portfolio.Test.Shared;
 using Portfolio.Ui.Models;
 using Portfolio.Ui.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Ui;
 
@@ -27,7 +28,7 @@ public class BackgroundImageServiceTests : IDisposable
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         var mockClient = new Mock<BackgroundImages.BackgroundImagesClient>();
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync();
@@ -60,7 +61,7 @@ public class BackgroundImageServiceTests : IDisposable
         };
         memoryCache.Set("background_image", preCached);
 
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync();
@@ -88,7 +89,7 @@ public class BackgroundImageServiceTests : IDisposable
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act: First call (cache miss)
         var result = await service.GetFromCacheAsync();
@@ -127,7 +128,7 @@ public class BackgroundImageServiceTests : IDisposable
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync();
@@ -157,7 +158,7 @@ public class BackgroundImageServiceTests : IDisposable
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync(cts.Token);
@@ -178,7 +179,7 @@ public class BackgroundImageServiceTests : IDisposable
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
             .Throws(new RpcException(new Status(StatusCode.Unavailable, "gRPC service down")));
 
-        var service = new BackgroundImageService(mockClient.Object, memoryCache);
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance);
 
         // Act
         var act = async () => await service.GetFromCacheAsync();

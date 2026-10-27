@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace Portfolio.Grpc.Services.VisitorInsightsServices;
@@ -9,7 +8,6 @@ public partial class VisitorInsightsService
 
     public override async Task<GetIpsToCheckResponse> GetIpsToCheck(Empty request, ServerCallContext context)
     {
-        Log.Information("Request to log: {Log}", JsonSerializer.Serialize(request));
 
         var ips = await dbContext.RequestLogs
             .AsNoTracking()
@@ -29,7 +27,7 @@ public partial class VisitorInsightsService
         var response = new GetIpsToCheckResponse();
         response.Ips.AddRange(ips);
         
-        Log.Information("✅ Sent {IpCount} ips for checking", response.Ips.Count);
+        logger.LogInformation("✅ Sent {IpCount} ips for checking", response.Ips.Count);
         return response;
     }
 }

@@ -6,7 +6,10 @@ using Portfolio.Ui.Models;
 
 namespace Portfolio.Ui.Services;
 
-public class BackgroundImageService(BackgroundImages.BackgroundImagesClient backgroundImagesClient, IMemoryCache memoryCache)
+public class BackgroundImageService(
+    BackgroundImages.BackgroundImagesClient backgroundImagesClient,
+    IMemoryCache memoryCache,
+    ILogger<BackgroundImageService> logger)
 {
     private const string FallbackBackgroundImage = "https://raw.githubusercontent.com/anil-sezer/Portfolio/prod/Portfolio.Ui/wwwroot/img/default-bg.jpg";
     private const string FallbackAltText = "A lush, tropical landscape with a dramatic view of a conical mountain in the distance, possibly a volcano, surrounded by layers of rolling hills and dense forests. The sky above features a stunning mix of colors and clouds.";
@@ -19,11 +22,11 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
             return new() { Url = FallbackBackgroundImage, AltText = FallbackAltText, Source = ImageOfTheDaySource.Bing };
         
         var response = await backgroundImagesClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
-        Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(backgroundImagesClient.GetAsync), response.Url);
+        logger.LogInformation("📨 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(backgroundImagesClient.GetAsync), response.Url);
 
         if (response.Source == ImageOfTheDaySource.None)
         {
-            Log.Error("\u274c There is no image of the day available at gRPC, serving default bg img.");
+            logger.LogError("❌ There is no image of the day available at gRPC, serving default bg img.");
             return new()
             {
                 Url = FallbackBackgroundImage,
@@ -43,7 +46,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
     {
         if (memoryCache.TryGetValue(CacheKey, out BackgroundImageModel? cachedImage) && cachedImage != null)
         {
-            Log.Information("📦 Background image retrieved from cache");
+            logger.LogInformation("📦 Background image retrieved from cache");
             return cachedImage;
         }
 
@@ -55,7 +58,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
         };
         
         memoryCache.Set(CacheKey, image, cacheOptions);
-        Log.Information("💾 Background image added to cache with 23-hour expiration");
+        logger.LogInformation("💾 Background image added to cache with 23-hour expiration");
         
         return image;
     }

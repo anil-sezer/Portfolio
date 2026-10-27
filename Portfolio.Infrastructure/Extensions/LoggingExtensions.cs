@@ -8,6 +8,8 @@ namespace Portfolio.Infrastructure.Extensions;
 
 public static class LoggingExtensions
 {
+    private const string ConsoleOutputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+
     public static void InitLogsWithSerilog(this WebApplicationBuilder builder)
     {
         builder.Services.AddSerilog((services, lc) =>
@@ -18,8 +20,8 @@ public static class LoggingExtensions
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .MinimumLevel.Override("System.Net.Http.HttpClient", LogEventLevel.Warning)
                 .MinimumLevel.Override("Grpc", LogEventLevel.Warning)
-                .Enrich.FromLogContext() // todo: For UseSerilogRequestLogging?
-                .WriteTo.Console();
+                .Enrich.FromLogContext()
+                .WriteTo.Console(outputTemplate: ConsoleOutputTemplate);
 
             if (!EnvVars.IsDevelopment())
             {

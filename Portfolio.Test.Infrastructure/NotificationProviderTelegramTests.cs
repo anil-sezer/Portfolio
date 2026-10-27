@@ -4,6 +4,7 @@ using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
 using Portfolio.Infrastructure.ThirdPartyServices;
 using Portfolio.Test.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Infrastructure;
 
@@ -43,7 +44,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -80,7 +81,7 @@ public class NotificationProviderTelegramTests : IDisposable
         // Arrange
         var handler = new MockHttpMessageHandler(HttpStatusCode.InternalServerError);
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -105,7 +106,7 @@ public class NotificationProviderTelegramTests : IDisposable
         // Arrange
         var handler = new MockHttpMessageHandler((_, _) => throw new HttpRequestException("Network failure"));
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -144,7 +145,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -177,7 +178,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         // Contains markdown special characters: . ! _ - * [ ] ( )
         var dto = new NotificationDto
@@ -216,7 +217,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -246,7 +247,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {
@@ -279,7 +280,7 @@ public class NotificationProviderTelegramTests : IDisposable
         });
 
         var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
 
         var dto = new NotificationDto
         {

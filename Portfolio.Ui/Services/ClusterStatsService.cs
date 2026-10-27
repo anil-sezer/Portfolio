@@ -3,7 +3,10 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Portfolio.Ui.Services;
 
-public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemoryCache memoryCache)
+public class ClusterStatsService(
+    K8sStats.K8sStatsClient k8SStatsClient,
+    IMemoryCache memoryCache,
+    ILogger<ClusterStatsService> logger)
 {
     private const string CacheKey = "k8s_stats";
     private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
@@ -27,7 +30,7 @@ public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemory
         };
 
         memoryCache.Set(CacheKey, stats, cacheOptions);
-        Log.Information("💾 K8s stats updated in cache");
+        logger.LogInformation("💾 K8s stats updated in cache");
 
         return stats;
     }
@@ -35,7 +38,7 @@ public class ClusterStatsService(K8sStats.K8sStatsClient k8SStatsClient, IMemory
     private async Task<GetK8sStatsResponse> GetFromGrpcAsync(CancellationToken cancellationToken = default)
     {
         var response = await k8SStatsClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
-        Log.Information("📨 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
+        logger.LogInformation("📨 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
 
         return response;
     }

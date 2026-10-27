@@ -144,9 +144,8 @@ public static class ClientInfoRequestFactory
             {
                 return (T)Convert.ChangeType(value, typeof(T));
             }
-            catch (Exception e)
+            catch
             {
-                Log.Warning(e, "Error while converting {Value} to {Type}", value, typeof(T));
                 return defaultValue; // Prevent crashes on invalid types
             }
         }
@@ -185,7 +184,8 @@ public static class ClientInfoRequestFactory
         }
         catch (Exception e)
         {
-            Log.Error(e, "Error while serializing request headers: {Error}", e.Message);
+            var logger = httpContextAccessor.HttpContext?.RequestServices.GetService<ILoggerFactory>()?.CreateLogger(nameof(ClientInfoRequestFactory));
+            logger?.LogError(e, "Error while serializing request headers: {Error}", e.Message);
             return "{}";
         }
     }

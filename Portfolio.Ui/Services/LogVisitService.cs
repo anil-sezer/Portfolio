@@ -2,7 +2,7 @@ using Portfolio.Ui.Factories;
 
 namespace Portfolio.Ui.Services;
 
-public class LogVisitService(VisitorInsights.VisitorInsightsClient visitorInsightsClient)
+public class LogVisitService(VisitorInsights.VisitorInsightsClient visitorInsightsClient, ILogger<LogVisitService> logger)
 {
     public async Task LogVisitToWebpageAsync(IHttpContextAccessor httpContextAccessor, CancellationToken cancellationToken = default)
     {
@@ -23,15 +23,15 @@ public class LogVisitService(VisitorInsights.VisitorInsightsClient visitorInsigh
         try
         {
             await visitorInsightsClient.StoreVisitorInfoAsync(request, cancellationToken: cancellationToken);
-            Log.Information("📨 Sent a gRPC request to {ServiceName}", nameof(VisitorInsights.VisitorInsightsClient.StoreVisitorInfoAsync));
+            logger.LogInformation("📨 Sent a gRPC request to {ServiceName}", nameof(VisitorInsights.VisitorInsightsClient.StoreVisitorInfoAsync));
         }
         catch (OperationCanceledException)
         {
-            Log.Warning("Logging visit to gRPC was cancelled");
+            logger.LogWarning("Logging visit to gRPC was cancelled");
         }
         catch (Exception e)
         {
-            Log.Error("❌ Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
+            logger.LogError("❌ Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
         }
     }
 }

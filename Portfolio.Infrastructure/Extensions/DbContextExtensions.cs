@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Portfolio.Infrastructure.Helpers;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Portfolio.Infrastructure.Extensions;
 
@@ -51,18 +51,18 @@ public static class DbContextExtensions
 
         try
         {
-            Log.Information("Applying database migrations in development environment...");
+            app.Logger.LogInformation("Applying database migrations in development environment...");
             await using var scope = app.Services.CreateAsyncScope();
             var context = scope.ServiceProvider.GetService<PortfolioDbContext>();
             if (context is null || !context.Database.IsRelational())
                 return;
 
             await context.Database.MigrateAsync(cancellationToken);
-            Log.Information("Database migrations applied successfully");
+            app.Logger.LogInformation("Database migrations applied successfully");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occurred while applying database migrations in development environment");
+            app.Logger.LogError(ex, "An error occurred while applying database migrations in development environment");
             throw;
         }
     }

@@ -3,7 +3,7 @@ using Portfolio.Domain.Interfaces.BackgroundServices;
 
 namespace Portfolio.Grpc.BackgroundServices;
 
-public class DatabaseOperationQueueWorker(IServiceProvider serviceProvider) : BackgroundService
+public class DatabaseOperationQueueWorker(IServiceProvider serviceProvider, ILogger<DatabaseOperationQueueWorker> logger) : BackgroundService
 {
     private static readonly Channel<IDatabaseOperationQueueWorker> Channel = System.Threading.Channels.Channel.CreateUnbounded<IDatabaseOperationQueueWorker>();
 
@@ -24,7 +24,7 @@ public class DatabaseOperationQueueWorker(IServiceProvider serviceProvider) : Ba
             catch (Exception ex)
             {
                 // Log error but continue processing
-                Log.Error(ex, "Failed to execute background database operation");
+                logger.LogError(ex, "Failed to execute background database operation");
             }
         }
     }

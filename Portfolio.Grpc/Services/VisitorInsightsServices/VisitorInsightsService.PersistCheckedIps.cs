@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace Portfolio.Grpc.Services.VisitorInsightsServices;
@@ -7,9 +6,7 @@ public partial class VisitorInsightsService
 {
     public override async Task<Empty> PersistCheckedIps(PersistCheckedIpsRequest request, ServerCallContext context)
     {
-        Log.Information("Request to log: {Log}", JsonSerializer.Serialize(request));
-        
-        Log.Information("✅ Received {IpCount} ips for handling", request.CheckedIps.Count);
+        logger.LogInformation("✅ Received {IpCount} ips for handling", request.CheckedIps.Count);
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
@@ -59,7 +56,7 @@ public partial class VisitorInsightsService
             }
             else
             {
-                Log.Warning("Request log with id {Id} not found to update city country information", ip.EntityId);
+                logger.LogWarning("Request log with id {Id} not found to update city country information", ip.EntityId);
             }
         }
     }

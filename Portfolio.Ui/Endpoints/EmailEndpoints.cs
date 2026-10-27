@@ -18,8 +18,10 @@ public static class EmailEndpoints
     private static async Task<EmailSendResponse> SendEmail(
         EmailFormModel request,
         SendEmailToAdmin.SendEmailToAdminClient emailClient,
+        ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
+        var logger = loggerFactory.CreateLogger("Portfolio.Ui.Endpoints.EmailEndpoints");
         try
         {
             var grpcRequest = new SendRequest
@@ -38,12 +40,12 @@ public static class EmailEndpoints
         }
         catch (OperationCanceledException ex)
         {
-            Log.Warning(ex, "Email sending request was canceled");
+            logger.LogWarning(ex, "Email sending request was canceled");
             return new EmailSendResponse(false, ResultCode.Error);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Failed to send email");
+            logger.LogError(ex, "Failed to send email");
             return new EmailSendResponse(false, ResultCode.Error);
         }
     }

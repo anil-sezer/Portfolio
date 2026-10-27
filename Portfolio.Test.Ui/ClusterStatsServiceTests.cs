@@ -6,6 +6,7 @@ using Moq;
 using Portfolio.Grpc;
 using Portfolio.Test.Shared;
 using Portfolio.Ui.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Ui;
 
@@ -28,7 +29,7 @@ public class ClusterStatsServiceTests
         };
         memoryCache.Set("k8s_stats", preCached);
 
-        var service = new ClusterStatsService(mockClient.Object, memoryCache);
+        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync();
@@ -58,7 +59,7 @@ public class ClusterStatsServiceTests
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new ClusterStatsService(mockClient.Object, memoryCache);
+        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
 
         // Act: First call (cache miss)
         var result = await service.GetFromCacheAsync();
@@ -89,7 +90,7 @@ public class ClusterStatsServiceTests
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(firstResponse))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(secondResponse));
 
-        var service = new ClusterStatsService(mockClient.Object, memoryCache);
+        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
 
         // Act 1: Initial refresh
         var res1 = await service.RefreshCacheAsync();
@@ -116,7 +117,7 @@ public class ClusterStatsServiceTests
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new ClusterStatsService(mockClient.Object, memoryCache);
+        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
 
         // Act
         var result = await service.GetFromCacheAsync(cts.Token);
@@ -138,7 +139,7 @@ public class ClusterStatsServiceTests
         mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
             .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
 
-        var service = new ClusterStatsService(mockClient.Object, memoryCache);
+        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
 
         // Act
         var result = await service.RefreshCacheAsync(cts.Token);

@@ -8,6 +8,7 @@ using Portfolio.Grpc;
 using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Infrastructure.ThirdPartyServices;
 using Portfolio.Test.Shared;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Grpc;
 
@@ -22,7 +23,7 @@ public class SendNotificationToAdminServiceTests
         var mockProvider = new Mock<INotificationProvider>();
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Seed an identical notification sent 10 minutes ago
@@ -71,7 +72,7 @@ public class SendNotificationToAdminServiceTests
 
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new SendRequest
@@ -111,7 +112,7 @@ public class SendNotificationToAdminServiceTests
 
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         var request = new SendRequest
@@ -151,7 +152,7 @@ public class SendNotificationToAdminServiceTests
 
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Seed an identical notification sent 70 minutes ago (> 1 hour)
@@ -200,7 +201,7 @@ public class SendNotificationToAdminServiceTests
 
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Seed an email sent 5 minutes ago with DIFFERENT subject and message
@@ -240,7 +241,7 @@ public class SendNotificationToAdminServiceTests
         var mockProvider = new Mock<INotificationProvider>();
         mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
 
-        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object);
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
         var context = TestServerCallContext.Create();
 
         // Seed a FAILED notification attempt sent 15 minutes ago

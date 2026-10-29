@@ -14,17 +14,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Protobuf" Version="3.35.1" />
-        <PackageReference Include="Grpc.HealthCheck" Version="2.84.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.80.0" />
-        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.80.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.82.0">
+        <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+        <PackageReference Include="Grpc.HealthCheck" Version="2.85.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.85.0" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.85.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.85.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.10.0-beta.1" />
-        <PackageReference Include="SkiaSharp" Version="3.119.4" />
-        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.4" />
+        <PackageReference Include="SkiaSharp" Version="4.154.0" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.154.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -8,10 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
-        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.84.0" />
-        <PackageReference Include="KubernetesClient" Version="19.0.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+        <PackageReference Include="Grpc.AspNetCore" Version="2.85.0" />
+        <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.85.0" />
+        <PackageReference Include="KubernetesClient" Version="21.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

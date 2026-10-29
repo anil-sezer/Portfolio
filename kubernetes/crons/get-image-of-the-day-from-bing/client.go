@@ -22,7 +22,7 @@ func setupConnection() *grpc.ClientConn {
 	return conn
 }
 
-func SendUrlToGrpc(url string) {
+func SendUrlToGrpc(url string, altText string) {
 
 	conn := setupConnection()
 	//client := pb.NewBingPersistImageServiceClient(conn)
@@ -33,7 +33,7 @@ func SendUrlToGrpc(url string) {
 
 	res, err := client.Persist(ctx, &pb.BackgroundImageDetails{
 		Url:     url,
-		AltText: "", // You can set this to an appropriate value if needed
+		AltText: altText,
 		Source:  pb.ImageOfTheDaySource_Bing,
 	})
 	if err != nil {

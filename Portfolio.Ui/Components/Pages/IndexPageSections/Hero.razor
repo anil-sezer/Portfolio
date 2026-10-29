@@ -4,7 +4,34 @@
 
 @if (_backgroundImg != null)
 {
-    <section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImg.Url) top center; background-size: cover;" alt="@_backgroundImg.AltText">
+    var mobileImageUrl = _backgroundImg.IsFallback ? Assets[_backgroundImg.MobileImageUrl] : _backgroundImg.MobileImageUrl;
+    var desktopImageUrl = _backgroundImg.IsFallback ? Assets[_backgroundImg.DesktopImageUrl] : _backgroundImg.DesktopImageUrl;
+
+    <HeadContent>
+        <link rel="preload"
+              as="image"
+              type="image/webp"
+              href="@mobileImageUrl"
+              media="(max-width: 768px)"
+              fetchpriority="high" />
+        <link rel="preload"
+              as="image"
+              type="image/webp"
+              href="@desktopImageUrl"
+              media="(min-width: 769px)"
+              fetchpriority="high" />
+    </HeadContent>
+
+    <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+        <picture>
+            <source media="(max-width: 768px)" srcset="@mobileImageUrl" type="image/webp" />
+            <img class="hero-bg"
+                 src="@desktopImageUrl"
+                 alt="@_backgroundImg.AltText"
+                 width="1920"
+                 height="1080"
+                 fetchpriority="high" />
+        </picture>
         <div class="hero-container">
             <h1>@L["Hero_Title"]</h1>
             <p>@L["Hero_Greeting"]</p>

@@ -8,5 +8,6 @@ public static class ApiEndpointExtensions
     {
         app.MapEmailEndpoints();
         app.MapVisitEndpoints();
+        app.MapHeroImageEndpoints();
     }
 }

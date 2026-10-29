@@ -6,22 +6,51 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type bingImageResponse struct {
 	Images []struct {
-		URLBase string `json:"urlbase"`
+		URLBase   string `json:"urlbase"`
+		Title     string `json:"title"`
+		Copyright string `json:"copyright"`
 	} `json:"images"`
 }
 
-func GetDailyImageUrl() (string, error) {
+func GetDailyImageDetails() (string, string, error) {
 	jsonObject, err := downloadJson()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	urlBase := "https://www.bing.com" + jsonObject.Images[0].URLBase
-	return urlBase + "_1920x1080.jpg", nil
+	if len(jsonObject.Images) == 0 {
+		return "", "", fmt.Errorf("no images found in Bing response")
+	}
+
+	img := jsonObject.Images[0]
+	urlBase := "https://www.bing.com" + img.URLBase
+	altText := buildAltText(img.Title, img.Copyright)
+
+	return urlBase + "_1920x1080.jpg", altText, nil
+}
+
+func buildAltText(title, copyright string) string {
+	title = strings.TrimSpace(title)
+	copyright = strings.TrimSpace(copyright)
+
+	if title != "" && copyright != "" {
+		if strings.HasPrefix(strings.ToLower(copyright), strings.ToLower(title)) {
+			return copyright
+		}
+		return fmt.Sprintf("%s - %s", title, copyright)
+	}
+	if copyright != "" {
+		return copyright
+	}
+	if title != "" {
+		return title
+	}
+	return "Daily featured background photograph from Bing Wallpaper"
 }
 
 func downloadJson() (*bingImageResponse, error) {

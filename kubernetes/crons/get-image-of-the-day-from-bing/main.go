@@ -19,15 +19,16 @@ func main() {
 }
 
 func processBingImage() {
-	url, err := GetDailyImageUrl()
+	url, altText, err := GetDailyImageDetails()
 	if err != nil {
 		log.Fatalf("Failed to get daily image URL: %v", err)
 	}
 	fmt.Println("Daily Image URL:", url)
+	fmt.Println("Daily Image AltText:", altText)
 
-	if IsValidImageUrl(url) == false {
-		log.Fatalf("Failed to get daily image URL: %v", err)
+	if !IsValidImageUrl(url) {
+		log.Fatalf("Daily image URL is not valid: %s", url)
 	}
 
-	SendUrlToGrpc(url)
+	SendUrlToGrpc(url, altText)
 }

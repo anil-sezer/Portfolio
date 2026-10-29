@@ -23,6 +23,8 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.10.0-beta.1" />
+        <PackageReference Include="SkiaSharp" Version="3.119.4" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +37,12 @@
     <ItemGroup>
       <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
       <ProjectReference Include="..\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Portfolio.Test.Ui</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 
 </Project>

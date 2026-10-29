@@ -15,10 +15,10 @@
 
         <div class="profile">
             <picture class="d-block">
-                <source type="image/avif" srcset="img/pp_pic-240.avif 1x, img/pp_pic-400.avif 2x" />
-                <source type="image/webp" srcset="img/pp_pic-240.webp 1x, img/pp_pic-400.webp 2x" />
-                <img src="img/pp_pic-240.jpg"
-                     srcset="img/pp_pic-240.jpg 1x, img/pp_pic-400.jpg 2x"
+                <source type="image/avif" srcset="@Assets["img/pp_pic-240.avif"] 1x, @Assets["img/pp_pic-400.avif"] 2x" />
+                <source type="image/webp" srcset="@Assets["img/pp_pic-240.webp"] 1x, @Assets["img/pp_pic-400.webp"] 2x" />
+                <img src="@Assets["img/pp_pic-240.jpg"]"
+                     srcset="@Assets["img/pp_pic-240.jpg"] 1x, @Assets["img/pp_pic-400.jpg"] 2x"
                      width="240"
                      height="240"
                      class="img-fluid rounded-circle"
@@ -26,7 +26,7 @@
                      loading="lazy"
                      decoding="async" />
             </picture>
-            <h1 class="text-light"><a asp-page="@nameof(Index)">Anıl Sezer</a></h1>
+            <h1 class="text-light"><a href="/">Anıl Sezer</a></h1>
             
             @{
                 var currentCulture = CultureInfo.CurrentUICulture.Name;

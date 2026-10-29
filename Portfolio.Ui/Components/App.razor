@@ -158,22 +158,21 @@
     <meta name="twitter:description" content="@description">
     <meta name="twitter:image" content="@imageUrl">
 
-    <ImportMap/> @* todo: Whats this? *@
+    <ImportMap />
     <HeadOutlet />
 </head>
 
 <body data-log-visit-url="@VisitEndpoints.Route">
 <AntiforgeryToken />
 <Routes />
-<script src="_framework/blazor.web.js"></script>
-<script src="lib/oneko/oneko.js" defer></script>
-<script src="js/backtotop.js" defer></script>
-<script src="js/mobilenavtoggle.js" defer></script>
+<script src="@Assets["lib/oneko/oneko.js"]" defer></script>
+<script src="@Assets["js/backtotop.js"]" defer></script>
+<script src="@Assets["js/mobilenavtoggle.js"]" defer></script>
 
-<script src="js/contact.js" type="module"></script>
-<script src="js/navobserver.js" defer></script>
-<script src="js/clusterInfo.js" type="module"></script>
-<script src="js/logVisits.js" type="module"></script>
+<script src="@Assets["js/contact.js"]" type="module"></script>
+<script src="@Assets["js/navobserver.js"]" defer></script>
+<script src="@Assets["js/clusterInfo.js"]" type="module"></script>
+<script src="@Assets["js/logVisits.js"]" type="module"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
 

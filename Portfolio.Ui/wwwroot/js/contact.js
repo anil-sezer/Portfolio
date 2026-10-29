@@ -501,11 +501,9 @@ function initContactSection() {
         });
     }
 
-    // Initialize when DOM is ready or after Blazor enhanced navigation
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initContactSection);
     } else {
         initContactSection();
     }
-
-    document.addEventListener('blazor:enhancedload', initContactSection);

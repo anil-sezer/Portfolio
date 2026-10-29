@@ -42,8 +42,20 @@ async function logVisit() {
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', logVisit);
-} else {
-    logVisit();
+function scheduleLogVisit() {
+    const onIdle = () => {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => logVisit(), { timeout: 4000 });
+        } else {
+            setTimeout(logVisit, 2500);
+        }
+    };
+
+    if (document.readyState === 'complete') {
+        onIdle();
+    } else {
+        window.addEventListener('load', onIdle, { once: true });
+    }
 }
+
+scheduleLogVisit();

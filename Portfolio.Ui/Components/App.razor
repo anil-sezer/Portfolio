@@ -83,10 +83,14 @@
     <link rel="stylesheet" href="@Assets["css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["css/variables.css"]" />
     <link rel="stylesheet" href="@Assets["css/main.css"]"/>
-    <link rel="stylesheet" href="@Assets["css/contact.css"]"/>
-    <link rel="stylesheet" href="@Assets["css/backtotopbutton.css"]"/>
     <link rel="stylesheet" href="@Assets["css/layout.css"]"/>
     <link rel="stylesheet" href="@Assets["Portfolio.Ui.styles.css"]"/>
+
+    <!-- Below-the-fold non-blocking stylesheets -->
+    <link rel="stylesheet" href="@Assets["css/contact.css"]" media="print" onload="this.media='all'"/>
+    <noscript><link rel="stylesheet" href="@Assets["css/contact.css"]"/></noscript>
+    <link rel="stylesheet" href="@Assets["css/backtotopbutton.css"]" media="print" onload="this.media='all'"/>
+    <noscript><link rel="stylesheet" href="@Assets["css/backtotopbutton.css"]"/></noscript>
 
     <script>
         (function () {

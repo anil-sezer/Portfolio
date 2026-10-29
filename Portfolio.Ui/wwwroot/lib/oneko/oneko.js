@@ -1,4 +1,4 @@
-﻿// oneko.js: https://github.com/adryd325/oneko.js
+// oneko.js: https://github.com/adryd325/oneko.js
 
 (function oneko() {
   const isReducedMotion =
@@ -7,7 +7,9 @@
 
   if (isReducedMotion) return;
 
+  const curScript = document.currentScript;
   const nekoEl = document.createElement("div");
+  let persistPosition = true;
 
   let nekoPosX = 32;
   let nekoPosY = 32;
@@ -85,6 +87,37 @@
   };
 
   function init() {
+    let nekoFile = "lib/oneko/oneko.gif";
+    if (curScript && curScript.dataset.cat) {
+      nekoFile = curScript.dataset.cat;
+    }
+    if (curScript && curScript.dataset.persistPosition) {
+      if (curScript.dataset.persistPosition === "") {
+        persistPosition = true;
+      } else {
+        persistPosition = JSON.parse(curScript.dataset.persistPosition.toLowerCase());
+      }
+    }
+
+    if (persistPosition) {
+      try {
+        const storedNeko = JSON.parse(window.localStorage.getItem("oneko"));
+        if (storedNeko !== null) {
+          nekoPosX = storedNeko.nekoPosX;
+          nekoPosY = storedNeko.nekoPosY;
+          mousePosX = storedNeko.mousePosX;
+          mousePosY = storedNeko.mousePosY;
+          frameCount = storedNeko.frameCount;
+          idleTime = storedNeko.idleTime;
+          idleAnimation = storedNeko.idleAnimation;
+          idleAnimationFrame = storedNeko.idleAnimationFrame;
+          nekoEl.style.backgroundPosition = storedNeko.bgPos;
+        }
+      } catch {
+        // Ignore storage or JSON errors
+      }
+    }
+
     nekoEl.id = "oneko";
     nekoEl.ariaHidden = true;
     nekoEl.style.width = "32px";
@@ -96,11 +129,6 @@
     nekoEl.style.top = `${nekoPosY - 16}px`;
     nekoEl.style.zIndex = 2147483647;
 
-    let nekoFile = "lib/oneko/oneko.gif"
-    const curScript = document.currentScript
-    if (curScript && curScript.dataset.cat) {
-      nekoFile = curScript.dataset.cat
-    }
     nekoEl.style.backgroundImage = `url(${nekoFile})`;
 
     document.body.appendChild(nekoEl);
@@ -109,6 +137,29 @@
       mousePosX = event.clientX;
       mousePosY = event.clientY;
     });
+
+    if (persistPosition) {
+      window.addEventListener("pagehide", function () {
+        try {
+          window.localStorage.setItem(
+            "oneko",
+            JSON.stringify({
+              nekoPosX: nekoPosX,
+              nekoPosY: nekoPosY,
+              mousePosX: mousePosX,
+              mousePosY: mousePosY,
+              frameCount: frameCount,
+              idleTime: idleTime,
+              idleAnimation: idleAnimation,
+              idleAnimationFrame: idleAnimationFrame,
+              bgPos: nekoEl.style.backgroundPosition,
+            })
+          );
+        } catch {
+          // Ignore storage errors
+        }
+      });
+    }
 
     window.requestAnimationFrame(onAnimationFrame);
   }
@@ -235,5 +286,17 @@
     nekoEl.style.top = `${nekoPosY - 16}px`;
   }
 
-  init();
+  function scheduleInit() {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(init, { timeout: 2000 });
+    } else {
+      window.setTimeout(init, 200);
+    }
+  }
+
+  if (document.readyState === "complete") {
+    scheduleInit();
+  } else {
+    window.addEventListener("load", scheduleInit, { once: true });
+  }
 })();

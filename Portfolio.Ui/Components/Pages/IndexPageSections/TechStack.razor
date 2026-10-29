@@ -1,4 +1,3 @@
-@using System.Globalization
 @using Portfolio.Ui.Models
 
 <section id="techstack">
@@ -12,12 +11,7 @@
     </svg>
 
     <!-- Starfield on Right Side -->
-    <div class="stars-layer" aria-hidden="true">
-        @foreach (var star in Stars)
-        {
-            <span class="star" style="left: @star.Left; top: @star.Top; width: @star.Size; height: @star.Size; opacity: @star.Opacity;"></span>
-        }
-    </div>
+    <div class="stars-layer" aria-hidden="true"></div>
 
     <!-- Crescent Moon -->
     <div class="moon" aria-hidden="true" title="Crescent Moon"></div>
@@ -53,32 +47,3 @@
     </div>
     </div>
 </section>
-
-@code {
-    private record Star(string Left, string Top, string Size, string Opacity);
-
-    private static readonly Star[] Stars = GenerateStars();
-
-    private static Star[] GenerateStars()
-    {
-        var rand = new Random(42);
-        var list = new Star[160];
-        for (var i = 0; i < 160; i++)
-        {
-            var x = 45.0 + rand.NextDouble() * 54.0;
-            var y = 0.5 + rand.NextDouble() * 98.5;
-            var size = rand.NextDouble() < 0.25 
-                ? (1.8 + rand.NextDouble() * 1.2) 
-                : (0.9 + rand.NextDouble() * 0.7);
-            var opacity = 0.35 + rand.NextDouble() * 0.55;
-
-            var leftStr = x.ToString("0.0", CultureInfo.InvariantCulture) + "%";
-            var topStr = y.ToString("0.0", CultureInfo.InvariantCulture) + "%";
-            var sizeStr = size.ToString("0.0", CultureInfo.InvariantCulture) + "px";
-            var opacityStr = opacity.ToString("0.00", CultureInfo.InvariantCulture);
-
-            list[i] = new Star(leftStr, topStr, sizeStr, opacityStr);
-        }
-        return list;
-    }
-}

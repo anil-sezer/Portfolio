@@ -405,7 +405,7 @@ function initContactSection() {
             }
         };
 
-        // Trigger A: User scrolls within 800px of the contact map
+        // Trigger A: User scrolls within 800px of the contact section/map
         if ('IntersectionObserver' in window) {
             observer = new IntersectionObserver((entries) => {
                 if (entries.some((e) => e.isIntersecting)) {
@@ -413,7 +413,7 @@ function initContactSection() {
                 }
             }, { rootMargin: '800px 0px' });
 
-            observer.observe(mapEl);
+            observer.observe(document.getElementById('contact') || mapEl);
         }
 
         // Trigger B: Idle time after window 'load' so it doesn't compete with critical render

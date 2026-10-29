@@ -63,4 +63,48 @@
             closeMobileNav()
         }
     })
+
+    // Collapsible accordion toggle (replaces Bootstrap Collapse JS)
+    on('click', '[data-bs-toggle="collapse"]', function(e) {
+        const btn = e.currentTarget
+        const targetSelector = btn.getAttribute('data-bs-target')
+        const target = targetSelector ? select(targetSelector) : null
+        if (!target || target.classList.contains('collapsing')) return
+
+        const isShown = target.classList.contains('show')
+        btn.classList.toggle('collapsed', isShown)
+        btn.setAttribute('aria-expanded', isShown ? 'false' : 'true')
+
+        let done = false
+        const finish = (callback) => {
+            const complete = () => {
+                if (done) return
+                done = true
+                callback()
+            }
+            target.addEventListener('transitionend', complete, { once: true })
+            setTimeout(complete, 400)
+        }
+
+        if (isShown) {
+            target.style.height = `${target.getBoundingClientRect().height}px`
+            target.offsetHeight
+            target.classList.add('collapsing')
+            target.classList.remove('collapse', 'show')
+            target.style.height = ''
+            finish(() => {
+                target.classList.remove('collapsing')
+                target.classList.add('collapse')
+            })
+        } else {
+            target.classList.remove('collapse')
+            target.classList.add('collapsing')
+            target.style.height = `${target.scrollHeight}px`
+            finish(() => {
+                target.classList.remove('collapsing')
+                target.classList.add('collapse', 'show')
+                target.style.height = ''
+            })
+        }
+    }, true)
 })();

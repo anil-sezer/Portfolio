@@ -53,11 +53,22 @@ function initContactSection() {
     function initCopyButtons() {
         const copyButtons = document.querySelectorAll('.copy-btn');
         const toastEl = document.getElementById('copyToast');
-        let toastInstance = null;
+        let toastTimer = null;
 
-        if (toastEl && window.bootstrap && window.bootstrap.Toast) {
-            toastInstance = new window.bootstrap.Toast(toastEl, { delay: 2500 });
-        }
+        const hideToast = () => {
+            if (!toastEl) return;
+            toastEl.classList.remove('show');
+            clearTimeout(toastTimer);
+        };
+
+        const showToast = () => {
+            if (!toastEl) return;
+            clearTimeout(toastTimer);
+            toastEl.classList.add('show');
+            toastTimer = setTimeout(hideToast, 2500);
+        };
+
+        toastEl?.querySelector('[data-bs-dismiss="toast"]')?.addEventListener('click', hideToast);
 
         copyButtons.forEach((btn) => {
             btn.addEventListener('click', async (e) => {
@@ -80,10 +91,7 @@ function initContactSection() {
                         }, 2000);
                     }
 
-                    // Show toast if available
-                    if (toastInstance) {
-                        toastInstance.show();
-                    }
+                    showToast();
                 } catch (err) {
                     console.error('Failed to copy text: ', err);
                 }

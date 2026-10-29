@@ -1,5 +1,8 @@
 import { HttpMethod, HttpStatus, HttpHeaders, ResultCode } from './constants.js';
 
+let leafletLoadingPromise = null;
+
+// todo: I dont like this file. Needs refactor, later.
 function initContactSection() {
     initClock();
     initCopyButtons();
@@ -11,7 +14,7 @@ function initContactSection() {
         initFormSubmission(form);
     }
     
-    initMap();
+    setupMapLoader();
 }
 
     // 1. Live Istanbul Clock (Europe/Istanbul - UTC+3)
@@ -331,20 +334,99 @@ function initContactSection() {
     }
 
     // 6. NASA VIIRS Earth at Night 2012 (Istanbul, Turkey - Continental Zoom)
-    function initMap(retryCount = 0) {
+    function loadLeafletAssets() {
+        if (leafletLoadingPromise) return leafletLoadingPromise;
+
+        leafletLoadingPromise = Promise.all([
+            new Promise((resolve, reject) => {
+                if (document.querySelector('link[href*="leaflet"]')) return resolve();
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css';
+                link.integrity = 'sha256-QZFpF9DkpabUBLoCc7fQJVCmtag/LaVAfAkUJSfuNyY=';
+                link.crossOrigin = 'anonymous';
+                link.onload = resolve;
+                link.onerror = reject;
+                document.head.appendChild(link);
+            }),
+            new Promise((resolve, reject) => {
+                if (typeof L !== 'undefined') return resolve();
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js';
+                script.integrity = 'sha256-MgH13bFTTNqsnuEoqNPBLDaqxjGH+lCpqrukmXc8Ppg=';
+                script.crossOrigin = 'anonymous';
+                script.async = true;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.body.appendChild(script);
+            })
+        ]).catch((err) => {
+            leafletLoadingPromise = null;
+            throw err;
+        });
+
+        return leafletLoadingPromise;
+    }
+
+    function setupMapLoader() {
         const mapEl = document.getElementById('contact-map');
-        if (!mapEl) return;
+        if (!mapEl || mapEl._leaflet_id) return;
 
-        if (typeof L === 'undefined') {
-            if (retryCount < 25) {
-                setTimeout(() => initMap(retryCount + 1), 100);
+        // If Leaflet was already loaded (e.g., before enhanced navigation), initialize right away
+        if (typeof L !== 'undefined') {
+            initMap();
+            return;
+        }
+
+        let loaded = false;
+        let observer = null;
+
+        const triggerLoad = async () => {
+            if (loaded) return;
+            loaded = true;
+            if (observer) {
+                observer.disconnect();
+                observer = null;
             }
-            return;
+
+            try {
+                await loadLeafletAssets();
+                initMap();
+            } catch {
+                // Fail silently if CDN is unreachable
+            }
+        };
+
+        // Trigger A: User scrolls within 800px of the contact map
+        if ('IntersectionObserver' in window) {
+            observer = new IntersectionObserver((entries) => {
+                if (entries.some((e) => e.isIntersecting)) {
+                    triggerLoad();
+                }
+            }, { rootMargin: '800px 0px' });
+
+            observer.observe(mapEl);
         }
 
-        if (mapEl._leaflet_id) {
-            return;
+        // Trigger B: Idle time after window 'load' so it doesn't compete with critical render
+        const onIdle = () => {
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(() => triggerLoad(), { timeout: 3000 });
+            } else {
+                setTimeout(triggerLoad, 2500);
+            }
+        };
+
+        if (document.readyState === 'complete') {
+            onIdle();
+        } else {
+            window.addEventListener('load', onIdle, { once: true });
         }
+    }
+
+    function initMap() {
+        const mapEl = document.getElementById('contact-map');
+        if (!mapEl || typeof L === 'undefined' || mapEl._leaflet_id) return;
 
         const istanbulCoords = [41.0082, 28.9784];
 

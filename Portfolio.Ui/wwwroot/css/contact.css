@@ -222,6 +222,16 @@
     height: 100%;
     background: #000000;
     border-radius: 10px;
+    animation: mapFadeIn 0.35s ease-out;
+}
+
+@keyframes mapFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .custom-leaflet-pin {

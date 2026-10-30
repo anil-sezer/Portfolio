@@ -100,8 +100,8 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
         if (latestImage.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
             // Pre-download and encode WebP for both variants under latestImage.Version
-            await EnsureVariantCachedAsync(latestImage, DeviceTypes.Desktop, cancellationToken);
-            await EnsureVariantCachedAsync(latestImage, DeviceTypes.Mobile, cancellationToken);
+            await EnsureVariantCachedAsync(latestImage, "desktop", cancellationToken);
+            await EnsureVariantCachedAsync(latestImage, "mobile", cancellationToken);
         }
 
         var cacheOptions = new MemoryCacheEntryOptions
@@ -120,7 +120,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
 
     public virtual async Task<(byte[]? Bytes, bool IsStale)> GetHeroImageBytesAsync(string variant, CancellationToken cancellationToken = default)
     {
-        var normalizedVariant = string.Equals(variant, DeviceTypes.Mobile, StringComparison.OrdinalIgnoreCase) ? DeviceTypes.Mobile : DeviceTypes.Desktop;
+        var normalizedVariant = string.Equals(variant, DeviceTypes.Mobile, StringComparison.OrdinalIgnoreCase) ? "mobile" : "desktop";
 
         var image = await GetFromCacheAsync(cancellationToken);
         var bytes = await EnsureVariantCachedAsync(image, normalizedVariant, cancellationToken);
@@ -137,11 +137,12 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
         return (null, false);
     }
 
-    private async Task<byte[]?> EnsureVariantCachedAsync(BackgroundImageModel image, string normalizedVariant, CancellationToken cancellationToken)
+    private async Task<byte[]?> EnsureVariantCachedAsync(BackgroundImageModel image, string variant, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(image.Url) || !image.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return null;
 
+        var normalizedVariant = string.Equals(variant, DeviceTypes.Mobile, StringComparison.OrdinalIgnoreCase) ? "mobile" : "desktop";
         var bytesCacheKey = $"background_image_bytes_{normalizedVariant}_{image.Version}";
         if (memoryCache.TryGetValue(bytesCacheKey, out byte[]? cachedBytes) && cachedBytes is { Length: > 0 })
             return cachedBytes;
@@ -183,7 +184,8 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
 
     private async Task<byte[]?> DownloadAndConvertToWebpAsync(string url, string variant, CancellationToken cancellationToken)
     {
-        if (variant == DeviceTypes.Mobile && url.Contains("_1920x1080.jpg", StringComparison.OrdinalIgnoreCase))
+        var isMobile = string.Equals(variant, DeviceTypes.Mobile, StringComparison.OrdinalIgnoreCase);
+        if (isMobile && url.Contains("_1920x1080.jpg", StringComparison.OrdinalIgnoreCase))
         {
             var bingMobileUrl = url.Replace("_1920x1080.jpg", "_768x1280.jpg", StringComparison.OrdinalIgnoreCase);
             var mobileBytes = await TryDownloadBytesAsync(bingMobileUrl, cancellationToken);
@@ -197,7 +199,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
         if (sourceBytes is not { Length: > 0 })
             return null;
 
-        return variant == DeviceTypes.Mobile
+        return isMobile
             ? EncodeWebp(sourceBytes, MobileWidth, MobileHeight, cropToFill: true, quality: 75)
             : EncodeWebp(sourceBytes, DesktopWidth, DesktopHeight, cropToFill: false, quality: 80);
     }

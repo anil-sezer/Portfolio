@@ -1,0 +1,81 @@
+---
+name: cd-portfolio
+
+on:
+  push:
+    branches:
+      - "prod"
+    paths:
+      - "Portfolio.**"
+      - "protos/**"
+      - "global.json"
+      - "Portfolio.sln"
+      - ".github/workflows/cd-portfolio.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: cd-portfolio-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to private container registry
+        if: ${{ vars.CD_ENABLED == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: imgregistry.anil-sezer.com
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build & Push Portfolio.Ui
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Portfolio.Ui/Dockerfile
+          platforms: linux/arm64
+          push: ${{ vars.CD_ENABLED == 'true' }}
+          tags: |
+            imgregistry.anil-sezer.com/portfolio-ui:latest
+            imgregistry.anil-sezer.com/portfolio-ui:${{ github.sha }}
+          cache-from: type=gha,scope=ui
+          cache-to: type=gha,mode=max,scope=ui
+
+      - name: Build & Push Portfolio.Grpc
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Portfolio.Grpc/Dockerfile
+          platforms: linux/arm64
+          push: ${{ vars.CD_ENABLED == 'true' }}
+          tags: |
+            imgregistry.anil-sezer.com/portfolio-grpc:latest
+            imgregistry.anil-sezer.com/portfolio-grpc:${{ github.sha }}
+          cache-from: type=gha,scope=grpc
+          cache-to: type=gha,mode=max,scope=grpc
+
+  deploy:
+    name: Deploy to Raspberry Pi K8s Cluster
+    needs: build-and-push
+    if: ${{ vars.CD_ENABLED == 'true' }}
+    runs-on: [self-hosted, linux, ARM64]
+    steps:
+      - name: Rollout restart frontend and grpc deployments
+        run: |
+          kubectl rollout restart deployment/frontend deployment/grpc -n portfolio
+
+      - name: Verify zero-downtime rollout status
+        run: |
+          kubectl rollout status deployment/frontend -n portfolio --timeout=180s
+          kubectl rollout status deployment/grpc -n portfolio --timeout=180s

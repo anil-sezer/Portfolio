@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Domain.Enums;
+using Portfolio.Domain.Extensions;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices.Dtos;
 using Portfolio.Infrastructure;
@@ -46,10 +47,10 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
     {
         return new NotificationDto
         {
-            Name = r.SenderName,
-            EmailAddress = r.SenderEmail,
-            Subject = r.Subject,
-            Message = r.Message,
+            Name = r.SenderName.Truncate(NotificationToAdmin.MaxNameLength),
+            EmailAddress = r.SenderEmail.Truncate(NotificationToAdmin.MaxEmailAddressLength),
+            Subject = r.Subject.Truncate(NotificationToAdmin.MaxSubjectLength),
+            Message = r.Message.Truncate(NotificationToAdmin.MaxMessageLength),
             NotificationType = NotificationType.Info
         };
     }

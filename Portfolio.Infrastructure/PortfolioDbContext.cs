@@ -12,4 +12,10 @@ public class PortfolioDbContext : DbContext
     public DbSet<RequestLog> RequestLogs { get; set; }
     public DbSet<NotificationToAdmin> NotificationsToAdmin { get; set; }
     public DbSet<DailyImage> DailyImages { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PortfolioDbContext).Assembly);
+    }
 }

@@ -1,16 +1,41 @@
-using Microsoft.EntityFrameworkCore;
+using Portfolio.Domain.Extensions;
 
 namespace Portfolio.Domain.Entities;
 
-
-// todo: DB sütunlarına belli değerlerde olma zorunluluğu vs şeyleri bu katmanda ekleyebilir misin? Oku!
-// https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations
-[Comment("Notifications that have been sent to the admin via the website ui")]
-public class NotificationToAdmin: EntityBase
+public class NotificationToAdmin : EntityBase
 {
-    public required string Name { get; init; }
-    public required string EmailAddress { get; init; }
-    public required string Subject { get; init; }
-    public required string Message { get; init; }
+    public const int MaxNameLength = 100;
+    public const int MaxEmailAddressLength = 256;
+    public const int MaxSubjectLength = 200;
+    public const int MaxMessageLength = 4000;
+
+    private readonly string _name = string.Empty;
+    public required string Name
+    {
+        get => _name;
+        init => _name = value.Truncate(MaxNameLength);
+    }
+
+    private readonly string _emailAddress = string.Empty;
+    public required string EmailAddress
+    {
+        get => _emailAddress;
+        init => _emailAddress = value.Truncate(MaxEmailAddressLength);
+    }
+
+    private readonly string _subject = string.Empty;
+    public required string Subject
+    {
+        get => _subject;
+        init => _subject = value.Truncate(MaxSubjectLength);
+    }
+
+    private readonly string _message = string.Empty;
+    public required string Message
+    {
+        get => _message;
+        init => _message = value.Truncate(MaxMessageLength);
+    }
+
     public required bool IsItSentSuccessfully { get; set; }
 }

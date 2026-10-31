@@ -139,7 +139,7 @@ c:\Repositories\Portfolio\
 │   ├── Endpoints/                          # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
 │   ├── Extensions/                         # ApiEndpointExtensions, Localization, RateLimiter
 │   ├── Services/                           # ClusterStatsService (5-min cache), BackgroundImageService (23-hr cache)
-│   ├── Resources/                          # Localization resx files (English and Turkish tr-TR)
+│   ├── Localization/                       # Localization provider, marker type, and resx files (English and Turkish tr-TR)
 │   └── wwwroot/                            # Static assets, CSS, JS scripts, oneko cat mascot
 ├── Portfolio.Test.Infrastructure/          # Infrastructure tests (unit/integration)
 ├── Portfolio.Test.Shared/                  # Shared test helpers & base classes
@@ -277,7 +277,7 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
 1. Razor components are in [Portfolio.Ui/Components/Pages/](file:///c:/Repositories/Portfolio/Portfolio.Ui/Components/Pages/).
 2. Section components (About, ClusterInfo, Contact, Hero, Resume, TechStack) have companion scoped CSS files (`.razor.css`).
 3. Localized strings **must** use `IStringLocalizer<AppResources>`:
-   - Add new resource keys to both [AppResources.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Resources/AppResources.resx) (English) and [AppResources.tr-TR.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Resources/AppResources.tr-TR.resx) (Turkish).
+   - Add new resource keys to both [AppResources.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Localization/AppResources.resx) (English) and [AppResources.tr-TR.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Localization/AppResources.tr-TR.resx) (Turkish).
 4. Verify changes locally:
    ```powershell
    dotnet build Portfolio.sln

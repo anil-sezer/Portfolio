@@ -108,7 +108,7 @@
     <value>Kubernetes logosu. İçinde beyaz gemi dümeni olan mavi altıgen. Minimalist bir marka tasarımı.</value>
   </data>
   <data name="TechStack_Kubernetes_Desc" xml:space="preserve">
-    <value>Raspberry Pi 5-4 kümemde gururla barındırılmaktadır! Düğümler &lt;strong&gt;tek bir Ansible komutu&lt;/strong&gt; ile hazırlanır ve küme ayağa kaldırılır</value>
+    <value>Raspberry Pi 5-4 cluster'ımda gururla barındırılmaktadır! Düğümler &lt;strong&gt;tek bir Ansible komutu&lt;/strong&gt; ile hazırlanır ve cluster ayağa kaldırılır</value>
   </data>
   <data name="TechStack_Ansible_Alt" xml:space="preserve">
     <value>Ansible logosu. İçinde stilize A harfi bulunan siyah dolu daire.</value>
@@ -241,7 +241,7 @@
 
   <!-- Cluster Info Section -->
   <data name="Cluster_Title" xml:space="preserve">
-    <value>Kubernetes Kümem</value>
+    <value>Kubernetes Cluster</value>
   </data>
   <data name="Cluster_Subtitle" xml:space="preserve">
     <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes cluster üzerinde. Bu cihazlar üstünde çeşitli deneyler yürütüyorum ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; cluster'dan.</value>
@@ -250,7 +250,7 @@
     <value>Canlı istatistikler</value>
   </data>
   <data name="Cluster_LiveTooltip" xml:space="preserve">
-    <value>30 saniyede bir güncellenen canlı küme verileri</value>
+    <value>30 saniyede bir güncellenen canlı cluster verileri</value>
   </data>
   <data name="Cluster_Pods" xml:space="preserve">
     <value>Pod</value>

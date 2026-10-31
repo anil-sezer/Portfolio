@@ -246,6 +246,12 @@
   <data name="Cluster_Subtitle" xml:space="preserve">
     <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes cluster üzerinde. Bu cihazlar üstünde çeşitli deneyler yürütüyorum ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; cluster'dan.</value>
   </data>
+  <data name="Cluster_LiveText" xml:space="preserve">
+    <value>Canlı istatistikler</value>
+  </data>
+  <data name="Cluster_LiveTooltip" xml:space="preserve">
+    <value>30 saniyede bir güncellenen canlı küme verileri</value>
+  </data>
   <data name="Cluster_Pods" xml:space="preserve">
     <value>Pod</value>
   </data>

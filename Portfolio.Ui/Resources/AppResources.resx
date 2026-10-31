@@ -248,6 +248,12 @@
   <data name="Cluster_Subtitle" xml:space="preserve">
     <value>This website is hosted on a bare metal Kubernetes cluster that I built using Raspberry Pi's. In this cluster I run various experiments and stats you see here are directly taken via &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient.&lt;/a&gt;</value>
   </data>
+  <data name="Cluster_LiveText" xml:space="preserve">
+    <value>Live stats</value>
+  </data>
+  <data name="Cluster_LiveTooltip" xml:space="preserve">
+    <value>Live cluster telemetry, refreshed every 30 seconds</value>
+  </data>
   <data name="Cluster_Pods" xml:space="preserve">
     <value>Pods</value>
   </data>

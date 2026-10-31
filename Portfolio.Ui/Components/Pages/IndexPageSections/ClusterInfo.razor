@@ -1,8 +1,9 @@
+@using Portfolio.Ui.Endpoints
 @using Portfolio.Ui.Services
 @inject ClusterStatsService ClusterStatsService
 
 <!-- Stats Section -->
-<section id="clusterInfo" class="stats section">
+<section id="clusterInfo" class="stats section" data-stats-url="@ClusterStatsEndpoints.Route">
     <div class="container">
 
         <div class="section-title">
@@ -10,6 +11,13 @@
             <p>
                 @((MarkupString)L["Cluster_Subtitle"].Value)
             </p>
+        </div>
+
+        <div class="stats-live-container">
+            <span class="live-indicator" title="@L["Cluster_LiveTooltip"]" aria-label="@L["Cluster_LiveText"]">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span class="live-text">@L["Cluster_LiveText"]</span>
+            </span>
         </div>
 
         <div id="stats-list">

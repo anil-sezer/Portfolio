@@ -18,6 +18,8 @@
    * **Agents must NEVER create or add database migrations** (never run `dotnet ef migrations add`). Database schema migrations are strictly managed manually by the human maintainer.
 6. **Synchronized Enums Across Languages**:
    * The `ImageOfTheDaySource` enum is shared between Protobuf, C#, and Go. Search for token `GXJQJZ` when modifying to keep all files synchronized.
+7. **Fail Early / No Fallback Bloat**:
+   * Never introduce fallback bloat, defensive silent catch-and-continue workarounds, or complex recovery degradation in code. If the application or a component encounters a problem, it must fail fast and crash early. Crashing loudly is preferred over silent recovery.
 
 ---
 

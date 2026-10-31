@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Models;
 using Portfolio.Ui.Services;
 
@@ -11,7 +12,8 @@ public static class ClusterStatsEndpoints
     public static void MapClusterStatsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet(Route, GetStats)
-            .WithName("GetClusterStats");
+            .WithName("GetClusterStats")
+            .RequireRateLimiting(RateLimiterExtensions.ClusterStatsPolicy);
     }
 
     internal static async Task<IResult> GetStats(

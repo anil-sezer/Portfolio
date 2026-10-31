@@ -1,5 +1,6 @@
 using Microsoft.Net.Http.Headers;
 using Portfolio.Infrastructure.Constants;
+using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Services;
 
 namespace Portfolio.Ui.Endpoints;
@@ -11,7 +12,8 @@ public static class HeroImageEndpoints
     public static void MapHeroImageEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet(RoutePattern, ServeHeroImage)
-            .WithName("ServeHeroImage");
+            .WithName("ServeHeroImage")
+            .RequireRateLimiting(RateLimiterExtensions.HeroImagePolicy);
     }
 
     internal static async Task<IResult> ServeHeroImage(

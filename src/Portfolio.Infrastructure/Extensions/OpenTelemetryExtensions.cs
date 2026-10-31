@@ -52,7 +52,7 @@ public static class OpenTelemetryExtensions
             .ConfigureResource(appResourceBuilder)
             .WithTracing(tracerBuilder => tracerBuilder
                 .AddSource(serviceName)
-                .SetSampler(new TraceIdRatioBasedSampler(1.0))
+                .SetSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(1.0)))
                 .AddAspNetCoreInstrumentation(o =>
                 {
                     o.RecordException = true;
@@ -76,7 +76,16 @@ public static class OpenTelemetryExtensions
                         return !HealthCheckExtensions.IsThisPathHealthCheck(path) && !AssetHelper.IsStaticAsset(path);
                     };
                 })
-                .AddHttpClientInstrumentation()
+                .AddHttpClientInstrumentation(o =>
+                {
+                    o.FilterHttpRequestMessage = httpRequest =>
+                    {
+                        var path = httpRequest.RequestUri?.AbsolutePath;
+                        if (string.IsNullOrEmpty(path)) return true;
+
+                        return !HealthCheckExtensions.IsThisPathHealthCheck(path);
+                    };
+                })
                 .AddEntityFrameworkCoreInstrumentation(o =>
                 {
                     o.SetDbStatementForText = true;
@@ -86,7 +95,10 @@ public static class OpenTelemetryExtensions
                         activity.SetTag("db.command.timeout", command.CommandTimeout);
                     };
                 })
-                .AddGrpcCoreInstrumentation()
+                .AddGrpcClientInstrumentation(o =>
+                {
+                    o.SuppressDownstreamInstrumentation = true;
+                })
                 .AddOtlpExporter(o =>
                 {
                     o.Endpoint = new Uri($"{otelEndpoint.TrimEnd('/')}/v1/traces");

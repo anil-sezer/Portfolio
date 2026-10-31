@@ -11,13 +11,15 @@ public static class HealthCheckExtensions
     private const string LivenessCheckPostfix = "/liveness";
     private const string ReadinessCheckPostfix = "/readiness";
     private const string ThirdPartyCheckPostfix = "/thirdPartyHealthCheck";
+    private const string GrpcHealthPrefix = "/grpc.health.v1.Health";
     private const string ReadinessDbCheckName = "ReadinessDbCheck";
     
     public static bool IsThisPathHealthCheck(string path)
     {
         return path.StartsWith(LivenessCheckPostfix, StringComparison.OrdinalIgnoreCase)
                || path.StartsWith(ReadinessCheckPostfix, StringComparison.OrdinalIgnoreCase)
-               || path.StartsWith(ThirdPartyCheckPostfix, StringComparison.OrdinalIgnoreCase);
+               || path.StartsWith(ThirdPartyCheckPostfix, StringComparison.OrdinalIgnoreCase)
+               || path.StartsWith(GrpcHealthPrefix, StringComparison.OrdinalIgnoreCase);
     }
     
     extension(WebApplicationBuilder builder)

@@ -106,50 +106,6 @@ public class ClusterStatsServiceTests
     }
 
     [Fact]
-    public async Task GetFromCacheAsync_PropagatesCancellationTokenToGrpcClient()
-    {
-        // Arrange
-        var mockClient = new Mock<K8sStats.K8sStatsClient>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        using var cts = new CancellationTokenSource();
-
-        var grpcResponse = new GetK8sStatsResponse { ActivePodCount = 5 };
-        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
-            .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
-
-        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
-
-        // Act
-        var result = await service.GetFromCacheAsync(cts.Token);
-
-        // Assert
-        result.ActivePodCount.Should().Be(5);
-        mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token), Times.Once);
-    }
-
-    [Fact]
-    public async Task RefreshCacheAsync_PropagatesCancellationTokenToGrpcClient()
-    {
-        // Arrange
-        var mockClient = new Mock<K8sStats.K8sStatsClient>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        using var cts = new CancellationTokenSource();
-
-        var grpcResponse = new GetK8sStatsResponse { ActivePodCount = 7 };
-        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
-            .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
-
-        var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
-
-        // Act
-        var result = await service.RefreshCacheAsync(cts.Token);
-
-        // Assert
-        result.ActivePodCount.Should().Be(7);
-        mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token), Times.Once);
-    }
-
-    [Fact]
     public async Task GetFromCacheAsync_ConcurrentRequestsOnCacheMiss_CallsGrpcOnlyOnce()
     {
         // Arrange

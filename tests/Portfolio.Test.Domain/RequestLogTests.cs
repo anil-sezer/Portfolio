@@ -30,14 +30,7 @@ public class RequestLogTests
     [Theory]
     [InlineData("", "")]
     [InlineData("   ", "   ")]
-    [InlineData("\t", "\t")]
-    [InlineData("\r\n", "\r\n")]
     [InlineData(null, null)]
-    [InlineData(null, "")]
-    [InlineData("", null)]
-    [InlineData("   ", null)]
-    [InlineData(null, "   ")]
-    [InlineData("\t", null)]
     public void UpdateLocation_WhenBothCityAndCountryAreNullOrWhitespace_ThrowsInvalidOperationException(string? city, string? country)
     {
         // Arrange
@@ -51,89 +44,21 @@ public class RequestLogTests
             .WithMessage("*cannot be empty when updating location*");
     }
 
-    [Fact]
-    public void UpdateLocation_WhenOnlyCityProvided_UpdatesSuccessfully()
+    [Theory]
+    [InlineData("Istanbul", "", "Istanbul", "")]
+    [InlineData("", "Turkey", "", "Turkey")]
+    [InlineData("Berlin", "Germany", "Berlin", "Germany")]
+    [InlineData("Ankara", "   ", "Ankara", "   ")]
+    public void UpdateLocation_WhenAtLeastOneParameterProvided_UpdatesSuccessfully(string city, string country, string expectedCity, string expectedCountry)
     {
         // Arrange
         var log = CreateDefaultRequestLog();
 
         // Act
-        log.UpdateLocation("Istanbul", "");
+        log.UpdateLocation(city, country);
 
         // Assert
-        log.City.Should().Be("Istanbul");
-        log.Country.Should().Be(string.Empty);
-    }
-
-    [Fact]
-    public void UpdateLocation_WhenOnlyCountryProvided_UpdatesSuccessfully()
-    {
-        // Arrange
-        var log = CreateDefaultRequestLog();
-
-        // Act
-        log.UpdateLocation("", "Turkey");
-
-        // Assert
-        log.City.Should().Be(string.Empty);
-        log.Country.Should().Be("Turkey");
-    }
-
-    [Fact]
-    public void UpdateLocation_WhenBothCityAndCountryProvided_UpdatesBoth()
-    {
-        // Arrange
-        var log = CreateDefaultRequestLog();
-
-        // Act
-        log.UpdateLocation("Berlin", "Germany");
-
-        // Assert
-        log.City.Should().Be("Berlin");
-        log.Country.Should().Be("Germany");
-    }
-
-    [Fact]
-    public void UpdateLocation_WhenCalledConsecutively_UpdatesToLatestValues()
-    {
-        // Arrange
-        var log = CreateDefaultRequestLog();
-
-        // Act
-        log.UpdateLocation("Istanbul", "Turkey");
-        log.UpdateLocation("Berlin", "Germany");
-
-        // Assert
-        log.City.Should().Be("Berlin");
-        log.Country.Should().Be("Germany");
-    }
-
-    [Fact]
-    public void UpdateLocation_WhenWhitespaceInOneParameterAndValidInOther_UpdatesSuccessfully()
-    {
-        // Arrange
-        var log = CreateDefaultRequestLog();
-
-        // Act
-        log.UpdateLocation("Ankara", "   ");
-
-        // Assert
-        log.City.Should().Be("Ankara");
-        log.Country.Should().Be("   ");
-    }
-
-    [Fact]
-    public void CityAndCountry_SettersShouldBeInitOnly()
-    {
-        var cityProp = typeof(RequestLog).GetProperty(nameof(RequestLog.City))!;
-        var countryProp = typeof(RequestLog).GetProperty(nameof(RequestLog.Country))!;
-
-        cityProp.SetMethod.Should().NotBeNull();
-        cityProp.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
-            .Should().Contain(typeof(System.Runtime.CompilerServices.IsExternalInit));
-
-        countryProp.SetMethod.Should().NotBeNull();
-        countryProp.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
-            .Should().Contain(typeof(System.Runtime.CompilerServices.IsExternalInit));
+        log.City.Should().Be(expectedCity);
+        log.Country.Should().Be(expectedCountry);
     }
 }

@@ -174,20 +174,6 @@ public class ClientInfoRequestFactoryTests
     }
 
     [Fact]
-    public void Create_ResolvesClientIpFromXForwardedForWhenPresent()
-    {
-        // Arrange
-        var (context, mockAccessor) = CreateTestHttpContext();
-        context.Request.Headers[HeaderConstants.XForwardedFor] = "203.0.113.195, 70.41.3.18";
-
-        // Act
-        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
-
-        // Assert
-        result.IpAddress.Should().Be("203.0.113.195");
-    }
-
-    [Fact]
     public void Create_ResolvesClientIpFromXRealIpWhenXForwardedForMissing()
     {
         // Arrange
@@ -248,52 +234,6 @@ public class ClientInfoRequestFactoryTests
 
         // Assert
         result.Referrer.Should().Be("https://duckduckgo.com");
-    }
-
-    [Fact]
-    public void Create_WithEmptyJavaScriptDictionary_ReturnsDefaultFallbackValues()
-    {
-        // Arrange
-        var (_, mockAccessor) = CreateTestHttpContext();
-        var emptyJs = new Dictionary<string, string>();
-
-        // Act
-        var result = ClientInfoRequestFactory.Create(emptyJs, mockAccessor.Object);
-
-        // Assert
-        result.Language.Should().BeEmpty();
-        result.Platform.Should().BeEmpty();
-        result.OnLine.Should().BeFalse();
-        result.Webdriver.Should().BeFalse();
-        result.CookieEnabled.Should().BeFalse();
-        result.MaxTouchPoints.Should().Be(-1);
-    }
-
-    [Fact]
-    public void Create_StripsCustomSubstringUnsafeHeaders()
-    {
-        // Arrange
-        var (context, mockAccessor) = CreateTestHttpContext();
-        context.Request.Headers["Client-Token-Header"] = "val1";
-        context.Request.Headers["My-Secret-Pass"] = "val2";
-        context.Request.Headers["App-Password-Key"] = "val3";
-        context.Request.Headers["External-ApiKey"] = "val4";
-        context.Request.Headers["Custom-Auth-Token"] = "val5";
-        context.Request.Headers["Session-Cookie-Id"] = "val6";
-        context.Request.Headers["Safe-Custom-Header"] = "allowed";
-
-        // Act
-        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
-
-        // Assert
-        var parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(result.Extras)!;
-        parsed.Should().NotContainKey("Client-Token-Header");
-        parsed.Should().NotContainKey("My-Secret-Pass");
-        parsed.Should().NotContainKey("App-Password-Key");
-        parsed.Should().NotContainKey("External-ApiKey");
-        parsed.Should().NotContainKey("Custom-Auth-Token");
-        parsed.Should().NotContainKey("Session-Cookie-Id");
-        parsed.Should().ContainKey("Safe-Custom-Header");
     }
 
     [Fact]

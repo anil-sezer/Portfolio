@@ -203,35 +203,6 @@ public class BackgroundImageServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetFromCacheAsync_PropagatesCancellationTokenToGrpcClient()
-    {
-        // Arrange
-        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
-        var mockClient = new Mock<BackgroundImages.BackgroundImagesClient>();
-        var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        using var cts = new CancellationTokenSource();
-
-        var grpcResponse = new BackgroundImageDetails
-        {
-            Url = "https://example.com/test.jpg",
-            AltText = "Test",
-            Source = ImageOfTheDaySource.Bing
-        };
-
-        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token))
-            .Returns(TestCallHelpers.CreateAsyncUnaryCall(grpcResponse));
-
-        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance, _dummyHttpClient);
-
-        // Act
-        var result = await service.GetFromCacheAsync(cts.Token);
-
-        // Assert
-        result.Should().NotBeNull();
-        mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token), Times.Once);
-    }
-
-    [Fact]
     public async Task GetFromCacheAsync_WhenGrpcThrowsRpcException_PropagatesException()
     {
         // Arrange

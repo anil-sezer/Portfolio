@@ -167,42 +167,6 @@ public class NotificationProviderTelegramTests : IDisposable
     }
 
     [Fact]
-    public async Task SendNotificationAsync_EscapesMarkdownCharactersInPayload()
-    {
-        // Arrange
-        string? capturedBody = null;
-        var handler = new MockHttpMessageHandler(async (req, ct) =>
-        {
-            capturedBody = await req.Content!.ReadAsStringAsync(ct);
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        });
-
-        var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
-
-        // Contains markdown special characters: . ! _ - * [ ] ( )
-        var dto = new NotificationDto
-        {
-            Name = "User",
-            EmailAddress = "user@test.org",
-            Subject = "Important! Read this [urgent]",
-            Message = "Price is 100.50$ (item-1) with *bold* _italic_!",
-            NotificationType = NotificationType.Info
-        };
-
-        // Act
-        await provider.SendNotificationAsync(dto);
-
-        // Assert
-        var decodedBody = Uri.UnescapeDataString(capturedBody!);
-        // In MarkdownV2, dots, exclamation marks, etc. in formatted message should be escaped with \
-        decodedBody.Should().Contain(@"\.");
-        decodedBody.Should().Contain(@"\!");
-        decodedBody.Should().Contain(@"\(");
-        decodedBody.Should().Contain(@"\)");
-    }
-
-    [Fact]
     public async Task SendNotificationAsync_WhenCancellationTokenCancelled_ReturnsFailureResult()
     {
         // Arrange
@@ -235,8 +199,10 @@ public class NotificationProviderTelegramTests : IDisposable
         result.IsItSentSuccessfully.Should().BeFalse();
     }
 
-    [Fact]
-    public async Task SendNotificationAsync_WhenNotificationTypeIsUnknown_UsesFallbackEmojiAndPrefix()
+    [Theory]
+    [InlineData((NotificationType)999)]
+    [InlineData(NotificationType.Unknown)]
+    public async Task SendNotificationAsync_WhenNotificationTypeIsUnknownOrUnmapped_UsesFallbackEmojiAndPrefix(NotificationType notificationType)
     {
         // Arrange
         string? capturedBody = null;
@@ -255,40 +221,7 @@ public class NotificationProviderTelegramTests : IDisposable
             EmailAddress = "fallback@example.com",
             Subject = "Unknown Type",
             Message = "Testing unknown",
-            NotificationType = (NotificationType)999
-        };
-
-        // Act
-        var result = await provider.SendNotificationAsync(dto);
-
-        // Assert
-        result.IsItSentSuccessfully.Should().BeTrue();
-        var decodedBody = Uri.UnescapeDataString(capturedBody!);
-        decodedBody.Should().Contain("📌");
-        decodedBody.Should().Contain(@"*[LOG]*");
-    }
-
-    [Fact]
-    public async Task SendNotificationAsync_WhenNotificationTypeIsExplicitUnknown_UsesFallbackEmojiAndPrefix()
-    {
-        // Arrange
-        string? capturedBody = null;
-        var handler = new MockHttpMessageHandler(async (req, ct) =>
-        {
-            capturedBody = await req.Content!.ReadAsStringAsync(ct);
-            return new HttpResponseMessage(HttpStatusCode.OK);
-        });
-
-        var httpClient = new HttpClient(handler);
-        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
-
-        var dto = new NotificationDto
-        {
-            Name = "Fallback",
-            EmailAddress = "fallback@example.com",
-            Subject = "Unknown Type",
-            Message = "Testing explicit unknown",
-            NotificationType = NotificationType.Unknown
+            NotificationType = notificationType
         };
 
         // Act

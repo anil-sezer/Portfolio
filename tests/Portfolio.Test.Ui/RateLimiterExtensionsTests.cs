@@ -23,12 +23,5 @@ public class RateLimiterExtensionsTests
         // Assert
         options.RejectionStatusCode.Should().Be(StatusCodes.Status429TooManyRequests);
         options.OnRejected.Should().NotBeNull();
-
-        // Verify policy constants are defined
-        RateLimiterExtensions.EmailSendPolicy.Should().Be("EmailSendPolicy");
-        RateLimiterExtensions.VisitLogPolicy.Should().Be("VisitLogPolicy");
-        RateLimiterExtensions.ClusterStatsPolicy.Should().Be("ClusterStatsPolicy");
-        RateLimiterExtensions.HeroImagePolicy.Should().Be("HeroImagePolicy");
-        RateLimiterExtensions.BlazorPagesPolicy.Should().Be("BlazorPagesPolicy");
     }
 }

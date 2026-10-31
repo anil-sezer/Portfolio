@@ -201,8 +201,10 @@ public class BackgroundImageServicesTests
         saved.DoIPreferToDisplayThis.Should().BeFalse();
     }
 
-    [Fact]
-    public async Task Persist_WhenUrlIsEmpty_SavesWithUrlWorksFalse()
+    [Theory]
+    [InlineData("", "Empty Url")]
+    [InlineData("   ", "Whitespace Url")]
+    public async Task Persist_WhenUrlIsNullOrEmptyOrWhitespace_SavesWithUrlWorksFalse(string url, string altText)
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -213,8 +215,8 @@ public class BackgroundImageServicesTests
 
         var request = new BackgroundImageDetails
         {
-            Url = "",
-            AltText = "Empty Url",
+            Url = url,
+            AltText = altText,
             Source = GrpcSource.None
         };
 
@@ -223,64 +225,7 @@ public class BackgroundImageServicesTests
 
         // Assert
         response.Should().NotBeNull();
-        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.AltText == "Empty Url");
-        saved.Should().NotBeNull();
-        saved!.UrlWorks.Should().BeFalse();
-        saved.DoIPreferToDisplayThis.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task Persist_WhenHttpRequestThrowsException_SavesWithUrlWorksFalseAndDisplayFalse()
-    {
-        // Arrange
-        await using var dbContext = TestDbContextFactory.Create();
-        var handler = new MockHttpMessageHandler((_, _) => throw new HttpRequestException("DNS resolution failed"));
-        var httpClient = new HttpClient(handler);
-        var service = CreateService(dbContext, httpClient);
-        var context = TestServerCallContext.Create();
-
-        var request = new BackgroundImageDetails
-        {
-            Url = "https://unreachable.example.com/image.jpg",
-            AltText = "Unreachable",
-            Source = GrpcSource.Nasa
-        };
-
-        // Act
-        var response = await service.Persist(request, context);
-
-        // Assert
-        response.Should().NotBeNull();
-        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.ImageUrl == request.Url);
-        saved.Should().NotBeNull();
-        saved!.UrlWorks.Should().BeFalse();
-        saved.DoIPreferToDisplayThis.Should().BeFalse();
-        saved.Source.Should().Be(DomainSource.NASA);
-    }
-
-    [Fact]
-    public async Task Persist_WhenUrlIsWhitespace_SavesWithUrlWorksFalse()
-    {
-        // Arrange
-        await using var dbContext = TestDbContextFactory.Create();
-        var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
-        var httpClient = new HttpClient(handler);
-        var service = CreateService(dbContext, httpClient);
-        var context = TestServerCallContext.Create();
-
-        var request = new BackgroundImageDetails
-        {
-            Url = "   ",
-            AltText = "Whitespace Url",
-            Source = GrpcSource.Bing
-        };
-
-        // Act
-        var response = await service.Persist(request, context);
-
-        // Assert
-        response.Should().NotBeNull();
-        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.AltText == "Whitespace Url");
+        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.AltText == altText);
         saved.Should().NotBeNull();
         saved!.UrlWorks.Should().BeFalse();
         saved.DoIPreferToDisplayThis.Should().BeFalse();

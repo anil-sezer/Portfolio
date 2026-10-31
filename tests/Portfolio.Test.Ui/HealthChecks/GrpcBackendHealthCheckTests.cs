@@ -5,7 +5,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using Portfolio.Test.Shared;
 using Portfolio.Ui.HealthChecks;
-using Xunit;
 
 namespace Portfolio.Test.Ui.HealthChecks;
 
@@ -85,15 +84,5 @@ public class GrpcBackendHealthCheckTests
         result.Status.Should().Be(HealthStatus.Unhealthy);
         result.Exception.Should().NotBeNull();
         result.Description.Should().Contain("Failed to connect");
-    }
-
-    private static AsyncUnaryCall<HealthCheckResponse> CreateAsyncUnaryCall(HealthCheckResponse response)
-    {
-        return new AsyncUnaryCall<HealthCheckResponse>(
-            Task.FromResult(response),
-            Task.FromResult(new Metadata()),
-            () => Status.DefaultSuccess,
-            () => new Metadata(),
-            () => { });
     }
 }

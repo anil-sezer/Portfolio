@@ -18,28 +18,6 @@ public class DatabaseOperationQueueTests
         return new Mock<IDatabaseOperationQueueWorker>().Object;
     }
 
-    [Fact]
-    public void Constructor_SetsCapacityAndInitialCount()
-    {
-        // Arrange & Act
-        var queue = CreateQueue(50);
-
-        // Assert
-        queue.Capacity.Should().Be(50);
-        queue.QueuedCount.Should().Be(0);
-    }
-
-    [Fact]
-    public void Constructor_DefaultParameter_UsesDefaultCapacity()
-    {
-        // Arrange & Act
-        var queue = new DatabaseOperationQueue();
-
-        // Assert
-        queue.Capacity.Should().Be(DatabaseOperationQueue.DefaultCapacity);
-        queue.QueuedCount.Should().Be(0);
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]

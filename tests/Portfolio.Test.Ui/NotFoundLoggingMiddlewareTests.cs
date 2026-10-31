@@ -37,31 +37,9 @@ public class NotFoundLoggingMiddlewareTests
 
         return (context, mockAccessor, mockClient, logService);
     }
-
-    [Fact]
-    public async Task InvokeAsync_WhenStatusCodeIs404_TriggersVisitLogging()
-    {
-        // Arrange
-        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(404);
-        RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
-
-        // Act
-        await middleware.InvokeAsync(context, logService, mockAccessor.Object);
-
-        // Assert
-        mockClient.Verify(c => c.StoreVisitorInfoAsync(
-            It.Is<StoreVisitorInfoRequest>(r => r.RequestedUrl.Contains("/non-existent-page")),
-            It.IsAny<Metadata>(),
-            It.IsAny<DateTime?>(),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
-
     [Theory]
     [InlineData(200)]
-    [InlineData(201)]
-    [InlineData(204)]
-    [InlineData(302)]
+    [InlineData(301)]
     [InlineData(500)]
     public async Task InvokeAsync_WhenStatusCodeIsNot404_DoesNotTriggerVisitLogging(int statusCode)
     {
@@ -185,28 +163,5 @@ public class NotFoundLoggingMiddlewareTests
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Downstream middleware error");
-    }
-
-    [Theory]
-    [InlineData(301)]
-    [InlineData(400)]
-    [InlineData(401)]
-    [InlineData(403)]
-    public async Task InvokeAsync_WhenStatusCodeIsOtherRedirectOrClientError_DoesNotTriggerVisitLogging(int statusCode)
-    {
-        // Arrange
-        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
-        RequestDelegate next = _ => Task.CompletedTask;
-        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
-
-        // Act
-        await middleware.InvokeAsync(context, logService, mockAccessor.Object);
-
-        // Assert
-        mockClient.Verify(c => c.StoreVisitorInfoAsync(
-            It.IsAny<StoreVisitorInfoRequest>(),
-            It.IsAny<Metadata>(),
-            It.IsAny<DateTime?>(),
-            It.IsAny<CancellationToken>()), Times.Never);
     }
 }

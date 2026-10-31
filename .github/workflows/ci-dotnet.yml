@@ -9,6 +9,7 @@ on:
       - "Portfolio.**"
       - "protos/**"
       - "global.json"
+      - "Directory.Packages.props"
       - "Portfolio.sln"
       - ".github/workflows/ci-dotnet.yml"
   pull_request:
@@ -18,6 +19,7 @@ on:
       - "Portfolio.**"
       - "protos/**"
       - "global.json"
+      - "Directory.Packages.props"
       - "Portfolio.sln"
       - ".github/workflows/ci-dotnet.yml"
   workflow_dispatch:

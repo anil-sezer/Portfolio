@@ -9,6 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
 WORKDIR /src
 
+COPY Directory.Packages.props ./
 COPY protos/ protos/
 COPY Portfolio.Ui/ Portfolio.Ui/
 COPY Portfolio.Domain/ Portfolio.Domain/

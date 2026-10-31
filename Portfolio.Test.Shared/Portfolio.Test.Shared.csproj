@@ -13,9 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="8.11.0" />
-        <PackageReference Include="Grpc.Core.Api" Version="2.85.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.14" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Grpc.Core.Api" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     </ItemGroup>
 
     <ItemGroup>

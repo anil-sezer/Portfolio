@@ -735,4 +735,16 @@
   <data name="Contact_NetworkErrorMessage" xml:space="preserve">
     <value>An unexpected network error occurred. Please try again later.</value>
   </data>
+  <data name="NotFound_Title" xml:space="preserve">
+    <value>404 - Page Not Found | Anıl Sezer</value>
+  </data>
+  <data name="NotFound_Heading" xml:space="preserve">
+    <value>Page Not Found</value>
+  </data>
+  <data name="NotFound_Message" xml:space="preserve">
+    <value>The page you are looking for does not exist. This is a single page website.</value>
+  </data>
+  <data name="NotFound_BackHome" xml:space="preserve">
+    <value>Back to Home</value>
+  </data>
 </root>

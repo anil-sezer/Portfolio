@@ -2,6 +2,7 @@ using System.Net;
 using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Portfolio.Grpc;
@@ -37,13 +38,11 @@ public class NotFoundLoggingMiddlewareTests
         return (context, mockAccessor, mockClient, logService);
     }
 
-    [Theory]
-    [InlineData(404)]
-    [InlineData(302)]
-    public async Task InvokeAsync_WhenStatusCodeIs404Or302_TriggersVisitLogging(int statusCode)
+    [Fact]
+    public async Task InvokeAsync_WhenStatusCodeIs404_TriggersVisitLogging()
     {
         // Arrange
-        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
+        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(404);
         RequestDelegate next = _ => Task.CompletedTask;
         var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 
@@ -62,11 +61,35 @@ public class NotFoundLoggingMiddlewareTests
     [InlineData(200)]
     [InlineData(201)]
     [InlineData(204)]
+    [InlineData(302)]
     [InlineData(500)]
-    public async Task InvokeAsync_WhenStatusCodeIsNot404Or302_DoesNotTriggerVisitLogging(int statusCode)
+    public async Task InvokeAsync_WhenStatusCodeIsNot404_DoesNotTriggerVisitLogging(int statusCode)
     {
         // Arrange
         var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(statusCode);
+        RequestDelegate next = _ => Task.CompletedTask;
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
+
+        // Act
+        await middleware.InvokeAsync(context, logService, mockAccessor.Object);
+
+        // Assert
+        mockClient.Verify(c => c.StoreVisitorInfoAsync(
+            It.IsAny<StoreVisitorInfoRequest>(),
+            It.IsAny<Metadata>(),
+            It.IsAny<DateTime?>(),
+            It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task InvokeAsync_WhenStatusCodeReExecuteFeaturePresent_SkipsDuplicateLogging()
+    {
+        // Arrange
+        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(404);
+        var mockReExecuteFeature = new Mock<IStatusCodeReExecuteFeature>();
+        mockReExecuteFeature.Setup(f => f.OriginalPath).Returns("/asd");
+        context.Features.Set<IStatusCodeReExecuteFeature>(mockReExecuteFeature.Object);
+
         RequestDelegate next = _ => Task.CompletedTask;
         var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
 

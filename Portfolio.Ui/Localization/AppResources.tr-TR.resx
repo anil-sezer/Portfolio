@@ -733,4 +733,16 @@
   <data name="Contact_NetworkErrorMessage" xml:space="preserve">
     <value>Beklenmeyen bir ağ hatası oluştu. Lütfen daha sonra tekrar deneyin.</value>
   </data>
+  <data name="NotFound_Title" xml:space="preserve">
+    <value>404 - Sayfa Bulunamadı | Anıl Sezer</value>
+  </data>
+  <data name="NotFound_Heading" xml:space="preserve">
+    <value>Sayfa Bulunamadı</value>
+  </data>
+  <data name="NotFound_Message" xml:space="preserve">
+    <value>Aradığınız sayfa yok. Bu web sitesi tek sayfalık bir sitedir.</value>
+  </data>
+  <data name="NotFound_BackHome" xml:space="preserve">
+    <value>Ana Sayfaya Dön</value>
+  </data>
 </root>

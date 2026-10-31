@@ -53,6 +53,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStatusCodePagesWithReExecute("/404");
+
 app.SetupRequestLoggingForBlazor();
 
 app.SetupLocalization();

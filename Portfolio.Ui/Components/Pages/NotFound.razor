@@ -1,0 +1,33 @@
+@page "/404"
+@inject IHttpContextAccessor HttpContextAccessor
+
+<PageTitle>@L["NotFound_Title"]</PageTitle>
+
+<main id="main">
+    <section class="d-flex align-items-center justify-content-center text-center py-5 min-vh-100">
+        <div class="container">
+            <h1 class="display-1 fw-bold text-light">404</h1>
+            <h2 class="mb-3 text-light">@L["NotFound_Heading"]</h2>
+            <p class="lead text-light text-opacity-75 mb-4">
+                @L["NotFound_Message"]
+            </p>
+            <a href="/" class="btn btn-primary rounded-pill px-4 py-2">
+                @L["NotFound_BackHome"]
+            </a>
+        </div>
+    </section>
+</main>
+
+@code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var context = HttpContext ?? HttpContextAccessor.HttpContext;
+        if (context != null)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+        }
+    }
+}

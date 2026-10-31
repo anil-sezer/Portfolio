@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Portfolio.Ui.Services;
 
 namespace Portfolio.Ui.Middlewares;
@@ -8,7 +9,13 @@ public class NotFoundLoggingMiddleware(RequestDelegate next, ILogger<NotFoundLog
     {
         await next(context);
 
-        if (context.Response.StatusCode is 404 or 302)
+        // Skip duplicate logging if this is an internal re-execution from StatusCodePagesWithReExecute
+        if (context.Features.Get<IStatusCodeReExecuteFeature>() != null)
+        {
+            return;
+        }
+
+        if (context.Response.StatusCode == StatusCodes.Status404NotFound)
         {
             logger.LogInformation("🚫 Not Found: {RequestedUrl}", context.Request.Path.ToString());
 
@@ -22,7 +29,7 @@ public class NotFoundLoggingMiddleware(RequestDelegate next, ILogger<NotFoundLog
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to log visit for 404/302 response");
+                logger.LogError(ex, "Failed to log visit for 404 response");
             }
         }
     }

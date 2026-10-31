@@ -277,7 +277,90 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
 
 ---
 
-## 8. Common Runbooks for AI Agents
+## 8. CI/CD Architecture & GitHub Actions Self-Hosted Runner
+
+The repository uses a hybrid CI/CD pipeline combining GitHub-hosted runners (`ubuntu-latest`) for public pull request checks and multi-arch image compilation with an **in-cluster self-hosted runner** running on physical ARM64 Raspberry Pi hardware for deployment automation.
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                         GitHub Cloud (ubuntu-latest)                       │
+│  CI Workflows:                                                             │
+│  - ci-dotnet.yml      (.NET 10 build, tests, GHA test summary)             │
+│  - ci-go.yml          (Go cron vet, test, build, GHA test summary)         │
+│  - ci-infra.yml       (kubeconform, hadolint, ansible-lint)                │
+│  - ci-security.yml    (NuGet/Go audit, Trivy config/fs scan)               │
+│  - ci-yaml-lint.yml   (yamllint across workflows & k8s manifests)          │
+│                                                                            │
+│  CD Build Stage:                                                           │
+│  - cd-portfolio.yml / cd-crons.yml (QEMU + Docker Buildx multi-arch)       │
+│  - Pushes images to imgregistry.anil-sezer.com (toggled by CD_ENABLED)     │
+└─────────────────────────────────────┬──────────────────────────────────────┘
+                                      │
+                                      │ Outbound HTTPS polling only
+                                      │ (zero inbound router ports opened)
+                                      ▼
+┌────────────────────────────────────────────────────────────────────────────┐
+│        Raspberry Pi K8s Cluster (self-hosted runner in `portfolio`)        │
+│  CD Deploy Stage (`runs-on: [self-hosted, linux, ARM64]`):                 │
+│  - Runs as non-root user (1001:1001) in Deployment `github-runner`         │
+│  - In-cluster ServiceAccount: `github-runner-deployer`                     │
+│  - Namespace-scoped Role: `github-runner-role` (portfolio namespace only) │
+│  - Executes zero-downtime rollouts via `kubectl rollout restart` & status │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 8.1 In-Cluster Runner Architecture (`kubernetes/github-runner/`)
+
+- **Manifests**: Located in [kubernetes/github-runner/](file:///c:/Repositories/Portfolio/kubernetes/github-runner/).
+- **Base Image**: `ghcr.io/actions/actions-runner:latest` (native `linux/arm64` container).
+- **Tooling**: Uses an init container `bitnami/kubectl:latest` to extract the `kubectl` binary into a shared `/opt/bin` volume mount accessible in the runner's `$PATH`.
+- **Labels**: `self-hosted,linux,ARM64`. Runner name: `k8s-pi-portfolio-runner`.
+- **Security Context**:
+  - `runAsNonRoot: true`, `runAsUser: 1001`, `fsGroup: 1001`.
+  - Resource requests: 100m CPU / 256Mi RAM; limits: 500m CPU / 512Mi RAM.
+- **Dynamic Registration & Graceful Deregistration**:
+  - Fetches ephemeral runner registration tokens dynamically via the GitHub API using `GITHUB_PAT` from secret `github-runner-secret`.
+  - Sets up `SIGTERM` / `SIGINT` trap in `entrypoint` to request a remove token and deregister cleanly upon pod termination or cluster upgrade.
+
+### 8.2 Least-Privilege RBAC Setup
+
+The runner pod is strictly sandboxed to the `portfolio` namespace through Kubernetes RBAC:
+- **ServiceAccount**: `github-runner-deployer`
+- **Role**: `github-runner-role` (namespace: `portfolio`)
+  - `apps/deployments`: verbs `get`, `list`, `watch`, `patch`
+  - `batch/cronjobs`: verbs `get`, `list`, `watch`, `patch`
+- **RoleBinding**: `github-runner-rolebinding`
+- No cluster-wide privileges, no cluster-admin, and no access to secrets or other namespaces (`database`, `observability`, `traefik`, etc.).
+
+### 8.3 Repository Secrets & Variables
+
+| Secret / Variable | Type | Purpose |
+| :--- | :--- | :--- |
+| `REGISTRY_USERNAME` | Secret | Basic auth user for `imgregistry.anil-sezer.com` |
+| `REGISTRY_PASSWORD` | Secret | Basic auth password for `imgregistry.anil-sezer.com` |
+| `GITHUB_PAT` | Secret (Cluster) | Ephemeral token acquisition for in-cluster runner |
+| `CD_ENABLED` | Variable | Feature flag (`true`/`false`) toggling live registry push and cluster rollout |
+
+### 8.4 Runner Maintenance Runbook
+
+- **Check Runner Pod Status**:
+  ```powershell
+  kubectl get pods -n portfolio -l app=github-runner -o wide
+  ```
+- **Inspect Runner Logs**:
+  ```powershell
+  kubectl logs -n portfolio -l app=github-runner -c runner -f
+  ```
+- **Restart Runner Deployment**:
+  ```powershell
+  kubectl rollout restart deployment/github-runner -n portfolio
+  ```
+- **Verify GitHub Actions Connectivity**:
+  Visit `Settings -> Actions -> Runners` on GitHub. `k8s-pi-portfolio-runner` should show status **Idle** with tags `self-hosted`, `linux`, `ARM64`.
+
+---
+
+## 9. Common Runbooks for AI Agents
 
 ### Runbook A: Modifying Frontend UI or Razor Components
 
@@ -302,6 +385,9 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
 5. Verify build: `dotnet build Portfolio.sln`.
 
 ### Runbook C: Building & Deploying Docker Containers to the Cluster
+
+> [!NOTE]
+> Pushing changes to `prod` triggers automated CD (`cd-portfolio.yml` and `cd-crons.yml`), which automatically builds multi-arch containers and restarts deployments via the in-cluster runner when `CD_ENABLED` is active. Manual builds can be run as follows:
 
 1. Ensure Docker daemon is running and logged in to `imgregistry.anil-sezer.com`.
 2. Build multi-arch images with `docker buildx`:
@@ -333,7 +419,7 @@ wsl helm upgrade --install grafana grafana-community/grafana -n observability -f
 
 ---
 
-## 9. Known Quirks, Traps & Conventions
+## 10. Known Quirks, Traps & Conventions
 
 1. **Enum Synchronization Marker (`GXJQJZ`)**:
    - The `ImageOfTheDaySource` enum is duplicated across [protos/background_images.proto](file:///c:/Repositories/Portfolio/protos/background_images.proto), [src/Portfolio.Domain/Enums/ImageOfTheDaySource.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Domain/Enums/ImageOfTheDaySource.cs), and Go code. Always grep for `GXJQJZ` when editing image source enums.

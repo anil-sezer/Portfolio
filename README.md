@@ -2,6 +2,14 @@
 
 Welcome to my portfolio repository! You can explore the entire codebase and cluster configuration here, or visit the live system at **[anilsezer.net](https://anilsezer.net)**.
 
+[![ci-dotnet](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-dotnet.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-dotnet.yml)
+[![ci-go](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-go.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-go.yml)
+[![ci-infra](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-infra.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-infra.yml)
+[![ci-security](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-security.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-security.yml)
+[![ci-yaml-lint](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-yaml-lint.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/ci-yaml-lint.yml)
+[![cd-portfolio](https://github.com/anil-sezer/Portfolio/actions/workflows/cd-portfolio.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/cd-portfolio.yml)
+[![cd-crons](https://github.com/anil-sezer/Portfolio/actions/workflows/cd-crons.yml/badge.svg?branch=prod)](https://github.com/anil-sezer/Portfolio/actions/workflows/cd-crons.yml)
+
 ---
 
 Made with love, applying **Domain-Driven Design** principles from [Eric Evans](https://ddd.academy/eric-evans/).

@@ -80,13 +80,13 @@
 ---
 
 ### Task 6: CI Workflow for Security & Dependency Auditing (`.github/workflows/ci-security.yml`)
-- [ ] **6.1** Add **.NET Vulnerability Check** step (`dotnet list Portfolio.sln package --vulnerable --include-transitive`).
-- [ ] **6.2** Add **Go Vulnerability Check** step (`govulncheck ./...` across Go cron modules).
-- [ ] **6.3** Add **Trivy Config & Filesystem Scan** (`aquasecurity/trivy-action`) on push, PR, and weekly schedule.
+- [x] **6.1** Add **.NET Vulnerability Check** step (`dotnet list Portfolio.sln package --vulnerable --include-transitive`).
+- [x] **6.2** Add **Go Vulnerability Check** step (`govulncheck ./...` across Go cron modules).
+- [x] **6.3** Add **Trivy Config & Filesystem Scan** (`aquasecurity/trivy-action`) on push, PR, and weekly schedule.
 
 ---
 
 ### Task 7: Polish Existing CI Workflows, Documentation & YAML Lint Check
-- [ ] **7.1** Enhance `.github/workflows/ci-dotnet.yml` and `.github/workflows/ci-go.yml` with GitHub Actions job test summaries.
-- [ ] **7.2** Add CI/CD workflow status badges to `README.md` and document the runner setup in `.agents/AGENT_REFERENCE.md`.
-- [ ] **7.3** Run `yamllint` across all new workflows and Kubernetes manifests to ensure 100% compliance with `.yamllint`.
+- [x] **7.1** Enhance `.github/workflows/ci-dotnet.yml` and `.github/workflows/ci-go.yml` with GitHub Actions job test summaries.
+- [x] **7.2** Add CI/CD workflow status badges to `README.md` and document the runner setup in `.agents/AGENT_REFERENCE.md`.
+- [x] **7.3** Run `yamllint` across all new workflows and Kubernetes manifests to ensure 100% compliance with `.yamllint`.

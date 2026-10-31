@@ -1,10 +1,13 @@
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: postgres-deployment
+  name: postgres
   namespace: database
+  labels:
+    app: postgres
 spec:
+  serviceName: postgres-clusterip
   replicas: 1
   selector:
     matchLabels:

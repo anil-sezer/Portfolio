@@ -5,7 +5,7 @@ services:
   grpc:
     build:
       context: .
-      dockerfile: Portfolio.Grpc/Dockerfile
+      dockerfile: src/Portfolio.Grpc/Dockerfile
     restart: unless-stopped
     container_name: grpc
     environment:
@@ -28,7 +28,7 @@ services:
   website:
     build:
       context: .
-      dockerfile: Portfolio.Ui/Dockerfile
+      dockerfile: src/Portfolio.Ui/Dockerfile
     restart: unless-stopped
     container_name: website
     environment:

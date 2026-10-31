@@ -9,7 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
         <PackageReference Include="xunit" />
@@ -28,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Portfolio.Domain\Portfolio.Domain.csproj" />
+        <ProjectReference Include="..\..\src\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
         <ProjectReference Include="..\Portfolio.Test.Shared\Portfolio.Test.Shared.csproj" />
     </ItemGroup>
 

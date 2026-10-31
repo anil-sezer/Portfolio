@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
+      <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
@@ -28,10 +28,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Client" />
-        <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Client" />
-        <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Client" />
-        <Protobuf Include="..\protos\k8s_stats.proto" GrpcServices="Client" />
+        <Protobuf Include="..\..\protos\background_images.proto" GrpcServices="Client" />
+        <Protobuf Include="..\..\protos\visitor_insights.proto" GrpcServices="Client" />
+        <Protobuf Include="..\..\protos\send_email_to_admin.proto" GrpcServices="Client" />
+        <Protobuf Include="..\..\protos\k8s_stats.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

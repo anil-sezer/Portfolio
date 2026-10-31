@@ -18,10 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Server" />
-        <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Server" />
-        <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Server" />
-        <Protobuf Include="..\protos\k8s_stats.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\protos\background_images.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\protos\visitor_insights.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\protos\send_email_to_admin.proto" GrpcServices="Server" />
+        <Protobuf Include="..\..\protos\k8s_stats.proto" GrpcServices="Server" />
     </ItemGroup>
 
     <ItemGroup>
@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
+      <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>

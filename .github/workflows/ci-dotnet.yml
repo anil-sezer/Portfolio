@@ -6,7 +6,8 @@ on:
     branches:
       - "prod"
     paths:
-      - "Portfolio.**"
+      - "src/**"
+      - "tests/**"
       - "protos/**"
       - "global.json"
       - "Directory.Packages.props"
@@ -16,7 +17,8 @@ on:
     branches:
       - "prod"
     paths:
-      - "Portfolio.**"
+      - "src/**"
+      - "tests/**"
       - "protos/**"
       - "global.json"
       - "Directory.Packages.props"

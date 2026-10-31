@@ -6,7 +6,7 @@ on:
     branches:
       - "prod"
     paths:
-      - "Portfolio.**"
+      - "src/**"
       - "protos/**"
       - "global.json"
       - "Directory.Packages.props"
@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Portfolio.Ui/Dockerfile
+          file: ./src/Portfolio.Ui/Dockerfile
           platforms: linux/arm64
           push: ${{ vars.CD_ENABLED == 'true' }}
           tags: |
@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Portfolio.Grpc/Dockerfile
+          file: ./src/Portfolio.Grpc/Dockerfile
           platforms: linux/arm64
           push: ${{ vars.CD_ENABLED == 'true' }}
           tags: |

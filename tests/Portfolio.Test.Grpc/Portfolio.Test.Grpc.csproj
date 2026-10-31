@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Portfolio.Ui\Portfolio.Ui.csproj" />
+        <ProjectReference Include="..\..\src\Portfolio.Grpc\Portfolio.Grpc.csproj" />
         <ProjectReference Include="..\Portfolio.Test.Shared\Portfolio.Test.Shared.csproj" />
     </ItemGroup>
 

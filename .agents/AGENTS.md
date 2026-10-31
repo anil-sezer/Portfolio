@@ -40,8 +40,8 @@ For deep bare-metal cluster maintenance, node upgrade runbooks, Flannel CNI, Met
 | **Build .NET Solution** | `dotnet build Portfolio.sln` |
 | **Run Go Cron Tests** | `cd kubernetes/crons/ip-lookup-cron; go test -v ./...` |
 | **Start Local Stack** | `docker compose up -d` |
-| **Run UI Locally** | `dotnet run --project Portfolio.Ui` (accessible at `http://localhost:5002`) |
-| **Run gRPC Locally** | `dotnet run --project Portfolio.Grpc` (accessible at `http://localhost:8081`) |
+| **Run UI Locally** | `dotnet run --project src/Portfolio.Ui` (accessible at `http://localhost:5002`) |
+| **Run gRPC Locally** | `dotnet run --project src/Portfolio.Grpc` (accessible at `http://localhost:8081`) |
 | **Check Cluster Pods** | `kubectl get pods -A -o wide` |
 | **List Helm Releases** | `wsl helm list -A` |
 | **Restart Deployments** | `kubectl rollout restart deployment/<name> -n portfolio` |

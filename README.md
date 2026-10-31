@@ -5,10 +5,10 @@ Made with love, by using **Domain Driven Design** from [Eric Evans!](https://ddd
 
 ## Tech Stack:
 
-|      ![kubernetes.png](Portfolio.Ui/wwwroot/img/techStack/kubernetes.png) <br/> **Kubernetes**       |       ![ansible.png](Portfolio.Ui/wwwroot/img/techStack/ansible.png) <br/> **Ansible**       |      ![docker.png](Portfolio.Ui/wwwroot/img/techStack/docker.png) <br/> **Docker**       |
+|      ![kubernetes.png](src/Portfolio.Ui/wwwroot/img/techStack/kubernetes.png) <br/> **Kubernetes**       |       ![ansible.png](src/Portfolio.Ui/wwwroot/img/techStack/ansible.png) <br/> **Ansible**       |      ![docker.png](src/Portfolio.Ui/wwwroot/img/techStack/docker.png) <br/> **Docker**       |
 |:----------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------:|
-|        ![dotnet.png](Portfolio.Ui/wwwroot/img/techStack/dotnet.png) <br/> **.NET 9 & Blazor**        |              ![go.png](Portfolio.Ui/wwwroot/img/techStack/go.png) <br/> **Go**               |  ![postgres.png](Portfolio.Ui/wwwroot/img/techStack/postgres.png) <br/> **PostgreSQL**   |
-|  ![opentelemetry.png](Portfolio.Ui/wwwroot/img/techStack/opentelemetry.png) <br/> **OpenTelemetry**  |  ![prometheus.png](Portfolio.Ui/wwwroot/img/techStack/prometheus.png) <br/> **Prometheus**   |     ![grafana.png](Portfolio.Ui/wwwroot/img/techStack/grafana.png) <br/> **Grafana**     |
+|        ![dotnet.png](src/Portfolio.Ui/wwwroot/img/techStack/dotnet.png) <br/> **.NET 9 & Blazor**        |              ![go.png](src/Portfolio.Ui/wwwroot/img/techStack/go.png) <br/> **Go**               |  ![postgres.png](src/Portfolio.Ui/wwwroot/img/techStack/postgres.png) <br/> **PostgreSQL**   |
+|  ![opentelemetry.png](src/Portfolio.Ui/wwwroot/img/techStack/opentelemetry.png) <br/> **OpenTelemetry**  |  ![prometheus.png](src/Portfolio.Ui/wwwroot/img/techStack/prometheus.png) <br/> **Prometheus**   |     ![grafana.png](src/Portfolio.Ui/wwwroot/img/techStack/grafana.png) <br/> **Grafana**     |
 
 1. `Kubernetes:` After setting this bare metal cluster by myself, I learnt that it is called: [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way). Nodes are prepared and cluster deployed with a single Ansible command.
 2. `Ansible:` I felt this Kubernetes setup would be incomplete without fully automating nodes. Also encourages experimentation since I can reset the lab rapidly if things break beyond repair

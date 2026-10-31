@@ -117,32 +117,37 @@ c:\Repositories\Portfolio\
 │   ├── k8s_stats.proto                     # Live cluster metrics contract
 │   ├── send_email_to_admin.proto           # Contact form & admin notification contract
 │   └── visitor_insights.proto              # Visitor telemetry & IP check contract
-├── Portfolio.Domain/                       # Clean Architecture: Pure domain models & contracts
-│   ├── Entities/                           # EntityBase, DailyImage, NotificationToAdmin, RequestLog
-│   ├── Enums/                              # ImageOfTheDaySource, NotificationType
-│   └── Interfaces/                         # Repository and service contracts (IRepository, etc.)
-├── Portfolio.Infrastructure/               # Persistence, EF Core, external providers, telemetry
-│   ├── PortfolioDbContext.cs               # EF Core DbContext with snake_case naming
-│   ├── Migrations/                         # EF Core database migration history
-│   ├── Repositories/                       # EF Core repository implementations
-│   ├── Extensions/                         # EnvVars, DbContextExtensions, HealthChecks, Logging, OTel
-│   └── ThirdPartyServices/                 # NotificationProviderTelegram (Telegram bot integration)
-├── Portfolio.Grpc/                         # Backend gRPC host service
-│   ├── Program.cs                          # Startup configuration, DI, gRPC mappings, auto-migrations
-│   ├── Dockerfile                          # Multi-stage build for linux/amd64 & linux/arm64
-│   ├── BackgroundServices/                 # DatabaseOperationQueueWorker, LogVisitorInfoQueuedOperation
-│   └── Services/                           # BackgroundImageServices, K8sStatsService, VisitorInsights
-├── Portfolio.Ui/                           # Blazor Server (.NET 10) user-facing application
-│   ├── Program.cs                          # Blazor Web App setup, endpoints, middlewares, caching
-│   ├── Dockerfile                          # Multi-stage build for linux/amd64 & linux/arm64
-│   ├── Components/Pages/                   # Home.razor, Error.razor, and IndexPageSections (About, ClusterInfo, etc.)
-│   ├── Endpoints/                          # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
-│   ├── Extensions/                         # ApiEndpointExtensions, Localization, RateLimiter
-│   ├── Services/                           # ClusterStatsService (5-min cache), BackgroundImageService (23-hr cache)
-│   ├── Localization/                       # Localization provider, marker type, and resx files (English and Turkish tr-TR)
-│   └── wwwroot/                            # Static assets, CSS, JS scripts, oneko cat mascot
-├── Portfolio.Test.Infrastructure/          # Infrastructure tests (unit/integration)
-├── Portfolio.Test.Shared/                  # Shared test helpers & base classes
+├── src/                                    # Source projects
+│   ├── Portfolio.Domain/                   # Clean Architecture: Pure domain models & contracts
+│   │   ├── Entities/                       # EntityBase, DailyImage, NotificationToAdmin, RequestLog
+│   │   ├── Enums/                          # ImageOfTheDaySource, NotificationType
+│   │   └── Interfaces/                     # Repository and service contracts (IRepository, etc.)
+│   ├── Portfolio.Infrastructure/           # Persistence, EF Core, external providers, telemetry
+│   │   ├── PortfolioDbContext.cs           # EF Core DbContext with snake_case naming
+│   │   ├── Migrations/                     # EF Core database migration history
+│   │   ├── Repositories/                   # EF Core repository implementations
+│   │   ├── Extensions/                     # EnvVars, DbContextExtensions, HealthChecks, Logging, OTel
+│   │   └── ThirdPartyServices/             # NotificationProviderTelegram (Telegram bot integration)
+│   ├── Portfolio.Grpc/                     # Backend gRPC host service
+│   │   ├── Program.cs                      # Startup configuration, DI, gRPC mappings, auto-migrations
+│   │   ├── Dockerfile                      # Multi-stage build for linux/amd64 & linux/arm64
+│   │   ├── BackgroundServices/             # DatabaseOperationQueueWorker, LogVisitorInfoQueuedOperation
+│   │   └── Services/                       # BackgroundImageServices, K8sStatsService, VisitorInsights
+│   └── Portfolio.Ui/                       # Blazor Server (.NET 10) user-facing application
+│       ├── Program.cs                      # Blazor Web App setup, endpoints, middlewares, caching
+│       ├── Dockerfile                      # Multi-stage build for linux/amd64 & linux/arm64
+│       ├── Components/Pages/               # Home.razor, Error.razor, and IndexPageSections (About, ClusterInfo, etc.)
+│       ├── Endpoints/                      # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
+│       ├── Extensions/                     # ApiEndpointExtensions, Localization, RateLimiter
+│       ├── Services/                       # ClusterStatsService (5-min cache), BackgroundImageService (23-hr cache)
+│       ├── Localization/                   # Localization provider, marker type, and resx files (English and Turkish tr-TR)
+│       └── wwwroot/                        # Static assets, CSS, JS scripts, oneko cat mascot
+├── tests/                                  # Test projects
+│   ├── Portfolio.Test.Domain/              # Domain unit tests
+│   ├── Portfolio.Test.Grpc/                # Backend gRPC service tests
+│   ├── Portfolio.Test.Infrastructure/      # Infrastructure tests (unit/integration)
+│   ├── Portfolio.Test.Shared/              # Shared test helpers & base classes
+│   └── Portfolio.Test.Ui/                  # Blazor UI service and endpoint tests
 ├── kubernetes/                             # All Kubernetes manifests and Helm value files
 │   ├── website/                            # Deployments, Services, Ingress, RBAC for Ui & Grpc
 │   ├── database/                           # Postgres 18, Redis, Adminer, Elasticsearch/Kibana
@@ -276,10 +281,10 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
 
 ### Runbook A: Modifying Frontend UI or Razor Components
 
-1. Razor components are in [Portfolio.Ui/Components/Pages/](file:///c:/Repositories/Portfolio/Portfolio.Ui/Components/Pages/).
+1. Razor components are in [src/Portfolio.Ui/Components/Pages/](file:///c:/Repositories/Portfolio/src/Portfolio.Ui/Components/Pages/).
 2. Section components (About, ClusterInfo, Contact, Hero, Resume, TechStack) have companion scoped CSS files (`.razor.css`).
 3. Localized strings **must** use `IStringLocalizer<AppResources>`:
-   - Add new resource keys to both [AppResources.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Localization/AppResources.resx) (English) and [AppResources.tr-TR.resx](file:///c:/Repositories/Portfolio/Portfolio.Ui/Localization/AppResources.tr-TR.resx) (Turkish).
+   - Add new resource keys to both [AppResources.resx](file:///c:/Repositories/Portfolio/src/Portfolio.Ui/Localization/AppResources.resx) (English) and [AppResources.tr-TR.resx](file:///c:/Repositories/Portfolio/src/Portfolio.Ui/Localization/AppResources.tr-TR.resx) (Turkish).
 4. Verify changes locally:
    ```powershell
    dotnet build Portfolio.sln
@@ -292,8 +297,8 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
    ```bash
    protoc --proto_path=protos --go_out=. --go-grpc_out=. protos/<proto_file>.proto
    ```
-3. Update or implement the C# gRPC service in [Portfolio.Grpc/Services/](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Services/).
-4. Register the gRPC client in [Portfolio.Ui/Extensions/GrpcClientRegistration.cs](file:///c:/Repositories/Portfolio/Portfolio.Ui/Extensions/GrpcClientRegistration.cs).
+3. Update or implement the C# gRPC service in [src/Portfolio.Grpc/Services/](file:///c:/Repositories/Portfolio/src/Portfolio.Grpc/Services/).
+4. Register the gRPC client in [src/Portfolio.Ui/Extensions/GrpcClientRegistration.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Ui/Extensions/GrpcClientRegistration.cs).
 5. Verify build: `dotnet build Portfolio.sln`.
 
 ### Runbook C: Building & Deploying Docker Containers to the Cluster
@@ -302,10 +307,10 @@ All stateful workloads mount NFS exports from `192.168.1.119`:
 2. Build multi-arch images with `docker buildx`:
    ```bash
    # For Frontend UI:
-   docker buildx build -t imgregistry.anil-sezer.com/portfolio-ui:latest -f Portfolio.Ui/Dockerfile --platform linux/amd64,linux/arm64 --push .
+   docker buildx build -t imgregistry.anil-sezer.com/portfolio-ui:latest -f src/Portfolio.Ui/Dockerfile --platform linux/amd64,linux/arm64 --push .
 
    # For Backend gRPC:
-   docker buildx build -t imgregistry.anil-sezer.com/portfolio-grpc:latest -f Portfolio.Grpc/Dockerfile --platform linux/amd64,linux/arm64 --push .
+   docker buildx build -t imgregistry.anil-sezer.com/portfolio-grpc:latest -f src/Portfolio.Grpc/Dockerfile --platform linux/amd64,linux/arm64 --push .
 
    # For Go IP Lookup Cron:
    cd kubernetes/crons/ip-lookup-cron
@@ -331,17 +336,17 @@ wsl helm upgrade --install grafana grafana-community/grafana -n observability -f
 ## 9. Known Quirks, Traps & Conventions
 
 1. **Enum Synchronization Marker (`GXJQJZ`)**:
-   - The `ImageOfTheDaySource` enum is duplicated across [protos/background_images.proto](file:///c:/Repositories/Portfolio/protos/background_images.proto), [Portfolio.Domain/Enums/ImageOfTheDaySource.cs](file:///c:/Repositories/Portfolio/Portfolio.Domain/Enums/ImageOfTheDaySource.cs), and Go code. Always grep for `GXJQJZ` when editing image source enums.
+   - The `ImageOfTheDaySource` enum is duplicated across [protos/background_images.proto](file:///c:/Repositories/Portfolio/protos/background_images.proto), [src/Portfolio.Domain/Enums/ImageOfTheDaySource.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Domain/Enums/ImageOfTheDaySource.cs), and Go code. Always grep for `GXJQJZ` when editing image source enums.
 2. **No Appsettings Files**:
-   - All runtime configuration is driven purely via environment variables (see [Portfolio.Infrastructure/Extensions/EnvVars.cs](file:///c:/Repositories/Portfolio/Portfolio.Infrastructure/Extensions/EnvVars.cs)) and code-level defaults (e.g. Kestrel HTTP/2 in [Portfolio.Grpc/Program.cs](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Program.cs)). `appsettings*.json` files have been eliminated across all projects.
+   - All runtime configuration is driven purely via environment variables (see [src/Portfolio.Infrastructure/Extensions/EnvVars.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Infrastructure/Extensions/EnvVars.cs)) and code-level defaults (e.g. Kestrel HTTP/2 in [src/Portfolio.Grpc/Program.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Grpc/Program.cs)). `appsettings*.json` files have been eliminated across all projects.
 3. **Node Count Convention (+1)**:
-   - In [Portfolio.Grpc/Services/K8sStatsService.cs](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Services/K8sStatsService.cs), `NodeCount` is intentionally calculated as `nodes.Items.Count + 1` to account for the unmanaged Debian `cinema` NAS host.
+   - In [src/Portfolio.Grpc/Services/K8sStatsService.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Grpc/Services/K8sStatsService.cs), `NodeCount` is intentionally calculated as `nodes.Items.Count + 1` to account for the unmanaged Debian `cinema` NAS host.
 4. **Authentik Forward-Auth URL Trailing Slash**:
    - When configuring or accessing Authentik initial setup, omitting the trailing slash causes a 404 (e.g. use `http://<ip>:9000/if/flow/initial-setup/`).
 5. **Authentik PostgreSQL 99-Character Password Limit**:
    - Due to a known PostgreSQL hashing issue within Authentik, database passwords must not exceed 99 characters.
 6. **Telegram MarkdownV2 Escaping**:
-   - [NotificationProviderTelegram.cs](file:///c:/Repositories/Portfolio/Portfolio.Infrastructure/ThirdPartyServices/NotificationProviderTelegram.cs) explicitly escapes characters `_ * [ ] ( ) ~ \` > # + - = | { } . !`. Ensure any newly injected text passes through `EscapeMarkdown()`.
+   - [NotificationProviderTelegram.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Infrastructure/ThirdPartyServices/NotificationProviderTelegram.cs) explicitly escapes characters `_ * [ ] ( ) ~ \` > # + - = | { } . !`. Ensure any newly injected text passes through `EscapeMarkdown()`.
 7. **Cache Expirations**:
    - Cluster statistics are cached in memory for **5 minutes** (`ClusterStatsService`).
    - Daily background image is cached in memory for **23 hours** (`BackgroundImageService`).

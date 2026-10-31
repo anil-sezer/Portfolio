@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
@@ -32,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Portfolio.Grpc\Portfolio.Grpc.csproj" />
+        <ProjectReference Include="..\..\src\Portfolio.Domain\Portfolio.Domain.csproj" />
         <ProjectReference Include="..\Portfolio.Test.Shared\Portfolio.Test.Shared.csproj" />
     </ItemGroup>
 

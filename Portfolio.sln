@@ -1,12 +1,12 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Domain", "Portfolio.Domain\Portfolio.Domain.csproj", "{95B39C9A-8AE6-4D13-8821-65D95BA0946E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Domain", "src\Portfolio.Domain\Portfolio.Domain.csproj", "{95B39C9A-8AE6-4D13-8821-65D95BA0946E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{272096BD-EE84-4A4D-A6C5-E37BE47D4C7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Shared", "Portfolio.Test.Shared\Portfolio.Test.Shared.csproj", "{EF1E30EA-1EAC-4E0E-9412-7A3CE8E84908}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Shared", "tests\Portfolio.Test.Shared\Portfolio.Test.Shared.csproj", "{EF1E30EA-1EAC-4E0E-9412-7A3CE8E84908}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Grpc", "Portfolio.Grpc\Portfolio.Grpc.csproj", "{E5931356-C895-41C2-A5EE-EF28AE1929AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Grpc", "src\Portfolio.Grpc\Portfolio.Grpc.csproj", "{E5931356-C895-41C2-A5EE-EF28AE1929AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ED2A1D9-8316-4C0A-998B-340B46C38C18}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,17 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{92834DD4-B928-4848-915C-4363AAAC784B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Ui", "Portfolio.Ui\Portfolio.Ui.csproj", "{F768DF0D-0FC6-4D05-AB0B-1C00DB970F74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Ui", "src\Portfolio.Ui\Portfolio.Ui.csproj", "{F768DF0D-0FC6-4D05-AB0B-1C00DB970F74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Infrastructure", "Portfolio.Infrastructure\Portfolio.Infrastructure.csproj", "{DB88BE8E-7FC2-454B-AE8C-8F3AA14B207B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Infrastructure", "src\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj", "{DB88BE8E-7FC2-454B-AE8C-8F3AA14B207B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Infrastructure", "Portfolio.Test.Infrastructure\Portfolio.Test.Infrastructure.csproj", "{6993D7E8-9100-42CF-9855-3496FB31F7B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Infrastructure", "tests\Portfolio.Test.Infrastructure\Portfolio.Test.Infrastructure.csproj", "{6993D7E8-9100-42CF-9855-3496FB31F7B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Domain", "Portfolio.Test.Domain\Portfolio.Test.Domain.csproj", "{EC73AABB-E837-49CA-8F5A-7571F5E18A88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Domain", "tests\Portfolio.Test.Domain\Portfolio.Test.Domain.csproj", "{EC73AABB-E837-49CA-8F5A-7571F5E18A88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Grpc", "Portfolio.Test.Grpc\Portfolio.Test.Grpc.csproj", "{C3986AD5-E8E3-40BA-889E-F7DAE3981131}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Grpc", "tests\Portfolio.Test.Grpc\Portfolio.Test.Grpc.csproj", "{C3986AD5-E8E3-40BA-889E-F7DAE3981131}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Ui", "Portfolio.Test.Ui\Portfolio.Test.Ui.csproj", "{FCD15C44-9D17-49BC-BF24-645D552DCD04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portfolio.Test.Ui", "tests\Portfolio.Test.Ui\Portfolio.Test.Ui.csproj", "{FCD15C44-9D17-49BC-BF24-645D552DCD04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

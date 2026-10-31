@@ -1,4 +1,4 @@
-# docker buildx build -t imgregistry.anil-sezer.com/portfolio-ui:latest -f Portfolio.Ui/Dockerfile --platform linux/amd64,linux/arm64 --push .
+# docker buildx build -t imgregistry.anil-sezer.com/portfolio-ui:latest -f src/Portfolio.Ui/Dockerfile --platform linux/amd64,linux/arm64 --push .
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 USER $APP_UID
 WORKDIR /app
@@ -7,17 +7,17 @@ EXPOSE 8080
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
-WORKDIR /src
+WORKDIR /app
 
 COPY Directory.Packages.props ./
 COPY protos/ protos/
-COPY Portfolio.Ui/ Portfolio.Ui/
-COPY Portfolio.Domain/ Portfolio.Domain/
-COPY Portfolio.Infrastructure/ Portfolio.Infrastructure/
+COPY src/Portfolio.Ui/ src/Portfolio.Ui/
+COPY src/Portfolio.Domain/ src/Portfolio.Domain/
+COPY src/Portfolio.Infrastructure/ src/Portfolio.Infrastructure/
 
-RUN dotnet restore "Portfolio.Ui/Portfolio.Ui.csproj" -a $TARGETARCH
+RUN dotnet restore "src/Portfolio.Ui/Portfolio.Ui.csproj" -a $TARGETARCH
 
-WORKDIR /src/Portfolio.Ui
+WORKDIR /app/src/Portfolio.Ui
 RUN dotnet build "Portfolio.Ui.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --output /app/build
 
 

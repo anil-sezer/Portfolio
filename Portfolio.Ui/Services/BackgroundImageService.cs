@@ -24,6 +24,7 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
     private const int MaxDimensionPixels = 4096;
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(23);
+    private static readonly SemaphoreSlim CacheLock = new(1, 1);
     private static readonly SemaphoreSlim DesktopLock = new(1, 1);
     private static readonly SemaphoreSlim MobileLock = new(1, 1);
 
@@ -64,17 +65,27 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
             return cachedImage;
         }
 
-        var image = await GetFromDbAsync(cancellationToken);
-
-        var cacheOptions = new MemoryCacheEntryOptions
+        await CacheLock.WaitAsync(cancellationToken);
+        try
         {
-            AbsoluteExpirationRelativeToNow = CacheDuration
-        };
+            if (memoryCache.TryGetValue(CacheKey, out cachedImage) && cachedImage != null)
+            {
+                logger.LogInformation("📦 Background image retrieved from cache");
+                return cachedImage;
+            }
 
-        memoryCache.Set(CacheKey, image, cacheOptions);
-        logger.LogInformation("💾 Background image added to cache with 23-hour expiration");
-
-        return image;
+            return await memoryCache.GetOrCreateAsync(CacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+                var image = await GetFromDbAsync(cancellationToken);
+                logger.LogInformation("💾 Background image added to cache with 23-hour expiration");
+                return image;
+            }) ?? throw new InvalidOperationException("Failed to retrieve background image from cache.");
+        }
+        finally
+        {
+            CacheLock.Release();
+        }
     }
 
     public virtual async Task RefreshCacheAsync(CancellationToken cancellationToken = default)

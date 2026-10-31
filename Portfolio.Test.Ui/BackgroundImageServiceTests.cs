@@ -468,4 +468,46 @@ public class BackgroundImageServiceTests : IDisposable
         bytes.Should().BeNull();
         isStale.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task GetFromCacheAsync_ConcurrentRequestsOnCacheMiss_CallsGrpcOnlyOnce()
+    {
+        // Arrange
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
+        var mockClient = new Mock<BackgroundImages.BackgroundImagesClient>();
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+        var grpcResponse = new BackgroundImageDetails
+        {
+            Url = "https://example.com/stampede-bg.jpg",
+            AltText = "Stampede Alt",
+            Source = ImageOfTheDaySource.Bing
+        };
+
+        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
+            .Returns(() =>
+            {
+                Thread.Sleep(50);
+                return TestCallHelpers.CreateAsyncUnaryCall(grpcResponse);
+            });
+
+        // Act: 10 concurrent requests from different service instances sharing the same cache
+        var tasks = Enumerable.Range(0, 10).Select(_ => Task.Run(async () =>
+        {
+            var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance, _dummyHttpClient);
+            return await service.GetFromCacheAsync();
+        })).ToArray();
+
+        var results = await Task.WhenAll(tasks);
+
+        // Assert: All callers receive the image, but gRPC was called only once (no stampede)
+        results.Should().HaveCount(10);
+        foreach (var result in results)
+        {
+            result.Should().NotBeNull();
+            result.Url.Should().Be("https://example.com/stampede-bg.jpg");
+        }
+
+        mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

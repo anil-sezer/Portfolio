@@ -148,4 +148,47 @@ public class ClusterStatsServiceTests
         result.ActivePodCount.Should().Be(7);
         mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), cts.Token), Times.Once);
     }
+
+    [Fact]
+    public async Task GetFromCacheAsync_ConcurrentRequestsOnCacheMiss_CallsGrpcOnlyOnce()
+    {
+        // Arrange
+        var mockClient = new Mock<K8sStats.K8sStatsClient>();
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+
+        var grpcResponse = new GetK8sStatsResponse
+        {
+            ActivePodCount = 15,
+            ServiceCount = 8,
+            NodeCount = 5,
+            DeploymentCount = 5,
+            CronJobCount = 1
+        };
+
+        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
+            .Returns(() =>
+            {
+                Thread.Sleep(50);
+                return TestCallHelpers.CreateAsyncUnaryCall(grpcResponse);
+            });
+
+        // Act: 10 concurrent requests from different service instances sharing the same cache
+        var tasks = Enumerable.Range(0, 10).Select(_ => Task.Run(async () =>
+        {
+            var service = new ClusterStatsService(mockClient.Object, memoryCache, NullLogger<ClusterStatsService>.Instance);
+            return await service.GetFromCacheAsync();
+        })).ToArray();
+
+        var results = await Task.WhenAll(tasks);
+
+        // Assert: All callers receive the stats, but gRPC was called only once (no stampede)
+        results.Should().HaveCount(10);
+        foreach (var result in results)
+        {
+            result.Should().NotBeNull();
+            result.ActivePodCount.Should().Be(15);
+        }
+
+        mockClient.Verify(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

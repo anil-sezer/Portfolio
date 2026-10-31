@@ -10,17 +10,34 @@ public class ClusterStatsService(
 {
     private const string CacheKey = "k8s_stats";
     private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
+    private static readonly SemaphoreSlim CacheLock = new(1, 1);
 
-    public async Task<GetK8sStatsResponse> GetFromCacheAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<GetK8sStatsResponse> GetFromCacheAsync(CancellationToken cancellationToken = default)
     {
         if (memoryCache.TryGetValue(CacheKey, out GetK8sStatsResponse? cachedStats) && cachedStats != null)
             return cachedStats;
 
-        // Fallback on initial call or rare cache miss before first background refresh finishes
-        return await RefreshCacheAsync(cancellationToken);
+        await CacheLock.WaitAsync(cancellationToken);
+        try
+        {
+            if (memoryCache.TryGetValue(CacheKey, out cachedStats) && cachedStats != null)
+                return cachedStats;
+
+            return await memoryCache.GetOrCreateAsync(CacheKey, async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = CacheExpiration;
+                var stats = await GetFromGrpcAsync(cancellationToken);
+                logger.LogInformation("💾 K8s stats updated in cache");
+                return stats;
+            }) ?? throw new InvalidOperationException("Failed to retrieve K8s stats from cache.");
+        }
+        finally
+        {
+            CacheLock.Release();
+        }
     }
 
-    public async Task<GetK8sStatsResponse> RefreshCacheAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<GetK8sStatsResponse> RefreshCacheAsync(CancellationToken cancellationToken = default)
     {
         var stats = await GetFromGrpcAsync(cancellationToken);
 

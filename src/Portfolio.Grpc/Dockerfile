@@ -10,19 +10,24 @@ ARG TARGETARCH
 WORKDIR /app
 
 COPY Directory.Packages.props ./
-COPY protos/ protos/
-COPY src/Portfolio.Grpc/ src/Portfolio.Grpc/
-COPY src/Portfolio.Domain/ src/Portfolio.Domain/
-COPY src/Portfolio.Infrastructure/ src/Portfolio.Infrastructure/
+COPY src/Portfolio.Domain/Portfolio.Domain.csproj src/Portfolio.Domain/
+COPY src/Portfolio.Infrastructure/Portfolio.Infrastructure.csproj src/Portfolio.Infrastructure/
+COPY src/Portfolio.Grpc/Portfolio.Grpc.csproj src/Portfolio.Grpc/
 
 RUN dotnet restore "src/Portfolio.Grpc/Portfolio.Grpc.csproj" -a $TARGETARCH
 
+# Copy protobufs and project sources after restore
+COPY protos/ protos/
+COPY src/Portfolio.Domain/ src/Portfolio.Domain/
+COPY src/Portfolio.Infrastructure/ src/Portfolio.Infrastructure/
+COPY src/Portfolio.Grpc/ src/Portfolio.Grpc/
+
 WORKDIR /app/src/Portfolio.Grpc
-RUN dotnet build "Portfolio.Grpc.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --output /app/build
+RUN dotnet build "Portfolio.Grpc.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --no-restore --output /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Portfolio.Grpc.csproj" -c $BUILD_CONFIGURATION -a $TARGETARCH -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Portfolio.Grpc.csproj" -c $BUILD_CONFIGURATION -a $TARGETARCH --no-restore -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

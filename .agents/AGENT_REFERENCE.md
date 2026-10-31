@@ -332,8 +332,8 @@ wsl helm upgrade --install grafana grafana-community/grafana -n observability -f
 
 1. **Enum Synchronization Marker (`GXJQJZ`)**:
    - The `ImageOfTheDaySource` enum is duplicated across [protos/background_images.proto](file:///c:/Repositories/Portfolio/protos/background_images.proto), [Portfolio.Domain/Enums/ImageOfTheDaySource.cs](file:///c:/Repositories/Portfolio/Portfolio.Domain/Enums/ImageOfTheDaySource.cs), and Go code. Always grep for `GXJQJZ` when editing image source enums.
-2. **Dockerfile Appsettings Collision**:
-   - In [Portfolio.Ui/Dockerfile](file:///c:/Repositories/Portfolio/Portfolio.Ui/Dockerfile), `RUN rm -f Portfolio.Grpc/appsettings.json Portfolio.Grpc/appsettings.Development.json` is required to prevent .NET SDK `NETSDK1152` duplicate file errors during publish. Do not remove this line.
+2. **No Appsettings Files**:
+   - All runtime configuration is driven purely via environment variables (see [Portfolio.Infrastructure/Extensions/EnvVars.cs](file:///c:/Repositories/Portfolio/Portfolio.Infrastructure/Extensions/EnvVars.cs)) and code-level defaults (e.g. Kestrel HTTP/2 in [Portfolio.Grpc/Program.cs](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Program.cs)). `appsettings*.json` files have been eliminated across all projects.
 3. **Node Count Convention (+1)**:
    - In [Portfolio.Grpc/Services/K8sStatsService.cs](file:///c:/Repositories/Portfolio/Portfolio.Grpc/Services/K8sStatsService.cs), `NodeCount` is intentionally calculated as `nodes.Items.Count + 1` to account for the unmanaged Debian `cinema` NAS host.
 4. **Authentik Forward-Auth URL Trailing Slash**:

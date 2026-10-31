@@ -15,7 +15,10 @@ EnvVars.TestEnvVariablesForFrontend();
 
 builder.InitOpenTelemetry();
 
-builder.Services.AddRazorComponents();
+builder.Services.AddRazorComponents(options =>
+{
+    options.DetailedErrors = builder.Environment.IsDevelopment();
+});
 
 builder.Services.AddHttpContextAccessor();
 

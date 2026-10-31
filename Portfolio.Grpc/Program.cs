@@ -1,4 +1,5 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.BackgroundServices;
 using Portfolio.Grpc.Services;
@@ -11,6 +12,14 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ConfigureEndpointDefaults(listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 
 builder.InitLogsWithSerilog();
 

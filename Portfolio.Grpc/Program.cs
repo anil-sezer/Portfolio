@@ -13,7 +13,7 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
-    Env.Load("../.env");
+    Env.TraversePath().Load();
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {

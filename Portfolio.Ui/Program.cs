@@ -7,7 +7,7 @@ using Portfolio.Ui.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
-    Env.Load("../.env");
+    Env.TraversePath().Load();
 
 builder.InitLogsWithSerilog();
 

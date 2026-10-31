@@ -22,7 +22,7 @@ public class TechStackModel
                 Name = "Kubernetes",
                 WebsiteLink = "https://kubernetes.io/",
 
-                ImageAddress = "img/techStack/kubernetes.png",
+                ImageAddress = "img/techStack/kubernetes.svg",
                 ImageAltTextKey = "TechStack_Kubernetes_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -34,7 +34,7 @@ public class TechStackModel
                 Name = "Ansible",
                 WebsiteLink = "https://www.ansible.com/",
 
-                ImageAddress = "img/techStack/ansible.png",
+                ImageAddress = "img/techStack/ansible.svg",
                 ImageAltTextKey = "TechStack_Ansible_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -46,10 +46,10 @@ public class TechStackModel
                 Name = "Docker",
                 WebsiteLink = "https://www.docker.com/",
 
-                ImageAddress = "img/techStack/docker.png",
+                ImageAddress = "img/techStack/docker.svg",
                 ImageAltTextKey = "TechStack_Docker_Alt",
-                ImageWidth = 45,
-                ImageHeight = 27,
+                ImageWidth = 32,
+                ImageHeight = 32,
 
                 DescriptionKey = "TechStack_Docker_Desc"
             },
@@ -58,7 +58,7 @@ public class TechStackModel
                 Name = ".Net 10 & Blazor",
                 WebsiteLink = "https://dotnet.microsoft.com/",
 
-                ImageAddress = "img/techStack/dotnet.png",
+                ImageAddress = "img/techStack/dotnet.svg",
                 ImageAltTextKey = "TechStack_DotNet_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -70,10 +70,10 @@ public class TechStackModel
                 Name = "Go",
                 WebsiteLink = "https://go.dev/",
 
-                ImageAddress = "img/techStack/go.png",
+                ImageAddress = "img/techStack/go.svg",
                 ImageAltTextKey = "TechStack_Go_Alt",
-                ImageWidth = 42,
-                ImageHeight = 21,
+                ImageWidth = 32,
+                ImageHeight = 32,
 
                 DescriptionKey = "TechStack_Go_Desc",
                 AriaLabel = "Go programming language"
@@ -83,10 +83,10 @@ public class TechStackModel
                 Name = "gRPC",
                 WebsiteLink = "https://grpc.io/",
 
-                ImageAddress = "img/techStack/grpc.png",
+                ImageAddress = "img/techStack/grpc.svg",
                 ImageAltTextKey = "TechStack_Grpc_Alt",
                 ImageWidth = 32,
-                ImageHeight = 14,
+                ImageHeight = 32,
 
                 DescriptionKey = "TechStack_Grpc_Desc"
             },
@@ -95,7 +95,7 @@ public class TechStackModel
                 Name = "PostgreSQL",
                 WebsiteLink = "https://www.postgresql.org/",
 
-                ImageAddress = "img/techStack/postgres.png",
+                ImageAddress = "img/techStack/postgres.svg",
                 ImageAltTextKey = "TechStack_PostgreSql_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -107,10 +107,10 @@ public class TechStackModel
                 Name = "OpenTelemetry",
                 WebsiteLink = "https://opentelemetry.io/",
             
-                ImageAddress = "img/techStack/opentelemetry.png",
+                ImageAddress = "img/techStack/opentelemetry.svg",
                 ImageAltTextKey = "TechStack_OpenTelemetry_Alt",
                 ImageWidth = 32,
-                ImageHeight = 33,
+                ImageHeight = 32,
             
                 DescriptionKey = "TechStack_OpenTelemetry_Desc"
             },
@@ -119,7 +119,7 @@ public class TechStackModel
                 Name = "Prometheus",
                 WebsiteLink = "https://prometheus.io/",
             
-                ImageAddress = "img/techStack/prometheus.png",
+                ImageAddress = "img/techStack/prometheus.svg",
                 ImageAltTextKey = "TechStack_Prometheus_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -131,7 +131,7 @@ public class TechStackModel
                 Name = "Grafana",
                 WebsiteLink = "https://grafana.com/",
 
-                ImageAddress = "img/techStack/grafana.png",
+                ImageAddress = "img/techStack/grafana.svg",
                 ImageAltTextKey = "TechStack_Grafana_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -143,7 +143,7 @@ public class TechStackModel
                 Name = "Jaeger",
                 WebsiteLink = "https://jaegertracing.io/",
 
-                ImageAddress = "img/techStack/jaeger.png",
+                ImageAddress = "img/techStack/jaeger.svg",
                 ImageAltTextKey = "TechStack_Jaeger_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -155,7 +155,7 @@ public class TechStackModel
                 Name = "Seq",
                 WebsiteLink = "https://datalust.co/",
 
-                ImageAddress = "img/techStack/seq.png",
+                ImageAddress = "img/techStack/seq.svg",
                 ImageAltTextKey = "TechStack_Seq_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -167,7 +167,7 @@ public class TechStackModel
                 Name = "Lens",
                 WebsiteLink = "https://lenshq.io/",
 
-                ImageAddress = "img/techStack/lens.png",
+                ImageAddress = "img/techStack/lens.svg",
                 ImageAltTextKey = "TechStack_Lens_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -179,7 +179,7 @@ public class TechStackModel
                 Name = "Kubecolor",
                 WebsiteLink = "https://kubecolor.github.io/",
 
-                ImageAddress = "img/techStack/kubecolor.png",
+                ImageAddress = "img/techStack/kubecolor.svg",
                 ImageAltTextKey = "TechStack_Kubecolor_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -191,7 +191,7 @@ public class TechStackModel
                 Name = "Elastic Search",
                 WebsiteLink = "https://www.elastic.co/",
             
-                ImageAddress = "img/techStack/elastic.png",
+                ImageAddress = "img/techStack/elastic.svg",
                 ImageAltTextKey = "TechStack_Elasticsearch_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,
@@ -203,7 +203,7 @@ public class TechStackModel
                 Name = "Authentik",
                 WebsiteLink = "https://goauthentik.io/",
             
-                ImageAddress = "img/techStack/authentik.png",
+                ImageAddress = "img/techStack/authentik.svg",
                 ImageAltTextKey = "TechStack_Authentik_Alt",
                 ImageWidth = 32,
                 ImageHeight = 32,

@@ -17,7 +17,7 @@ namespace Portfolio.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "10.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -33,10 +33,11 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("AltText")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
                         .HasColumnName("alt_text");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
@@ -46,7 +47,8 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("image_url");
 
                     b.Property<int>("Source")
@@ -59,6 +61,9 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_daily_images");
+
+                    b.HasIndex("UrlWorks", "DoIPreferToDisplayThis")
+                        .HasDatabaseName("ix_daily_images_url_works_do_i_prefer_to_display_this");
 
                     b.ToTable("daily_images", null, t =>
                         {
@@ -75,13 +80,14 @@ namespace Portfolio.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("email_address");
 
                     b.Property<bool>("IsItSentSuccessfully")
@@ -90,21 +96,27 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
                         .HasColumnName("message");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("subject");
 
                     b.HasKey("Id")
                         .HasName("pk_notifications_to_admin");
+
+                    b.HasIndex("CreatedAt", "EmailAddress")
+                        .HasDatabaseName("ix_notifications_to_admin_created_at_email_address");
 
                     b.ToTable("notifications_to_admin", null, t =>
                         {
@@ -123,22 +135,26 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("AcceptLanguage")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("accept_language");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("city");
 
                     b.Property<string>("ClientIp")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("client_ip");
 
                     b.Property<string>("Connection")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("connection");
 
                     b.Property<bool>("CookieEnabled")
@@ -147,31 +163,36 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("country");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("DeviceMemory")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
                         .HasColumnName("device_memory");
 
                     b.Property<string>("DoNotTrack")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
                         .HasColumnName("do_not_track");
 
                     b.Property<string>("Extras")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
                         .HasColumnName("extras");
 
                     b.Property<string>("HardwareConcurrency")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
                         .HasColumnName("hardware_concurrency");
 
                     b.Property<int>("MaxTouchPoints")
@@ -184,27 +205,32 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.Property<string>("Platform")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("platform");
 
                     b.Property<string>("Referrer")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("referrer");
 
                     b.Property<string>("RequestedUrl")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("requested_url");
 
                     b.Property<string>("Resolution")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("resolution");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
                         .HasColumnName("user_agent");
 
                     b.Property<bool>("Webdriver")
@@ -213,6 +239,9 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_request_logs");
+
+                    b.HasIndex("ClientIp", "City", "Country")
+                        .HasDatabaseName("ix_request_logs_client_ip_city_country");
 
                     b.ToTable("request_logs", null, t =>
                         {

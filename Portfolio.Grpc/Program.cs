@@ -1,5 +1,4 @@
 using DotNetEnv;
-using Portfolio.Domain.Interfaces.BackgroundServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.BackgroundServices;
 using Portfolio.Grpc.Services;

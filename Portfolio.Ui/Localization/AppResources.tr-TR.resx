@@ -96,6 +96,9 @@
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Bugünün görseli:</value>
   </data>
+  <data name="Hero_ScrollDown" xml:space="preserve">
+    <value>İçeriğe kaydır</value>
+  </data>
 
   <!-- Tech Stack Section -->
   <data name="TechStack_Title" xml:space="preserve">

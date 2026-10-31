@@ -98,6 +98,9 @@
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Todays image is by:</value>
   </data>
+  <data name="Hero_ScrollDown" xml:space="preserve">
+    <value>Scroll down to content</value>
+  </data>
 
   <!-- Tech Stack Section -->
   <data name="TechStack_Title" xml:space="preserve">

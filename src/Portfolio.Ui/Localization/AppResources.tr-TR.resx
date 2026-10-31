@@ -123,7 +123,7 @@
     <value>Docker logosu. Üzerinde mavi konteynerlar taşıyan sevimli mavi balina.</value>
   </data>
   <data name="TechStack_Docker_Desc" xml:space="preserve">
-    <value>Docker imajlarıyla yayınlandı. İmajlarımı Docker Registry v3'de saklıyorum</value>
+    <value>Docker imajlarıyla yayınlandı. Herkese açık imajlarım DockerHub'da; çoklu mimarili özel imajlarım ise küme içi Docker Registry ve Web UI ile barındırılıyor.</value>
   </data>
   <data name="TechStack_DotNet_Alt" xml:space="preserve">
     <value>.NET logosu. İçinde .NET Core yazan mor bir daire.</value>
@@ -156,10 +156,10 @@
     <value>Trace verileri olmazsa olmaz</value>
   </data>
   <data name="TechStack_Prometheus_Alt" xml:space="preserve">
-    <value>Prometheus logosu. Şık bir meşale.</value>
+    <value>Prometheus ve Alertmanager logosu. Şık bir meşale simgesi.</value>
   </data>
   <data name="TechStack_Prometheus_Desc" xml:space="preserve">
-    <value>4 yıldan uzun süredir kullanıyorum ancak özellikle üzerine daha fazla zaman ayırmak istiyorum</value>
+    <value>4 yıldan uzun süredir kullanıyorum. Alertmanager ile birlikte metrikleri toplamak, küme sağlığını izlemek ve kritik uyarıları yönetmek için kullanıyorum.</value>
   </data>
   <data name="TechStack_Grafana_Alt" xml:space="preserve">
     <value>Grafana logosu. Turuncudan sarıya gradyanlı, geniş uçlu bir spiral.</value>
@@ -171,7 +171,7 @@
     <value>Jaeger logosu. Yeşil Robin Hood şapkalı, 2 insan ayak izini inceleyen mavi tavşan. Çizim tarzı özgün, çizgileri gayet iyi.</value>
   </data>
   <data name="TechStack_Jaeger_Desc" xml:space="preserve">
-    <value></value>
+    <value>gRPC mikroservisleri ve web istemcileri arasındaki istek yaşam döngülerini izleyen dağıtık izleme platformu.</value>
   </data>
   <data name="TechStack_Seq_Alt" xml:space="preserve">
     <value>Seq logosu. Mavi ve beyaz renk şemasına sahip minimalist bir tasarım.</value>
@@ -202,6 +202,66 @@
   </data>
   <data name="TechStack_Authentik_Desc" xml:space="preserve">
     <value>Panellerime erişimi bununla güvence altına alıyorum</value>
+  </data>
+  <data name="TechStack_Traefik_Alt" xml:space="preserve">
+    <value>Traefik logosu. Modern geometrik camgöbeği ve mavi akış simgesi.</value>
+  </data>
+  <data name="TechStack_Traefik_Desc" xml:space="preserve">
+    <value>Cluster'daki tüm ters proxy yönlendirmelerini, SSL sonlandırmasını ve Authentik için Forward-Auth ara yazılımını yönetiyor.</value>
+  </data>
+  <data name="TechStack_Helm_Alt" xml:space="preserve">
+    <value>Helm logosu. Lacivert altıgen zemin üzerine beyaz gemi dümeni.</value>
+  </data>
+  <data name="TechStack_Helm_Desc" xml:space="preserve">
+    <value>Traefik, Grafana, Authentik ve gözlemlenebilirlik araçlarının şablonlanması ve sürüm yaşam döngüsünün yönetilmesi için vazgeçilmez.</value>
+  </data>
+  <data name="TechStack_MetalLB_Alt" xml:space="preserve">
+    <value>MetalLB logosu. Camgöbeği ve mavi geometrik yük dengeleyici simgesi.</value>
+  </data>
+  <data name="TechStack_MetalLB_Desc" xml:space="preserve">
+    <value>Raspberry Pi kümemde bare-metal Katman 2 yük dengelemesi sağlayarak ingress servislerine atanmış VIP'ler sunuyor.</value>
+  </data>
+  <data name="TechStack_CertManager_Alt" xml:space="preserve">
+    <value>Cert-Manager logosu. TLS sertifikalarını temsil eden mavi anahtar deliği ve güvenlik kalkanı.</value>
+  </data>
+  <data name="TechStack_CertManager_Desc" xml:space="preserve">
+    <value>Tüm özel alan adları ve panel alt alan adları için Let's Encrypt SSL/TLS sertifikalarının oluşturulmasını ve yenilenmesini otomatikleştiriyor.</value>
+  </data>
+  <data name="TechStack_Flannel_Alt" xml:space="preserve">
+    <value>Flannel logosu. Kırmızı, beyaz ve siyah ekose desenli altıgen.</value>
+  </data>
+  <data name="TechStack_Flannel_Desc" xml:space="preserve">
+    <value>5 fiziksel Raspberry Pi düğümünü sorunsuz bir şekilde birbirine bağlayan sade ve kaya gibi sağlam VXLAN overlay ağı.</value>
+  </data>
+  <data name="TechStack_Containerd_Alt" xml:space="preserve">
+    <value>Containerd logosu. İçinde C harfi bulunan mavi 3 boyutlu konteyner küpü.</value>
+  </data>
+  <data name="TechStack_Containerd_Desc" xml:space="preserve">
+    <value>Her düğümde Kubernetes'in altında çalışan ve Ansible ile yapılandırılan endüstri standardı konteyner çalışma zamanı.</value>
+  </data>
+  <data name="TechStack_UptimeKuma_Alt" xml:space="preserve">
+    <value>Uptime Kuma logosu. Servis durumlarını izleyen sevimli ayı simgesi.</value>
+  </data>
+  <data name="TechStack_UptimeKuma_Desc" xml:space="preserve">
+    <value>Sitelerimi, API'lerimi ve küme uç noktalarımı takip eden, kendimin barındırdığı durum sayfası ve sağlık izleme aracı.</value>
+  </data>
+  <data name="TechStack_Kibana_Alt" xml:space="preserve">
+    <value>Kibana logosu. Renkli Elastic pusula simgesi.</value>
+  </data>
+  <data name="TechStack_Kibana_Desc" xml:space="preserve">
+    <value>Küme ve uygulama günlük akışlarını görselleştirmek, aramak ve analiz etmek için Elasticsearch ile birlikte kullanılıyor.</value>
+  </data>
+  <data name="TechStack_AdminNeo_Alt" xml:space="preserve">
+    <value>Admin Neo logosu. Turuncu Neo rozetiyle birlikte mavi veritabanı simgesi.</value>
+  </data>
+  <data name="TechStack_AdminNeo_Desc" xml:space="preserve">
+    <value>PostgreSQL veritabanlarımı incelemek ve bakımını yapmak için hafif, şık web yönetim arayüzü.</value>
+  </data>
+  <data name="TechStack_GitHubActions_Alt" xml:space="preserve">
+    <value>GitHub Actions logosu. Birbirine bağlı iş akışı otomasyon düğümleri.</value>
+  </data>
+  <data name="TechStack_GitHubActions_Desc" xml:space="preserve">
+    <value>Küme içi self-hosted runner ile birlikte tüm CI/CD iş akışlarını, otomatik testleri ve çoklu mimari imaj derlemelerini yönetiyor.</value>
   </data>
 
   <!-- About Section -->

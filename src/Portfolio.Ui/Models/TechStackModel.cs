@@ -116,7 +116,7 @@ public class TechStackModel
             },
             new()
             {
-                Name = "Prometheus",
+                Name = "Prometheus & Alertmanager",
                 WebsiteLink = "https://prometheus.io/",
             
                 ImageAddress = "img/techStack/prometheus.svg",
@@ -209,6 +209,126 @@ public class TechStackModel
                 ImageHeight = 32,
             
                 DescriptionKey = "TechStack_Authentik_Desc"
+            },
+            new()
+            {
+                Name = "Traefik",
+                WebsiteLink = "https://traefik.io/",
+
+                ImageAddress = "img/techStack/traefik.svg",
+                ImageAltTextKey = "TechStack_Traefik_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_Traefik_Desc"
+            },
+            new()
+            {
+                Name = "Helm",
+                WebsiteLink = "https://helm.sh/",
+
+                ImageAddress = "img/techStack/helm.svg",
+                ImageAltTextKey = "TechStack_Helm_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_Helm_Desc"
+            },
+            new()
+            {
+                Name = "MetalLB",
+                WebsiteLink = "https://metallb.universe.tf/",
+
+                ImageAddress = "img/techStack/metallb.svg",
+                ImageAltTextKey = "TechStack_MetalLB_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_MetalLB_Desc"
+            },
+            new()
+            {
+                Name = "Cert-Manager",
+                WebsiteLink = "https://cert-manager.io/",
+
+                ImageAddress = "img/techStack/certmanager.svg",
+                ImageAltTextKey = "TechStack_CertManager_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_CertManager_Desc"
+            },
+            new()
+            {
+                Name = "Flannel",
+                WebsiteLink = "https://github.com/flannel-io/flannel",
+
+                ImageAddress = "img/techStack/flannel.svg",
+                ImageAltTextKey = "TechStack_Flannel_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_Flannel_Desc"
+            },
+            new()
+            {
+                Name = "Containerd",
+                WebsiteLink = "https://containerd.io/",
+
+                ImageAddress = "img/techStack/containerd.svg",
+                ImageAltTextKey = "TechStack_Containerd_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_Containerd_Desc"
+            },
+            new()
+            {
+                Name = "Uptime Kuma",
+                WebsiteLink = "https://uptime.kuma.pet/",
+
+                ImageAddress = "img/techStack/uptimekuma.svg",
+                ImageAltTextKey = "TechStack_UptimeKuma_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_UptimeKuma_Desc"
+            },
+            new()
+            {
+                Name = "Kibana",
+                WebsiteLink = "https://www.elastic.co/kibana",
+
+                ImageAddress = "img/techStack/kibana.svg",
+                ImageAltTextKey = "TechStack_Kibana_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_Kibana_Desc"
+            },
+            new()
+            {
+                Name = "Admin Neo",
+                WebsiteLink = "https://adminneo.org/",
+
+                ImageAddress = "img/techStack/adminneo.svg",
+                ImageAltTextKey = "TechStack_AdminNeo_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_AdminNeo_Desc"
+            },
+            new()
+            {
+                Name = "GitHub Actions",
+                WebsiteLink = "https://github.com/features/actions",
+
+                ImageAddress = "img/techStack/githubactions.svg",
+                ImageAltTextKey = "TechStack_GitHubActions_Alt",
+                ImageWidth = 32,
+                ImageHeight = 32,
+
+                DescriptionKey = "TechStack_GitHubActions_Desc"
             }
         };
     }

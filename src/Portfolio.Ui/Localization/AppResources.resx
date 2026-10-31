@@ -125,7 +125,7 @@
     <value>Docker logo. A cute blue smiling whale with blue containers on it.</value>
   </data>
   <data name="TechStack_Docker_Desc" xml:space="preserve">
-    <value>Deployed with Docker images. My all public images are at &lt;a href="https://hub.docker.com/repositories/anilsezer" target="_blank"&gt;my DockerHub account&lt;/a&gt;. My private images are in this cluster, at Docker private image registry.</value>
+    <value>Deployed with Docker images. Public images are on &lt;a href="https://hub.docker.com/repositories/anilsezer" target="_blank"&gt;my DockerHub account&lt;/a&gt;, while private multi-arch images are managed in this cluster via a private Docker Registry &amp; Web UI.</value>
   </data>
   <data name="TechStack_DotNet_Alt" xml:space="preserve">
     <value>.NET logo. A purple circle that has .NET Core written in it.</value>
@@ -158,10 +158,10 @@
     <value>Traces are a must</value>
   </data>
   <data name="TechStack_Prometheus_Alt" xml:space="preserve">
-    <value>Prometheus logo. A nice torch.</value>
+    <value>Prometheus and Alertmanager logo. The Prometheus flame torch.</value>
   </data>
   <data name="TechStack_Prometheus_Desc" xml:space="preserve">
-    <value>Using it for 4+ years but I wanna sink more time specifically into it</value>
+    <value>Using it for 4+ years alongside Alertmanager to collect metrics, monitor cluster health, and handle critical alerts.</value>
   </data>
   <data name="TechStack_Grafana_Alt" xml:space="preserve">
     <value>Grafana logo. A spiral with wide spikes, has gradient color from orange to yellow.</value>
@@ -173,7 +173,7 @@
     <value>Jaeger logo. Blue rabbit with a green robin hood hat inspecting 2 human footprints. Drawing style is original. Lines are good.</value>
   </data>
   <data name="TechStack_Jaeger_Desc" xml:space="preserve">
-    <value></value>
+    <value>Distributed tracing platform to trace request lifecycles across gRPC microservices and web clients.</value>
   </data>
   <data name="TechStack_Seq_Alt" xml:space="preserve">
     <value>Seq logo. A minimalist design with a blue and white color scheme.</value>
@@ -204,6 +204,66 @@
   </data>
   <data name="TechStack_Authentik_Desc" xml:space="preserve">
     <value>Securing access to my panels with it</value>
+  </data>
+  <data name="TechStack_Traefik_Alt" xml:space="preserve">
+    <value>Traefik logo. Modern geometric cyan and blue bird/flow icon.</value>
+  </data>
+  <data name="TechStack_Traefik_Desc" xml:space="preserve">
+    <value>Handles all reverse proxy routing, SSL termination, and Forward-Auth middleware for Authentik across the cluster.</value>
+  </data>
+  <data name="TechStack_Helm_Alt" xml:space="preserve">
+    <value>Helm logo. White ship helm on a navy blue hexagonal background.</value>
+  </data>
+  <data name="TechStack_Helm_Desc" xml:space="preserve">
+    <value>Essential for templating and managing lifecycle releases of Traefik, Grafana, Authentik, and observability stacks.</value>
+  </data>
+  <data name="TechStack_MetalLB_Alt" xml:space="preserve">
+    <value>MetalLB logo. Cyan and blue geometric load balancer symbol.</value>
+  </data>
+  <data name="TechStack_MetalLB_Desc" xml:space="preserve">
+    <value>Brings bare-metal Layer 2 load balancing to my Raspberry Pi cluster, assigning dedicated VIPs to ingress services.</value>
+  </data>
+  <data name="TechStack_CertManager_Alt" xml:space="preserve">
+    <value>Cert-Manager logo. Blue keyhole and security shield representing TLS certificates.</value>
+  </data>
+  <data name="TechStack_CertManager_Desc" xml:space="preserve">
+    <value>Automates issuing and renewing Let's Encrypt SSL/TLS certificates for all custom domains and panel subdomains.</value>
+  </data>
+  <data name="TechStack_Flannel_Alt" xml:space="preserve">
+    <value>Flannel logo. Red, white, and black flannel pattern hexagon.</value>
+  </data>
+  <data name="TechStack_Flannel_Desc" xml:space="preserve">
+    <value>Simple and rock-solid VXLAN overlay network connecting all 5 physical Raspberry Pi nodes seamlessly.</value>
+  </data>
+  <data name="TechStack_Containerd_Alt" xml:space="preserve">
+    <value>Containerd logo. Blue 3D container cube outline with an inner C symbol.</value>
+  </data>
+  <data name="TechStack_Containerd_Desc" xml:space="preserve">
+    <value>Industry-standard container runtime running underneath Kubernetes on every node, configured via Ansible.</value>
+  </data>
+  <data name="TechStack_UptimeKuma_Alt" xml:space="preserve">
+    <value>Uptime Kuma logo. Cute bear icon monitoring service statuses.</value>
+  </data>
+  <data name="TechStack_UptimeKuma_Desc" xml:space="preserve">
+    <value>Self-hosted status page and health monitoring watching over my sites, APIs, and cluster endpoints.</value>
+  </data>
+  <data name="TechStack_Kibana_Alt" xml:space="preserve">
+    <value>Kibana logo. Colorful Elastic compass symbol.</value>
+  </data>
+  <data name="TechStack_Kibana_Desc" xml:space="preserve">
+    <value>Used alongside Elasticsearch to visualize, search, and analyze cluster and application log streams.</value>
+  </data>
+  <data name="TechStack_AdminNeo_Alt" xml:space="preserve">
+    <value>Admin Neo logo. Blue database cylinders with the orange Neo mark badge.</value>
+  </data>
+  <data name="TechStack_AdminNeo_Desc" xml:space="preserve">
+    <value>Lightweight, sleek web management GUI for inspecting and maintaining my PostgreSQL databases.</value>
+  </data>
+  <data name="TechStack_GitHubActions_Alt" xml:space="preserve">
+    <value>GitHub Actions logo. Connected workflow automation nodes.</value>
+  </data>
+  <data name="TechStack_GitHubActions_Desc" xml:space="preserve">
+    <value>Drives all CI/CD workflows, automated testing, and multi-arch image compilation paired with my in-cluster self-hosted runner.</value>
   </data>
 
   <!-- About Section -->

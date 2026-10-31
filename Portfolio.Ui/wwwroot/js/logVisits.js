@@ -14,7 +14,7 @@ function getClientInfo() {
         cookieEnabled: navigator.cookieEnabled ? "true" : "false",
         onLine: navigator.onLine ? "true" : "false",
         referrer: document.referrer || "",
-        resolution: (window.screen && window.screen.width && window.screen.height) ? `${window.screen.height}x${window.screen.width}` : ""
+        resolution: (window.screen && window.screen.width && window.screen.height) ? `${window.screen.width}x${window.screen.height}` : ""
     };
 }
 

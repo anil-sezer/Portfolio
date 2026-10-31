@@ -8,12 +8,14 @@ on:
     paths:
       - "kubernetes/crons/**"
       - ".github/workflows/ci-go.yml"
+      - ".github/scripts/generate-go-test-summary.py"
   pull_request:
     branches:
       - "prod"
     paths:
       - "kubernetes/crons/**"
       - ".github/workflows/ci-go.yml"
+      - ".github/scripts/generate-go-test-summary.py"
   workflow_dispatch:
 
 concurrency:
@@ -28,10 +30,10 @@ jobs:
       - name: Check out codebase
         uses: actions/checkout@v4
 
-      - name: Set up Go 1.23
+      - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23.x"
+          go-version: "1.26.x"
           cache-dependency-path: |
             kubernetes/crons/**/go.sum
 
@@ -39,11 +41,15 @@ jobs:
         working-directory: kubernetes/crons/ip-lookup-cron
         run: |
           go vet ./...
-          go test -v ./...
+          go test -v -json ./... | tee test-results.json
 
       - name: Vet, Test & Build get-image-of-the-day-from-bing
         working-directory: kubernetes/crons/get-image-of-the-day-from-bing
         run: |
           go vet ./...
-          go test -v ./...
+          go test -v -json ./... | tee test-results.json
           go build -v ./...
+
+      - name: Generate Go test summary
+        if: always()
+        run: python3 .github/scripts/generate-go-test-summary.py

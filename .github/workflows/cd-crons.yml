@@ -1,0 +1,63 @@
+---
+name: cd-crons
+
+on:
+  push:
+    branches:
+      - "prod"
+    paths:
+      - "kubernetes/crons/**"
+      - ".github/workflows/cd-crons.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: cd-crons-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to private container registry
+        if: ${{ vars.CD_ENABLED == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: imgregistry.anil-sezer.com
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build & Push ip-lookup-cron
+        uses: docker/build-push-action@v6
+        with:
+          context: ./kubernetes/crons/ip-lookup-cron
+          file: ./kubernetes/crons/ip-lookup-cron/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ vars.CD_ENABLED == 'true' }}
+          tags: |
+            imgregistry.anil-sezer.com/iplookup-cron-go:latest
+            imgregistry.anil-sezer.com/iplookup-cron-go:${{ github.sha }}
+          cache-from: type=gha,scope=iplookup-cron
+          cache-to: type=gha,mode=max,scope=iplookup-cron
+
+      - name: Build & Push get-image-of-the-day-from-bing
+        uses: docker/build-push-action@v6
+        with:
+          context: ./kubernetes/crons/get-image-of-the-day-from-bing
+          file: ./kubernetes/crons/get-image-of-the-day-from-bing/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ vars.CD_ENABLED == 'true' }}
+          tags: |
+            imgregistry.anil-sezer.com/get-daily-images-go-cron:latest
+            imgregistry.anil-sezer.com/get-daily-images-go-cron:${{ github.sha }}
+          cache-from: type=gha,scope=get-daily-images
+          cache-to: type=gha,mode=max,scope=get-daily-images

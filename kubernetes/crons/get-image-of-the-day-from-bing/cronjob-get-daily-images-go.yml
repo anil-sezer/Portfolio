@@ -16,6 +16,7 @@ spec:
           containers:
             - name: get-daily-images
               image: imgregistry.anil-sezer.com/get-daily-images-go-cron:latest
+              imagePullPolicy: Always
               env:
                 - name: GRPC_BASE_URL
                   value: "grpc.portfolio.svc.cluster.local:8080"

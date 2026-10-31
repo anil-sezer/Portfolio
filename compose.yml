@@ -33,7 +33,7 @@ services:
       - grpc
 
   db_postgres:
-    image: postgres:latest
+    image: postgres:18
     environment:
       POSTGRES_DB: ${SQL_DB_NAME}
       POSTGRES_USER: ${SQL_DB_USER}

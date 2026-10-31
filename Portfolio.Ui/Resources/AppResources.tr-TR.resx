@@ -208,6 +208,12 @@
   <data name="About_Subtitle" xml:space="preserve">
     <value>Senior Backend &amp; Platform Engineer</value>
   </data>
+  <data name="About_Experience" xml:space="preserve">
+    <value>Deneyim:</value>
+  </data>
+  <data name="About_ExperienceValue" xml:space="preserve">
+    <value>7+ Yıl</value>
+  </data>
   <data name="About_Age" xml:space="preserve">
     <value>Yaş:</value>
   </data>
@@ -300,70 +306,76 @@
     <value>Yıl Mentorluk ve İletişim</value>
   </data>
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
-    <value>Teknoloji Direktörü</value>
+    <value>Senior Backend &amp; Platform Engineer</value>
   </data>
   <data name="Resume_CurrentJob_Company" xml:space="preserve">
-    <value>MTB Teknoloji</value>
+    <value>DolapJet (Akıllı Dolap &amp; Teslimat)</value>
   </data>
   <data name="Resume_CurrentJob_Date" xml:space="preserve">
-    <value>2025 - Halen</value>
+    <value>Eki 2025 – Halen</value>
   </data>
   <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
-    <value>Detaylar gizlilik anlaşması gereği saklı tutulmaktadır.</value>
+    <value>Girişimin yazılım mimarisini yeniden tasarladım ve 7 ayrı kod deposunu yönettim.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet2" xml:space="preserve">
+    <value>Sahadaki akıllı kargo dolaplarını, Flutter (iOS/Android) uygulamalarını ve backend sistemini entegre ettim.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet3" xml:space="preserve">
+    <value>Linux sunucu ve Docker altyapısını tasarlayıp hayata geçirdim. Sistem %99,9+ ile çalışıyor.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet4" xml:space="preserve">
+    <value>Ekibin işe alım ve mentorluk süreçlerine liderlik ettim.</value>
   </data>
   <data name="Resume_Job1_Title" xml:space="preserve">
-    <value>DevOps &amp; Backend Yazılım Danışmanı</value>
-  </data>
-  <data name="Resume_Job1_Date" xml:space="preserve">
-    <value>2024 - 2025</value>
+    <value>DevOps &amp; Backend Software Consultant</value>
   </data>
   <data name="Resume_Job1_Company" xml:space="preserve">
-    <value>Serbest Zamanlı</value>
+    <value>Freelance</value>
+  </data>
+  <data name="Resume_Job1_Date" xml:space="preserve">
+    <value>May 2024 – Eki 2025</value>
   </data>
   <data name="Resume_Job1_Bullet1" xml:space="preserve">
-    <value>Ağırlıklı olarak VPS ve self-host sistem kurulumları. Şu anda en çok Docker kurulumları talep görüyor.</value>
+    <value>Çoğunlukla bare-metal (fiziksel) sunucular üzerinde, reverse-proxy yönlendirmeli ve disaster recovery kabiliyetine sahip, güvenliği sıkılaştırılmış 60+ konteynerlik canlı Docker ortamları tasarlayıp kurdum.</value>
   </data>
   <data name="Resume_Job2_Title" xml:space="preserve">
-    <value>Back End Yazılım Mühendisi</value>
-  </data>
-  <data name="Resume_Job2_Date" xml:space="preserve">
-    <value>2023 - 2024</value>
+    <value>Backend Software Engineer</value>
   </data>
   <data name="Resume_Job2_Company" xml:space="preserve">
-    <value>Moka United, İstanbul, Türkiye</value>
+    <value>Moka United (Fintek)</value>
+  </data>
+  <data name="Resume_Job2_Date" xml:space="preserve">
+    <value>Ağu 2023 – May 2024</value>
   </data>
   <data name="Resume_Job2_Bullet1" xml:space="preserve">
-    <value>Sanal pos yazılım ekibinin bir üyesi olarak kritik göreve sahip yazılımlar geliştirildi.</value>
+    <value>Sanal ödeme geliştirme ekibinde, kritik ödeme sistemleri için yazılımı sıkı teslim tarihleri altında geliştirdim.</value>
   </data>
   <data name="Resume_Job2_Bullet2" xml:space="preserve">
-    <value>İngiltere ve Türkiye arasında sınır ötesi ödemeler için yeni bir mikroservis mimarisi geliştirildi.</value>
+    <value>İngiltere ve Türkiye arasındaki sınır ötesi ödemeler için yeni bir mikro hizmet çözümü geliştirdim.</value>
   </data>
   <data name="Resume_Job2_Bullet3" xml:space="preserve">
-    <value>United Payment sanal pos ekibinde güvenlik iyileştirmeleri gerçekleştirildi.</value>
-  </data>
-  <data name="Resume_Job2_Bullet4" xml:space="preserve">
-    <value>Kubernetes ortamına geçiş sürecinde .NET geliştiricileri ile DevOps ekibi arasında köprü görevi üstlenildi.</value>
+    <value>.NET geliştiricileri ile DevOps ekibi arasındaki köprüyü kurarak Kubernetes'e geçiş sürecini destekledim.</value>
   </data>
   <data name="Resume_Job3_Title" xml:space="preserve">
-    <value>Back End Yazılım Geliştirici</value>
-  </data>
-  <data name="Resume_Job3_Date" xml:space="preserve">
-    <value>2019 - 2023</value>
+    <value>Backend Software Developer</value>
   </data>
   <data name="Resume_Job3_Company" xml:space="preserve">
-    <value>Social Lift, İstanbul, Türkiye</value>
+    <value>Panjur Bilişim (Sosyal medya)</value>
+  </data>
+  <data name="Resume_Job3_Date" xml:space="preserve">
+    <value>May 2019 – Ağu 2023</value>
   </data>
   <data name="Resume_Job3_Bullet1" xml:space="preserve">
-    <value>Aynı kod tabanından çalışan 3 ayrı markanın kesintisiz sistem kullanılabilirliği sağladım</value>
+    <value>Aynı kod tabanı üzerinden çalışan 3 ticari markanın %99,9+ kesintisiz erişilebilirlikle çalışmasını sağladım.</value>
   </data>
   <data name="Resume_Job3_Bullet2" xml:space="preserve">
-    <value>12 yıllık geçmişe sahip karmaşık bir kod tabanının bakımı ve iyileştirmelerini yaptım.</value>
+    <value>12 yıllık karmaşık bir eski yazılım altyapısının bakımını ve modernizasyonunu üstlendim.</value>
   </data>
   <data name="Resume_Job3_Bullet3" xml:space="preserve">
-    <value>Teslim tarihlerine sadık kalınarak sürekli olarak yüksek kaliteli kod sundum.</value>
+    <value>Apache Kafka ve .NET 6 gibi modern teknolojilerin entegrasyonunu gerçekleştirdim.</value>
   </data>
   <data name="Resume_Job3_Bullet4" xml:space="preserve">
-    <value>Kafka gibi modern teknolojiler sisteme başarıyla entegre edildi.</value>
+    <value>Bu güzel şirkette kapsamlı Kubernetes eğitimleri alma fırsatı buldum.</value>
   </data>
   <data name="Resume_Job4_Title" xml:space="preserve">
     <value>Çağrı Merkezi Uzmanı</value>
@@ -412,7 +424,7 @@
     <value>2K Kaliteli Kurumsal İnsan Kaynakları, Istanbul, Turkey</value>
   </data>
   <data name="Resume_Supervisor_Bullet1" xml:space="preserve">
-    <value>Event tabanlı bir model üzerinde çalıştık. &lt;br/&gt; Katıldığım ilk etkinlik, Philips yöneticileriyle iş birliği yaparak yeni piyasaya sürülen bir cihaz almayı ve ardından bir iş teklifini sonuçlandı.</value>
+    <value>Katıldığım ilk etkinlik sonrasında Philips yöneticileri tarafından takdir edilerek yeni çıkan bir cihazla ödüllendirildim ve iş teklifi aldım.</value>
   </data>
 
   <data name="Resume_Job_ItIntern_Title" xml:space="preserve">
@@ -425,7 +437,7 @@
     <value>ING Bank Genel Müdürlük, Istanbul, Türkiye</value>
   </data>
   <data name="Resume_ItIntern_Bullet1" xml:space="preserve">
-    <value>Şirket geneli ve bayiliklere IT desteği. Şirket uzağa taşınınca ayrıldım.</value>
+    <value>Şirket geneli ve bayiliklere IT desteği sağladım.</value>
   </data>
   <data name="Resume_ItIntern_Bullet2" xml:space="preserve">
     <value>Şirket uzağa taşınınca ayrıldım mecburen.</value>
@@ -513,6 +525,54 @@
   <data name="Resume_Tag_PublicCommunication" xml:space="preserve">
     <value>Halkla İlişkiler &amp; İletişim</value>
   </data>
+  <data name="Resume_Tag_DotNet10" xml:space="preserve">
+    <value>.NET 10</value>
+  </data>
+  <data name="Resume_Tag_Flutter" xml:space="preserve">
+    <value>Flutter</value>
+  </data>
+  <data name="Resume_Tag_Php" xml:space="preserve">
+    <value>PHP</value>
+  </data>
+  <data name="Resume_Tag_Tdd" xml:space="preserve">
+    <value>TDD</value>
+  </data>
+  <data name="Resume_Tag_Ddd" xml:space="preserve">
+    <value>DDD</value>
+  </data>
+  <data name="Resume_Tag_EventBus" xml:space="preserve">
+    <value>EventBus</value>
+  </data>
+  <data name="Resume_Tag_Postgres" xml:space="preserve">
+    <value>PostgreSQL</value>
+  </data>
+  <data name="Resume_Tag_MySql" xml:space="preserve">
+    <value>MySQL</value>
+  </data>
+  <data name="Resume_Tag_MsSql" xml:space="preserve">
+    <value>MSSQL</value>
+  </data>
+  <data name="Resume_Tag_Ansible" xml:space="preserve">
+    <value>Ansible</value>
+  </data>
+  <data name="Resume_Tag_Prometheus" xml:space="preserve">
+    <value>Prometheus</value>
+  </data>
+  <data name="Resume_Tag_Grafana" xml:space="preserve">
+    <value>Grafana</value>
+  </data>
+  <data name="Resume_Tag_Traefik" xml:space="preserve">
+    <value>Traefik</value>
+  </data>
+  <data name="Resume_Tag_Authentik" xml:space="preserve">
+    <value>Authentik</value>
+  </data>
+  <data name="Resume_Tag_Blazor" xml:space="preserve">
+    <value>Blazor</value>
+  </data>
+  <data name="Resume_Tag_Aws" xml:space="preserve">
+    <value>AWS</value>
+  </data>
 
   <!-- Certs, books, degrees -->
   <data name="Resume_Certifications_Title" xml:space="preserve">
@@ -537,7 +597,7 @@
     <value>Pluralsight</value>
   </data>
   <data name="Resume_University_Title" xml:space="preserve">
-    <value>İstanbul Üniversitesi</value>
+    <value>İstanbul Üniversitesi (Onur derecesiyle)</value>
   </data>
   <data name="Resume_University_Major" xml:space="preserve">
     <value>İşletme</value>

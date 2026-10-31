@@ -35,8 +35,23 @@ public static class ResumeModel
             RoleTitleKey = "Resume_CurrentJob_Title",
             CompanyKey = "Resume_CurrentJob_Company",
             DateKey = "Resume_CurrentJob_Date",
-            BulletKeys = ["Resume_CurrentJob_Bullet1"],
-            TechTags = ["Resume_Tag_Management", "Resume_Tag_IoT", "Resume_Tag_Backend", "Resume_Tag_AppDevelopment", "Resume_Tag_DevOps"],
+            BulletKeys = [
+                "Resume_CurrentJob_Bullet1",
+                "Resume_CurrentJob_Bullet2",
+                "Resume_CurrentJob_Bullet3",
+                "Resume_CurrentJob_Bullet4"
+            ],
+            TechTags = [
+                "Resume_Tag_Docker",
+                "Resume_Tag_DotNet10",
+                "Resume_Tag_Flutter",
+                "Resume_Tag_Php",
+                "Resume_Tag_IoT",
+                "Resume_Tag_Tdd",
+                "Resume_Tag_EventBus",
+                "Resume_Tag_Postgres",
+                "Resume_Tag_MySql"
+            ],
             IsActive = true,
             IsEarlyCareer = false
         };
@@ -55,7 +70,15 @@ public static class ResumeModel
                 [
                     "Resume_Job1_Bullet1"
                 ],
-                TechTags = ["Resume_Tag_Docker", "Resume_Tag_VpsAndLinux", "Resume_Tag_SelfHosting", "Resume_Tag_DevOps", "Resume_Tag_Infrastructure"],
+                TechTags = [
+                    "Resume_Tag_Docker",
+                    "Resume_Tag_Kubernetes",
+                    "Resume_Tag_Ansible",
+                    "Resume_Tag_Prometheus",
+                    "Resume_Tag_Grafana",
+                    "Resume_Tag_Traefik",
+                    "Resume_Tag_Authentik"
+                ],
                 IsActive = false,
                 IsEarlyCareer = false
             },
@@ -68,10 +91,15 @@ public static class ResumeModel
                 [
                     "Resume_Job2_Bullet1",
                     "Resume_Job2_Bullet2",
-                    "Resume_Job2_Bullet3",
-                    "Resume_Job2_Bullet4"
+                    "Resume_Job2_Bullet3"
                 ],
-                TechTags = ["Resume_Tag_DotNetCore", "Resume_Tag_CSharp", "Resume_Tag_Kubernetes", "Resume_Tag_Microservices", "Resume_Tag_Fintech", "Resume_Tag_Security"],
+                TechTags = [
+                    "Resume_Tag_DotNet",
+                    "Resume_Tag_CSharp",
+                    "Resume_Tag_MsSql",
+                    "Resume_Tag_Postgres",
+                    "Resume_Tag_Kubernetes"
+                ],
                 IsActive = false,
                 IsEarlyCareer = false
             },
@@ -87,7 +115,19 @@ public static class ResumeModel
                     "Resume_Job3_Bullet3",
                     "Resume_Job3_Bullet4"
                 ],
-                TechTags = ["Resume_Tag_CSharp", "Resume_Tag_DotNet", "Resume_Tag_ApacheKafka", "Resume_Tag_MultiTenancy", "Resume_Tag_HighAvailability"],
+                TechTags = [
+                    "Resume_Tag_Php",
+                    "Resume_Tag_DotNet",
+                    "Resume_Tag_Blazor",
+                    "Resume_Tag_Kubernetes",
+                    "Resume_Tag_Aws",
+                    "Resume_Tag_Docker",
+                    "Resume_Tag_ApacheKafka",
+                    "Resume_Tag_MySql",
+                    "Resume_Tag_Tdd",
+                    "Resume_Tag_Ddd",
+                    "Resume_Tag_EventBus"
+                ],
                 IsActive = false,
                 IsEarlyCareer = false
             }

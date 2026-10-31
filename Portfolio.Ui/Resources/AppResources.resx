@@ -210,6 +210,12 @@
   <data name="About_Subtitle" xml:space="preserve">
     <value>Senior Backend &amp; Platform Engineer</value>
   </data>
+  <data name="About_Experience" xml:space="preserve">
+    <value>Experience:</value>
+  </data>
+  <data name="About_ExperienceValue" xml:space="preserve">
+    <value>7+ Years</value>
+  </data>
   <data name="About_Age" xml:space="preserve">
     <value>Age:</value>
   </data>
@@ -303,70 +309,76 @@
     <value>Years Mentorship &amp; Soft Skills</value>
   </data>
   <data name="Resume_CurrentJob_Title" xml:space="preserve">
-    <value>Chief Technology Officer</value>
+    <value>Senior Backend &amp; Platform Engineer</value>
   </data>
   <data name="Resume_CurrentJob_Company" xml:space="preserve">
-    <value>MTB Teknoloji</value>
+    <value>DOLAPJET (Smart Locker &amp; Delivery)</value>
   </data>
   <data name="Resume_CurrentJob_Date" xml:space="preserve">
-    <value>2025 - Ongoing</value>
+    <value>Oct 2025 – Present</value>
   </data>
   <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
-    <value>Details are witheld under NDA.</value>
+    <value>Redesigned the company’s software architecture and infrastructure across 7 code repositories.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet2" xml:space="preserve">
+    <value>Integrated the backend, smart-locker kiosks, and Flutter applications into a unified system.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet3" xml:space="preserve">
+    <value>Architected the Linux server and Docker container infrastructure with %99.9 uptime.</value>
+  </data>
+  <data name="Resume_CurrentJob_Bullet4" xml:space="preserve">
+    <value>Led hiring and mentoring of the team.</value>
   </data>
   <data name="Resume_Job1_Title" xml:space="preserve">
     <value>DevOps &amp; Backend Software Consultant</value>
   </data>
   <data name="Resume_Job1_Date" xml:space="preserve">
-    <value>2024 - 2025</value>
+    <value>May 2024 – Oct 2025</value>
   </data>
   <data name="Resume_Job1_Company" xml:space="preserve">
     <value>Freelance</value>
   </data>
   <data name="Resume_Job1_Bullet1" xml:space="preserve">
-    <value>Mostly setting up VPS and self-host systems. Currently Docker gets the most customers for me.</value>
+    <value>Architected and deployed hardened, production-ready Docker environments that have 60+ containers, mostly on bare-metal servers with reverse-proxy routing and disaster recovery.</value>
   </data>
   <data name="Resume_Job2_Title" xml:space="preserve">
-    <value>Back End Engineer</value>
+    <value>Backend Software Engineer</value>
   </data>
   <data name="Resume_Job2_Date" xml:space="preserve">
-    <value>2023 - 2024</value>
+    <value>Aug 2023 – May 2024</value>
   </data>
   <data name="Resume_Job2_Company" xml:space="preserve">
-    <value>Moka United, Istanbul, Turkey</value>
+    <value>Moka United, Istanbul (Fintech)</value>
   </data>
   <data name="Resume_Job2_Bullet1" xml:space="preserve">
-    <value>Rapidly written mission critical software as a member of the virtual payment developer team.</value>
+    <value>Developed mission-critical payment software under tight delivery deadlines.</value>
   </data>
   <data name="Resume_Job2_Bullet2" xml:space="preserve">
     <value>Developed a new microservices solution for cross-border payments between the United Kingdom and Turkey.</value>
   </data>
   <data name="Resume_Job2_Bullet3" xml:space="preserve">
-    <value>Did security enhancements at the United Payment’s virtual payment team.</value>
-  </data>
-  <data name="Resume_Job2_Bullet4" xml:space="preserve">
-    <value>Bridged the collaboration between the .Net devs and the DevOps team for transition to a Kubernetes env.</value>
+    <value>Bridged the .NET and DevOps teams during the migration to Kubernetes.</value>
   </data>
   <data name="Resume_Job3_Title" xml:space="preserve">
-    <value>Back End Developer</value>
+    <value>Backend Software Developer</value>
   </data>
   <data name="Resume_Job3_Date" xml:space="preserve">
-    <value>2019 - 2023</value>
+    <value>May 2019 – Aug 2023</value>
   </data>
   <data name="Resume_Job3_Company" xml:space="preserve">
-    <value>Social Lift, Istanbul, Turkey</value>
+    <value>Panjur Bilisim (Social media platform)</value>
   </data>
   <data name="Resume_Job3_Bullet1" xml:space="preserve">
-    <value>Ensured continuous system availability across 3 brands running from the same codebase.</value>
+    <value>Ensured uninterrupted 99.9%+ availability for 3 commercial brands running from the same codebase.</value>
   </data>
   <data name="Resume_Job3_Bullet2" xml:space="preserve">
-    <value>Did the maintenance and enhancement of a complex codebase with a 12-year legacy.</value>
+    <value>Maintained and modernized a complex 12-year legacy codebase.</value>
   </data>
   <data name="Resume_Job3_Bullet3" xml:space="preserve">
-    <value>Consistently delivered high-quality code within deadlines.</value>
+    <value>Integrated modern technologies like Apache Kafka and .NET 6 rapidly.</value>
   </data>
   <data name="Resume_Job3_Bullet4" xml:space="preserve">
-    <value>Frequently integrated modern technologies to the system like Kafka.</value>
+    <value>Received extensive Kubernetes training from this nice company.</value>
   </data>
   <data name="Resume_Job4_Title" xml:space="preserve">
     <value>Call Center Specialist</value>
@@ -430,7 +442,7 @@
     <value>Company-wide and branch IT support.</value>
   </data>
   <data name="Resume_ItIntern_Bullet2" xml:space="preserve">
-    <value>Had to regin when the company was relocated to a far place.</value>
+    <value>Had to resign when the company was relocated to a far place.</value>
   </data>
 
   <!-- Tech Tags -->
@@ -515,6 +527,54 @@
   <data name="Resume_Tag_PublicCommunication" xml:space="preserve">
     <value>Public Communication</value>
   </data>
+  <data name="Resume_Tag_DotNet10" xml:space="preserve">
+    <value>.NET 10</value>
+  </data>
+  <data name="Resume_Tag_Flutter" xml:space="preserve">
+    <value>Flutter</value>
+  </data>
+  <data name="Resume_Tag_Php" xml:space="preserve">
+    <value>PHP</value>
+  </data>
+  <data name="Resume_Tag_Tdd" xml:space="preserve">
+    <value>TDD</value>
+  </data>
+  <data name="Resume_Tag_Ddd" xml:space="preserve">
+    <value>DDD</value>
+  </data>
+  <data name="Resume_Tag_EventBus" xml:space="preserve">
+    <value>EventBus</value>
+  </data>
+  <data name="Resume_Tag_Postgres" xml:space="preserve">
+    <value>PostgreSQL</value>
+  </data>
+  <data name="Resume_Tag_MySql" xml:space="preserve">
+    <value>MySQL</value>
+  </data>
+  <data name="Resume_Tag_MsSql" xml:space="preserve">
+    <value>MSSQL</value>
+  </data>
+  <data name="Resume_Tag_Ansible" xml:space="preserve">
+    <value>Ansible</value>
+  </data>
+  <data name="Resume_Tag_Prometheus" xml:space="preserve">
+    <value>Prometheus</value>
+  </data>
+  <data name="Resume_Tag_Grafana" xml:space="preserve">
+    <value>Grafana</value>
+  </data>
+  <data name="Resume_Tag_Traefik" xml:space="preserve">
+    <value>Traefik</value>
+  </data>
+  <data name="Resume_Tag_Authentik" xml:space="preserve">
+    <value>Authentik</value>
+  </data>
+  <data name="Resume_Tag_Blazor" xml:space="preserve">
+    <value>Blazor</value>
+  </data>
+  <data name="Resume_Tag_Aws" xml:space="preserve">
+    <value>AWS</value>
+  </data>
 
   <!-- Certs, books, degrees -->
   <data name="Resume_Certifications_Title" xml:space="preserve">
@@ -539,7 +599,7 @@
     <value>Pluralsight</value>
   </data>
   <data name="Resume_University_Title" xml:space="preserve">
-    <value>Istanbul University</value>
+    <value>Istanbul University (With honors)</value>
   </data>
   <data name="Resume_University_Major" xml:space="preserve">
     <value>Business Administration and Management</value>

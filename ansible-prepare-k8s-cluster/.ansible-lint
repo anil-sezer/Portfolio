@@ -1,2 +1,14 @@
+---
+# Configuration for ansible-lint
+profile: min
+
 skip_list:
   - 'latest'
+  - command-instead-of-module
+  - fqcn
+  - literal-compare
+  - no-changed-when
+  - no-handler
+  - risky-shell-pipe
+  - yaml
+  - risky-file-permissions

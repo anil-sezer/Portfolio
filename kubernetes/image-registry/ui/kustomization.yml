@@ -7,5 +7,5 @@ namespace: image-registry
 resources:
   - deployment.yml
   - ingress.yml
-  - secret.yml
+  # - secret.yml (created out-of-band in cluster)
   - svc-clusterip.yml

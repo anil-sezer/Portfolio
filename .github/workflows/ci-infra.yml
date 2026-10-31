@@ -1,0 +1,99 @@
+---
+name: ci-infra
+
+on:
+  push:
+    branches:
+      - "prod"
+    paths:
+      - "kubernetes/**"
+      - "ansible-prepare-k8s-cluster/**"
+      - "src/**/Dockerfile"
+      - "kubernetes/**/Dockerfile"
+      - ".hadolint.yaml"
+      - ".github/workflows/ci-infra.yml"
+  pull_request:
+    branches:
+      - "prod"
+    paths:
+      - "kubernetes/**"
+      - "ansible-prepare-k8s-cluster/**"
+      - "src/**/Dockerfile"
+      - "kubernetes/**/Dockerfile"
+      - ".hadolint.yaml"
+      - ".github/workflows/ci-infra.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-infra-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  hadolint:
+    name: Lint Dockerfiles (Hadolint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          config: .hadolint.yaml
+          recursive: true
+
+  kubeconform:
+    name: Validate Kubernetes Manifests (kubeconform)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Kubeconform
+        uses: bmuschko/setup-kubeconform@v1
+
+      - name: Validate Kubernetes Manifests
+        run: |
+          find kubernetes/ -type f \( -name "*.yml" -o -name "*.yaml" \) \
+            ! -name "*helm*" \
+            ! -name "*docker-compose*" \
+            ! -name "*kustomization*" \
+            -print0 | xargs -0 kubeconform -summary -ignore-missing-schemas \
+              -schema-location default \
+              -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+
+      - name: Validate Kustomize Overlays
+        run: |
+          for dir in kubernetes/website/frontend kubernetes/website/grpc kubernetes/github-runner kubernetes/uptime kubernetes/image-registry/ui; do
+            echo "::group::Validating Kustomize overlay $dir"
+            kubectl kustomize "$dir" | kubeconform -summary -ignore-missing-schemas \
+              -schema-location default \
+              -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+            echo "::endgroup::"
+          done
+
+  ansible:
+    name: Validate Ansible Playbooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ansible & ansible-lint
+        run: |
+          pip install --no-cache-dir ansible-core ansible-lint
+
+      - name: Syntax check setup-kubernetes.yml
+        run: |
+          cd ansible-prepare-k8s-cluster
+          ansible-playbook -i inventory.yml setup-kubernetes.yml --syntax-check
+
+      - name: Lint Ansible playbooks
+        run: |
+          cd ansible-prepare-k8s-cluster
+          ansible-lint setup-kubernetes.yml

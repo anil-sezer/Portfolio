@@ -226,4 +226,35 @@ public class PortfolioDbContextTests
         var requestLog = model.FindEntityType(typeof(RequestLog))!;
         requestLog.FindAnnotation("Relational:Comment")?.Value.Should().Be("Accesses to the website");
     }
+
+    [Fact]
+    public void PortfolioDbContext_Model_ShouldConfigurePrimaryKeysAndValueGeneratedOnAddWithoutAttributes()
+    {
+        // Arrange
+        using var dbContext = TestDbContextFactory.Create();
+        var model = dbContext.Model;
+
+        var entityTypes = new[]
+        {
+            model.FindEntityType(typeof(DailyImage))!,
+            model.FindEntityType(typeof(NotificationToAdmin))!,
+            model.FindEntityType(typeof(RequestLog))!
+        };
+
+        foreach (var entityType in entityTypes)
+        {
+            var pk = entityType.FindPrimaryKey();
+            pk.Should().NotBeNull();
+            pk!.Properties.Should().ContainSingle(p => p.Name == nameof(EntityBase.Id));
+
+            var idProperty = entityType.FindProperty(nameof(EntityBase.Id));
+            idProperty.Should().NotBeNull();
+            idProperty!.ValueGenerated.Should().Be(Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd);
+
+            var createdAtProperty = entityType.FindProperty(nameof(EntityBase.CreatedAt));
+            createdAtProperty.Should().NotBeNull();
+            createdAtProperty!.ClrType.Should().Be(typeof(DateTimeOffset));
+            createdAtProperty.IsNullable.Should().BeFalse();
+        }
+    }
 }

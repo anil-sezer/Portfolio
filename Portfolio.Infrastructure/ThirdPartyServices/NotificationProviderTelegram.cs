@@ -11,13 +11,13 @@ public class NotificationProviderTelegram(HttpClient httpClient, ILogger<Notific
 {
     public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
-        dto.Message = AdaptMessageForTelegram(dto);
+        var telegramDto = dto with { Message = AdaptMessageForTelegram(dto) };
         
         var url = $"https://api.telegram.org/bot{EnvVars.NOTIFICATION_TELEGRAM_API_KEY}/sendMessage";
         var payload = new Dictionary<string, string>
         {
             { "chat_id", EnvVars.NOTIFICATION_TELEGRAM_CHAT_ID },
-            { "text", FormatTelegramMessage(dto) },
+            { "text", FormatTelegramMessage(telegramDto) },
             { "parse_mode", "MarkdownV2" }
         };
 
@@ -72,6 +72,7 @@ public class NotificationProviderTelegram(HttpClient httpClient, ILogger<Notific
                 emoji = "🚨🚨🚨";
                 prefix = "*[FATAL]*";
                 break;
+            case NotificationType.Unknown:
             default:
                 emoji = "📌";
                 prefix = "*[LOG]*";

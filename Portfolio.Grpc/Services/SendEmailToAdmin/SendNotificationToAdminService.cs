@@ -68,7 +68,7 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
                            x.EmailAddress == dto.EmailAddress &&
                            x.Subject == dto.Subject &&
                            x.Message == dto.Message &&
-                           x.CreatedAt > DateTime.UtcNow.AddHours(-1), cancellationToken);
+                           x.CreatedAt > DateTimeOffset.UtcNow.AddHours(-1), cancellationToken);
     }
 
     private async Task StoreNotificationAtDb(NotificationDto dto, bool isItSentSuccessfully, CancellationToken cancellationToken = default)

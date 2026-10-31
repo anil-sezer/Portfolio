@@ -1,7 +1,8 @@
-﻿namespace Portfolio.Domain.Enums;
+namespace Portfolio.Domain.Enums;
 
 public enum NotificationType
 {
+    Unknown = 0,
     Info = 1,
     Success = 2,
     Error = 3,

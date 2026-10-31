@@ -102,14 +102,14 @@ public class RequestLog : EntityBase
     public required string Country
     {
         get => _country;
-        set => _country = value.Truncate(MaxCountryLength);
+        init => _country = value.Truncate(MaxCountryLength);
     }
 
     private string _city = string.Empty;
     public required string City
     {
         get => _city;
-        set => _city = value.Truncate(MaxCityLength);
+        init => _city = value.Truncate(MaxCityLength);
     }
 
     private readonly string _requestedUrl = string.Empty;
@@ -131,7 +131,7 @@ public class RequestLog : EntityBase
         if (string.IsNullOrWhiteSpace(city) && string.IsNullOrWhiteSpace(country))
             throw new InvalidOperationException($"Both {nameof(City)} and {nameof(Country)} cannot be empty when updating location.");
 
-        City = city;
-        Country = country;
+        _city = city.Truncate(MaxCityLength);
+        _country = country.Truncate(MaxCountryLength);
     }
 }

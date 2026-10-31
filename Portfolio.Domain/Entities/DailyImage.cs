@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Portfolio.Domain.Enums;
 using Portfolio.Domain.Extensions;
 
@@ -9,7 +8,6 @@ public class DailyImage : EntityBase
     public const int MaxImageUrlLength = 2048;
     public const int MaxAltTextLength = 1000;
 
-    [Url]
     public required string ImageUrl { get; init; }
 
     private readonly string _altText = string.Empty;

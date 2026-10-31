@@ -34,7 +34,7 @@ public class SendNotificationToAdminServiceTests
             Subject = "Feedback",
             Message = "Great site!",
             IsItSentSuccessfully = true,
-            CreatedAt = DateTime.UtcNow.AddMinutes(-10)
+            CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-10)
         });
         await dbContext.SaveChangesAsync();
 
@@ -163,7 +163,7 @@ public class SendNotificationToAdminServiceTests
             Subject = "Feedback",
             Message = "Great site!",
             IsItSentSuccessfully = true,
-            CreatedAt = DateTime.UtcNow.AddMinutes(-70)
+            CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-70)
         });
         await dbContext.SaveChangesAsync();
 
@@ -212,7 +212,7 @@ public class SendNotificationToAdminServiceTests
             Subject = "Initial Question",
             Message = "How are you?",
             IsItSentSuccessfully = true,
-            CreatedAt = DateTime.UtcNow.AddMinutes(-5)
+            CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-5)
         });
         await dbContext.SaveChangesAsync();
 
@@ -252,7 +252,7 @@ public class SendNotificationToAdminServiceTests
             Subject = "Buy now",
             Message = "Cheap deals",
             IsItSentSuccessfully = false,
-            CreatedAt = DateTime.UtcNow.AddMinutes(-15)
+            CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-15)
         });
         await dbContext.SaveChangesAsync();
 

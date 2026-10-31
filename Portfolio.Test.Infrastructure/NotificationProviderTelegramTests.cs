@@ -269,6 +269,39 @@ public class NotificationProviderTelegramTests : IDisposable
     }
 
     [Fact]
+    public async Task SendNotificationAsync_WhenNotificationTypeIsExplicitUnknown_UsesFallbackEmojiAndPrefix()
+    {
+        // Arrange
+        string? capturedBody = null;
+        var handler = new MockHttpMessageHandler(async (req, ct) =>
+        {
+            capturedBody = await req.Content!.ReadAsStringAsync(ct);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        });
+
+        var httpClient = new HttpClient(handler);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
+
+        var dto = new NotificationDto
+        {
+            Name = "Fallback",
+            EmailAddress = "fallback@example.com",
+            Subject = "Unknown Type",
+            Message = "Testing explicit unknown",
+            NotificationType = NotificationType.Unknown
+        };
+
+        // Act
+        var result = await provider.SendNotificationAsync(dto);
+
+        // Assert
+        result.IsItSentSuccessfully.Should().BeTrue();
+        var decodedBody = Uri.UnescapeDataString(capturedBody!);
+        decodedBody.Should().Contain("📌");
+        decodedBody.Should().Contain(@"*[LOG]*");
+    }
+
+    [Fact]
     public async Task SendNotificationAsync_EscapesAllMarkdownV2SpecialCharacters()
     {
         // Arrange

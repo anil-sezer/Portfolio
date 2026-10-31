@@ -121,4 +121,19 @@ public class RequestLogTests
         log.City.Should().Be("Ankara");
         log.Country.Should().Be("   ");
     }
+
+    [Fact]
+    public void CityAndCountry_SettersShouldBeInitOnly()
+    {
+        var cityProp = typeof(RequestLog).GetProperty(nameof(RequestLog.City))!;
+        var countryProp = typeof(RequestLog).GetProperty(nameof(RequestLog.Country))!;
+
+        cityProp.SetMethod.Should().NotBeNull();
+        cityProp.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+            .Should().Contain(typeof(System.Runtime.CompilerServices.IsExternalInit));
+
+        countryProp.SetMethod.Should().NotBeNull();
+        countryProp.SetMethod!.ReturnParameter.GetRequiredCustomModifiers()
+            .Should().Contain(typeof(System.Runtime.CompilerServices.IsExternalInit));
+    }
 }

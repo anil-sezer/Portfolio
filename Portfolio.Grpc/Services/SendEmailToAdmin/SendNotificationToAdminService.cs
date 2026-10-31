@@ -1,4 +1,7 @@
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Domain.Entities;
 using Portfolio.Domain.Enums;
 using Portfolio.Domain.Extensions;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
@@ -8,10 +11,12 @@ using Portfolio.Infrastructure.ThirdPartyServices;
 
 namespace Portfolio.Grpc.Services.SendEmailToAdmin;
 
-public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotificationProviderFactory notificationProviderFactory, ILogger<SendNotificationToAdminService> logger): Grpc.SendEmailToAdmin.SendEmailToAdminBase
+public class SendNotificationToAdminService(
+    PortfolioDbContext dbContext,
+    INotificationProviderFactory notificationProviderFactory,
+    ILogger<SendNotificationToAdminService> logger) : Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
-    // todo: I wanna use MediatR here
-    public override async Task<SendResponse> Send(SendRequest request, ServerCallContext context)
+    public override async Task<Empty> Send(SendRequest request, ServerCallContext context)
     {
         logger.LogInformation("📧 Contact notification received for subject: {Subject}", request.Subject);
         
@@ -19,10 +24,8 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
 
         if (await IsThisEmailAlreadySentAtLastHourAsync(emailDto, context.CancellationToken))
         {
-            return new SendResponse
-            {
-                ResultCode = ResultCode.Forbidden
-            };
+            logger.LogWarning("📧 Duplicate contact notification rejected within 1 hour: {Subject} by {Email}", emailDto.Subject, emailDto.EmailAddress);
+            throw new RpcException(new Status(StatusCode.PermissionDenied, "This message was already sent in the last hour."));
         }
         
         var result = await SendNotificationToAdminAsync(emailDto, context.CancellationToken);
@@ -30,17 +33,11 @@ public class SendNotificationToAdminService(PortfolioDbContext dbContext, INotif
         {
             logger.LogError("📧 ❌ Failed to send email. Error: {Error}", result.ErrorMessage);
             await StoreNotificationAtDb(emailDto, false, context.CancellationToken);
-            return new SendResponse
-            {
-                ResultCode = ResultCode.Error
-            };
+            throw new RpcException(new Status(StatusCode.Internal, $"Failed to send notification: {result.ErrorMessage}"));
         }
 
         await StoreNotificationAtDb(emailDto, true, context.CancellationToken);
-        return new SendResponse
-        {
-            ResultCode = ResultCode.Success
-        };
+        return new Empty();
     }
 
     private static NotificationDto MapToEmailDto(SendRequest r)

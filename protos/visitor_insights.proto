@@ -20,7 +20,7 @@ message GetIpsToCheckResponse {
 }
 
 message PersistCheckedIpsRequest {
-  repeated IpCheckDto checkedIps = 1;
+  repeated IpCheckDto checked_ips = 1;
 }
 
 enum DbOperationForThisRow {
@@ -30,28 +30,28 @@ enum DbOperationForThisRow {
 }
 
 message IpCheckDto {
-  int32 entityId = 1;
-  string ipAddress = 2;
+  int32 entity_id = 1;
+  string ip_address = 2;
   string city = 3;
   string country = 4;
   DbOperationForThisRow operation = 5;
 }
 
 message StoreVisitorInfoRequest {
-  string userAgent = 1;
+  string user_agent = 1;
   string language = 2;
   string platform = 3;
   bool webdriver = 4;
-  string deviceMemory = 5;
-  string hardwareConcurrency = 6;
-  int32 maxTouchPoints = 7;
-  string doNotTrack = 8;
+  string device_memory = 5;
+  string hardware_concurrency = 6;
+  int32 max_touch_points = 7;
+  string do_not_track = 8;
   string connection = 9;
-  bool cookieEnabled = 10;
-  bool onLine = 11;
+  bool cookie_enabled = 10;
+  bool on_line = 11;
   string referrer = 12;
   string resolution = 13;
-  string ipAddress = 14;
+  string ip_address = 14;
   string extras = 15;
-  string requestedUrl = 16;
+  string requested_url = 16;
 }

@@ -11,9 +11,9 @@ service K8sStats {
 }
 
 message GetK8sStatsResponse {
-  int32 ActivePodCount = 1;
-  int32 ServiceCount = 2;
-  int32 NodeCount = 3;
-  int32 DeploymentCount = 4;
-  int32 CronJobCount = 5;
+  int32 active_pod_count = 1;
+  int32 service_count = 2;
+  int32 node_count = 3;
+  int32 deployment_count = 4;
+  int32 cron_job_count = 5;
 }

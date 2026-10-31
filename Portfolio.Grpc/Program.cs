@@ -2,6 +2,8 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.BackgroundServices;
+using Portfolio.Grpc.Interceptors;
+using Portfolio.Grpc.Security;
 using Portfolio.Grpc.Services;
 using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
@@ -31,8 +33,13 @@ builder.InitDbWithPostgres();
 
 builder.AddHealthChecksForEndpointAndDb();
 
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<ServerLoggingAndExceptionInterceptor>();
+});
 builder.AddGrpcHealthChecksWithServices();
+
+builder.Services.AddSingleton<SafeUrlValidator>();
 
 // Factories
 builder.Services.AddHttpClient<INotificationProvider, NotificationProviderTelegram>();

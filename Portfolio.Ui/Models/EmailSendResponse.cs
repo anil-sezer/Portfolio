@@ -1,5 +1,10 @@
-using Portfolio.Grpc;
-
 namespace Portfolio.Ui.Models;
 
-public sealed record EmailSendResponse(bool Success, ResultCode ResultCode);
+public enum EmailSendResultCode
+{
+    Success = 0,
+    Error = 1,
+    Forbidden = 2
+}
+
+public sealed record EmailSendResponse(bool Success, EmailSendResultCode ResultCode);

@@ -1,5 +1,7 @@
 using FluentAssertions;
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
@@ -8,14 +10,13 @@ using Portfolio.Grpc;
 using Portfolio.Grpc.Services.SendEmailToAdmin;
 using Portfolio.Infrastructure.ThirdPartyServices;
 using Portfolio.Test.Shared;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Portfolio.Test.Grpc;
 
 public class SendNotificationToAdminServiceTests
 {
     [Fact]
-    public async Task Send_WhenDuplicateEmailSentWithinLastHour_ReturnsForbiddenAndDoesNotCallProvider()
+    public async Task Send_WhenDuplicateEmailSentWithinLastHour_ThrowsPermissionDeniedAndDoesNotCallProvider()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -47,16 +48,18 @@ public class SendNotificationToAdminServiceTests
         };
 
         // Act
-        var response = await service.Send(request, context);
+        var act = () => service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Forbidden);
+        var thrown = await act.Should().ThrowAsync<RpcException>();
+        thrown.Which.StatusCode.Should().Be(StatusCode.PermissionDenied);
+        thrown.Which.Status.Detail.Should().Contain("already sent");
         mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Never);
         (await dbContext.NotificationsToAdmin.CountAsync()).Should().Be(1);
     }
 
     [Fact]
-    public async Task Send_WhenProviderFails_StoresFailedNotificationAndReturnsError()
+    public async Task Send_WhenProviderFails_StoresFailedNotificationAndThrowsInternalRpcException()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -84,10 +87,12 @@ public class SendNotificationToAdminServiceTests
         };
 
         // Act
-        var response = await service.Send(request, context);
+        var act = () => service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Error);
+        var thrown = await act.Should().ThrowAsync<RpcException>();
+        thrown.Which.StatusCode.Should().Be(StatusCode.Internal);
+        thrown.Which.Status.Detail.Should().Contain("Failed to send notification");
 
         var saved = await dbContext.NotificationsToAdmin.FirstOrDefaultAsync(x => x.EmailAddress == "jane@example.com");
         saved.Should().NotBeNull();
@@ -96,7 +101,7 @@ public class SendNotificationToAdminServiceTests
     }
 
     [Fact]
-    public async Task Send_WhenProviderSucceeds_StoresSuccessfulNotificationAndReturnsSuccess()
+    public async Task Send_WhenProviderSucceeds_StoresSuccessfulNotificationAndReturnsEmpty()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -127,7 +132,7 @@ public class SendNotificationToAdminServiceTests
         var response = await service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Success);
+        response.Should().NotBeNull();
 
         var saved = await dbContext.NotificationsToAdmin.FirstOrDefaultAsync(x => x.EmailAddress == "alice@example.com");
         saved.Should().NotBeNull();
@@ -136,7 +141,7 @@ public class SendNotificationToAdminServiceTests
     }
 
     [Fact]
-    public async Task Send_WhenIdenticalEmailSentMoreThanOneHourAgo_CallsProviderAndReturnsSuccess()
+    public async Task Send_WhenIdenticalEmailSentMoreThanOneHourAgo_CallsProviderAndReturnsEmpty()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -179,13 +184,13 @@ public class SendNotificationToAdminServiceTests
         var response = await service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Success);
+        response.Should().NotBeNull();
         mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Once);
         (await dbContext.NotificationsToAdmin.CountAsync()).Should().Be(2);
     }
 
     [Fact]
-    public async Task Send_WhenDifferentEmailSentWithinLastHour_CallsProviderAndReturnsSuccess()
+    public async Task Send_WhenDifferentEmailSentWithinLastHour_CallsProviderAndReturnsEmpty()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
@@ -228,7 +233,7 @@ public class SendNotificationToAdminServiceTests
         var response = await service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Success);
+        response.Should().NotBeNull();
         mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -265,10 +270,11 @@ public class SendNotificationToAdminServiceTests
         };
 
         // Act
-        var response = await service.Send(request, context);
+        var act = () => service.Send(request, context);
 
         // Assert
-        response.ResultCode.Should().Be(ResultCode.Forbidden);
+        var thrown = await act.Should().ThrowAsync<RpcException>();
+        thrown.Which.StatusCode.Should().Be(StatusCode.PermissionDenied);
         mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

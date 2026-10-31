@@ -75,8 +75,8 @@ func (ImageOfTheDaySource) EnumDescriptor() ([]byte, []int) {
 type BackgroundImageDetails struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
-	AltText       string                 `protobuf:"bytes,2,opt,name=altText,proto3" json:"altText,omitempty"`
-	Source        ImageOfTheDaySource    `protobuf:"varint,3,opt,name=Source,proto3,enum=background_images.ImageOfTheDaySource" json:"Source,omitempty"`
+	AltText       string                 `protobuf:"bytes,2,opt,name=alt_text,json=altText,proto3" json:"alt_text,omitempty"`
+	Source        ImageOfTheDaySource    `protobuf:"varint,3,opt,name=source,proto3,enum=background_images.ImageOfTheDaySource" json:"source,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,11 +136,11 @@ var File_background_images_proto protoreflect.FileDescriptor
 
 const file_background_images_proto_rawDesc = "" +
 	"\n" +
-	"\x17background_images.proto\x12\x11background_images\x1a\x1bgoogle/protobuf/empty.proto\"\x84\x01\n" +
+	"\x17background_images.proto\x12\x11background_images\x1a\x1bgoogle/protobuf/empty.proto\"\x85\x01\n" +
 	"\x16BackgroundImageDetails\x12\x10\n" +
-	"\x03url\x18\x01 \x01(\tR\x03url\x12\x18\n" +
-	"\aaltText\x18\x02 \x01(\tR\aaltText\x12>\n" +
-	"\x06Source\x18\x03 \x01(\x0e2&.background_images.ImageOfTheDaySourceR\x06Source*3\n" +
+	"\x03url\x18\x01 \x01(\tR\x03url\x12\x19\n" +
+	"\balt_text\x18\x02 \x01(\tR\aaltText\x12>\n" +
+	"\x06source\x18\x03 \x01(\x0e2&.background_images.ImageOfTheDaySourceR\x06source*3\n" +
 	"\x13ImageOfTheDaySource\x12\b\n" +
 	"\x04Bing\x10\x00\x12\b\n" +
 	"\x04NASA\x10\x01\x12\b\n" +
@@ -169,7 +169,7 @@ var file_background_images_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),          // 2: google.protobuf.Empty
 }
 var file_background_images_proto_depIdxs = []int32{
-	0, // 0: background_images.BackgroundImageDetails.Source:type_name -> background_images.ImageOfTheDaySource
+	0, // 0: background_images.BackgroundImageDetails.source:type_name -> background_images.ImageOfTheDaySource
 	1, // 1: background_images.BackgroundImages.Persist:input_type -> background_images.BackgroundImageDetails
 	2, // 2: background_images.BackgroundImages.Get:input_type -> google.protobuf.Empty
 	2, // 3: background_images.BackgroundImages.Persist:output_type -> google.protobuf.Empty

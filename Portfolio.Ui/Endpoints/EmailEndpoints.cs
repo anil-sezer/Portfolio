@@ -1,3 +1,5 @@
+using Grpc.Core;
+using Portfolio.Grpc;
 using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Models;
 
@@ -15,7 +17,7 @@ public static class EmailEndpoints
             .RequireRateLimiting(RateLimiterExtensions.EmailSendPolicy);
     }
 
-    private static async Task<EmailSendResponse> SendEmail(
+    internal static async Task<EmailSendResponse> SendEmail(
         EmailFormModel request,
         SendEmailToAdmin.SendEmailToAdminClient emailClient,
         ILoggerFactory loggerFactory,
@@ -32,21 +34,24 @@ public static class EmailEndpoints
                 Message = request.Message
             };
 
-            var result = await emailClient.SendAsync(grpcRequest, cancellationToken: cancellationToken);
+            await emailClient.SendAsync(grpcRequest, cancellationToken: cancellationToken);
 
-            return new EmailSendResponse(
-                result.ResultCode == ResultCode.Success,
-                result.ResultCode);
+            return new EmailSendResponse(true, EmailSendResultCode.Success);
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.PermissionDenied)
+        {
+            logger.LogWarning("Email sending rejected by rate limit: {Detail}", ex.Status.Detail);
+            return new EmailSendResponse(false, EmailSendResultCode.Forbidden);
         }
         catch (OperationCanceledException ex)
         {
             logger.LogWarning(ex, "Email sending request was canceled");
-            return new EmailSendResponse(false, ResultCode.Error);
+            return new EmailSendResponse(false, EmailSendResultCode.Error);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to send email");
-            return new EmailSendResponse(false, ResultCode.Error);
+            return new EmailSendResponse(false, EmailSendResultCode.Error);
         }
     }
 }

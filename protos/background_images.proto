@@ -22,6 +22,6 @@ service BackgroundImages {
 
 message BackgroundImageDetails {
   string url = 1;
-  string altText = 2;
-  ImageOfTheDaySource Source = 3;
+  string alt_text = 2;
+  ImageOfTheDaySource source = 3;
 }

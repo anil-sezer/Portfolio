@@ -1,9 +1,15 @@
+using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Grpc.Security;
 using Portfolio.Infrastructure;
 
 namespace Portfolio.Grpc.Services;
 
-public partial class BackgroundImageServices(PortfolioDbContext dbContext, HttpClient httpClient, ILogger<BackgroundImageServices> logger) : BackgroundImages.BackgroundImagesBase
+public partial class BackgroundImageServices(
+    PortfolioDbContext dbContext,
+    HttpClient httpClient,
+    SafeUrlValidator urlValidator,
+    ILogger<BackgroundImageServices> logger) : BackgroundImages.BackgroundImagesBase
 {
     [LoggerMessage(EventId = 1001, Level = LogLevel.Information, Message = "Serving this background image: {ImageUrl}")]
     private static partial void LogServingBackgroundImage(ILogger logger, string imageUrl);
@@ -20,7 +26,15 @@ public partial class BackgroundImageServices(PortfolioDbContext dbContext, HttpC
 
     public override async Task<Empty> Persist(BackgroundImageDetails request, ServerCallContext context)
     {
-        var urlWorks = await CheckUrlAsync(request.Url, context.CancellationToken);
+        bool urlWorks = false;
+        if (!string.IsNullOrWhiteSpace(request.Url))
+        {
+            var isSafe = await urlValidator.IsSafePublicUrlAsync(request.Url, context.CancellationToken);
+            if (!isSafe)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "The provided image URL is not an allowed public HTTP or HTTPS endpoint."));
+
+            urlWorks = await CheckUrlAsync(request.Url, context.CancellationToken);
+        }
 
         dbContext.DailyImages.Add(new DailyImage
         {
@@ -68,15 +82,15 @@ public partial class BackgroundImageServices(PortfolioDbContext dbContext, HttpC
 
         try
         {
-            // todo: will this work for all sources?
             // Use HEAD request to check if URL is accessible without downloading content
             using var request = new HttpRequestMessage(HttpMethod.Head, url);
             using var response = await httpClient.SendAsync(request, cancellationToken);
             
             return response.IsSuccessStatusCode;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            logger.LogWarning(ex, "HTTP HEAD check failed for URL '{Url}'", url);
             return false;
         }
     }

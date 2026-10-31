@@ -188,8 +188,10 @@ The database uses PostgreSQL with snake_case naming conventions enforced by `EFC
 ### Asynchronous Processing via Channels
 
 To maintain high throughput on visitor telemetry without blocking web requests:
-- When a visit is logged, `VisitorInsightsService.StoreVisitorInfo` enqueues a `LogVisitorInfoQueuedOperation` into `DatabaseOperationQueueWorker`.
-- `DatabaseOperationQueueWorker` uses `System.Threading.Channels.Channel<IDatabaseOperationQueueWorker>` to execute database writes in a background worker task.
+- When a visit is logged, `VisitorInsightsService.StoreVisitorInfo` enqueues a `LogVisitorInfoQueuedOperation` into `DatabaseOperationQueue`.
+- `DatabaseOperationQueue` uses a bounded `System.Threading.Channels.Channel<IDatabaseOperationQueueWorker>` (`Capacity: 1000`, `BoundedChannelFullMode.Wait`) to provide backpressure under load.
+- `DatabaseOperationQueueWorker` consumes operations with an exponential backoff retry policy (3 attempts, jitter, fresh `IServiceScope` per attempt) to handle transient database connection issues.
+- On shutdown, `DatabaseOperationQueueWorker.StopAsync` marks the queue complete and drains all remaining queued operations before process exit.
 
 ---
 

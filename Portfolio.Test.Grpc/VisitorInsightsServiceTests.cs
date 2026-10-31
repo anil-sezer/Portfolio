@@ -1,10 +1,14 @@
 using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
-using Portfolio.Domain.Entities;
-using Portfolio.Grpc;
-using Portfolio.Grpc.Services.VisitorInsightsServices;
-using Portfolio.Test.Shared;
+using Grpc.Core;
 using Microsoft.Extensions.Logging.Abstractions;
+using Portfolio.Domain.Entities;
+using Portfolio.Domain.Interfaces.BackgroundServices;
+using Portfolio.Grpc;
+using Portfolio.Grpc.BackgroundServices;
+using Portfolio.Grpc.Services.VisitorInsightsServices;
+using Portfolio.Infrastructure;
+using Portfolio.Test.Shared;
 
 namespace Portfolio.Test.Grpc;
 
@@ -32,12 +36,20 @@ public class VisitorInsightsServiceTests
         Extras = "{}"
     };
 
+    private static VisitorInsightsService CreateService(PortfolioDbContext dbContext, DatabaseOperationQueue? queue = null)
+    {
+        return new VisitorInsightsService(
+            dbContext,
+            queue ?? new DatabaseOperationQueue(),
+            NullLogger<VisitorInsightsService>.Instance);
+    }
+
     [Fact]
     public async Task GetIpsToCheck_ReturnsOnlyRowsWithNonEmptyIpAndEmptyCityAndCountry()
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         // Matching: IP present, city and country empty
@@ -74,7 +86,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         // Act
@@ -90,7 +102,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         var log1 = CreateRequestLog("1.1.1.1", "", "");
@@ -114,7 +126,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         var log = CreateRequestLog("198.51.100.10", "", "");
@@ -147,7 +159,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         var request = new PersistCheckedIpsRequest();
@@ -172,7 +184,7 @@ public class VisitorInsightsServiceTests
     {
         // Arrange
         await using var dbContext = TestDbContextFactory.Create();
-        var service = new VisitorInsightsService(dbContext, NullLogger<VisitorInsightsService>.Instance);
+        var service = CreateService(dbContext);
         var context = TestServerCallContext.Create();
 
         var logs = Enumerable.Range(1, VisitorInsightsService.MaxBatchSize + 15)
@@ -188,5 +200,60 @@ public class VisitorInsightsServiceTests
         // Assert
         response.Should().NotBeNull();
         response.Ips.Should().HaveCount(VisitorInsightsService.MaxBatchSize);
+    }
+
+    [Fact]
+    public async Task StoreVisitorInfo_EnqueuesOperationToDatabaseQueue()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var queue = new DatabaseOperationQueue(capacity: 10);
+        var service = CreateService(dbContext, queue);
+        var context = TestServerCallContext.Create();
+
+        var request = new StoreVisitorInfoRequest
+        {
+            IpAddress = "192.0.2.1",
+            RequestedUrl = "https://anilsezer.net/about",
+            UserAgent = "Mozilla/5.0"
+        };
+
+        // Act
+        var response = await service.StoreVisitorInfo(request, context);
+
+        // Assert
+        response.Should().NotBeNull();
+        queue.QueuedCount.Should().Be(1);
+
+        var dequeued = await queue.DequeueAsync();
+        dequeued.Should().BeOfType<LogVisitorInfoQueuedOperation>();
+        var logOp = (LogVisitorInfoQueuedOperation)dequeued;
+        logOp.Request.IpAddress.Should().Be("192.0.2.1");
+        logOp.Request.RequestedUrl.Should().Be("https://anilsezer.net/about");
+    }
+
+    [Fact]
+    public async Task StoreVisitorInfo_WhenChannelClosed_ThrowsRpcExceptionWithUnavailable()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var queue = new DatabaseOperationQueue(capacity: 10);
+        queue.Complete(); // Simulate shutdown
+
+        var service = CreateService(dbContext, queue);
+        var context = TestServerCallContext.Create();
+
+        var request = new StoreVisitorInfoRequest
+        {
+            IpAddress = "192.0.2.2",
+            RequestedUrl = "https://anilsezer.net"
+        };
+
+        // Act
+        var act = async () => await service.StoreVisitorInfo(request, context);
+
+        // Assert
+        var ex = await act.Should().ThrowAsync<RpcException>();
+        ex.Which.StatusCode.Should().Be(StatusCode.Unavailable);
     }
 }

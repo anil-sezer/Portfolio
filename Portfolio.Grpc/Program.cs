@@ -1,4 +1,5 @@
 using DotNetEnv;
+using Portfolio.Domain.Interfaces.BackgroundServices;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.BackgroundServices;
 using Portfolio.Grpc.Services;
@@ -35,7 +36,8 @@ builder.Services.AddHttpClient<BackgroundImageServices>(client =>
     client.Timeout = TimeSpan.FromSeconds(5);
 });
 
-// Background Services
+// Database Operation Queue & Worker
+builder.Services.AddSingleton<DatabaseOperationQueue>();
 builder.Services.AddHostedService<DatabaseOperationQueueWorker>();
 
 builder.SetupKubernetesClient();

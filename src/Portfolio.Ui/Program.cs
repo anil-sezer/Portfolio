@@ -1,4 +1,6 @@
+using System.Net;
 using DotNetEnv;
+using Microsoft.AspNetCore.HttpOverrides;
 using Portfolio.Ui.Components;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
@@ -36,6 +38,17 @@ builder.InitializeGrpcClients();
 
 builder.InitializeServices();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+    options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse("10.244.0.0/16"));
+    options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse("10.96.0.0/12"));
+    options.KnownIPNetworks.Add(System.Net.IPNetwork.Parse("127.0.0.1/8"));
+    options.KnownProxies.Add(IPAddress.IPv6Loopback);
+});
+
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = HeaderConstants.XsrfToken;
@@ -44,6 +57,8 @@ builder.Services.AddAntiforgery(options =>
 builder.Services.AddAppRateLimiting();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (!app.Environment.IsDevelopment())
 {

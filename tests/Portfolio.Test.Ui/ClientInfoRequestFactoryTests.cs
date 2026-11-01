@@ -174,11 +174,11 @@ public class ClientInfoRequestFactoryTests
     }
 
     [Fact]
-    public void Create_ResolvesClientIpFromXRealIpWhenXForwardedForMissing()
+    public void Create_ResolvesClientIpFromRemoteIpAddress()
     {
         // Arrange
         var (context, mockAccessor) = CreateTestHttpContext();
-        context.Request.Headers[HeaderConstants.XRealIp] = "198.51.100.77";
+        context.Connection.RemoteIpAddress = IPAddress.Parse("198.51.100.77");
 
         // Act
         var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
@@ -188,17 +188,47 @@ public class ClientInfoRequestFactoryTests
     }
 
     [Fact]
-    public void Create_FallsBackToRemoteIpAddressWhenNoProxyHeaders()
+    public void Create_WhenRemoteIpAddressIsIPv4MappedToIPv6_UnmapsToIPv4()
     {
         // Arrange
         var (context, mockAccessor) = CreateTestHttpContext();
-        context.Connection.RemoteIpAddress = IPAddress.Parse("10.0.0.42");
+        context.Connection.RemoteIpAddress = IPAddress.Parse("::ffff:198.51.100.77");
 
         // Act
         var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
 
         // Assert
-        result.IpAddress.Should().Be("10.0.0.42");
+        result.IpAddress.Should().Be("198.51.100.77");
+    }
+
+    [Fact]
+    public void Create_WhenRemoteIpAddressIsNull_ReturnsUnknown()
+    {
+        // Arrange
+        var (context, mockAccessor) = CreateTestHttpContext();
+        context.Connection.RemoteIpAddress = null;
+
+        // Act
+        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
+
+        // Assert
+        result.IpAddress.Should().Be("unknown");
+    }
+
+    [Fact]
+    public void Create_IgnoresRawHeadersAndUsesSanitizedRemoteIpAddress()
+    {
+        // Arrange
+        var (context, mockAccessor) = CreateTestHttpContext();
+        context.Connection.RemoteIpAddress = IPAddress.Parse("203.0.113.195");
+        context.Request.Headers["X-Forwarded-For"] = "1.1.1.1";
+        context.Request.Headers["X-Real-IP"] = "2.2.2.2";
+
+        // Act
+        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
+
+        // Assert
+        result.IpAddress.Should().Be("203.0.113.195");
     }
 
     [Fact]
@@ -234,19 +264,5 @@ public class ClientInfoRequestFactoryTests
 
         // Assert
         result.Referrer.Should().Be("https://duckduckgo.com");
-    }
-
-    [Fact]
-    public void Create_ResolvesClientIpFromXForwardedFor_HandlesWhitespaceAndMultipleIps()
-    {
-        // Arrange
-        var (context, mockAccessor) = CreateTestHttpContext();
-        context.Request.Headers[HeaderConstants.XForwardedFor] = "  192.168.1.100  ,  10.0.0.1  ";
-
-        // Act
-        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
-
-        // Assert
-        result.IpAddress.Should().Be("192.168.1.100");
     }
 }

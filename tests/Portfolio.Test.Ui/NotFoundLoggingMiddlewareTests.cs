@@ -20,7 +20,7 @@ public class NotFoundLoggingMiddlewareTests
         var context = new DefaultHttpContext();
         context.Response.StatusCode = statusCode;
         context.Request.Path = "/non-existent-page";
-        context.Connection.RemoteIpAddress = IPAddress.Parse("127.0.0.1");
+        context.Connection.RemoteIpAddress = IPAddress.Parse("203.0.113.195");
 
         var mockAccessor = new Mock<IHttpContextAccessor>();
         mockAccessor.Setup(a => a.HttpContext).Returns(context);
@@ -163,5 +163,26 @@ public class NotFoundLoggingMiddlewareTests
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Downstream middleware error");
+    }
+
+    [Fact]
+    public async Task InvokeAsync_WhenClientIsLoopback_DoesNotTriggerVisitLogging()
+    {
+        // Arrange
+        var (context, mockAccessor, mockClient, logService) = CreateContextAndServices(404);
+        context.Connection.RemoteIpAddress = IPAddress.Parse("127.0.0.1");
+
+        RequestDelegate next = _ => Task.CompletedTask;
+        var middleware = new NotFoundLoggingMiddleware(next, NullLogger<NotFoundLoggingMiddleware>.Instance);
+
+        // Act
+        await middleware.InvokeAsync(context, logService, mockAccessor.Object);
+
+        // Assert
+        mockClient.Verify(c => c.StoreVisitorInfoAsync(
+            It.IsAny<StoreVisitorInfoRequest>(),
+            It.IsAny<Metadata>(),
+            It.IsAny<DateTime?>(),
+            It.IsAny<CancellationToken>()), Times.Never);
     }
 }

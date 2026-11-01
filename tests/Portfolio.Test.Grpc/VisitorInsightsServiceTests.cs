@@ -256,4 +256,30 @@ public class VisitorInsightsServiceTests
         var ex = await act.Should().ThrowAsync<RpcException>();
         ex.Which.StatusCode.Should().Be(StatusCode.Unavailable);
     }
+
+    [Theory]
+    [InlineData("127.0.0.1")]
+    [InlineData("::1")]
+    [InlineData("127.0.0.5")]
+    public async Task StoreVisitorInfo_WhenIpIsLoopback_SkipsQueueing(string loopbackIp)
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var queue = new DatabaseOperationQueue(capacity: 10);
+        var service = CreateService(dbContext, queue);
+        var context = TestServerCallContext.Create();
+
+        var request = new StoreVisitorInfoRequest
+        {
+            IpAddress = loopbackIp,
+            RequestedUrl = "https://anilsezer.net/test"
+        };
+
+        // Act
+        var response = await service.StoreVisitorInfo(request, context);
+
+        // Assert
+        response.Should().NotBeNull();
+        queue.QueuedCount.Should().Be(0);
+    }
 }

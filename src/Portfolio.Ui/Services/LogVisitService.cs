@@ -1,3 +1,4 @@
+using System.Net;
 using Portfolio.Ui.Factories;
 
 namespace Portfolio.Ui.Services;
@@ -20,6 +21,12 @@ public class LogVisitService(VisitorInsights.VisitorInsightsClient visitorInsigh
 
     private async Task LogVisitToGrpcAsync(StoreVisitorInfoRequest request, CancellationToken cancellationToken = default)
     {
+        if (IsLoopback(request.IpAddress))
+        {
+            logger.LogDebug("Skipping visit logging for loopback address: {IpAddress}", request.IpAddress);
+            return;
+        }
+
         try
         {
             await visitorInsightsClient.StoreVisitorInfoAsync(request, cancellationToken: cancellationToken);
@@ -33,5 +40,10 @@ public class LogVisitService(VisitorInsights.VisitorInsightsClient visitorInsigh
         {
             logger.LogError("❌ Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
         }
+    }
+
+    private static bool IsLoopback(string? ipAddress)
+    {
+        return IPAddress.TryParse(ipAddress, out var ip) && IPAddress.IsLoopback(ip);
     }
 }

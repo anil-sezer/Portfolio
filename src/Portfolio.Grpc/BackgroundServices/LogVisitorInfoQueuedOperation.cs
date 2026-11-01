@@ -1,3 +1,4 @@
+using System.Net;
 using Portfolio.Domain.Interfaces.BackgroundServices;
 using Portfolio.Infrastructure;
 
@@ -9,6 +10,9 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
 
     public async Task ExecuteAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
     {
+        if (IPAddress.TryParse(Request.IpAddress, out var ip) && IPAddress.IsLoopback(ip))
+            return;
+
         var dbContext = serviceProvider.GetRequiredService<PortfolioDbContext>();
         
         dbContext.RequestLogs.Add(new RequestLog

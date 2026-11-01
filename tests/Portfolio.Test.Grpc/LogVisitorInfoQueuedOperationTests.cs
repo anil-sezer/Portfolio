@@ -86,7 +86,7 @@ public class LogVisitorInfoQueuedOperationTests
         {
             Request = new StoreVisitorInfoRequest
             {
-                IpAddress = "127.0.0.1",
+                IpAddress = "198.51.100.42",
                 RequestedUrl = "https://anilsezer.net"
             }
         };
@@ -99,5 +99,35 @@ public class LogVisitorInfoQueuedOperationTests
 
         // Assert
         await act.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Theory]
+    [InlineData("127.0.0.1")]
+    [InlineData("::1")]
+    [InlineData("127.0.0.42")]
+    public async Task ExecuteAsync_WhenIpIsLoopback_DoesNotWriteToDatabase(string loopbackIp)
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddDbContext<PortfolioDbContext>(opt =>
+            opt.UseInMemoryDatabase(Guid.NewGuid().ToString("N")));
+        var serviceProvider = services.BuildServiceProvider();
+
+        var operation = new LogVisitorInfoQueuedOperation
+        {
+            Request = new StoreVisitorInfoRequest
+            {
+                IpAddress = loopbackIp,
+                RequestedUrl = "https://anilsezer.net"
+            }
+        };
+
+        // Act
+        await operation.ExecuteAsync(serviceProvider);
+
+        // Assert
+        using var scope = serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+        dbContext.RequestLogs.Should().BeEmpty();
     }
 }

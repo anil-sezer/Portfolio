@@ -11,7 +11,7 @@
             <p class="lead text-light text-opacity-75 mb-4">
                 @L["NotFound_Message"]
             </p>
-            <a href="/" class="btn btn-primary rounded-pill px-4 py-2">
+            <a href="@(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "tr" ? "/tr" : "/")" class="btn btn-primary rounded-pill px-4 py-2">
                 @L["NotFound_BackHome"]
             </a>
         </div>

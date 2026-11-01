@@ -80,3 +80,46 @@ jobs:
         run: |
           kubectl rollout status deployment/frontend -n portfolio --timeout=180s
           kubectl rollout status deployment/grpc -n portfolio --timeout=180s
+
+      - name: Send Telegram deployment notification
+        if: always()
+        env:
+          STATUS: ${{ job.status }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_BRANCH: ${{ github.ref_name }}
+          COMMIT_ACTOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          REPO: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+          RUN_ID: ${{ github.run_id }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.NOTIFICATION_TELEGRAM_API_KEY }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || secrets.NOTIFICATION_TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram credentials (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID) not configured. Skipping notification."
+            exit 0
+          fi
+
+          SHORT_SHA="${COMMIT_SHA:0:7}"
+          SAFE_MSG=$(printf '%s' "${COMMIT_MESSAGE:-Manual workflow dispatch}" | head -n 3 | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+          RUN_URL="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
+          COMMIT_URL="${SERVER_URL}/${REPO}/commit/${COMMIT_SHA}"
+
+          if [ "$STATUS" = "success" ]; then
+            STATUS_HEADER="✅ <b>Portfolio Deployed Successfully</b>"
+          else
+            STATUS_HEADER="❌ <b>Portfolio Deployment Failed</b>"
+          fi
+
+          printf -v TEXT '%s\n\n<b>Repository:</b> %s\n<b>Branch:</b> <code>%s</code>\n' \
+            "$STATUS_HEADER" "$REPO" "$COMMIT_BRANCH"
+          printf -v TEXT '%s<b>Commit:</b> <a href=\"%s\">%s</a>\n<b>Author:</b> %s\n' \
+            "$TEXT" "$COMMIT_URL" "$SHORT_SHA" "$COMMIT_ACTOR"
+          printf -v TEXT '%s<b>Run Details:</b> <a href=\"%s\">View Action Run</a>\n\n<b>Message:</b>\n<i>%s</i>' \
+            "$TEXT" "$RUN_URL" "$SAFE_MSG"
+
+          curl -s -S -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "parse_mode=HTML" \
+            -d "disable_web_page_preview=true" \
+            --data-urlencode "text=${TEXT}"

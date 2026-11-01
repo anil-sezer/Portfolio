@@ -616,7 +616,10 @@ server:
 
   ## Prometheus AlertManager configuration
   ##
-  alertmanagers: []
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - prometheus-alertmanager.observability.svc.cluster.local:9093
 
   ## Use a StatefulSet if replicaCount needs to be greater than 1 (see below)
   ##
@@ -1127,18 +1130,103 @@ scrapeConfigFiles: []
 serverFiles:
   ## Alerts configuration
   ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
-  alerting_rules.yml: {}
-  # groups:
-  #   - name: Instances
-  #     rules:
-  #       - alert: InstanceDown
-  #         expr: up == 0
-  #         for: 5m
-  #         labels:
-  #           severity: page
-  #         annotations:
-  #           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
-  #           summary: 'Instance {{ $labels.instance }} down'
+  alerting_rules.yml:
+    groups:
+      - name: cluster-nodes-hardware
+        rules:
+          - alert: NodeDown
+            expr: up{job="kubernetes-nodes"} == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Node {{ $labels.instance }} is down"
+              description: "Kubernetes node {{ $labels.instance }} has been unreachable for more than 2 minutes."
+
+          - alert: KubeNodeNotReady
+            expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+            for: 5m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Node {{ $labels.node }} is not ready"
+              description: "Kubernetes node {{ $labels.node }} condition 'Ready' has been false or unknown for more than 5 minutes."
+
+          - alert: HostHighMemoryUsage
+            expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100) < 15
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High memory usage on {{ $labels.node }}"
+              description: "Node {{ $labels.node }} available memory is below 15% (current: {{ $value | printf \"%.1f\" }}%)."
+
+          - alert: HostHighCpuLoad
+            expr: 100 - (avg by (node) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: "High CPU load on {{ $labels.node }}"
+              description: "Node {{ $labels.node }} CPU usage has exceeded 85% for more than 10 minutes (current: {{ $value | printf \"%.1f\" }}%)."
+
+          - alert: HostDiskSpaceLow
+            expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs"} / node_filesystem_size_bytes{fstype!~"tmpfs|ramfs"} * 100) < 15
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Low disk space on {{ $labels.node }} ({{ $labels.mountpoint }})"
+              description: "Filesystem on node {{ $labels.node }} at {{ $labels.mountpoint }} has less than 15% free space remaining (current: {{ $value | printf \"%.1f\" }}%)."
+
+          - alert: RaspberryPiHighTemp
+            expr: node_hwmon_temp_celsius > 75
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Raspberry Pi high temperature on {{ $labels.node }}"
+              description: "Thermal sensor ({{ $labels.chip }} / {{ $labels.sensor }}) on node {{ $labels.node }} is above 75°C for more than 5 minutes (current: {{ $value | printf \"%.1f\" }}°C)."
+
+      - name: kubernetes-workloads
+        rules:
+          - alert: KubePodCrashLooping
+            expr: increase(kube_pod_container_status_restarts_total[15m]) > 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Pod {{ $labels.pod }} is crash looping"
+              description: "Pod {{ $labels.pod }} container {{ $labels.container }} in namespace {{ $labels.namespace }} restarted in the last 15 minutes."
+
+          - alert: KubePodNotReady
+            expr: kube_pod_status_ready{condition="true"} == 0 and on (namespace, pod) kube_pod_status_phase{phase=~"Running|Pending"} == 1
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Pod {{ $labels.pod }} is not ready"
+              description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has been in a non-ready or pending state for more than 10 minutes."
+
+          - alert: KubeDeploymentReplicasMismatch
+            expr: kube_deployment_spec_replicas != kube_deployment_status_replicas_available
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Deployment {{ $labels.deployment }} replica mismatch"
+              description: "Deployment {{ $labels.deployment }} in namespace {{ $labels.namespace }} has {{ $value }} desired replicas mismatching available replicas for more than 10 minutes."
+
+      - name: cronjobs-backups
+        rules:
+          - alert: KubeCronJobFailed
+            expr: kube_job_status_failed{job_name=~"(postgres-backup|ip-lookup-go|get-daily-images).*"} > 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "CronJob {{ $labels.job_name }} failed"
+              description: "CronJob execution {{ $labels.job_name }} in namespace {{ $labels.namespace }} has failed."
   ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use alerting_rules.yml
   alerts: {}
 
@@ -1192,42 +1280,78 @@ extraManifests: []
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
-  enabled: false
+  enabled: true
+
+  # Full external URL where alertmanager is reachable, used for backlinks.
+  baseURL: "https://alertmanager.anilsezer.net"
 
   persistence:
     ## If true, storage will create or use Persistence Volume
     ## If false, storage will use emptyDir
     ##
-    enabled: true
-
-    ## Custom annotations for the PVC created by the alertmanager StatefulSet.
-    ## Useful for configuring storage provider options such as disk type, KMS encryption keys, or custom volume name prefixes.
-    annotations: {}
-
-    ## Custom labels for the PVC created by the alertmanager StatefulSet.
-    ## Useful for selecting, grouping, and organizing so that they can be queried or targeted in deployments, policies, etc.
-    labels: {}
-
-    ## Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ## set, choosing the default provisioner.
-    ##
-    # storageClass: "-"
-    accessModes:
-      - ReadWriteOnce
-    size: 2Gi
-
-    ## Configure emptyDir volume
-    ##
-    emptyDir: {}
+    enabled: false
 
   podSecurityContext:
     runAsUser: 65534
     runAsNonRoot: true
     runAsGroup: 65534
     fsGroup: 65534
+
+  ## Monitors ConfigMap changes and POSTs to /-/reload
+  configmapReload:
+    enabled: true
+
+  ## Resource requests and limits tailored for Raspberry Pi worker nodes
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+  ## Mount secret containing Telegram credentials
+  extraSecretMounts:
+    - name: telegram-secret
+      mountPath: /etc/alertmanager/secrets
+      subPath: ""
+      secretName: alertmanager-telegram-secret
+      readOnly: true
+
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by:
+        - alertname
+        - namespace
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      receiver: "telegram-admin"
+    inhibit_rules:
+      - source_matchers:
+          - severity="critical"
+        target_matchers:
+          - severity="warning"
+        equal:
+          - alertname
+          - namespace
+    receivers:
+      - name: "telegram-admin"
+        telegram_configs:
+          - bot_token_file: /etc/alertmanager/secrets/bot_token
+            chat_id_file: /etc/alertmanager/secrets/chat_id
+            parse_mode: "HTML"
+            send_resolved: true
+            message: |
+              {{ if eq .Status "firing" }}🚨 <b>[FIRING - {{ .CommonLabels.severity | toUpper }}]</b>{{ else }}✅ <b>[RESOLVED]</b>{{ end }}
+              <b>Alert:</b> {{ .CommonLabels.alertname }}
+              {{ if .CommonLabels.namespace }}<b>Namespace:</b> {{ .CommonLabels.namespace }}
+              {{ end }}{{ range .Alerts -}}
+              <b>Summary:</b> {{ .Annotations.summary }}
+              <b>Details:</b> {{ .Annotations.description }}
+              {{ end }}
 
 ## kube-state-metrics sub-chart configurable values
 ## Please see https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics

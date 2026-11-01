@@ -261,7 +261,6 @@ The homelab runs on bare metal with 5 Raspberry Pi nodes and a dedicated Debian 
 - **`30001`**: PostgreSQL (`postgres-nodeport`, namespace `database`)
 - **`30003`**: Docker Registry (`svc-nodeport`, namespace `images`)
 - **`31388`**: Prometheus (`svc-nodeport`, namespace `observability`)
-- **`31389`**: Alertmanager (`svc-nodeport`, namespace `observability`)
 
 ### Persistent Storage (NFS Tiers on `cinema`)
 

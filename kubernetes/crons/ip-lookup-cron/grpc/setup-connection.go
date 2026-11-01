@@ -25,7 +25,7 @@ func getClientAndContext() (pb.VisitorInsightsClient, context.Context, context.C
 	conn := setupConnection()
 	client := pb.NewVisitorInsightsClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
 
 	return client, ctx, cancel
 }

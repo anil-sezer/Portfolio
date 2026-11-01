@@ -25,26 +25,28 @@ public class HeroImageWarmupServiceTests
     public async Task ExecuteAsync_OnStartup_InvokesRefreshCacheAsync()
     {
         // Arrange
+        var refreshCalled = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         var mockService = CreateMockService();
         mockService.Setup(s => s.RefreshCacheAsync(It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+            .Returns(() =>
+            {
+                refreshCalled.TrySetResult(true);
+                return Task.CompletedTask;
+            });
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddScoped(_ => mockService.Object);
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         var warmupService = new HeroImageWarmupService(serviceProvider, NullLogger<HeroImageWarmupService>.Instance);
-        using var cts = new CancellationTokenSource();
-
-        // Cancel after short delay so ExecuteAsync's periodic timer loop exits
-        cts.CancelAfter(TimeSpan.FromMilliseconds(200));
 
         // Act
-        await warmupService.StartAsync(cts.Token);
-        await Task.Delay(50);
+        await warmupService.StartAsync(CancellationToken.None);
+        var completed = await Task.WhenAny(refreshCalled.Task, Task.Delay(5000));
         await warmupService.StopAsync(CancellationToken.None);
 
         // Assert
+        completed.Should().Be(refreshCalled.Task);
         mockService.Verify(s => s.RefreshCacheAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce);
     }
 
@@ -52,23 +54,27 @@ public class HeroImageWarmupServiceTests
     public async Task ExecuteAsync_WhenRefreshThrows_DoesNotCrashService()
     {
         // Arrange
+        var refreshCalled = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         var mockService = CreateMockService();
         mockService.Setup(s => s.RefreshCacheAsync(It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new InvalidOperationException("Simulated error"));
+            .Returns(() =>
+            {
+                refreshCalled.TrySetResult(true);
+                return Task.FromException(new InvalidOperationException("Simulated error"));
+            });
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddScoped(_ => mockService.Object);
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         var warmupService = new HeroImageWarmupService(serviceProvider, NullLogger<HeroImageWarmupService>.Instance);
-        using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromMilliseconds(200));
 
         // Act
         var act = async () =>
         {
-            await warmupService.StartAsync(cts.Token);
-            await Task.Delay(50);
+            await warmupService.StartAsync(CancellationToken.None);
+            var completed = await Task.WhenAny(refreshCalled.Task, Task.Delay(5000));
+            completed.Should().Be(refreshCalled.Task);
             await warmupService.StopAsync(CancellationToken.None);
         };
 

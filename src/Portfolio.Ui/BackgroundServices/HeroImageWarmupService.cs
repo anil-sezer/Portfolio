@@ -12,10 +12,15 @@ public class HeroImageWarmupService(IServiceProvider serviceProvider, ILogger<He
         await RefreshHeroImageAsync(stoppingToken);
 
         // 2. Refresh periodically every 1 hour
-        using var timer = new PeriodicTimer(RefreshInterval);
-        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
+        try
         {
-            await RefreshHeroImageAsync(stoppingToken);
+            using var timer = new PeriodicTimer(RefreshInterval);
+            while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
+                await RefreshHeroImageAsync(stoppingToken);
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            // Normal shutdown cancellation, exit cleanly
         }
     }
 

@@ -19,6 +19,9 @@ spec:
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
+      securityContext:
+        appArmorProfile:
+          type: Unconfined
       containers:
         - name: postgres
           image: postgres:18
@@ -27,7 +30,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/usr/bin/pg_ctl", "stop", "-D", "/var/lib/postgresql/data/18/main", "-m", "fast"]
+                command: ["su", "postgres", "-c", "/usr/lib/postgresql/18/bin/pg_ctl stop -D /var/lib/postgresql/18/docker -m fast -W"]
           env:
             - name: POSTGRES_USER
               valueFrom:

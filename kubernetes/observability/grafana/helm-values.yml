@@ -77,7 +77,8 @@ podDisruptionBudget: {}
 ## See `kubectl explain deployment.spec.strategy` for more
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 deploymentStrategy:
-  type: RollingUpdate
+  type: Recreate
+  rollingUpdate: null
 
 ## The maximum time in seconds for a Deployment to make progress before it is considered to be failed.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds
@@ -623,11 +624,11 @@ env: {}
 ##     - name: <key>
 ##       valueFrom:
 ##         <value rendered as YAML>
-envValueFrom: {}
-  #  ENV_NAME:
-  #    configMapKeyRef:
-  #      name: configmap-name
-#      key: value_key
+envValueFrom:
+  GF_POSTGRES_PASSWORD:
+    secretKeyRef:
+      name: grafana-postgres-secret
+      key: password
 
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc. Value is templated.
@@ -749,6 +750,20 @@ datasources:
         access: proxy
         url: http://prometheus.observability.svc.cluster.local
         isDefault: true
+      - name: PostgreSQL
+        uid: portfolio-postgres
+        type: postgres
+        access: proxy
+        url: postgres-clusterip.database.svc.cluster.local:5432
+        database: portfolio
+        user: portfolio_user
+        jsonData:
+          database: portfolio
+          sslmode: disable
+          postgresVersion: 1500
+          timescaledb: false
+        secureJsonData:
+          password: ${GF_POSTGRES_PASSWORD}
 #  datasources.yaml:
 #    apiVersion: 1
 #    datasources:
@@ -1040,13 +1055,13 @@ sidecar:
     tag: 2.8.1
     sha: ""
   imagePullPolicy: IfNotPresent
-  resources: {}
-  #   limits:
-  #     cpu: 100m
-  #     memory: 100Mi
-  #   requests:
-  #     cpu: 50m
-  #     memory: 50Mi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 20m
+      memory: 64Mi
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -1155,7 +1170,7 @@ sidecar:
     # Sets the size limit of the alert sidecar emptyDir volume
     sizeLimit: ""
   dashboards:
-    enabled: false
+    enabled: true
     # Additional environment variables for the dashboards sidecar
     env: {}
     ## "valueFrom" environment variable references that will be added to deployment pods. Name is templated.
@@ -1179,7 +1194,7 @@ sidecar:
     # label that the configmaps with dashboards are marked with (can be templated)
     label: grafana_dashboard
     # value of label that the configmaps with dashboards are set to (can be templated)
-    labelValue: ""
+    labelValue: "1"
     # Log level. Can be one of: DEBUG, INFO, WARN, ERROR, CRITICAL.
     # logLevel: INFO
     # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
@@ -1189,14 +1204,14 @@ sidecar:
     # Namespaces list. If specified, the sidecar will search for config-maps/secrets inside these namespaces.
     # Otherwise the namespace in which the sidecar is running will be used.
     # It's also possible to specify ALL to search in all namespaces.
-    searchNamespace: null
+    searchNamespace: ALL
     # Method to use to detect ConfigMap changes. With WATCH the sidecar will do a WATCH requests, with SLEEP it will list all ConfigMaps, then sleep for 60 seconds.
     watchMethod: WATCH
     # search in configmap, secret or both
-    resource: both
+    resource: configmap
     # If specified, the sidecar will look for annotation with this name to create folder and put graph here.
     # You can use this parameter together with `provider.foldersFromFilesStructure`to annotate configmaps and create folder structure.
-    folderAnnotation: null
+    folderAnnotation: grafana_folder
     #
     # resourceName: comma separated list of resource names to be fetched/checked by this sidecar.
     # per default all resources of the type defined in {{ .Values.sidecar.dashboards.resource }} will be checked.
@@ -1266,9 +1281,9 @@ sidecar:
       # disableDelete to activate a import-only behaviour
       disableDelete: false
       # allow updating provisioned dashboards from the UI
-      allowUiUpdates: false
+      allowUiUpdates: true
       # allow Grafana to replicate dashboard structure from filesystem
-      foldersFromFilesStructure: false
+      foldersFromFilesStructure: true
     # Additional dashboards sidecar volume mounts
     extraMounts: []
     # Sets the size limit of the dashboard sidecar emptyDir volume

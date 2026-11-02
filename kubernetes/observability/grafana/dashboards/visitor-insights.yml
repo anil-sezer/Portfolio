@@ -1,0 +1,280 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-visitor-insights
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "Portfolio"
+data:
+  visitor-insights.json: |-
+    {
+      "uid": "portfolio-visitor-insights",
+      "title": "Portfolio Visitor Insights",
+      "tags": ["portfolio", "visitors", "geo"],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "1m",
+      "time": {
+        "from": "now-90d",
+        "to": "now"
+      },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Total Enriched Requests",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT count(*) AS \"Total Requests\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %';"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "blue", "value": null }]
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Unique Visitor IPs",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT count(distinct client_ip) AS \"Unique IPs\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %';"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "green", "value": null }]
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "Countries Reached",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT count(distinct (chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397))) AS \"Countries\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487;"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "purple", "value": null }]
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "title": "Cities Reached",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT count(distinct city) AS \"Cities\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' AND city != '' AND city != '-';"
+            }
+          ],
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "orange", "value": null }]
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "Global Visitor Map",
+          "type": "geomap",
+          "gridPos": { "h": 13, "w": 15, "x": 0, "y": 4 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397) AS country_code,\n  max(country) AS country,\n  count(*) AS requests,\n  count(distinct client_ip) AS unique_ips\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487\nGROUP BY 1\nORDER BY requests DESC;"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "continuous-GrYlRd" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "orange", "value": 200 },
+                  { "color": "red", "value": 400 }
+                ]
+              }
+            }
+          },
+          "options": {
+            "view": {
+              "id": "zero",
+              "lat": 20,
+              "lon": 10,
+              "zoom": 1.6
+            },
+            "basemap": {
+              "name": "World Basemap",
+              "type": "default",
+              "config": {}
+            },
+            "controls": {
+              "showZoom": true,
+              "mouseWheelZoom": true,
+              "showAttribution": true,
+              "showScale": true,
+              "showMeasure": false,
+              "showDebug": false
+            },
+            "tooltip": {
+              "mode": "details"
+            },
+            "layers": [
+              {
+                "name": "Visitors by Country",
+                "type": "markers",
+                "tooltip": true,
+                "location": {
+                  "mode": "lookup",
+                  "lookup": "country_code",
+                  "gazetteer": "public/gazetteer/countries.json"
+                },
+                "config": {
+                  "showLegend": true,
+                  "style": {
+                    "color": {
+                      "field": "requests",
+                      "fixed": "dark-green"
+                    },
+                    "opacity": 0.75,
+                    "size": {
+                      "field": "requests",
+                      "fixed": 8,
+                      "min": 7,
+                      "max": 26
+                    },
+                    "symbol": {
+                      "fixed": "img/icons/marker/circle.svg",
+                      "mode": "fixed"
+                    },
+                    "symbolAlign": {
+                      "horizontal": "center",
+                      "vertical": "center"
+                    },
+                    "textConfig": {
+                      "fontSize": 12,
+                      "offsetX": 0,
+                      "offsetY": 0,
+                      "textAlign": "center",
+                      "textBaseline": "middle"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": 6,
+          "title": "Visitors by Country & City",
+          "type": "table",
+          "gridPos": { "h": 13, "w": 9, "x": 15, "y": 4 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  country AS \"Country\",\n  city AS \"City\",\n  count(*) AS \"Requests\",\n  count(distinct client_ip) AS \"Unique IPs\",\n  max(created_at) AS \"Last Visit\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\nGROUP BY country, city\nORDER BY \"Requests\" DESC;"
+            }
+          ],
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm"
+          }
+        },
+        {
+          "id": 7,
+          "title": "Recent Visitor Requests",
+          "type": "table",
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 17 },
+          "datasource": { "type": "postgres", "uid": "portfolio-postgres" },
+          "targets": [
+            {
+              "refId": "A",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  created_at AS \"Time\",\n  country AS \"Country\",\n  city AS \"City\",\n  client_ip AS \"Client IP\",\n  requested_url AS \"Requested URL\",\n  platform AS \"Platform\",\n  resolution AS \"Resolution\",\n  referrer AS \"Referrer\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\nORDER BY created_at DESC\nLIMIT 100;"
+            }
+          ],
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm"
+          }
+        }
+      ]
+    }

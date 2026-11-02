@@ -6,6 +6,7 @@ using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
 using Portfolio.Ui.Extensions;
 using Portfolio.Ui.Middlewares;
+using Portfolio.Ui.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
@@ -14,6 +15,7 @@ if (builder.Environment.IsDevelopment())
 builder.InitLogsWithSerilog();
 
 EnvVars.TestEnvVariablesForFrontend();
+ResumeModel.ValidateAndLoadCvFiles(builder.Environment.WebRootPath);
 
 builder.InitOpenTelemetry();
 

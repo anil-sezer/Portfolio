@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Portfolio.Ui.Models;
 
 public class WorkExperienceModel
@@ -24,9 +26,62 @@ public class ResumeStatModel
     public required string LabelKey { get; init; }
 }
 
-public static class ResumeModel
+public static partial class ResumeModel
 {
-    public const string CvDownloadUrl = "https://drive.google.com/drive/folders/1iBSn56NqtXe1OL55fs3-oqy53_Xf9veH?usp=sharing";
+    private static string? _enCvFileName;
+    private static string? _trCvFileName;
+
+    [GeneratedRegex(@"^Anil Sezer CV v[\d.]+ - (?<lang>EN|TR)\.pdf$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    public static partial Regex CvFileNameRegex();
+
+    public static void ValidateAndLoadCvFiles(string webRootPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webRootPath);
+
+        var cvDirectory = Path.Combine(webRootPath, "cv");
+        if (!Directory.Exists(cvDirectory))
+            throw new DirectoryNotFoundException($"CV directory was not found at '{cvDirectory}'.");
+
+        var fileNames = Directory.GetFiles(cvDirectory)
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrEmpty(name))
+            .Cast<string>()
+            .ToList();
+
+        var enMatches = new List<string>();
+        var trMatches = new List<string>();
+
+        foreach (var fileName in fileNames)
+        {
+            var match = CvFileNameRegex().Match(fileName);
+            if (!match.Success)
+                continue;
+
+            var lang = match.Groups["lang"].Value;
+            if (lang.Equals("EN", StringComparison.OrdinalIgnoreCase))
+                enMatches.Add(fileName);
+            else if (lang.Equals("TR", StringComparison.OrdinalIgnoreCase))
+                trMatches.Add(fileName);
+        }
+
+        if (enMatches.Count != 1)
+            throw new InvalidOperationException($"Expected exactly 1 English CV matching pattern in '{cvDirectory}', but found {enMatches.Count}.");
+
+        if (trMatches.Count != 1)
+            throw new InvalidOperationException($"Expected exactly 1 Turkish CV matching pattern in '{cvDirectory}', but found {trMatches.Count}.");
+
+        _enCvFileName = enMatches[0];
+        _trCvFileName = trMatches[0];
+    }
+
+    public static string GetCvFileName(bool isTurkish)
+    {
+        var fileName = isTurkish ? _trCvFileName : _enCvFileName;
+        if (string.IsNullOrEmpty(fileName))
+            throw new InvalidOperationException($"CV filenames have not been initialized. Ensure {nameof(ValidateAndLoadCvFiles)} is called at startup.");
+
+        return fileName;
+    }
 
     public static WorkExperienceModel GetActiveRole()
     {

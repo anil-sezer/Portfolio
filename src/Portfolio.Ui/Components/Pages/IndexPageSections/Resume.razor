@@ -1,4 +1,10 @@
+@using System.Globalization
 @using Portfolio.Ui.Models
+
+@{
+    var isTurkish = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "tr";
+    var cvFileName = ResumeModel.GetCvFileName(isTurkish);
+}
 
 <section id="resume" class="resume section-bg">
     <div class="container">
@@ -15,7 +21,7 @@
                 </p>
             </div>
             <div class="d-flex justify-content-start mt-3">
-                <a href="@ResumeModel.CvDownloadUrl" target="_blank" rel="noopener noreferrer" class="btn-cv-download">
+                <a href="@Assets[$"cv/{cvFileName}"]" download="@cvFileName" class="btn-cv-download">
                     <BsIcon Name="file-earmark-pdf" /> @L["Resume_DownloadCV"]
                 </a>
             </div>

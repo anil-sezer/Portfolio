@@ -353,7 +353,7 @@
     <value>Resume</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>I'm a dedicated engineer committed to writing clean and efficient systems while always being mindful of deadlines. &lt;br/&gt;&lt;br/&gt; I take pride in mentoring junior colleagues, guiding them patiently and deriving satisfaction from watching them grow into proficient engineers. &lt;br/&gt;&lt;br/&gt; My enthusiasm for learning never wanes; delving into new systems excites me, and I continuously seek innovative methods to refine my development process.</value>
+    <value>I design and modernize mission-critical systems using .NET, Go, and event-driven architectures—spanning fintech payments, large-scale legacy revamps, and connected IoT hardware. &lt;br/&gt;&lt;br/&gt; On the platform side, I build and operate self-hosted and cloud-native infrastructure with Kubernetes, Docker, and Ansible, keeping production environments secure, observable, and running at 99.9%+ uptime. &lt;br/&gt;&lt;br/&gt; I care deeply about the human side of engineering: leading hiring, patiently mentoring junior colleagues into proficient engineers, and constantly refining our development workflows.</value>
   </data>
   <data name="Resume_DownloadCV" xml:space="preserve">
     <value>Download CV</value>

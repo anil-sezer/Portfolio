@@ -351,7 +351,7 @@
     <value>Özgeçmiş</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>Temiz ve verimli sistemler yazmaya adanmış, teslim tarihlerine daima sadık kalan bir mühendisim. &lt;br/&gt;&lt;br/&gt; Genç meslektaşlarıma mentorluk yapmaktan, onlara sabırla rehberlik etmekten ve yetkin mühendislere dönüşmelerini izlemekten gurur duyuyorum. &lt;br/&gt;&lt;br/&gt; Öğrenme tutkum asla azalmıyor; yeni sistemleri incelemek beni heyecanlandırıyor ve geliştirme sürecimi mükemmelleştirmek için sürekli yenilikçi yöntemler arıyorum.</value>
+    <value>Fintek ödeme sistemlerinden kapsamlı miras (legacy) dönüşümlerine ve IoT donanım entegrasyonlarına kadar; .NET, Go ve olay güdümlü (event-driven) mimarilerle kritik sistemler tasarlıyor ve modernize ediyorum. &lt;br/&gt;&lt;br/&gt; Platform tarafında Kubernetes, Docker ve Ansible ile kendi barındırdığım (self-hosted) ve bulut-yerel altyapılar kuruyor; canlı ortamları güvenli, gözlemlenebilir ve %99,9+ çalışma süresinde tutuyorum. &lt;br/&gt;&lt;br/&gt; Mühendisliğin insan boyutuna büyük önem veriyorum: işe alım süreçlerine liderlik etmekten, genç meslektaşlarıma sabırla mentorluk yaparak yetkin mühendislere dönüşmelerini izlemekten ve geliştirme süreçlerimizi sürekli iyileştirmekten gurur duyuyorum.</value>
   </data>
   <data name="Resume_DownloadCV" xml:space="preserve">
     <value>Özgeçmişi İndir</value>

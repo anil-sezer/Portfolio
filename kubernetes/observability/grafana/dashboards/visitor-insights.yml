@@ -153,7 +153,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\n  chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397) AS country_code,\n  max(country) AS country,\n  count(*) AS requests,\n  count(distinct client_ip) AS unique_ips\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487\nGROUP BY 1\nORDER BY requests DESC;"
+              "rawSql": "SELECT\n  chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397) AS country_code,\n  max(country) AS country,\n  count(distinct client_ip) AS unique_ips,\n  count(*) AS requests\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487\nGROUP BY 1\nORDER BY unique_ips DESC;"
             }
           ],
           "fieldConfig": {
@@ -163,9 +163,9 @@ data:
                 "mode": "absolute",
                 "steps": [
                   { "color": "green", "value": null },
-                  { "color": "yellow", "value": 50 },
-                  { "color": "orange", "value": 200 },
-                  { "color": "red", "value": 400 }
+                  { "color": "yellow", "value": 3 },
+                  { "color": "orange", "value": 5 },
+                  { "color": "red", "value": 10 }
                 ]
               }
             }
@@ -178,9 +178,11 @@ data:
               "zoom": 1.6
             },
             "basemap": {
-              "name": "World Basemap",
-              "type": "default",
-              "config": {}
+              "name": "ESRI Dark Gray",
+              "type": "xyz",
+              "config": {
+                "url": "https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+              }
             },
             "controls": {
               "showZoom": true,
@@ -195,7 +197,7 @@ data:
             },
             "layers": [
               {
-                "name": "Visitors by Country",
+                "name": "Unique Visitors by Country",
                 "type": "markers",
                 "tooltip": true,
                 "location": {
@@ -207,12 +209,12 @@ data:
                   "showLegend": true,
                   "style": {
                     "color": {
-                      "field": "requests",
+                      "field": "unique_ips",
                       "fixed": "dark-green"
                     },
                     "opacity": 0.75,
                     "size": {
-                      "field": "requests",
+                      "field": "unique_ips",
                       "fixed": 8,
                       "min": 7,
                       "max": 26

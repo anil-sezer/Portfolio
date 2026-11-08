@@ -1,0 +1,27 @@
+# todo: Untested ai code
+---
+- name: Ensure kernel panic, oops, and hung-task auto-reboot sysctls are configured
+  become: true
+  block:
+    - name: Configure kernel panic, oops, and hung-task auto-reboot in /etc/sysctl.d/99-k8s-panic-reboot.conf
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/99-k8s-panic-reboot.conf
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          # Reboot 10 seconds after a kernel panic
+          kernel.panic = 10
+          # Treat kernel oops as a panic so corrupted driver state triggers a clean reboot
+          kernel.panic_on_oops = 1
+          # Trigger a panic (and 10s reboot) if a task is deadlocked in D-state for > 300s
+          kernel.hung_task_timeout_secs = 300
+          kernel.hung_task_panic = 1
+          # Prefer OOM-killing the offending process rather than panicking on normal OOM
+          vm.panic_on_oom = 0
+      register: panic_reboot_sysctl
+
+    - name: Reload sysctl settings to activate panic and hung-task auto-reboot
+      ansible.builtin.command: sysctl --system
+      when: panic_reboot_sysctl.changed
+      changed_when: false

@@ -21,6 +21,9 @@
     - name: Enable systemd hardware watchdog to auto-recover hung nodes
       ansible.builtin.import_tasks: kubernetes-setup/systemd-watchdog.yml
 
+    - name: Configure kernel panic, oops, and hung-task auto-reboot sysctls
+      ansible.builtin.import_tasks: kubernetes-setup/kernel-panic-reboot.yml
+
     - name: Manually enable IPv4 packet forwarding for Kubernetes
       ansible.builtin.import_tasks: kubernetes-setup/ipv4-kernel.yml
 

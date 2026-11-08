@@ -18,6 +18,9 @@
     - name: Disabling swap is a must for Kubernetes
       ansible.builtin.import_tasks: kubernetes-setup/swap-disable.yml
 
+    - name: Enable systemd hardware watchdog to auto-recover hung nodes
+      ansible.builtin.import_tasks: kubernetes-setup/systemd-watchdog.yml
+
     - name: Manually enable IPv4 packet forwarding for Kubernetes
       ansible.builtin.import_tasks: kubernetes-setup/ipv4-kernel.yml
 

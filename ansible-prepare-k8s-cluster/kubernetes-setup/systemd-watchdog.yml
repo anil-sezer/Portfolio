@@ -1,0 +1,25 @@
+# todo: Untested ai code
+---
+- name: Ensure systemd hardware watchdog is active
+  become: true
+  block:
+    - name: Ensure /etc/systemd/system.conf.d directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/system.conf.d
+        state: directory
+        mode: "0755"
+
+    - name: Configure hardware watchdog timeout in systemd manager
+      ansible.builtin.copy:
+        dest: /etc/systemd/system.conf.d/99-watchdog.conf
+        mode: "0644"
+        content: |
+          [Manager]
+          RuntimeWatchdogSec=15s
+          RebootWatchdogSec=2min
+      register: watchdog_conf
+
+    - name: Re-execute systemd daemon to activate hardware watchdog
+      ansible.builtin.systemd:
+        daemon_reexec: true
+      when: watchdog_conf.changed

@@ -90,10 +90,10 @@
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">
-    <value>Anıl Sezer</value>
+    <value>Backends, built to last.</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>I'm an engineer with 7 years of backend and 4 years of Kubernetes experience. &lt;br/&gt; Here, I demonstrate my craft.</value>
+    <value>Like this one, served from five Raspberry Pis. &lt;br/&gt; 7 years of backend, 4 years of Kubernetes.</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Todays image is by:</value>

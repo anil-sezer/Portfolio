@@ -88,10 +88,10 @@
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">
-    <value>Anıl Sezer</value>
+    <value>Dayanıklı backend'ler.</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>7 yıllık backend ve 4 yıllık Kubernetes deneyimine sahip bir mühendisim.&lt;br/&gt; Burada zanaatımı sergiliyorum.</value>
+    <value>Bu site de onlardan biri: beş Raspberry Pi'dan sunuluyor.&lt;br/&gt; 7 yıl backend, 4 yıl Kubernetes.</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">  
     <value>Bugünün görseli:</value>

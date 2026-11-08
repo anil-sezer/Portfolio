@@ -40,15 +40,17 @@
     outline: none;
 }
 
-.about-pic-frame:focus-visible #about-me-pic {
-    border-color: var(--color-celestial-blue);
+.about-pic-frame:hover #about-me-pic,
+.about-pic-frame:focus-visible #about-me-pic,
+#about-me-pic:hover {
+    border-color: #10b981;
 }
 
 #about-me-pic {
     display: block;
     border-radius: 0.8rem;
     border: var(--border-about-img);
-    transition: border-color 0.2s ease;
+    transition: border-color 0.3s ease;
 }
 
 /*--------------------------------------------------------------

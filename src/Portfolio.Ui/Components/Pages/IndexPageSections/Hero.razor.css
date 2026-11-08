@@ -58,24 +58,37 @@
 }
 
 #hero h1 {
-    margin: 0 0 10px 0;
+    margin: 0;
     font-size: 64px;
     font-weight: 700;
-    line-height: 56px;
+    line-height: 1.15;
     color: var(--color-white);
 }
 
 #hero p {
     color: var(--color-white);
+    margin-top: 0;
     margin-bottom: 50px;
     font-size: 26px;
     font-family: "Poppins", sans-serif;
+    letter-spacing: 1px;
+    line-height: 1.34;
 }
 
-#hero p {
-    color: var(--color-white);
-    padding-bottom: 4px;
-    letter-spacing: 1px;
+#hero h1 span,
+#hero p span {
+    background: #272829;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    border-radius: 0;
+}
+
+#hero h1 span {
+    padding: 0.14em 16px;
+}
+
+#hero p span {
+    padding: 0.18em 16px;
 }
 
 .bing-credit {
@@ -96,12 +109,14 @@
 @media (max-width: 768px) {
     #hero h1 {
         font-size: 2.5rem;
-        line-height: 36px;
+        line-height: 1.15;
+        margin: 0;
     }
 
-    #hero h2 {
-        font-size: 18px;
-        line-height: 24px;
+    #hero p {
+        font-size: 1.15rem;
+        line-height: 1.34;
+        margin-top: 0;
         margin-bottom: 30px;
     }
 

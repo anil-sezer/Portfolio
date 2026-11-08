@@ -1,0 +1,88 @@
+# todo: Untested ai code
+---
+- name: Tune Raspberry Pi eth0 to prevent EEE flaps and Pi 5 macb TX ring deadlocks
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Ensure ethtool is installed
+      ansible.builtin.apt:
+        name: ethtool
+        state: present
+
+    - name: Disable Energy-Efficient Ethernet (dtparam=eee=off) in /boot/firmware/config.txt
+      ansible.builtin.lineinfile:
+        path: /boot/firmware/config.txt
+        insertafter: '^dtparam=watchdog=on'
+        regexp: '^dtparam=eee='
+        line: 'dtparam=eee=off'
+
+    - name: Disable ASPM L0s on external PCIe link (dtparam=pciex1_no_l0s=on) on Pi 5 nodes
+      ansible.builtin.lineinfile:
+        path: /boot/firmware/config.txt
+        insertafter: '^dtparam=eee=off'
+        regexp: '^dtparam=pciex1_no_l0s='
+        line: 'dtparam=pciex1_no_l0s=on'
+      when: "'rpi5' in inventory_hostname"
+
+    - name: Append pcie_aspm=off to /boot/firmware/current/cmdline.txt and /boot/firmware/cmdline.txt on Pi 5 nodes
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^((?!.*\bpcie_aspm=off\b).*[^\s])\s*$'
+        replace: '\1 pcie_aspm=off'
+      loop:
+        - /boot/firmware/current/cmdline.txt
+        - /boot/firmware/cmdline.txt
+      when: "'rpi5' in inventory_hostname"
+
+    - name: Deploy eth0-tuning.service on Pi 4 nodes
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/eth0-tuning.service
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          [Unit]
+          Description=Disable EEE on Pi 4 eth0 (bcmgenet)
+          After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
+          Wants=sys-subsystem-net-devices-eth0.device
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/bin/sh -c '/usr/sbin/ethtool --set-eee eth0 eee off || true'
+
+          [Install]
+          WantedBy=multi-user.target
+      when: "'rpi4' in inventory_hostname"
+      register: pi4_eth0_unit
+
+    - name: Deploy eth0-tuning.service on Pi 5 nodes
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/eth0-tuning.service
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          [Unit]
+          Description=Tune Pi 5 eth0 (macb) - Disable EEE/TSO and increase RX/TX ring buffers
+          After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
+          Wants=sys-subsystem-net-devices-eth0.device
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/bin/sh -c '/usr/sbin/ethtool --set-eee eth0 eee off || true'
+          ExecStart=/usr/sbin/ethtool -G eth0 rx 2048 tx 2048
+          ExecStart=/usr/sbin/ethtool -K eth0 tso off
+
+          [Install]
+          WantedBy=multi-user.target
+      when: "'rpi5' in inventory_hostname"
+      register: pi5_eth0_unit
+
+    - name: Enable and start eth0-tuning.service
+      ansible.builtin.systemd:
+        name: eth0-tuning.service
+        daemon_reload: true
+        enabled: true
+        state: started

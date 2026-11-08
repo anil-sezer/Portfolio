@@ -93,7 +93,7 @@
     <value>Anıl Sezer</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>I'm an engineer with 7 years of backend and 4 years of Kubernetes experience. Here, I demonstrate my craft.</value>
+    <value>I'm an engineer with 7 years of backend and 4 years of Kubernetes experience. &lt;br/&gt; Here, I demonstrate my craft.</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Todays image is by:</value>

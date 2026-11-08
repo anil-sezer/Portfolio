@@ -91,9 +91,9 @@
     <value>Anıl Sezer</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>7 yıllık backend ve 4 yıllık Kubernetes deneyimine sahip bir mühendisim. Burada zanaatımı sergiliyorum.</value>
+    <value>7 yıllık backend ve 4 yıllık Kubernetes deneyimine sahip bir mühendisim.&lt;br/&gt; Burada zanaatımı sergiliyorum.</value>
   </data>
-  <data name="Hero_BingCredit" xml:space="preserve">
+  <data name="Hero_BingCredit" xml:space="preserve">  
     <value>Bugünün görseli:</value>
   </data>
   <data name="Hero_ScrollDown" xml:space="preserve">

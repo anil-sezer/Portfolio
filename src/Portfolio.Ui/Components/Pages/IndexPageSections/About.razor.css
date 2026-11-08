@@ -1,8 +1,186 @@
+.about-pic-wall {
+    perspective: 900px;
+    display: inline-block;
+    max-width: 100%;
+}
 
+.about-pic-frame {
+    --pic-tx: 0px;
+    --pic-ty: 0px;
+    --pic-rz: 0deg;
+    --pic-ry: 0deg;
+    --pic-rx: 0deg;
+    --pic-shadow-x: 0px;
+    --pic-scale: 1;
+
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    max-width: 100%;
+    cursor: zoom-in;
+    border-radius: 0.8rem;
+    transform-origin: 50% 10%;
+    transform: translate3d(var(--pic-tx), var(--pic-ty), 0)
+               rotateZ(var(--pic-rz))
+               rotateY(var(--pic-ry))
+               rotateX(var(--pic-rx))
+               scale(var(--pic-scale));
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.22s ease;
+    box-shadow: var(--pic-shadow-x) 10px 24px -6px rgba(0, 0, 0, 0.28);
+    will-change: transform;
+}
+
+.about-pic-frame:hover,
+.about-pic-frame:focus-visible {
+    --pic-scale: 1.02;
+    box-shadow: var(--pic-shadow-x) 16px 32px -6px rgba(0, 0, 0, 0.4);
+    outline: none;
+}
+
+.about-pic-frame:focus-visible #about-me-pic {
+    border-color: var(--color-celestial-blue);
+}
 
 #about-me-pic {
+    display: block;
     border-radius: 0.8rem;
     border: var(--border-about-img);
+    transition: border-color 0.2s ease;
+}
+
+/*--------------------------------------------------------------
+# Lightbox Dialog
+--------------------------------------------------------------*/
+.about-lightbox {
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: min(92vw, 800px);
+    max-height: 92vh;
+    overflow: visible;
+    margin: auto;
+}
+
+.about-lightbox::backdrop {
+    background: rgba(var(--rgb-black-night), 0.84);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: about-lightbox-backdrop-in 0.22s ease-out forwards;
+    cursor: zoom-out;
+}
+
+.about-lightbox.is-closing::backdrop {
+    animation: about-lightbox-backdrop-out 0.2s ease-in forwards;
+}
+
+.about-lightbox-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-lightbox[open] .about-lightbox-content {
+    animation: about-lightbox-zoom-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.about-lightbox[open].is-closing .about-lightbox-content {
+    animation: about-lightbox-zoom-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.about-lightbox-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(90vw, 800px);
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 0.9rem;
+    border: var(--border-about-img);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+}
+
+.about-lightbox-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(var(--rgb-black-night), 0.65);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.about-lightbox-close:hover,
+.about-lightbox-close:focus-visible {
+    background: var(--color-celestial-blue);
+    color: var(--color-white);
+    transform: scale(1.08);
+    outline: none;
+}
+
+@keyframes about-lightbox-zoom-in {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes about-lightbox-zoom-out {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+}
+
+@keyframes about-lightbox-backdrop-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes about-lightbox-backdrop-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .about-pic-frame,
+    .about-lightbox[open] .about-lightbox-content,
+    .about-lightbox[open].is-closing .about-lightbox-content,
+    .about-lightbox::backdrop,
+    .about-lightbox.is-closing::backdrop {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
 }
 
 .about .content h3 {

@@ -6,20 +6,29 @@
         </div>
         <div class="row">
             <div class="col-lg-4">
-                <picture class="d-block">
-                    <source type="image/avif" srcset="@Assets["img/cat_pp-400.avif"] 400w, @Assets["img/cat_pp-800.avif"] 800w" sizes="(max-width: 991px) 100vw, 400px" />
-                    <source type="image/webp" srcset="@Assets["img/cat_pp-400.webp"] 400w, @Assets["img/cat_pp-800.webp"] 800w" sizes="(max-width: 991px) 100vw, 400px" />
-                    <img id="about-me-pic"
-                         src="@Assets["img/cat_pp-400.jpg"]"
-                         srcset="@Assets["img/cat_pp-400.jpg"] 400w, @Assets["img/cat_pp-800.jpg"] 800w"
-                         sizes="(max-width: 991px) 100vw, 400px"
-                         width="400"
-                         height="400"
-                         class="img-fluid"
-                         alt="Anıl Sezer with kittens brawling on his shoulder and one at the back, sleeping"
-                         loading="lazy"
-                         decoding="async" />
-                </picture>
+                <div class="about-pic-wall">
+                    <button type="button"
+                            id="about-pic-trigger"
+                            class="about-pic-frame"
+                            aria-label="View full size photo"
+                            aria-haspopup="dialog"
+                            aria-controls="about-pic-lightbox">
+                        <picture class="d-block">
+                            <source type="image/avif" srcset="@Assets["img/cat_pp-400.avif"] 400w, @Assets["img/cat_pp-800.avif"] 800w" sizes="(max-width: 991px) 100vw, 400px" />
+                            <source type="image/webp" srcset="@Assets["img/cat_pp-400.webp"] 400w, @Assets["img/cat_pp-800.webp"] 800w" sizes="(max-width: 991px) 100vw, 400px" />
+                            <img id="about-me-pic"
+                                 src="@Assets["img/cat_pp-400.jpg"]"
+                                 srcset="@Assets["img/cat_pp-400.jpg"] 400w, @Assets["img/cat_pp-800.jpg"] 800w"
+                                 sizes="(max-width: 991px) 100vw, 400px"
+                                 width="400"
+                                 height="400"
+                                 class="img-fluid"
+                                 alt="Anıl Sezer with kittens brawling on his shoulder and one at the back, sleeping"
+                                 loading="lazy"
+                                 decoding="async" />
+                        </picture>
+                    </button>
+                </div>
             </div>
             <div class="col-lg-8 pt-4 pt-lg-0 content">
                 <h3>@L["My_Title"]</h3>
@@ -50,4 +59,23 @@
         </div>
 
     </div>
+
+    <dialog id="about-pic-lightbox" class="about-lightbox" aria-label="Full size photo">
+        <div class="about-lightbox-content">
+            <button type="button" class="about-lightbox-close" aria-label="Close full size photo">
+                <BsIcon Name="x" />
+            </button>
+            <picture class="d-block">
+                <source type="image/avif" srcset="@Assets["img/cat_pp-800.avif"]" />
+                <source type="image/webp" srcset="@Assets["img/cat_pp-800.webp"]" />
+                <img src="@Assets["img/cat_pp-800.jpg"]"
+                     width="800"
+                     height="800"
+                     class="about-lightbox-img"
+                     alt="Anıl Sezer with kittens brawling on his shoulder and one at the back, sleeping"
+                     loading="lazy"
+                     decoding="async" />
+            </picture>
+        </div>
+    </dialog>
 </section>

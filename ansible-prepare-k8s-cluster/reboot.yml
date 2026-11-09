@@ -1,0 +1,109 @@
+---
+- name: Reboot all the Kubernetes nodes
+  hosts: k8s_nodes
+  gather_facts: true
+  vars_files:
+    - variables.yml
+  tasks:
+    # -------------------------------------------------------------------------
+    # Step 1: Drain all nodes from the control plane
+    # -------------------------------------------------------------------------
+    - name: Drain Kubernetes nodes
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      block:
+        - name: Get list of Kubernetes nodes
+          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
+          register: k8s_nodes
+          changed_when: false
+          failed_when: false
+
+        - name: Notice if Kubernetes API server is already unreachable
+          ansible.builtin.debug:
+            msg: "Kubernetes API server is unreachable. Skipping drain."
+          when: k8s_nodes.rc != 0
+
+        - name: Drain each worker node
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes.rc == 0
+            - item != ansible_facts['hostname'] and item != ansible_facts['nodename']
+          failed_when: false
+
+        - name: Drain the control node last
+          ansible.builtin.command:
+            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
+          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
+          when:
+            - k8s_nodes.rc == 0
+            - item == ansible_facts['hostname'] or item == ansible_facts['nodename']
+          failed_when: false
+
+    # -------------------------------------------------------------------------
+    # Step 2: Reboot worker nodes
+    # -------------------------------------------------------------------------
+    - name: Reboot worker nodes
+      ansible.builtin.reboot:
+        msg: "Rebooting worker node via Ansible"
+        reboot_timeout: 600
+        post_reboot_delay: 10
+      become: true
+      when: ansible_facts["default_ipv4"].address != control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 3: Reboot the control plane host
+    # -------------------------------------------------------------------------
+    - name: Reboot the control plane host
+      ansible.builtin.reboot:
+        msg: "Rebooting control plane host via Ansible"
+        reboot_timeout: 600
+        post_reboot_delay: 15
+      become: true
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 4: Wait for Kubernetes API server to become ready
+    # -------------------------------------------------------------------------
+    - name: Wait for Kubernetes API server to become ready on control plane
+      ansible.builtin.command: kubectl get nodes
+      register: api_check
+      until: api_check.rc == 0
+      retries: 30
+      delay: 5
+      changed_when: false
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 5: Wait for all nodes to become Ready
+    # -------------------------------------------------------------------------
+    - name: Wait for all nodes to become Ready
+      ansible.builtin.command: kubectl wait --for=condition=Ready nodes --all --timeout=300s
+      changed_when: false
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+
+    # -------------------------------------------------------------------------
+    # Step 6: Uncordon all nodes from the control plane
+    # -------------------------------------------------------------------------
+    - name: Uncordon Kubernetes nodes
+      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      block:
+        - name: Get list of Kubernetes nodes
+          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
+          register: rebooted_k8s_nodes
+          changed_when: false
+
+        - name: Uncordon each node
+          ansible.builtin.command:
+            cmd: "kubectl uncordon {{ item }}"
+          loop: "{{ (rebooted_k8s_nodes.stdout | default('')).split() }}"
+          when: rebooted_k8s_nodes is succeeded
+
+        - name: Get final cluster node status
+          ansible.builtin.command: kubectl get nodes -o wide
+          register: cluster_status
+          changed_when: false
+
+        - name: Display cluster node status
+          ansible.builtin.debug:
+            var: cluster_status.stdout_lines

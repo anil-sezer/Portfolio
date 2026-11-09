@@ -3,7 +3,7 @@
   hosts: k8s_nodes
   gather_facts: true
   vars_files:
-    - variables.yml
+    - ../variables.yml
   tasks:
     # -------------------------------------------------------------------------
     # Step 1: Start containerd on all nodes

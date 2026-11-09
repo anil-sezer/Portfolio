@@ -3,35 +3,35 @@
   hosts: all
   gather_facts: true
   vars_files:
-    - variables.yml
+    - ../variables.yml
 
   tasks:
     # -----------------------
     #  Install Core Components
     # -----------------------
     - name: Fully update Ubuntu/Debian
-      ansible.builtin.import_tasks: ./os-and-cli-tools/update-ubuntu-debian.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/update-ubuntu-debian.yml
 
     - name: Install some must have components like git, gpg, unzip
-      ansible.builtin.import_tasks: ./os-and-cli-tools/install-core-components.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/install-core-components.yml
 
     - name: Setting Oh my ZSH
-      ansible.builtin.import_tasks: ./os-and-cli-tools/install-oh-my-zsh.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/install-oh-my-zsh.yml
 
     - name: Install Cli tools like dust, batcat, fzf and others
-      ansible.builtin.import_tasks: ./os-and-cli-tools/install-cli-tools.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/install-cli-tools.yml
 
     - name: Fully update Ubuntu/Debian
-      ansible.builtin.import_tasks: ./os-and-cli-tools/update-ubuntu-debian.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/update-ubuntu-debian.yml
 
     # -----------------
     #  Watchdog
     # -----------------
     - name: Enable systemd hardware watchdog to auto-recover hung nodes
-      ansible.builtin.import_tasks: ./os-and-cli-tools/systemd-watchdog.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/systemd-watchdog.yml
 
     - name: Configure kernel panic, oops, and hung-task auto-reboot sysctls
-      ansible.builtin.import_tasks: ./os-and-cli-tools/kernel-panic-reboot.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/kernel-panic-reboot.yml
 
     - name: Tune Raspberry Pi eth0 (disable EEE/ASPM/TSO and increase Pi 5 TX/RX rings)
-      ansible.builtin.import_tasks: ./os-and-cli-tools/eth0-tuning.yml
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/eth0-tuning.yml

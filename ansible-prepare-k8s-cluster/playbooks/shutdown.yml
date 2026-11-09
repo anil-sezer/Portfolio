@@ -3,7 +3,7 @@
   hosts: k8s_nodes
   gather_facts: true
   vars_files:
-    - variables.yml
+    - ../variables.yml
   tasks:
     - name: Drain Kubernetes nodes
       when: ansible_facts["default_ipv4"].address == control_plane_ip

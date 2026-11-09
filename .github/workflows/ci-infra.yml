@@ -90,10 +90,8 @@ jobs:
 
       - name: Syntax check setup-kubernetes.yml
         run: |
-          cd ansible-prepare-k8s-cluster
-          ansible-playbook -i inventory.yml setup-kubernetes.yml --syntax-check
+          ansible-playbook -i ansible-prepare-k8s-cluster/inventory.yml ansible-prepare-k8s-cluster/playbooks/setup-kubernetes.yml --syntax-check
 
       - name: Lint Ansible playbooks
         run: |
-          cd ansible-prepare-k8s-cluster
-          ansible-lint setup-kubernetes.yml
+          ansible-lint -c ansible-prepare-k8s-cluster/.ansible-lint ansible-prepare-k8s-cluster/playbooks/setup-kubernetes.yml

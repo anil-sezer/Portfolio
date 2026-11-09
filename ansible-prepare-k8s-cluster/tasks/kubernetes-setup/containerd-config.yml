@@ -38,7 +38,7 @@
       changed_when: true
 
     - name: Get config.toml files previous setting
-      ansible.builtin.import_tasks: ../generic-tasks/fetch-file.yml
+      ansible.builtin.import_tasks: ../generic/fetch-file.yml
       vars:
         file_path_and_name: /etc/containerd/config.toml
         new_file_path_and_name: "/etc/containerd/config-{{ ansible_hostname }}-default.toml"
@@ -61,7 +61,7 @@
       become: true
 
     - name: Get config.toml files edited state so we can compare if something goes awry
-      ansible.builtin.import_tasks: ../generic-tasks/fetch-file.yml
+      ansible.builtin.import_tasks: ../generic/fetch-file.yml
       vars:
         file_path_and_name: /etc/containerd/config.toml
         new_file_path_and_name: /etc/containerd/config-edited.toml

@@ -1,0 +1,75 @@
+# ai made, untested
+---
+# Standalone verification task: triggers a brief PHY link renegotiation (ethtool -r eth0)
+# and verifies eth0 retains its static IPv4 address and default route while carrier=0.
+# Intended for a dedicated verification playbook (recommended: serial: 1, vars_files: [../variables.yml]).
+- name: Verify eth0 retains static IPv4 and default route across a live carrier flap
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Verify static Netplan configuration is already active before carrier-flap test
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          set -euo pipefail
+          grep -Fqx 'ConfigureWithoutCarrier=yes' /run/systemd/network/10-netplan-eth0.network
+          grep -Fqx 'KeepConfiguration=true' /run/systemd/network/10-netplan-eth0.network
+          grep -Fq '{{ ansible_host }}/24' <<< "$(ip -4 -br addr show dev eth0)"
+          grep -Fq 'default via {{ cluster_lan_gateway }} dev eth0 proto static' <<< "$(ip -4 route show default)"
+          [ "$(cat /sys/class/net/eth0/carrier)" = "1" ]
+      changed_when: false
+
+    - name: Trigger PHY renegotiation (ethtool -r eth0) and sample carrier, IPv4, and route state
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          set -euo pipefail
+          t0="$(date '+%Y-%m-%d %H:%M:%S')"
+          saw_carrier_drop=0
+          missing_ip=0
+          missing_route=0
+          last_carrier=0
+
+          ethtool -r eth0
+
+          for i in $(seq 1 25); do
+            c="$(cat /sys/class/net/eth0/carrier)"
+            a="$(ip -4 -br addr show dev eth0)"
+            r="$(ip -4 route show default)"
+
+            if [ "$c" = "0" ]; then
+              saw_carrier_drop=1
+            fi
+            if ! grep -Fq '{{ ansible_host }}/24' <<< "$a"; then
+              missing_ip=$((missing_ip + 1))
+            fi
+            if ! grep -Fq 'default via {{ cluster_lan_gateway }} dev eth0 proto static' <<< "$r"; then
+              missing_route=$((missing_route + 1))
+            fi
+            last_carrier="$c"
+            echo "sample=$i carrier=$c addr=[$a] route=[$r]"
+            sleep 0.2
+          done
+
+          journal_out="$(journalctl -u systemd-networkd --since "$t0" --no-pager)"
+          echo "saw_carrier_drop=$saw_carrier_drop"
+          echo "missing_ip=$missing_ip"
+          echo "missing_route=$missing_route"
+          echo "last_carrier=$last_carrier"
+          echo "--- journal ---"
+          echo "$journal_out"
+
+          [ "$saw_carrier_drop" -eq 1 ]
+          [ "$missing_ip" -eq 0 ]
+          [ "$missing_route" -eq 0 ]
+          [ "$last_carrier" -eq 1 ]
+          grep -q 'eth0: Lost carrier' <<< "$journal_out"
+          grep -q 'eth0: Gained carrier' <<< "$journal_out"
+      register: carrier_flap_result
+      changed_when: false
+
+    - name: Display carrier-flap verification summary
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }} ({{ ansible_host }})"
+          - "{{ carrier_flap_result.stdout_lines }}"

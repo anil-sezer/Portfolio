@@ -1,0 +1,53 @@
+# Whenever eth0 experiences even a 1-second carrier flap (Lost carrier) or DHCP lease renewal timeout, systemd-networkd immediately deletes the node's IPv4 address (192.168.1.12x/24) and default route (192.168.1.1).
+---
+- name: Configure static IPv4 and ignore-carrier in Netplan on Kubernetes nodes
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Disable cloud-init network configuration overwrites
+      ansible.builtin.copy:
+        dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          network: {config: disabled}
+
+    - name: Configure static IPv4 with ignore-carrier and critical flags in /etc/netplan/50-cloud-init.yaml
+      ansible.builtin.copy:
+        dest: /etc/netplan/50-cloud-init.yaml
+        mode: "0600"
+        owner: root
+        group: root
+        content: |
+          network:
+            version: 2
+            ethernets:
+              eth0:
+                dhcp4: false
+                addresses:
+                  - {{ ansible_host }}/24
+                routes:
+                  - to: default
+                    via: {{ cluster_lan_gateway }}
+                nameservers:
+                  addresses:
+          {% for dns in cluster_dns_servers %}
+                    - {{ dns }}
+          {% endfor %}
+                ignore-carrier: true
+                critical: true
+      register: netplan_static_cfg
+
+    - name: Generate and apply Netplan configuration
+      ansible.builtin.command: "{{ item }}"
+      loop:
+        - netplan generate
+        - netplan apply
+      when: netplan_static_cfg.changed
+
+    - name: Restart systemd-networkd to clear any retained DHCPv4 lease state
+      ansible.builtin.systemd:
+        name: systemd-networkd
+        state: restarted
+      when: netplan_static_cfg.changed

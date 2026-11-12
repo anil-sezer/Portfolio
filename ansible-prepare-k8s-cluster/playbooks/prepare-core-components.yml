@@ -35,3 +35,6 @@
 
     - name: Tune Raspberry Pi eth0 (disable EEE/ASPM/TSO and increase Pi 5 TX/RX rings)
       ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/eth0-tuning.yml
+
+    - name: Configure static IPv4 and ignore-carrier in Netplan
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/netplan-static-ip.yml

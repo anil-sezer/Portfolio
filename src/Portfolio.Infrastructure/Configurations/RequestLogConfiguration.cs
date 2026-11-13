@@ -17,6 +17,7 @@ public class RequestLogConfiguration : IEntityTypeConfiguration<RequestLog>
         builder.Property(x => x.AcceptLanguage).HasMaxLength(RequestLog.MaxAcceptLanguageLength).IsRequired();
         builder.Property(x => x.Platform).HasMaxLength(RequestLog.MaxPlatformLength).IsRequired();
         builder.Property(x => x.Webdriver).IsRequired();
+        builder.Property(x => x.IsBot).IsRequired();
         builder.Property(x => x.DeviceMemory).HasMaxLength(RequestLog.MaxDeviceMemoryLength).IsRequired();
         builder.Property(x => x.HardwareConcurrency).HasMaxLength(RequestLog.MaxHardwareConcurrencyLength).IsRequired();
         builder.Property(x => x.MaxTouchPoints).IsRequired();
@@ -35,5 +36,6 @@ public class RequestLogConfiguration : IEntityTypeConfiguration<RequestLog>
         builder.Property(x => x.CreatedAt).IsRequired();
 
         builder.HasIndex(x => new { x.ClientIp, x.City, x.Country });
+        builder.HasIndex(x => x.IsBot);
     }
 }

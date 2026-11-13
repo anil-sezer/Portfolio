@@ -69,8 +69,45 @@ public class LogVisitorInfoQueuedOperationTests
         savedLog.CookieEnabled.Should().BeTrue();
         savedLog.MaxTouchPoints.Should().Be(0);
         savedLog.Extras.Should().Be("{\"host\":\"anilsezer.net\"}");
+        savedLog.IsBot.Should().BeFalse();
         savedLog.City.Should().BeEmpty();
         savedLog.Country.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData("Googlebot/2.1 (+http://www.google.com/bot.html)", false, "https://anilsezer.net/")]
+    [InlineData("Mozilla/5.0", true, "https://anilsezer.net/")]
+    [InlineData("curl/8.5.0", false, "https://anilsezer.net/")]
+    [InlineData("Mozilla/5.0", false, "https://anilsezer.net/wp-login.php")]
+    [InlineData("", false, "https://anilsezer.net/")]
+    public async Task ExecuteAsync_WhenRequestIsFromBot_PersistsWithIsBotTrue(string userAgent, bool webdriver, string requestedUrl)
+    {
+        // Arrange
+        var dbName = Guid.NewGuid().ToString("N");
+        var services = new ServiceCollection();
+        services.AddDbContext<PortfolioDbContext>(opt => opt.UseInMemoryDatabase(dbName));
+        var serviceProvider = services.BuildServiceProvider();
+
+        var operation = new LogVisitorInfoQueuedOperation
+        {
+            Request = new StoreVisitorInfoRequest
+            {
+                IpAddress = "198.51.100.99",
+                UserAgent = userAgent,
+                Webdriver = webdriver,
+                RequestedUrl = requestedUrl
+            }
+        };
+
+        // Act
+        await operation.ExecuteAsync(serviceProvider);
+
+        // Assert
+        using var scope = serviceProvider.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+        var savedLog = await db.RequestLogs.FirstOrDefaultAsync(x => x.ClientIp == "198.51.100.99");
+        savedLog.Should().NotBeNull();
+        savedLog!.IsBot.Should().BeTrue();
     }
 
     [Fact]

@@ -42,6 +42,7 @@ public class RequestLog : EntityBase
     }
 
     public required bool Webdriver { get; init; }
+    public bool IsBot { get; init; }
 
     private readonly string _deviceMemory = string.Empty;
     public required string DeviceMemory

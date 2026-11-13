@@ -65,10 +65,14 @@ public class PortfolioDbContextTests
         notificationEntity!.GetIndexes().Should().ContainSingle(idx =>
             idx.Properties.Select(p => p.Name).SequenceEqual(new[] { nameof(NotificationToAdmin.CreatedAt), nameof(NotificationToAdmin.EmailAddress) }));
 
-        // RequestLog index: (ClientIp, City, Country)
+        // RequestLog indexes: (ClientIp, City, Country) and (IsBot)
         var requestLogEntity = model.FindEntityType(typeof(RequestLog));
         requestLogEntity.Should().NotBeNull();
-        requestLogEntity!.GetIndexes().Should().ContainSingle(idx =>
+        var requestLogIndexes = requestLogEntity!.GetIndexes().ToList();
+        requestLogIndexes.Should().HaveCount(2);
+        requestLogIndexes.Should().Contain(idx =>
             idx.Properties.Select(p => p.Name).SequenceEqual(new[] { nameof(RequestLog.ClientIp), nameof(RequestLog.City), nameof(RequestLog.Country) }));
+        requestLogIndexes.Should().Contain(idx =>
+            idx.Properties.Select(p => p.Name).SequenceEqual(new[] { nameof(RequestLog.IsBot) }));
     }
 }

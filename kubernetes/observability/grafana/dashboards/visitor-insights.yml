@@ -21,6 +21,42 @@ data:
         "from": "now-90d",
         "to": "now"
       },
+      "templating": {
+        "list": [
+          {
+            "name": "traffic_type",
+            "label": "Traffic",
+            "type": "custom",
+            "query": "Humans Only : AND is_bot = false, All Traffic : , Bots Only : AND is_bot = true",
+            "current": {
+              "selected": true,
+              "text": "Humans Only",
+              "value": "AND is_bot = false"
+            },
+            "options": [
+              {
+                "selected": true,
+                "text": "Humans Only",
+                "value": "AND is_bot = false"
+              },
+              {
+                "selected": false,
+                "text": "All Traffic",
+                "value": ""
+              },
+              {
+                "selected": false,
+                "text": "Bots Only",
+                "value": "AND is_bot = true"
+              }
+            ],
+            "includeAll": false,
+            "multi": false,
+            "hide": 0,
+            "skipUrlSync": false
+          }
+        ]
+      },
       "panels": [
         {
           "id": 1,
@@ -33,7 +69,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT count(*) AS \"Total Requests\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %';"
+              "rawSql": "SELECT count(*) AS \"Total Requests\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' ${traffic_type:raw};"
             }
           ],
           "options": {
@@ -63,7 +99,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT count(distinct client_ip) AS \"Unique IPs\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %';"
+              "rawSql": "SELECT count(distinct client_ip) AS \"Unique IPs\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' ${traffic_type:raw};"
             }
           ],
           "options": {
@@ -93,7 +129,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT count(distinct (chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397))) AS \"Countries\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487;"
+              "rawSql": "SELECT count(distinct (chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397))) AS \"Countries\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' ${traffic_type:raw} AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487;"
             }
           ],
           "options": {
@@ -123,7 +159,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT count(distinct city) AS \"Cities\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' AND city != '' AND city != '-';"
+              "rawSql": "SELECT count(distinct city) AS \"Cities\" FROM request_logs WHERE $__timeFilter(created_at) AND country LIKE '% - %' AND city != '' AND city != '-' ${traffic_type:raw};"
             }
           ],
           "options": {
@@ -153,7 +189,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\n  chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397) AS country_code,\n  max(country) AS country,\n  count(distinct client_ip) AS unique_ips,\n  count(*) AS requests\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487\nGROUP BY 1\nORDER BY unique_ips DESC;"
+              "rawSql": "SELECT\n  chr(ascii(substr(country, 1, 1)) - 127397) || chr(ascii(substr(country, 2, 1)) - 127397) AS country_code,\n  max(country) AS country,\n  count(distinct client_ip) AS unique_ips,\n  count(*) AS requests\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  ${traffic_type:raw}\n  AND ascii(substr(country, 1, 1)) BETWEEN 127462 AND 127487\nGROUP BY 1\nORDER BY unique_ips DESC;"
             }
           ],
           "fieldConfig": {
@@ -251,7 +287,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\n  country AS \"Country\",\n  city AS \"City\",\n  count(*) AS \"Requests\",\n  count(distinct client_ip) AS \"Unique IPs\",\n  max(created_at) AS \"Last Visit\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\nGROUP BY country, city\nORDER BY \"Requests\" DESC;"
+              "rawSql": "SELECT\n  country AS \"Country\",\n  city AS \"City\",\n  count(*) AS \"Requests\",\n  count(distinct client_ip) AS \"Unique IPs\",\n  max(created_at) AS \"Last Visit\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  ${traffic_type:raw}\nGROUP BY country, city\nORDER BY \"Requests\" DESC;"
             }
           ],
           "options": {
@@ -270,7 +306,7 @@ data:
               "refId": "A",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\n  created_at AS \"Time\",\n  country AS \"Country\",\n  city AS \"City\",\n  client_ip AS \"Client IP\",\n  requested_url AS \"Requested URL\",\n  platform AS \"Platform\",\n  resolution AS \"Resolution\",\n  referrer AS \"Referrer\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\nORDER BY created_at DESC\nLIMIT 100;"
+              "rawSql": "SELECT\n  created_at AS \"Time\",\n  country AS \"Country\",\n  city AS \"City\",\n  client_ip AS \"Client IP\",\n  requested_url AS \"Requested URL\",\n  platform AS \"Platform\",\n  resolution AS \"Resolution\",\n  referrer AS \"Referrer\",\n  is_bot AS \"Bot\"\nFROM request_logs\nWHERE $__timeFilter(created_at)\n  AND country LIKE '% - %'\n  ${traffic_type:raw}\nORDER BY created_at DESC\nLIMIT 100;"
             }
           ],
           "options": {

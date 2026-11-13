@@ -1,5 +1,6 @@
 using System.Net;
 using Portfolio.Domain.Interfaces.BackgroundServices;
+using Portfolio.Domain.Utilities;
 using Portfolio.Infrastructure;
 
 namespace Portfolio.Grpc.BackgroundServices;
@@ -30,6 +31,7 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
             CookieEnabled       = Request.CookieEnabled,
             MaxTouchPoints      = Request.MaxTouchPoints,
             HardwareConcurrency = Request.HardwareConcurrency,
+            IsBot               = BotDetector.IsBot(Request.UserAgent, Request.Webdriver, Request.RequestedUrl),
 
             City         = string.Empty,
             Country      = string.Empty,

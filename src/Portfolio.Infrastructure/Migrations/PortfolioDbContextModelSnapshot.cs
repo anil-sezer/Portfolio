@@ -195,6 +195,10 @@ namespace Portfolio.Infrastructure.Migrations
                         .HasColumnType("character varying(32)")
                         .HasColumnName("hardware_concurrency");
 
+                    b.Property<bool>("IsBot")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_bot");
+
                     b.Property<int>("MaxTouchPoints")
                         .HasColumnType("integer")
                         .HasColumnName("max_touch_points");
@@ -239,6 +243,9 @@ namespace Portfolio.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_request_logs");
+
+                    b.HasIndex("IsBot")
+                        .HasDatabaseName("ix_request_logs_is_bot");
 
                     b.HasIndex("ClientIp", "City", "Country")
                         .HasDatabaseName("ix_request_logs_client_ip_city_country");

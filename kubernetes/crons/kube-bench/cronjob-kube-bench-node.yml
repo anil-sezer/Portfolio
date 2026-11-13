@@ -1,0 +1,162 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kube-bench-node
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: kube-bench
+    app.kubernetes.io/component: node-audit
+spec:
+  schedule: "30 3 * * 0" # Runs every Sunday at 03:30 UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: kube-bench
+            app.kubernetes.io/component: node-audit
+        spec:
+          hostPID: true
+          nodeSelector:
+            kubernetes.io/os: linux
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: DoesNotExist
+          restartPolicy: Never
+          containers:
+            - name: kube-bench
+              image: docker.io/aquasec/kube-bench:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TELEGRAM_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: kube-bench-telegram-secret
+                      key: bot_token
+                - name: TELEGRAM_CHAT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: kube-bench-telegram-secret
+                      key: chat_id
+                - name: NODE_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: spec.nodeName
+              command: ["sh", "-c"]
+              args:
+                - |
+                  set -o pipefail
+                  echo "=== Running CIS Kubernetes Benchmark Audit on Worker Node ==="
+                  kube-bench run --targets node
+
+                  echo "=== Generating Audit Summary for Telegram ==="
+                  kube-bench run --targets node --json > /tmp/results.json
+
+                  PASS=$(jq -r '.Totals.total_pass // 0' /tmp/results.json)
+                  FAIL=$(jq -r '.Totals.total_fail // 0' /tmp/results.json)
+                  WARN=$(jq -r '.Totals.total_warn // 0' /tmp/results.json)
+
+                  if [ "$FAIL" -gt 0 ]; then
+                    STATUS_HEADER="⚠️ <b>$FAIL Checks Failed</b>"
+                  else
+                    STATUS_HEADER="✅ <b>All Automated Checks Passed</b>"
+                  fi
+
+                  FAILS_LIST=$(jq -r '[.Controls[].tests[].results[] | select(.status == "FAIL")] | .[:8][] | "• <b>\(.test_number)</b>: \(.test_desc | @html)"' /tmp/results.json)
+
+                  MSG="🛡️ <b>CIS Kubernetes Benchmark Audit</b>
+                  <b>Target:</b> Worker Node (${NODE_NAME})
+
+                  ${STATUS_HEADER}
+                  • ✅ <b>Pass:</b> ${PASS}
+                  • ❌ <b>Fail:</b> ${FAIL}
+                  • ⚠️ <b>Warn:</b> ${WARN}"
+
+                  if [ -n "$FAILS_LIST" ]; then
+                    MSG="${MSG}
+
+                  🔍 <b>Top Failures:</b>
+                  ${FAILS_LIST}"
+                  fi
+
+                  MSG="${MSG}
+
+                  <i>View full report: <code>kubectl logs -n kube-system &lt;pod&gt;</code></i>"
+
+                  PAYLOAD=$(jq -n \
+                    --arg chat_id "$TELEGRAM_CHAT_ID" \
+                    --arg text "$MSG" \
+                    --arg parse_mode "HTML" \
+                    '{chat_id: $chat_id, text: $text, parse_mode: $parse_mode}')
+
+                  wget -q -O - \
+                    --header="Content-Type: application/json" \
+                    --post-data="$PAYLOAD" \
+                    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" > /dev/null
+
+                  echo "=== Telegram Notification Sent Successfully ==="
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+                requests:
+                  cpu: 100m
+                  memory: 64Mi
+              volumeMounts:
+                - name: var-lib-cni
+                  mountPath: /var/lib/cni
+                  readOnly: true
+                - name: var-lib-kubelet
+                  mountPath: /var/lib/kubelet
+                  readOnly: true
+                - name: etc-systemd
+                  mountPath: /etc/systemd
+                  readOnly: true
+                - name: lib-systemd
+                  mountPath: /lib/systemd/
+                  readOnly: true
+                - name: etc-kubernetes
+                  mountPath: /etc/kubernetes
+                  readOnly: true
+                - name: usr-bin
+                  mountPath: /usr/local/mount-from-host/bin
+                  readOnly: true
+                - name: etc-cni-netd
+                  mountPath: /etc/cni/net.d/
+                  readOnly: true
+                - name: opt-cni-bin
+                  mountPath: /opt/cni/bin/
+                  readOnly: true
+          volumes:
+            - name: var-lib-cni
+              hostPath:
+                path: /var/lib/cni
+            - name: var-lib-kubelet
+              hostPath:
+                path: /var/lib/kubelet
+            - name: etc-systemd
+              hostPath:
+                path: /etc/systemd
+            - name: lib-systemd
+              hostPath:
+                path: /lib/systemd
+            - name: etc-kubernetes
+              hostPath:
+                path: /etc/kubernetes
+            - name: usr-bin
+              hostPath:
+                path: /usr/bin
+            - name: etc-cni-netd
+              hostPath:
+                path: /etc/cni/net.d
+            - name: opt-cni-bin
+              hostPath:
+                path: /opt/cni/bin

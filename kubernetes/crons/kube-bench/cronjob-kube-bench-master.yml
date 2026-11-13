@@ -1,0 +1,200 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kube-bench-master
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: kube-bench
+    app.kubernetes.io/component: master-audit
+spec:
+  schedule: "0 3 * * 0" # Runs every Sunday at 03:00 UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: kube-bench
+            app.kubernetes.io/component: master-audit
+        spec:
+          hostPID: true
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: node-role.kubernetes.io/control-plane
+                        operator: Exists
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+          restartPolicy: Never
+          containers:
+            - name: kube-bench
+              image: docker.io/aquasec/kube-bench:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: TELEGRAM_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: kube-bench-telegram-secret
+                      key: bot_token
+                - name: TELEGRAM_CHAT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: kube-bench-telegram-secret
+                      key: chat_id
+                - name: NODE_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: spec.nodeName
+              command: ["sh", "-c"]
+              args:
+                - |
+                  set -o pipefail
+                  echo "=== Running CIS Kubernetes Benchmark Audit on Master ==="
+                  kube-bench run --targets master,etcd,policies
+
+                  echo "=== Generating Audit Summary for Telegram ==="
+                  kube-bench run --targets master,etcd,policies --json > /tmp/results.json
+
+                  PASS=$(jq -r '.Totals.total_pass // 0' /tmp/results.json)
+                  FAIL=$(jq -r '.Totals.total_fail // 0' /tmp/results.json)
+                  WARN=$(jq -r '.Totals.total_warn // 0' /tmp/results.json)
+
+                  if [ "$FAIL" -gt 0 ]; then
+                    STATUS_HEADER="⚠️ <b>$FAIL Checks Failed</b>"
+                  else
+                    STATUS_HEADER="✅ <b>All Automated Checks Passed</b>"
+                  fi
+
+                  FAILS_LIST=$(jq -r '[.Controls[].tests[].results[] | select(.status == "FAIL")] | .[:8][] | "• <b>\(.test_number)</b>: \(.test_desc | @html)"' /tmp/results.json)
+
+                  MSG="🛡️ <b>CIS Kubernetes Benchmark Audit</b>
+                  <b>Target:</b> Control Plane (${NODE_NAME})
+
+                  ${STATUS_HEADER}
+                  • ✅ <b>Pass:</b> ${PASS}
+                  • ❌ <b>Fail:</b> ${FAIL}
+                  • ⚠️ <b>Warn:</b> ${WARN}"
+
+                  if [ -n "$FAILS_LIST" ]; then
+                    MSG="${MSG}
+
+                  🔍 <b>Top Failures:</b>
+                  ${FAILS_LIST}"
+                  fi
+
+                  MSG="${MSG}
+
+                  <i>View full report: <code>kubectl logs -n kube-system &lt;pod&gt;</code></i>"
+
+                  PAYLOAD=$(jq -n \
+                    --arg chat_id "$TELEGRAM_CHAT_ID" \
+                    --arg text "$MSG" \
+                    --arg parse_mode "HTML" \
+                    '{chat_id: $chat_id, text: $text, parse_mode: $parse_mode}')
+
+                  wget -q -O - \
+                    --header="Content-Type: application/json" \
+                    --post-data="$PAYLOAD" \
+                    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" > /dev/null
+
+                  echo "=== Telegram Notification Sent Successfully ==="
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+                requests:
+                  cpu: 100m
+                  memory: 64Mi
+              volumeMounts:
+                - name: var-lib-cni
+                  mountPath: /var/lib/cni
+                  readOnly: true
+                - name: var-lib-etcd
+                  mountPath: /var/lib/etcd
+                  readOnly: true
+                - name: var-lib-kubelet
+                  mountPath: /var/lib/kubelet
+                  readOnly: true
+                - name: var-lib-kube-scheduler
+                  mountPath: /var/lib/kube-scheduler
+                  readOnly: true
+                - name: var-lib-kube-controller-manager
+                  mountPath: /var/lib/kube-controller-manager
+                  readOnly: true
+                - name: etc-systemd
+                  mountPath: /etc/systemd
+                  readOnly: true
+                - name: lib-systemd
+                  mountPath: /lib/systemd/
+                  readOnly: true
+                - name: srv-kubernetes
+                  mountPath: /srv/kubernetes/
+                  readOnly: true
+                - name: etc-kubernetes
+                  mountPath: /etc/kubernetes
+                  readOnly: true
+                - name: usr-bin
+                  mountPath: /usr/local/mount-from-host/bin
+                  readOnly: true
+                - name: etc-cni-netd
+                  mountPath: /etc/cni/net.d/
+                  readOnly: true
+                - name: opt-cni-bin
+                  mountPath: /opt/cni/bin/
+                  readOnly: true
+                - name: etc-passwd
+                  mountPath: /etc/passwd
+                  readOnly: true
+                - name: etc-group
+                  mountPath: /etc/group
+                  readOnly: true
+          volumes:
+            - name: var-lib-cni
+              hostPath:
+                path: /var/lib/cni
+            - name: var-lib-etcd
+              hostPath:
+                path: /var/lib/etcd
+            - name: var-lib-kubelet
+              hostPath:
+                path: /var/lib/kubelet
+            - name: var-lib-kube-scheduler
+              hostPath:
+                path: /var/lib/kube-scheduler
+            - name: var-lib-kube-controller-manager
+              hostPath:
+                path: /var/lib/kube-controller-manager
+            - name: etc-systemd
+              hostPath:
+                path: /etc/systemd
+            - name: lib-systemd
+              hostPath:
+                path: /lib/systemd
+            - name: srv-kubernetes
+              hostPath:
+                path: /srv/kubernetes
+            - name: etc-kubernetes
+              hostPath:
+                path: /etc/kubernetes
+            - name: usr-bin
+              hostPath:
+                path: /usr/bin
+            - name: etc-cni-netd
+              hostPath:
+                path: /etc/cni/net.d
+            - name: opt-cni-bin
+              hostPath:
+                path: /opt/cni/bin
+            - name: etc-passwd
+              hostPath:
+                path: /etc/passwd
+            - name: etc-group
+              hostPath:
+                path: /etc/group

@@ -6,7 +6,7 @@ namespace Portfolio.Infrastructure.Extensions;
 
 public static class KubernetesExtensions
 {
-    private static readonly TimeSpan DefaultHttpTimeout = TimeSpan.FromSeconds(3);
+    private static readonly TimeSpan DefaultHttpTimeout = TimeSpan.FromSeconds(10);
 
     public static void SetupKubernetesClient(this WebApplicationBuilder builder)
     {

@@ -1,36 +1,39 @@
 using k8s;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Portfolio.Grpc.Services;
 
 // ReSharper disable once InconsistentNaming
-public class K8sStatsService(IKubernetes client) : K8sStats.K8sStatsBase
+public class K8sStatsService(
+    IKubernetes client,
+    IMemoryCache cache,
+    ILogger<K8sStatsService> logger) : K8sStats.K8sStatsBase
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(3);
+    private const string CacheKey = "grpc_k8s_stats";
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
 
     public override async Task<GetK8sStatsResponse> Get(Empty request, ServerCallContext context)
     {
+        if (cache.TryGetValue(CacheKey, out GetK8sStatsResponse? cachedStats) && cachedStats != null)
+        {
+            logger.LogDebug("Returning cached cluster statistics");
+            return cachedStats;
+        }
+
         try
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
             cts.CancelAfter(DefaultTimeout);
             var cancellationToken = cts.Token;
 
-            // Get all resources in parallel because why not, let's try if it speeds up the process or does something odd.
-            var podsTask = client.CoreV1.ListPodForAllNamespacesAsync(cancellationToken: cancellationToken);
-            var servicesTask = client.CoreV1.ListServiceForAllNamespacesAsync(cancellationToken: cancellationToken);
-            var nodesTask = client.CoreV1.ListNodeAsync(cancellationToken: cancellationToken);
-            var deploymentsTask = client.AppsV1.ListDeploymentForAllNamespacesAsync(cancellationToken: cancellationToken);
-            var cronJobsTask = client.BatchV1.ListCronJobForAllNamespacesAsync(cancellationToken: cancellationToken);
+            var pods = await client.CoreV1.ListPodForAllNamespacesAsync(cancellationToken: cancellationToken);
+            var services = await client.CoreV1.ListServiceForAllNamespacesAsync(cancellationToken: cancellationToken);
+            var nodes = await client.CoreV1.ListNodeAsync(cancellationToken: cancellationToken);
+            var deployments = await client.AppsV1.ListDeploymentForAllNamespacesAsync(cancellationToken: cancellationToken);
+            var cronJobs = await client.BatchV1.ListCronJobForAllNamespacesAsync(cancellationToken: cancellationToken);
 
-            await Task.WhenAll(podsTask, servicesTask, nodesTask, deploymentsTask, cronJobsTask);
-
-            var pods = await podsTask;
-            var services = await servicesTask;
-            var nodes = await nodesTask;
-            var deployments = await deploymentsTask;
-            var cronJobs = await cronJobsTask;
-            
-            return new GetK8sStatsResponse
+            var response = new GetK8sStatsResponse
             {
                 ActivePodCount = pods.Items.Count(pod => pod.Status.Phase == "Running"),
                 ServiceCount = services.Items.Count,
@@ -38,6 +41,9 @@ public class K8sStatsService(IKubernetes client) : K8sStats.K8sStatsBase
                 DeploymentCount = deployments.Items.Count,
                 CronJobCount = cronJobs.Items.Count(cronJob => !cronJob.Spec.Suspend.GetValueOrDefault(false))
             };
+
+            cache.Set(CacheKey, response, CacheDuration);
+            return response;
         }
         catch (Exception ex)
         {

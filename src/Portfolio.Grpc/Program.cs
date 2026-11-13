@@ -39,6 +39,7 @@ builder.Services.AddGrpc(options =>
 });
 builder.AddGrpcHealthChecksWithServices();
 
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<SafeUrlValidator>();
 
 // Factories

@@ -6,6 +6,8 @@ namespace Portfolio.Infrastructure.Extensions;
 
 public static class KubernetesExtensions
 {
+    private static readonly TimeSpan DefaultHttpTimeout = TimeSpan.FromSeconds(3);
+
     public static void SetupKubernetesClient(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IKubernetes>(_ =>
@@ -14,7 +16,10 @@ public static class KubernetesExtensions
                 ? KubernetesClientConfiguration.InClusterConfig()
                 : KubernetesClientConfiguration.BuildConfigFromConfigFile();
 
-            return new Kubernetes(config);
+            return new Kubernetes(config)
+            {
+                HttpClientTimeout = DefaultHttpTimeout
+            };
         });
     }
 }

@@ -26,6 +26,9 @@ public static class ClusterStatsEndpoints
             cancellationToken.ThrowIfCancellationRequested();
 
             var stats = await clusterStatsService.GetFromCacheAsync(cancellationToken);
+            if (stats is null)
+                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+
             var response = new ClusterStatsResponse(
                 stats.ActivePodCount,
                 stats.ServiceCount,

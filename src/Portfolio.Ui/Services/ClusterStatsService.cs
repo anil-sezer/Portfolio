@@ -9,44 +9,40 @@ public class ClusterStatsService(
     ILogger<ClusterStatsService> logger)
 {
     private const string CacheKey = "k8s_stats";
-    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(5);
-    private static readonly SemaphoreSlim CacheLock = new(1, 1);
+    private static readonly TimeSpan GrpcTimeout = TimeSpan.FromSeconds(5);
 
-    public virtual async Task<GetK8sStatsResponse> GetFromCacheAsync(CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Synchronously retrieves the last known / warm-cached cluster stats from memory.
+    /// Never calls gRPC or blocks on network operations.
+    /// </summary>
+    public virtual GetK8sStatsResponse? GetCachedStats()
     {
         if (memoryCache.TryGetValue(CacheKey, out GetK8sStatsResponse? cachedStats) && cachedStats != null)
+        {
             return cachedStats;
-
-        await CacheLock.WaitAsync(cancellationToken);
-        try
-        {
-            if (memoryCache.TryGetValue(CacheKey, out cachedStats) && cachedStats != null)
-                return cachedStats;
-
-            return await memoryCache.GetOrCreateAsync(CacheKey, async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = CacheExpiration;
-                var stats = await GetFromGrpcAsync(cancellationToken);
-                logger.LogInformation("💾 K8s stats updated in cache");
-                return stats;
-            }) ?? throw new InvalidOperationException("Failed to retrieve K8s stats from cache.");
         }
-        finally
-        {
-            CacheLock.Release();
-        }
+
+        return null;
     }
 
+    /// <summary>
+    /// Asynchronously retrieves the last known / warm-cached cluster stats from memory.
+    /// Never calls gRPC or blocks on network operations.
+    /// </summary>
+    public virtual Task<GetK8sStatsResponse?> GetFromCacheAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(GetCachedStats());
+    }
+
+    /// <summary>
+    /// Fetches the latest cluster stats from gRPC and updates the in-memory cache.
+    /// Called periodically in the background by <see cref="BackgroundServices.ClusterStatsWarmupService"/>.
+    /// </summary>
     public virtual async Task<GetK8sStatsResponse> RefreshCacheAsync(CancellationToken cancellationToken = default)
     {
         var stats = await GetFromGrpcAsync(cancellationToken);
 
-        var cacheOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = CacheExpiration
-        };
-
-        memoryCache.Set(CacheKey, stats, cacheOptions);
+        memoryCache.Set(CacheKey, stats);
         logger.LogInformation("💾 K8s stats updated in cache");
 
         return stats;
@@ -54,7 +50,8 @@ public class ClusterStatsService(
 
     private async Task<GetK8sStatsResponse> GetFromGrpcAsync(CancellationToken cancellationToken = default)
     {
-        var response = await k8SStatsClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
+        var deadline = DateTime.UtcNow.Add(GrpcTimeout);
+        var response = await k8SStatsClient.GetAsync(new Empty(), deadline: deadline, cancellationToken: cancellationToken);
         logger.LogInformation("📨 Sent a gRPC request to {ServiceName}", nameof(k8SStatsClient.GetAsync));
 
         return response;

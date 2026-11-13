@@ -87,20 +87,16 @@
     private int _targetCronJobCount;
     private int _targetNodeCount;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        try
+        var stats = ClusterStatsService.GetCachedStats();
+        if (stats is not null)
         {
-            var stats = await ClusterStatsService.GetFromCacheAsync();
             _targetPodCount = stats.ActivePodCount;
             _targetServiceCount = stats.ServiceCount;
             _targetDeploymentCount = stats.DeploymentCount;
             _targetCronJobCount = stats.CronJobCount;
             _targetNodeCount = stats.NodeCount;
-        }
-        catch
-        {
-            // todo: Fallback gracefully if service is unreachable
         }
     }
 }

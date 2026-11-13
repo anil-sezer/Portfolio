@@ -45,6 +45,11 @@ spec:
     - ReadWriteMany    # Or ReadWriteOnce depending on application needs
   persistentVolumeReclaimPolicy: Retain
   volumeMode: Filesystem
+  mountOptions:
+    - nfsvers=4.2
+    - wsize=131072
+    - rsize=131072
+    - hard
   nfs:
     server: 192.168.1.119
     path: /mnt/nas/disk/k8s/example-dir

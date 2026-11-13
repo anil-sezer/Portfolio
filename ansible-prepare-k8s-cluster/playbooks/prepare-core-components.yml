@@ -33,6 +33,9 @@
     - name: Configure kernel panic, oops, and hung-task auto-reboot sysctls
       ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/kernel-panic-reboot.yml
 
+    - name: Configure NFS writeback smoothing sysctls
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/nfs-writeback.yml
+
     - name: Tune Raspberry Pi eth0 (disable EEE/ASPM/TSO and increase Pi 5 TX/RX rings)
       ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/eth0-tuning.yml
 

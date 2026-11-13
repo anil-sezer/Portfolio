@@ -1,0 +1,23 @@
+---
+- name: Ensure NFS writeback smoothing sysctls are configured
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Configure dirty page thresholds in /etc/sysctl.d/99-nfs-writeback.conf
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/99-nfs-writeback.conf
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          # Flush dirty memory smoothly in smaller increments rather than multi-hundred-megabyte bursts
+          # Background writeback starts when dirty memory exceeds 32 MB
+          vm.dirty_background_bytes = 33554432
+          # Synchronous writeback throttle starts when dirty memory exceeds 128 MB
+          vm.dirty_bytes = 134217728
+      register: nfs_writeback_sysctl
+
+    - name: Reload sysctl settings to activate NFS writeback smoothing
+      ansible.builtin.command: sysctl --system
+      when: nfs_writeback_sysctl.changed
+      changed_when: false

@@ -47,13 +47,14 @@ spec:
             grpc:
               port: 8080
               service: live
+            timeoutSeconds: 5
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
             grpc:
               port: 8080
               service: live
-            timeoutSeconds: 2
+            timeoutSeconds: 5
             periodSeconds: 60
             failureThreshold: 3
           readinessProbe:
@@ -61,7 +62,7 @@ spec:
               port: 8080
               service: ready
             initialDelaySeconds: 10
-            timeoutSeconds: 2
+            timeoutSeconds: 5
             periodSeconds: 30
             failureThreshold: 3
           env:
@@ -120,5 +121,5 @@ spec:
               cpu: 50m
               memory: 128Mi
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 512Mi

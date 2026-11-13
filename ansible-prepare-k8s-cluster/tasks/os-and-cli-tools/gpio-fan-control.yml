@@ -1,0 +1,12 @@
+---
+- name: Configure official Raspberry Pi Case Fan via gpio-fan overlay on Pi 4 nodes
+  become: true
+  when: inventory_hostname in groups['k8s_nodes'] and 'rpi4' in inventory_hostname
+  block:
+    - name: Ensure gpio-fan overlay is configured in /boot/firmware/config.txt
+      ansible.builtin.lineinfile:
+        path: /boot/firmware/config.txt
+        insertafter: '^\[pi4\]'
+        regexp: '^dtoverlay=gpio-fan'
+        line: "dtoverlay=gpio-fan,gpiopin={{ pi4_fan_gpio | default(14) }},temp={{ pi4_fan_temp | default(60000) }},hyst={{ pi4_fan_hyst | default(10000) }}"
+        state: present

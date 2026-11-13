@@ -38,3 +38,8 @@ cluster_lan_gateway: "192.168.1.1"
 cluster_dns_servers:
   - "192.168.1.1"
   - "1.1.1.1"
+
+# Raspberry Pi 4 official case fan (used by gpio-fan-control.yml)
+pi4_fan_gpio: 14
+pi4_fan_temp: 60000
+pi4_fan_hyst: 10000

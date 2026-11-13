@@ -38,3 +38,6 @@
 
     - name: Configure static IPv4 and ignore-carrier in Netplan
       ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/netplan-static-ip.yml
+
+    - name: Configure official Raspberry Pi case fan (gpio-fan) on Pi 4 nodes
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/gpio-fan-control.yml

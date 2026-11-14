@@ -1,0 +1,81 @@
+apiVersion: audit.k8s.io/v1
+kind: Policy
+omitStages:
+  - "RequestReceived"
+rules:
+  # Omit noisy kube-proxy / component watches on endpoints, endpointslices, services
+  - level: None
+    users: ["system:kube-proxy"]
+    verbs: ["watch", "list", "get"]
+    resources:
+      - group: ""
+        resources: ["endpoints", "services", "services/status"]
+      - group: "discovery.k8s.io"
+        resources: ["endpointslices"]
+
+  # Omit unsecured kube-system probes and non-resource health/discovery endpoints
+  - level: None
+    users: ["system:unsecured"]
+    namespaces: ["kube-system"]
+  - level: None
+    nonResourceURLs:
+      - "/healthz*"
+      - "/livez*"
+      - "/readyz*"
+      - "/version"
+      - "/openapi*"
+
+  # Omit high-frequency node & controller leader-election leases (protects microSD)
+  - level: None
+    verbs: ["get", "list", "watch", "update", "patch"]
+    resources:
+      - group: "coordination.k8s.io"
+        resources: ["leases"]
+
+  # Omit routine event reads and kubelet status/log noise
+  - level: None
+    verbs: ["get", "list", "watch"]
+    resources:
+      - group: ""
+        resources: ["events"]
+      - group: "events.k8s.io"
+        resources: ["events"]
+  - level: None
+    verbs: ["update", "patch"]
+    resources:
+      - group: ""
+        resources: ["nodes/status", "pods/status"]
+
+  # Omit read-only polling/watches from core system components and monitoring
+  - level: None
+    users:
+      - "system:kube-controller-manager"
+      - "system:kube-scheduler"
+      - "system:apiserver"
+    verbs: ["get", "list", "watch"]
+
+  # Log Secret & ConfigMap access at Metadata level only (never log secret payloads)
+  - level: Metadata
+    resources:
+      - group: ""
+        resources: ["secrets", "configmaps"]
+
+  # Log RBAC changes at RequestResponse level for full forensic visibility
+  - level: RequestResponse
+    resources:
+      - group: "rbac.authorization.k8s.io"
+        resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+
+  # Log workload mutations at Request level (reads fall through to Metadata or None)
+  - level: Request
+    verbs: ["create", "update", "patch", "delete", "deletecollection"]
+    resources:
+      - group: ""
+        resources: ["pods", "services", "persistentvolumeclaims"]
+      - group: "apps"
+        resources: ["deployments", "statefulsets", "daemonsets"]
+
+  # Default fallback: Log all remaining requests at Metadata level
+  - level: Metadata
+    omitStages:
+      - "RequestReceived"

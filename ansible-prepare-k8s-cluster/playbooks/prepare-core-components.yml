@@ -7,6 +7,15 @@
 
   tasks:
     # -----------------------
+    #  Package Holds & Updates
+    # -----------------------
+    - name: Disable unattended background upgrades and hold kernel/firmware packages
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/disable-unattended-upgrades.yml
+
+    - name: Purge snapd and remove all snap loop mounts
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/purge-snapd.yml
+
+    # -----------------------
     #  Install Core Components
     # -----------------------
     - name: Fully update Ubuntu/Debian

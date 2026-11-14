@@ -1,0 +1,48 @@
+# todo: Untested ai code
+---
+- name: Disable automatic unattended upgrades and hold kernel/firmware packages
+  become: true
+  block:
+    - name: Disable periodic unattended upgrades in /etc/apt/apt.conf.d/20auto-upgrades
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        mode: "0644"
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "0";
+
+    - name: Blacklist kernel and firmware packages in /etc/apt/apt.conf.d/52k8s-unattended-blacklist.conf
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/52k8s-unattended-blacklist.conf
+        mode: "0644"
+        content: |
+          Unattended-Upgrade::Package-Blacklist {
+              "linux-";
+              "flash-kernel";
+          };
+
+    - name: Stop and disable unattended-upgrades service
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        state: stopped
+        enabled: false
+      failed_when: false
+
+    - name: Prevent kernel and firmware metapackages from being upgraded
+      ansible.builtin.dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - linux-image-raspi
+        - linux-headers-raspi
+        - linux-raspi
+        - linux-firmware-raspi
+        - flash-kernel
+        - flash-kernel-piboot
+      failed_when: false
+
+    - name: Prevent currently installed kernel images and modules from being upgraded
+      ansible.builtin.shell: |
+        dpkg -l | grep -E "^ii\s+(linux-image|linux-modules|linux-headers|linux-firmware|linux-raspi|flash-kernel)" | awk '{print $2}' | xargs apt-mark hold
+      changed_when: false
+      failed_when: false

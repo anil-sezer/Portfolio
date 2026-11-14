@@ -1,0 +1,44 @@
+# todo: Untested ai code
+---
+- name: Purge snapd and remove all snap loop mounts
+  become: true
+  block:
+    - name: Check if snap command exists
+      ansible.builtin.command: which snap
+      register: snap_check
+      failed_when: false
+      changed_when: false
+
+    - name: Remove installed snap packages
+      when: snap_check.rc == 0
+      ansible.builtin.shell: |
+        for s in $(snap list 2>/dev/null | awk 'NR>1 {print $1}'); do
+          snap remove --purge "$s" 2>/dev/null || true
+        done
+      failed_when: false
+
+    - name: Purge snapd package via apt
+      ansible.builtin.apt:
+        name: snapd
+        state: absent
+        purge: true
+
+    - name: Prevent snapd from being reinstalled via apt preferences
+      ansible.builtin.copy:
+        dest: /etc/apt/preferences.d/nosnap.pref
+        mode: "0644"
+        content: |
+          Package: snapd
+          Pin: release *
+          Pin-Priority: -10
+
+    - name: Remove snap directories and leftover mount remnants
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/cache/snapd
+        - /var/snap
+        - /snap
+        - /root/snap
+        - /home/anilsezer/snap

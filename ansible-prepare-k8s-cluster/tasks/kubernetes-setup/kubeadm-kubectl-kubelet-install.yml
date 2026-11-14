@@ -63,3 +63,16 @@
       ansible.builtin.dpkg_selections:
         name: kubectl
         selection: hold
+
+    - name: Prevent kernel and firmware packages from being upgraded.
+      ansible.builtin.dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop:
+        - linux-image-raspi
+        - linux-headers-raspi
+        - linux-raspi
+        - linux-firmware-raspi
+        - flash-kernel
+        - flash-kernel-piboot
+      failed_when: false

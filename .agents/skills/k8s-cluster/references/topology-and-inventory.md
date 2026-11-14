@@ -29,7 +29,7 @@ This document details the node specifications, operating systems, kernel version
 * **Taints**:
   * `node-role.kubernetes.io/control-plane:NoSchedule`
 * **Operational Notes**:
-  * Only system pods tolerating this taint (etcd, kube-apiserver, kube-controller-manager, kube-scheduler, flannel, coredns, metallb speaker) run here.
+  * Only system pods tolerating this taint (etcd, kube-apiserver, kube-controller-manager, kube-scheduler, flannel, metallb speaker) run here. CoreDNS replicas are pinned exclusively to worker nodes (the `node-role.kubernetes.io/control-plane:NoSchedule` toleration has been removed).
   * Standard user application workloads must **never** be forced onto this node.
   * RAM is 4 GB (half of the worker nodes); monitor memory utilization before scheduling any daemonsets.
 

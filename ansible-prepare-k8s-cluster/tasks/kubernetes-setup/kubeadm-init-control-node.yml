@@ -65,6 +65,12 @@
       ansible.builtin.command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.yaml
       become: false
 
+    - name: Keep CoreDNS replicas on worker nodes only by removing control-plane toleration
+      ansible.builtin.command: >-
+        kubectl patch deployment coredns -n kube-system --type=json
+        -p '[{"op": "replace", "path": "/spec/template/spec/tolerations", "value": [{"key": "CriticalAddonsOnly", "operator": "Exists"}]}]'
+      become: false
+
 # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#control-plane-node-isolation
     - name: Allow pod deployment on control node
       ansible.builtin.command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-

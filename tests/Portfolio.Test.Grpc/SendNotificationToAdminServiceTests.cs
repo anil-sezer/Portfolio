@@ -277,4 +277,142 @@ public class SendNotificationToAdminServiceTests
         thrown.Which.StatusCode.Should().Be(StatusCode.PermissionDenied);
         mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [Fact]
+    public async Task Send_WhenSenderExceedsHourlyLimitWithDifferentMessages_ThrowsPermissionDenied()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var mockFactory = new Mock<INotificationProviderFactory>();
+        var mockProvider = new Mock<INotificationProvider>();
+        mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
+
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
+        var context = TestServerCallContext.Create();
+
+        for (var i = 0; i < SendNotificationToAdminService.MaxEmailsPerSenderPerHour; i++)
+        {
+            dbContext.NotificationsToAdmin.Add(new NotificationToAdmin
+            {
+                Name = "Spammer",
+                EmailAddress = "spammer@example.com",
+                Subject = $"Subject {i}",
+                Message = $"Rotated message {i}",
+                IsItSentSuccessfully = true,
+                CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-10 - i)
+            });
+        }
+        await dbContext.SaveChangesAsync();
+
+        var request = new SendRequest
+        {
+            SenderName = "Spammer",
+            SenderEmail = "Spammer@Example.COM",
+            Subject = "Brand new subject",
+            Message = "Brand new rotated message"
+        };
+
+        // Act
+        var act = () => service.Send(request, context);
+
+        // Assert
+        var thrown = await act.Should().ThrowAsync<RpcException>();
+        thrown.Which.StatusCode.Should().Be(StatusCode.PermissionDenied);
+        thrown.Which.Status.Detail.Should().Contain("Too many messages");
+        mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Send_WhenSenderPreviousEmailsAreOlderThanOneHour_CallsProviderAndReturnsEmpty()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var mockFactory = new Mock<INotificationProviderFactory>();
+        var mockProvider = new Mock<INotificationProvider>();
+
+        mockProvider.Setup(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SendNotificationResultDto
+            {
+                IsItSentSuccessfully = true,
+                ErrorMessage = "Status code: OK"
+            });
+
+        mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
+
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
+        var context = TestServerCallContext.Create();
+
+        for (var i = 0; i < SendNotificationToAdminService.MaxEmailsPerSenderPerHour; i++)
+        {
+            dbContext.NotificationsToAdmin.Add(new NotificationToAdmin
+            {
+                Name = "Regular User",
+                EmailAddress = "user@example.com",
+                Subject = $"Old Subject {i}",
+                Message = $"Old Message {i}",
+                IsItSentSuccessfully = true,
+                CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-65 - i)
+            });
+        }
+        await dbContext.SaveChangesAsync();
+
+        var request = new SendRequest
+        {
+            SenderName = "Regular User",
+            SenderEmail = "user@example.com",
+            Subject = "New Subject",
+            Message = "New Message"
+        };
+
+        // Act
+        var response = await service.Send(request, context);
+
+        // Assert
+        response.Should().NotBeNull();
+        mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Send_WhenGlobalHourlyFloodLimitReached_ThrowsPermissionDenied()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var mockFactory = new Mock<INotificationProviderFactory>();
+        var mockProvider = new Mock<INotificationProvider>();
+        mockFactory.Setup(f => f.GetProvider(nameof(NotificationProviderTelegram))).Returns(mockProvider.Object);
+
+        var service = new SendNotificationToAdminService(dbContext, mockFactory.Object, NullLogger<SendNotificationToAdminService>.Instance);
+        var context = TestServerCallContext.Create();
+
+        for (var i = 0; i < SendNotificationToAdminService.MaxGlobalEmailsPerHour; i++)
+        {
+            dbContext.NotificationsToAdmin.Add(new NotificationToAdmin
+            {
+                Name = $"Sender {i}",
+                EmailAddress = $"sender{i}@example.com",
+                Subject = $"Subject {i}",
+                Message = $"Message {i}",
+                IsItSentSuccessfully = true,
+                CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-5)
+            });
+        }
+        await dbContext.SaveChangesAsync();
+
+        var request = new SendRequest
+        {
+            SenderName = "Fresh Sender",
+            SenderEmail = "fresh@example.com",
+            Subject = "Hello",
+            Message = "Is anyone there?"
+        };
+
+        // Act
+        var act = () => service.Send(request, context);
+
+        // Assert
+        var thrown = await act.Should().ThrowAsync<RpcException>();
+        thrown.Which.StatusCode.Should().Be(StatusCode.PermissionDenied);
+        thrown.Which.Status.Detail.Should().Contain("rate limit exceeded");
+        mockProvider.Verify(p => p.SendNotificationAsync(It.IsAny<NotificationDto>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

@@ -16,16 +16,32 @@ public class SendNotificationToAdminService(
     INotificationProviderFactory notificationProviderFactory,
     ILogger<SendNotificationToAdminService> logger) : Grpc.SendEmailToAdmin.SendEmailToAdminBase
 {
+    public const int MaxEmailsPerSenderPerHour = 3;
+    public const int MaxGlobalEmailsPerHour = 20;
+
     public override async Task<Empty> Send(SendRequest request, ServerCallContext context)
     {
         logger.LogInformation("📧 Contact notification received for subject: {Subject}", request.Subject);
-        
-        var emailDto = MapToEmailDto(request);
 
-        if (await IsThisEmailAlreadySentAtLastHourAsync(emailDto, context.CancellationToken))
+        var emailDto = MapToEmailDto(request);
+        var oneHourAgo = DateTimeOffset.UtcNow.AddHours(-1);
+
+        if (await IsThisEmailAlreadySentAtLastHourAsync(emailDto, oneHourAgo, context.CancellationToken))
         {
             logger.LogWarning("📧 Duplicate contact notification rejected within 1 hour: {Subject} by {Email}", emailDto.Subject, emailDto.EmailAddress);
             throw new RpcException(new Status(StatusCode.PermissionDenied, "This message was already sent in the last hour."));
+        }
+
+        if (await IsSenderThrottledAsync(emailDto.EmailAddress, oneHourAgo, context.CancellationToken))
+        {
+            logger.LogWarning("📧 Sender hourly limit ({Limit}) reached for {Email}", MaxEmailsPerSenderPerHour, emailDto.EmailAddress);
+            throw new RpcException(new Status(StatusCode.PermissionDenied, "Too many messages sent from this email address in the last hour."));
+        }
+
+        if (await IsGlobalFloodLimitReachedAsync(oneHourAgo, context.CancellationToken))
+        {
+            logger.LogWarning("📧 Global hourly contact notification limit ({Limit}) reached; rejecting {Email}", MaxGlobalEmailsPerHour, emailDto.EmailAddress);
+            throw new RpcException(new Status(StatusCode.PermissionDenied, "Contact form rate limit exceeded. Please try again later."));
         }
         
         var result = await SendNotificationToAdminAsync(emailDto, context.CancellationToken);
@@ -58,14 +74,32 @@ public class SendNotificationToAdminService(
         return await emailProvider.SendNotificationAsync(dto, cancellationToken);
     }
 
-    private Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto, CancellationToken cancellationToken = default)
+    private Task<bool> IsThisEmailAlreadySentAtLastHourAsync(NotificationDto dto, DateTimeOffset oneHourAgo, CancellationToken cancellationToken = default)
     {
+        var normalizedEmail = dto.EmailAddress.Trim().ToLowerInvariant();
         return dbContext.NotificationsToAdmin
             .AnyAsync(x => x.Name == dto.Name &&
-                           x.EmailAddress == dto.EmailAddress &&
+                           x.EmailAddress.ToLower() == normalizedEmail &&
                            x.Subject == dto.Subject &&
                            x.Message == dto.Message &&
-                           x.CreatedAt > DateTimeOffset.UtcNow.AddHours(-1), cancellationToken);
+                           x.CreatedAt > oneHourAgo, cancellationToken);
+    }
+
+    private async Task<bool> IsSenderThrottledAsync(string emailAddress, DateTimeOffset oneHourAgo, CancellationToken cancellationToken = default)
+    {
+        var normalizedEmail = emailAddress.Trim().ToLowerInvariant();
+        var recentCount = await dbContext.NotificationsToAdmin
+            .CountAsync(x => x.CreatedAt > oneHourAgo && x.EmailAddress.ToLower() == normalizedEmail, cancellationToken);
+
+        return recentCount >= MaxEmailsPerSenderPerHour;
+    }
+
+    private async Task<bool> IsGlobalFloodLimitReachedAsync(DateTimeOffset oneHourAgo, CancellationToken cancellationToken = default)
+    {
+        var recentCount = await dbContext.NotificationsToAdmin
+            .CountAsync(x => x.CreatedAt > oneHourAgo, cancellationToken);
+
+        return recentCount >= MaxGlobalEmailsPerHour;
     }
 
     private async Task StoreNotificationAtDb(NotificationDto dto, bool isItSentSuccessfully, CancellationToken cancellationToken = default)

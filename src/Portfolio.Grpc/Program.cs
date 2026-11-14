@@ -47,10 +47,8 @@ builder.Services.AddHttpClient<INotificationProvider, NotificationProviderTelegr
 builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
 
 // HTTP Clients
-builder.Services.AddHttpClient<BackgroundImageServices>(client =>
-{
-    client.Timeout = TimeSpan.FromSeconds(5);
-});
+builder.Services.AddHttpClient<BackgroundImageServices>(client => { client.Timeout = TimeSpan.FromSeconds(5); })
+.ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<SafeUrlValidator>().CreateSafeHttpHandler());
 
 // Database Operation Queue & Worker
 builder.Services.AddSingleton<DatabaseOperationQueue>();

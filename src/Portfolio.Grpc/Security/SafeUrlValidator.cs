@@ -97,6 +97,71 @@ public class SafeUrlValidator
         }
     }
 
+    public SocketsHttpHandler CreateSafeHttpHandler()
+    {
+        return new SocketsHttpHandler
+        {
+            AllowAutoRedirect = false,
+            ConnectCallback = ConnectValidatedAsync
+        };
+    }
+
+    private async ValueTask<Stream> ConnectValidatedAsync(
+        SocketsHttpConnectionContext context,
+        CancellationToken cancellationToken)
+    {
+        var host = context.DnsEndPoint.Host.TrimEnd('.');
+        var validatedIps = await ResolveAndValidateHostIpsAsync(host, cancellationToken);
+
+        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
+        {
+            NoDelay = true
+        };
+
+        try
+        {
+            await socket.ConnectAsync(validatedIps, context.DnsEndPoint.Port, cancellationToken);
+            return new NetworkStream(socket, ownsSocket: true);
+        }
+        catch
+        {
+            socket.Dispose();
+            throw;
+        }
+    }
+
+    internal async Task<IPAddress[]> ResolveAndValidateHostIpsAsync(string host, CancellationToken cancellationToken)
+    {
+        if (IPAddress.TryParse(host, out var directIp))
+        {
+            if (IsPrivateOrReservedIp(directIp))
+            {
+                _logger.LogWarning("Blocking connection to private or reserved IP '{Ip}'.", directIp);
+                throw new HttpRequestException($"Blocked connection to private or reserved IP '{directIp}'.");
+            }
+
+            return [directIp];
+        }
+
+        var resolvedIps = await _dnsResolver(host, cancellationToken);
+        if (resolvedIps.Length == 0)
+        {
+            _logger.LogWarning("Blocking connection to host '{Host}': DNS resolution returned no addresses.", host);
+            throw new HttpRequestException($"DNS resolution returned no addresses for host '{host}'.");
+        }
+
+        foreach (var ip in resolvedIps)
+        {
+            if (IsPrivateOrReservedIp(ip))
+            {
+                _logger.LogWarning("Blocking connection to host '{Host}': resolved IP '{Ip}' is private or reserved.", host, ip);
+                throw new HttpRequestException($"Blocked connection to private or reserved IP '{ip}' resolved for host '{host}'.");
+            }
+        }
+
+        return resolvedIps;
+    }
+
     public static bool IsPrivateOrReservedIp(IPAddress ipAddress)
     {
         if (ipAddress.IsIPv4MappedToIPv6)

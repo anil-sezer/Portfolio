@@ -267,4 +267,132 @@ public class BackgroundImageServicesTests
         thrown.Which.Status.Detail.Should().Contain("allowed public HTTP or HTTPS endpoint");
         (await dbContext.DailyImages.CountAsync()).Should().Be(0);
     }
+
+    [Fact]
+    public async Task Persist_WhenUrlRedirectsToPublicUrl_FollowsRedirectAndSavesWithUrlWorksTrue()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var handler = new MockHttpMessageHandler(req =>
+        {
+            if (req.RequestUri?.AbsoluteUri == "https://example.com/redirect.jpg")
+            {
+                var redirect = new HttpResponseMessage(HttpStatusCode.Found);
+                redirect.Headers.Location = new Uri("https://cdn.example.com/final.jpg");
+                return redirect;
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        });
+        var httpClient = new HttpClient(handler);
+        var service = CreateService(dbContext, httpClient);
+        var context = TestServerCallContext.Create();
+
+        var request = new BackgroundImageDetails
+        {
+            Url = "https://example.com/redirect.jpg",
+            AltText = "Redirected Public Image",
+            Source = GrpcSource.Bing
+        };
+
+        // Act
+        await service.Persist(request, context);
+
+        // Assert
+        handler.SentRequests.Should().HaveCount(2);
+        handler.SentRequests[1].RequestUri!.AbsoluteUri.Should().Be("https://cdn.example.com/final.jpg");
+        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.ImageUrl == request.Url);
+        saved.Should().NotBeNull();
+        saved!.UrlWorks.Should().BeTrue();
+        saved.DoIPreferToDisplayThis.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("http://127.0.0.1:8080/admin")]
+    [InlineData("http://192.168.1.120/secret")]
+    [InlineData("http://10.96.0.1/metrics")]
+    public async Task Persist_WhenUrlRedirectsToInternalIp_BlocksRedirectWithoutProbingTarget(string internalTarget)
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var handler = new MockHttpMessageHandler(_ =>
+        {
+            var redirect = new HttpResponseMessage(HttpStatusCode.Found);
+            redirect.Headers.Location = new Uri(internalTarget);
+            return redirect;
+        });
+        var httpClient = new HttpClient(handler);
+        var service = CreateService(dbContext, httpClient);
+        var context = TestServerCallContext.Create();
+
+        var request = new BackgroundImageDetails
+        {
+            Url = "https://example.com/ssrf-redirect.jpg",
+            AltText = "SSRF Redirect",
+            Source = GrpcSource.Bing
+        };
+
+        // Act
+        await service.Persist(request, context);
+
+        // Assert
+        handler.SentRequests.Should().HaveCount(1);
+        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.ImageUrl == request.Url);
+        saved.Should().NotBeNull();
+        saved!.UrlWorks.Should().BeFalse();
+        saved.DoIPreferToDisplayThis.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Persist_WhenRedirectLoopExceedsMaxRedirects_SavesWithUrlWorksFalse()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var handler = new MockHttpMessageHandler(_ =>
+        {
+            var redirect = new HttpResponseMessage(HttpStatusCode.Found);
+            redirect.Headers.Location = new Uri("https://example.com/loop.jpg");
+            return redirect;
+        });
+        var httpClient = new HttpClient(handler);
+        var service = CreateService(dbContext, httpClient);
+        var context = TestServerCallContext.Create();
+
+        var request = new BackgroundImageDetails
+        {
+            Url = "https://example.com/loop.jpg",
+            AltText = "Redirect Loop",
+            Source = GrpcSource.Bing
+        };
+
+        // Act
+        await service.Persist(request, context);
+
+        // Assert
+        handler.SentRequests.Should().HaveCount(6); // initial + 5 hops
+        var saved = await dbContext.DailyImages.FirstOrDefaultAsync(x => x.ImageUrl == request.Url);
+        saved.Should().NotBeNull();
+        saved!.UrlWorks.Should().BeFalse();
+        saved.DoIPreferToDisplayThis.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task CreateSafeHttpHandler_DisablesAutoRedirectAndBlocksDnsRebindingToPrivateIp()
+    {
+        // Arrange
+        var validator = new SafeUrlValidator(
+            NullLogger<SafeUrlValidator>.Instance,
+            (_, _) => Task.FromResult(new[] { IPAddress.Parse("127.0.0.1") }));
+
+        using var handler = validator.CreateSafeHttpHandler();
+        using var client = new HttpClient(handler);
+
+        // Assert handler setting
+        handler.AllowAutoRedirect.Should().BeFalse();
+
+        // Act & Assert connection-level DNS rebinding check
+        var act = () => client.GetAsync("http://rebind.example.com/test");
+        var thrown = await act.Should().ThrowAsync<HttpRequestException>();
+        thrown.Which.Message.Should().Contain("private or reserved IP");
+    }
 }

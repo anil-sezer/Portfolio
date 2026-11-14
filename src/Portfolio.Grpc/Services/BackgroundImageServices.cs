@@ -75,6 +75,8 @@ public partial class BackgroundImageServices(
         };
     }
     
+    private const int MaxRedirects = 5;
+
     private async Task<bool> CheckUrlAsync(string url, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -82,16 +84,55 @@ public partial class BackgroundImageServices(
 
         try
         {
-            // Use HEAD request to check if URL is accessible without downloading content
-            using var request = new HttpRequestMessage(HttpMethod.Head, url);
-            using var response = await httpClient.SendAsync(request, cancellationToken);
-            
-            return response.IsSuccessStatusCode;
+            var currentUri = new Uri(url, UriKind.Absolute);
+
+            for (var hop = 0; hop <= MaxRedirects; hop++)
+            {
+                // Use HEAD request to check if URL is accessible without downloading content
+                using var request = new HttpRequestMessage(HttpMethod.Head, currentUri);
+                using var response = await httpClient.SendAsync(request, cancellationToken);
+
+                if (!IsRedirectStatusCode(response.StatusCode)) 
+                    return response.IsSuccessStatusCode;
+
+                if (hop == MaxRedirects)
+                {
+                    logger.LogWarning("HTTP HEAD check exceeded max redirects ({MaxRedirects}) for URL '{Url}'", MaxRedirects, url);
+                    return false;
+                }
+
+                var location = response.Headers.Location;
+                if (location is null)
+                    return false;
+
+                var nextUri = location.IsAbsoluteUri ? location : new Uri(currentUri, location);
+                var isSafeRedirect = await urlValidator.IsSafePublicUrlAsync(nextUri.AbsoluteUri, cancellationToken);
+                if (!isSafeRedirect)
+                {
+                    logger.LogWarning("Blocked unsafe redirect from '{SourceUrl}' to '{TargetUrl}'", currentUri, nextUri);
+                    return false;
+                }
+
+                currentUri = nextUri;
+                continue;
+
+            }
+
+            return false;
         }
         catch (Exception ex)
         {
             logger.LogWarning(ex, "HTTP HEAD check failed for URL '{Url}'", url);
             return false;
         }
+    }
+
+    private static bool IsRedirectStatusCode(System.Net.HttpStatusCode statusCode)
+    {
+        return statusCode is System.Net.HttpStatusCode.MovedPermanently
+            or System.Net.HttpStatusCode.Found
+            or System.Net.HttpStatusCode.SeeOther
+            or System.Net.HttpStatusCode.TemporaryRedirect
+            or System.Net.HttpStatusCode.PermanentRedirect;
     }
 }

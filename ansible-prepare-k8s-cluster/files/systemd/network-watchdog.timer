@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Raspberry Pi eth0 Network Watchdog every 60s
+After=network.target
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=60s
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

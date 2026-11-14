@@ -1,0 +1,12 @@
+[Unit]
+Description=Disable EEE on Pi 4 eth0 (bcmgenet)
+After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
+Wants=sys-subsystem-net-devices-eth0.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '/usr/sbin/ethtool --set-eee eth0 eee off || true'
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=Tune Pi 5 eth0 (macb) - Disable EEE/TSO and increase RX/TX ring buffers
+After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
+Wants=sys-subsystem-net-devices-eth0.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '/usr/sbin/ethtool --set-eee eth0 eee off || true'
+ExecStart=/usr/sbin/ethtool -G eth0 rx 2048 tx 2048
+ExecStart=/usr/sbin/ethtool -K eth0 tso off
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Raspberry Pi eth0 Network Watchdog
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/network-watchdog.sh

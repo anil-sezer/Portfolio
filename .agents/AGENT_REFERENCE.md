@@ -431,7 +431,7 @@ wsl helm upgrade --install grafana grafana-community/grafana -n observability -f
 5. **Authentik PostgreSQL 99-Character Password Limit**:
    - Due to a known PostgreSQL hashing issue within Authentik, database passwords must not exceed 99 characters.
 6. **Telegram MarkdownV2 Escaping**:
-   - [NotificationProviderTelegram.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Infrastructure/ThirdPartyServices/NotificationProviderTelegram.cs) explicitly escapes characters `_ * [ ] ( ) ~ \` > # + - = | { } . !`. Ensure any newly injected text passes through `EscapeMarkdown()`.
+   - [NotificationProviderTelegram.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Infrastructure/ThirdPartyServices/NotificationProviderTelegram.cs) explicitly escapes characters `\ _ * [ ] ( ) ~ \` > # + - = | { } . !`. Escape only dynamic input fields via `EscapeMarkdown()` *before* composing the MarkdownV2 template, and keep literal reserved characters (such as `\[` and `\]` in severity prefixes) escaped in static template text.
 7. **Cache Expirations**:
    - Cluster statistics are cached in memory for **5 minutes** (`ClusterStatsService`).
    - Daily background image is cached in memory for **23 hours** (`BackgroundImageService`).

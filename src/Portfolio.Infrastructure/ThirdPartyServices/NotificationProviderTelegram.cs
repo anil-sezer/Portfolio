@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Text;
 using Portfolio.Domain.Enums;
 using Portfolio.Domain.Interfaces.ThirdPartyServices;
@@ -9,15 +10,16 @@ namespace Portfolio.Infrastructure.ThirdPartyServices;
 
 public class NotificationProviderTelegram(HttpClient httpClient, ILogger<NotificationProviderTelegram> logger) : INotificationProvider
 {
+    private static readonly SearchValues<char> MarkdownV2SpecialChars =
+        SearchValues.Create(@"\_*[]()~`>#+-=|{}.!");
+
     public async Task<SendNotificationResultDto> SendNotificationAsync(NotificationDto dto, CancellationToken cancellationToken = default)
     {
-        var telegramDto = dto with { Message = AdaptMessageForTelegram(dto) };
-        
         var url = $"https://api.telegram.org/bot{EnvVars.NOTIFICATION_TELEGRAM_API_KEY}/sendMessage";
         var payload = new Dictionary<string, string>
         {
             { "chat_id", EnvVars.NOTIFICATION_TELEGRAM_CHAT_ID },
-            { "text", FormatTelegramMessage(telegramDto) },
+            { "text", FormatTelegramMessage(dto) },
             { "parse_mode", "MarkdownV2" }
         };
 
@@ -48,61 +50,58 @@ public class NotificationProviderTelegram(HttpClient httpClient, ILogger<Notific
     private static string FormatTelegramMessage(NotificationDto dto)
     {
         var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-        string emoji, prefix;
-
-        switch (dto.NotificationType)
+        var (emoji, prefix) = dto.NotificationType switch
         {
-            case NotificationType.Info:
-                emoji = "ℹ️";
-                prefix = "*[INFO]*";
-                break;
-            case NotificationType.Success:
-                emoji = "✅";
-                prefix = "*[SUCCESS]*";
-                break;
-            case NotificationType.Error:
-                emoji = "❌";
-                prefix = "*[ERROR]*";
-                break;
-            case NotificationType.Warning:
-                emoji = "⚠️";
-                prefix = "*[WARNING]*";
-                break;
-            case NotificationType.Fatal:
-                emoji = "🚨🚨🚨";
-                prefix = "*[FATAL]*";
-                break;
-            case NotificationType.Unknown:
-            default:
-                emoji = "📌";
-                prefix = "*[LOG]*";
-                break;
-        }
+            NotificationType.Info => ("ℹ️", @"*\[INFO\]*"),
+            NotificationType.Success => ("✅", @"*\[SUCCESS\]*"),
+            NotificationType.Error => ("❌", @"*\[ERROR\]*"),
+            NotificationType.Warning => ("⚠️", @"*\[WARNING\]*"),
+            NotificationType.Fatal => ("🚨🚨🚨", @"*\[FATAL\]*"),
+            _ => ("📌", @"*\[LOG\]*")
+        };
 
-        var safeMessage = EscapeMarkdown(dto.Message);
-        return $"{emoji} {prefix} `{timestamp}`\n{safeMessage}";
+        return $"{emoji} {prefix} `{timestamp}`\n{AdaptMessageForTelegram(dto)}";
     }
 
     private static string EscapeMarkdown(string input)
     {
-        var charsToEscape = new[] { "_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!" };
-        foreach (var c in charsToEscape)
+        if (string.IsNullOrEmpty(input))
         {
-            input = input.Replace(c, $"\\{c}");
+            return input;
         }
-        return input;
+
+        var firstSpecialIndex = input.AsSpan().IndexOfAny(MarkdownV2SpecialChars);
+        if (firstSpecialIndex < 0)
+        {
+            return input;
+        }
+
+        var sb = new StringBuilder(input.Length + 8);
+        sb.Append(input, 0, firstSpecialIndex);
+        for (var i = firstSpecialIndex; i < input.Length; i++)
+        {
+            var c = input[i];
+            if (MarkdownV2SpecialChars.Contains(c))
+            {
+                sb.Append('\\');
+            }
+
+            sb.Append(c);
+        }
+
+        return sb.ToString();
     }
-    
+
     private static string AdaptMessageForTelegram(NotificationDto dto)
     {
         var sb = new StringBuilder();
         sb.AppendLine("✉️ *NEW EMAIL* ✉️");
-        sb.AppendLine($"*Sender Name:* {dto.Name}");
-        sb.AppendLine($"*Sender Email:* {dto.EmailAddress}");
-        sb.AppendLine($"*Subject:* {dto.Subject}");
+        sb.AppendLine($"*Sender Name:* {EscapeMarkdown(dto.Name)}");
+        sb.AppendLine($"*Sender Email:* {EscapeMarkdown(dto.EmailAddress)}");
+        sb.AppendLine($"*Subject:* {EscapeMarkdown(dto.Subject)}");
         sb.AppendLine();
         sb.AppendLine("*Message:*");
-        sb.AppendLine(dto.Message);
+        sb.AppendLine(EscapeMarkdown(dto.Message));
 
         return sb.ToString();
     }

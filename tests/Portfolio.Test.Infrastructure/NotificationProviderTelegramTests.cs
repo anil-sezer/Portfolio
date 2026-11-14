@@ -70,7 +70,7 @@ public class NotificationProviderTelegramTests : IDisposable
         var decodedBody = Uri.UnescapeDataString(capturedBody!);
         decodedBody.Should().Contain("chat_id=12345678");
         decodedBody.Should().Contain("parse_mode=MarkdownV2");
-        decodedBody.Should().Contain("[INFO]");
+        decodedBody.Should().Contain(@"\[INFO\]");
         decodedBody.Should().Contain("Alice");
         decodedBody.Should().Contain(@"alice@example\.com");
     }
@@ -126,11 +126,11 @@ public class NotificationProviderTelegramTests : IDisposable
     }
 
     [Theory]
-    [InlineData(NotificationType.Info, "*[INFO]*", "ℹ️")]
-    [InlineData(NotificationType.Success, "*[SUCCESS]*", "✅")]
-    [InlineData(NotificationType.Error, "*[ERROR]*", "❌")]
-    [InlineData(NotificationType.Warning, "*[WARNING]*", "⚠️")]
-    [InlineData(NotificationType.Fatal, "*[FATAL]*", "🚨🚨🚨")]
+    [InlineData(NotificationType.Info, @"*\[INFO\]*", "ℹ️")]
+    [InlineData(NotificationType.Success, @"*\[SUCCESS\]*", "✅")]
+    [InlineData(NotificationType.Error, @"*\[ERROR\]*", "❌")]
+    [InlineData(NotificationType.Warning, @"*\[WARNING\]*", "⚠️")]
+    [InlineData(NotificationType.Fatal, @"*\[FATAL\]*", "🚨🚨🚨")]
     public async Task SendNotificationAsync_FormatsPrefixAndEmojiForNotificationTypes(
         NotificationType type,
         string expectedPrefix,
@@ -231,7 +231,7 @@ public class NotificationProviderTelegramTests : IDisposable
         result.IsItSentSuccessfully.Should().BeTrue();
         var decodedBody = Uri.UnescapeDataString(capturedBody!);
         decodedBody.Should().Contain("📌");
-        decodedBody.Should().Contain(@"*[LOG]*");
+        decodedBody.Should().Contain(@"*\[LOG\]*");
     }
 
     [Fact]
@@ -250,10 +250,10 @@ public class NotificationProviderTelegramTests : IDisposable
 
         var dto = new NotificationDto
         {
-            Name = "SpecialChars",
-            EmailAddress = "spec@example.com",
-            Subject = "All Chars",
-            Message = "Chars: ~ # + = | { } > -",
+            Name = @"Alice\Smith_1",
+            EmailAddress = "spec+tag@example.com",
+            Subject = "All Chars [urgent] (v1)",
+            Message = @"Chars: \ _ * [ ] ( ) ~ ` > # + - = | { } . !",
             NotificationType = NotificationType.Info
         };
 
@@ -261,15 +261,47 @@ public class NotificationProviderTelegramTests : IDisposable
         await provider.SendNotificationAsync(dto);
 
         // Assert
-        var decodedBody = Uri.UnescapeDataString(capturedBody!);
-        decodedBody.Should().Contain(@"\~");
-        decodedBody.Should().Contain(@"\#");
-        decodedBody.Should().Contain(@"\+");
-        decodedBody.Should().Contain(@"\=");
-        decodedBody.Should().Contain(@"\|");
-        decodedBody.Should().Contain(@"\{");
-        decodedBody.Should().Contain(@"\}");
-        decodedBody.Should().Contain(@"\>");
-        decodedBody.Should().Contain(@"\-");
+        var decodedBody = WebUtility.UrlDecode(capturedBody!);
+        decodedBody.Should().Contain(@"Alice\\Smith\_1");
+        decodedBody.Should().Contain(@"spec\+tag@example\.com");
+        decodedBody.Should().Contain(@"All Chars \[urgent\] \(v1\)");
+        decodedBody.Should().Contain(@"Chars: \\ \_ \* \[ \] \( \) \~ \` \> \# \+ \- \= \| \{ \} \. \!");
+    }
+
+    [Fact]
+    public async Task SendNotificationAsync_PreservesTemplateBoldFormattingAndDoesNotDoubleEscapeBackslashes()
+    {
+        // Arrange
+        string? capturedBody = null;
+        var handler = new MockHttpMessageHandler(async (req, ct) =>
+        {
+            capturedBody = await req.Content!.ReadAsStringAsync(ct);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        });
+
+        var httpClient = new HttpClient(handler);
+        var provider = new NotificationProviderTelegram(httpClient, NullLogger<NotificationProviderTelegram>.Instance);
+
+        var dto = new NotificationDto
+        {
+            Name = "Bob",
+            EmailAddress = "bob@example.com",
+            Subject = "Path check",
+            Message = @"C:\temp\*bold*",
+            NotificationType = NotificationType.Info
+        };
+
+        // Act
+        await provider.SendNotificationAsync(dto);
+
+        // Assert
+        var decodedBody = WebUtility.UrlDecode(capturedBody!);
+        decodedBody.Should().Contain("✉️ *NEW EMAIL* ✉️");
+        decodedBody.Should().Contain("*Sender Name:* Bob");
+        decodedBody.Should().Contain(@"*Sender Email:* bob@example\.com");
+        decodedBody.Should().Contain("*Subject:* Path check");
+        decodedBody.Should().Contain("*Message:*");
+        decodedBody.Should().NotContain(@"\*NEW EMAIL\*");
+        decodedBody.Should().Contain(@"C:\\temp\\\*bold\*");
     }
 }

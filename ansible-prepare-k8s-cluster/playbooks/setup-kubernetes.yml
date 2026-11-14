@@ -75,6 +75,9 @@
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubeadm-init-control-node.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
 
+    - name: Apply CIS control plane and kubelet hardening
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cis-control-plane-hardening.yml
+
 #    - name: Get join command
 #      ansible.builtin.command: kubeadm token create --print-join-command
 #      register: join_command

@@ -1,45 +1,50 @@
 ---
-- name: Verify MAC addresses and product_uuid are unique across all nodes
+- name: Configure NAS storage mounts and NFS exports on cinema
   hosts: cinema
+  become: true
   gather_facts: true
   tasks:
-    - name: Install first batch of required packages
+    - name: Install required NFS packages
       ansible.builtin.apt:
         pkg:
           - nfs-common
           - nfs-kernel-server
         update_cache: true
         state: present
-#        install_recommends: true
-      become: true
 
     - name: Ensure /mnt/nas directory exists
       ansible.builtin.file:
         path: /mnt/nas
         state: directory
-        mode: '0777'
+        mode: '0755'
         owner: root
-      become: true
 
     - name: Ensure /mnt/nas/ssd directory exists
       ansible.builtin.file:
         path: /mnt/nas/ssd
         state: directory
-        mode: '0777'
+        mode: '0755'
         owner: root
-      become: true
 
     - name: Ensure /mnt/nas/disk directory exists
       ansible.builtin.file:
         path: /mnt/nas/disk
         state: directory
-        mode: '0777'
+        mode: '0755'
         owner: root
-      become: true
+
+    - name: Ensure /mnt/nas/ssd/k8s/db directory exists with postgres UID/GID 999
+      ansible.builtin.file:
+        path: /mnt/nas/ssd/k8s/db
+        state: directory
+        mode: '0777'
+        owner: '999'
+        group: '999'
 
     - name: Add NAS disk entry to /etc/fstab
       ansible.builtin.lineinfile:
         path: /etc/fstab
+        regexp: '^UUID=8e0824f3-f857-4ac2-8b62-0a8411fa6432\s+'
         line: "UUID=8e0824f3-f857-4ac2-8b62-0a8411fa6432 /mnt/nas/disk ext4 defaults 0 2"
         state: present
         backup: yes
@@ -53,24 +58,21 @@
         - fstab_check.rc != 0
         - fstab_update.changed  # Only fail if we just changed it but it's not there
 
-    - name: Verify mount point exists
-      ansible.builtin.file:
-        path: /mnt/nas/disk
-        state: directory
-        mode: '0755'
+    - name: Add bind mount for isolated PostgreSQL NFS export to /etc/fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^/mnt/nas/ssd/k8s/db\s+/mnt/nas/ssd/k8s/db\s+'
+        line: "/mnt/nas/ssd/k8s/db /mnt/nas/ssd/k8s/db none bind 0 0"
+        state: present
+        backup: yes
 
     - name: Test mount the filesystem
       ansible.builtin.command: mount -a
       register: mount_test
       changed_when: false
       failed_when: mount_test.rc != 0
-      
-    - name: Install NFS server package
-      ansible.builtin.apt:
-        name: nfs-kernel-server
-        state: present
 
-    - name: Ensure mount points exist
+    - name: Ensure mount points exist after mount
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -79,15 +81,20 @@
         - /mnt/nas/disk
         - /mnt/nas/ssd
 
-    - name: Configure NFS exports
+    - name: Configure NFS exports with root_squash isolation
       ansible.builtin.lineinfile:
         path: /etc/exports
-        line: "{{ item }}"
+        regexp: "^{{ item.path | regex_escape() }}\\s+"
+        line: "{{ item.line }}"
         create: yes
         state: present
       loop:
-        - '/mnt/nas/disk *(rw,sync,no_subtree_check,no_root_squash)'
-        - '/mnt/nas/ssd *(rw,sync,no_subtree_check,no_root_squash)'
+        - path: /mnt/nas/disk
+          line: '/mnt/nas/disk *(rw,sync,no_subtree_check,root_squash,anonuid=1000,anongid=1000)'
+        - path: /mnt/nas/ssd
+          line: '/mnt/nas/ssd *(rw,sync,no_subtree_check,no_root_squash,crossmnt)'
+        - path: /mnt/nas/ssd/k8s/db
+          line: '/mnt/nas/ssd/k8s/db *(rw,sync,no_subtree_check,root_squash,anonuid=999,anongid=999,fsid=1)'
       notify:
         - reload exports
         - restart nfs
@@ -97,6 +104,11 @@
         name: nfs-kernel-server
         enabled: yes
         state: started
+
+    - name: Re-export NFS shares cleanly
+      ansible.builtin.command:
+        cmd: exportfs -ra
+      changed_when: false
 
   handlers:
     - name: reload exports

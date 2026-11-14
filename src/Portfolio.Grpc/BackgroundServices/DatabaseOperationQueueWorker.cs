@@ -11,6 +11,7 @@ public class DatabaseOperationQueueWorker : BackgroundService
     private readonly DatabaseOperationQueue _queue;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<DatabaseOperationQueueWorker> _logger;
+    private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly int _maxRetryAttempts;
     private readonly int _initialRetryDelayMs;
     private readonly int _maxRetryDelayMs;
@@ -20,6 +21,7 @@ public class DatabaseOperationQueueWorker : BackgroundService
         DatabaseOperationQueue queue,
         IServiceProvider serviceProvider,
         ILogger<DatabaseOperationQueueWorker> logger,
+        IHostApplicationLifetime hostApplicationLifetime,
         int maxRetryAttempts = DefaultMaxRetryAttempts,
         int initialRetryDelayMs = DefaultInitialRetryDelayMs,
         int maxRetryDelayMs = DefaultMaxRetryDelayMs)
@@ -27,6 +29,7 @@ public class DatabaseOperationQueueWorker : BackgroundService
         ArgumentNullException.ThrowIfNull(queue);
         ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(hostApplicationLifetime);
 
         ArgumentOutOfRangeException.ThrowIfLessThan(maxRetryAttempts, 1);
         ArgumentOutOfRangeException.ThrowIfLessThan(initialRetryDelayMs, 1);
@@ -35,6 +38,7 @@ public class DatabaseOperationQueueWorker : BackgroundService
         _queue = queue;
         _serviceProvider = serviceProvider;
         _logger = logger;
+        _hostApplicationLifetime = hostApplicationLifetime;
         _maxRetryAttempts = maxRetryAttempts;
         _initialRetryDelayMs = initialRetryDelayMs;
         _maxRetryDelayMs = maxRetryDelayMs;
@@ -58,6 +62,10 @@ public class DatabaseOperationQueueWorker : BackgroundService
         catch (Exception ex)
         {
             _logger.LogCritical(ex, "Unexpected error in DatabaseOperationQueueWorker execution loop.");
+            // Complete the channel so blocked/future EnqueueAsync callers fail immediately instead of deadlocking.
+            _queue.TryComplete(ex);
+            _hostApplicationLifetime.StopApplication();
+            throw;
         }
     }
 
@@ -67,8 +75,8 @@ public class DatabaseOperationQueueWorker : BackgroundService
             "DatabaseOperationQueueWorker is stopping. Marking queue complete and draining {Count} operations...",
             _queue.QueuedCount);
 
-        // Mark queue writer complete so ReadAllAsync exits once empty
-        _queue.Complete();
+        // Mark queue writer complete so ReadAllAsync exits once empty (no-op if already faulted/completed)
+        _queue.TryComplete();
 
         if (ExecuteTask != null)
         {

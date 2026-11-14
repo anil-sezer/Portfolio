@@ -42,7 +42,7 @@ public class DatabaseOperationQueue
         return _channel.Writer.TryWrite(operation);
     }
 
-    public IAsyncEnumerable<IDatabaseOperationQueueWorker> ReadAllAsync(CancellationToken cancellationToken = default)
+    public virtual IAsyncEnumerable<IDatabaseOperationQueueWorker> ReadAllAsync(CancellationToken cancellationToken = default)
     {
         return _channel.Reader.ReadAllAsync(cancellationToken);
     }

@@ -1,5 +1,7 @@
+using System.Threading.Channels;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Portfolio.Domain.Interfaces.BackgroundServices;
@@ -20,14 +22,17 @@ public class DatabaseOperationQueueWorkerTests
         int initialRetryDelayMs = 20,
         int maxRetryDelayMs = 50,
         int capacity = 100,
-        IServiceProvider? serviceProvider = null)
+        IServiceProvider? serviceProvider = null,
+        IHostApplicationLifetime? hostApplicationLifetime = null)
     {
         var queue = new DatabaseOperationQueue(capacity);
         var sp = serviceProvider ?? CreateServiceProvider();
+        var lifetime = hostApplicationLifetime ?? new Mock<IHostApplicationLifetime>().Object;
         var worker = new DatabaseOperationQueueWorker(
             queue,
             sp,
             NullLogger<DatabaseOperationQueueWorker>.Instance,
+            lifetime,
             maxRetryAttempts,
             initialRetryDelayMs,
             maxRetryDelayMs);
@@ -41,14 +46,17 @@ public class DatabaseOperationQueueWorkerTests
         var queue = new DatabaseOperationQueue();
         var sp = CreateServiceProvider();
         var logger = NullLogger<DatabaseOperationQueueWorker>.Instance;
+        var lifetime = new Mock<IHostApplicationLifetime>().Object;
 
-        var act1 = () => new DatabaseOperationQueueWorker(null!, sp, logger);
-        var act2 = () => new DatabaseOperationQueueWorker(queue, null!, logger);
-        var act3 = () => new DatabaseOperationQueueWorker(queue, sp, null!);
+        var act1 = () => new DatabaseOperationQueueWorker(null!, sp, logger, lifetime);
+        var act2 = () => new DatabaseOperationQueueWorker(queue, null!, logger, lifetime);
+        var act3 = () => new DatabaseOperationQueueWorker(queue, sp, null!, lifetime);
+        var act4 = () => new DatabaseOperationQueueWorker(queue, sp, logger, null!);
 
         act1.Should().Throw<ArgumentNullException>();
         act2.Should().Throw<ArgumentNullException>();
         act3.Should().Throw<ArgumentNullException>();
+        act4.Should().Throw<ArgumentNullException>();
     }
 
     [Theory]
@@ -63,8 +71,9 @@ public class DatabaseOperationQueueWorkerTests
         var queue = new DatabaseOperationQueue();
         var sp = CreateServiceProvider();
         var logger = NullLogger<DatabaseOperationQueueWorker>.Instance;
+        var lifetime = new Mock<IHostApplicationLifetime>().Object;
 
-        var act = () => new DatabaseOperationQueueWorker(queue, sp, logger, maxRetryAttempts, initialDelayMs, maxDelayMs);
+        var act = () => new DatabaseOperationQueueWorker(queue, sp, logger, lifetime, maxRetryAttempts, initialDelayMs, maxDelayMs);
         act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
@@ -233,5 +242,65 @@ public class DatabaseOperationQueueWorkerTests
 
         // Assert
         completed.Should().Be(stopTask);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenReaderLoopThrowsFatalException_CompletesQueueStopsHostAndRethrows()
+    {
+        // Arrange
+        var fatalException = new InvalidOperationException("Simulated fatal reader loop failure");
+        var queue = new FaultingReadDatabaseOperationQueue(capacity: 1, fatalException);
+        var lifetimeMock = new Mock<IHostApplicationLifetime>();
+        var worker = new DatabaseOperationQueueWorker(
+            queue,
+            CreateServiceProvider(),
+            NullLogger<DatabaseOperationQueueWorker>.Instance,
+            lifetimeMock.Object);
+
+        await queue.EnqueueAsync(new Mock<IDatabaseOperationQueueWorker>().Object);
+        var blockedEnqueueTask = queue.EnqueueAsync(new Mock<IDatabaseOperationQueueWorker>().Object).AsTask();
+        var preStartDelay = await Task.WhenAny(blockedEnqueueTask, Task.Delay(25));
+        preStartDelay.Should().NotBe(blockedEnqueueTask);
+
+        // Act
+        await worker.StartAsync(CancellationToken.None);
+
+        var unblockedTask = await Task.WhenAny(blockedEnqueueTask, Task.Delay(2000));
+        unblockedTask.Should().Be(blockedEnqueueTask);
+
+        // Assert
+        var blockedAct = async () => await blockedEnqueueTask;
+        var closedEx = await blockedAct.Should().ThrowAsync<ChannelClosedException>();
+        closedEx.Which.InnerException.Should().BeSameAs(fatalException);
+
+        var subsequentEnqueueAct = async () => await queue.EnqueueAsync(new Mock<IDatabaseOperationQueueWorker>().Object);
+        await subsequentEnqueueAct.Should().ThrowAsync<ChannelClosedException>();
+
+        worker.ExecuteTask.Should().NotBeNull();
+        var executeAct = async () => await worker.ExecuteTask!;
+        (await executeAct.Should().ThrowAsync<InvalidOperationException>()).Which.Should().BeSameAs(fatalException);
+
+        lifetimeMock.Verify(x => x.StopApplication(), Times.Once);
+
+        // StopAsync should still exit cleanly after a faulted ExecuteTask
+        await worker.StopAsync(CancellationToken.None);
+    }
+
+    private sealed class FaultingReadDatabaseOperationQueue(int capacity, Exception exceptionToThrow)
+        : DatabaseOperationQueue(capacity)
+    {
+        public override IAsyncEnumerable<IDatabaseOperationQueueWorker> ReadAllAsync(CancellationToken cancellationToken = default)
+        {
+            return ThrowAsync();
+
+            async IAsyncEnumerable<IDatabaseOperationQueueWorker> ThrowAsync()
+            {
+                await Task.Yield();
+                throw exceptionToThrow;
+#pragma warning disable CS0162
+                yield break;
+#pragma warning restore CS0162
+            }
+        }
     }
 }

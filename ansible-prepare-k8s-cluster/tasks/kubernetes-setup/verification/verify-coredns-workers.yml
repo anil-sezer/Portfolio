@@ -1,0 +1,109 @@
+---
+# Verifies that:
+# 1. Deployment/coredns in kube-system does not tolerate node-role.kubernetes.io/control-plane taint.
+# 2. Deployment/coredns has pod anti-affinity configured.
+# 3. All CoreDNS pods are in Running phase and Ready.
+# 4. All CoreDNS pods are scheduled on worker nodes (none on control plane nodes).
+# 5. CoreDNS pods are spread across distinct nodes.
+
+- name: Retrieve CoreDNS deployment specification
+  ansible.builtin.command: kubectl get deployment coredns -n kube-system -o json
+  register: coredns_deployment_raw
+  changed_when: false
+  become: false
+
+- name: Parse CoreDNS deployment specification
+  ansible.builtin.set_fact:
+    coredns_deployment: "{{ coredns_deployment_raw.stdout | from_json }}"
+
+- name: Extract CoreDNS tolerations and affinity
+  ansible.builtin.set_fact:
+    coredns_tolerations: "{{ coredns_deployment.spec.template.spec.tolerations | default([]) }}"
+    coredns_affinity: "{{ coredns_deployment.spec.template.spec.affinity | default({}) }}"
+
+- name: Verify CoreDNS deployment does not tolerate control-plane NoSchedule taint
+  ansible.builtin.assert:
+    that:
+      - (coredns_tolerations | selectattr('key', 'defined') | selectattr('key', 'equalto', 'node-role.kubernetes.io/control-plane') | list | length) == 0
+    fail_msg: >-
+      CoreDNS deployment has a toleration for 'node-role.kubernetes.io/control-plane',
+      allowing replicas to be scheduled on the control plane node!
+    success_msg: "CoreDNS deployment has no control-plane tolerations."
+    quiet: true
+
+- name: Verify CoreDNS deployment defines pod anti-affinity
+  ansible.builtin.assert:
+    that:
+      - coredns_affinity.podAntiAffinity is defined
+    fail_msg: "CoreDNS deployment lacks podAntiAffinity configuration."
+    success_msg: "CoreDNS deployment has podAntiAffinity configured."
+    quiet: true
+
+- name: Retrieve control plane node names
+  ansible.builtin.command: kubectl get nodes -l node-role.kubernetes.io/control-plane -o jsonpath='{.items[*].metadata.name}'
+  register: control_plane_nodes_raw
+  changed_when: false
+  become: false
+
+- name: Set fact for control plane node list
+  ansible.builtin.set_fact:
+    control_plane_nodes: "{{ control_plane_nodes_raw.stdout.split() }}"
+
+- name: Retrieve running CoreDNS pods
+  ansible.builtin.command: kubectl get pods -n kube-system -l k8s-app=kube-dns -o json
+  register: coredns_pods_raw
+  changed_when: false
+  become: false
+
+- name: Parse CoreDNS pods specification
+  ansible.builtin.set_fact:
+    coredns_pods: "{{ (coredns_pods_raw.stdout | from_json)['items'] }}"
+
+- name: Verify expected number of CoreDNS replicas are running
+  ansible.builtin.assert:
+    that:
+      - coredns_pods | length >= 2
+    fail_msg: "Expected at least 2 CoreDNS pods, found {{ coredns_pods | length }}."
+    success_msg: "Found {{ coredns_pods | length }} CoreDNS pods running."
+    quiet: true
+
+- name: Verify all CoreDNS pods are Running and Ready
+  ansible.builtin.assert:
+    that:
+      - item.status.phase == 'Running'
+      - (item.status.containerStatuses | selectattr('ready', 'equalto', true) | list | length) == (item.status.containerStatuses | length)
+    fail_msg: "CoreDNS pod {{ item.metadata.name }} is not in Ready/Running status."
+    success_msg: "CoreDNS pod {{ item.metadata.name }} is Ready and Running."
+    quiet: true
+  loop: "{{ coredns_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+
+- name: Extract node placement for CoreDNS pods
+  ansible.builtin.set_fact:
+    coredns_pod_nodes: "{{ coredns_pods | map(attribute='spec.nodeName') | list }}"
+
+- name: Verify no CoreDNS pods are running on control plane nodes
+  ansible.builtin.assert:
+    that:
+      - (coredns_pod_nodes | intersect(control_plane_nodes) | length) == 0
+    fail_msg: >-
+      One or more CoreDNS pods are scheduled on a control plane node!
+      CoreDNS nodes: {{ coredns_pod_nodes }}, Control plane nodes: {{ control_plane_nodes }}.
+    success_msg: "All CoreDNS pods are running exclusively on worker nodes ({{ coredns_pod_nodes }})."
+    quiet: true
+
+- name: Verify CoreDNS pods are spread across distinct nodes
+  ansible.builtin.assert:
+    that:
+      - (coredns_pod_nodes | unique | length) == (coredns_pod_nodes | length)
+    fail_msg: "Multiple CoreDNS pods are co-located on the same node ({{ coredns_pod_nodes }})."
+    success_msg: "CoreDNS pods are distributed across distinct worker nodes: {{ coredns_pod_nodes }}."
+    quiet: true
+
+- name: Display CoreDNS verification summary
+  ansible.builtin.debug:
+    msg:
+      - "=== CoreDNS Worker Placement Verified ==="
+      - "Control Plane Nodes: {{ control_plane_nodes | join(', ') }}"
+      - "CoreDNS Pod Placements: {{ coredns_pod_nodes | join(', ') }}"

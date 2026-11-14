@@ -20,6 +20,7 @@ ansible-prepare-k8s-cluster/
 │   ├── shutdown.yml           # Drain and safely shut down nodes
 │   ├── start-kubernetes.yml   # Start containerd & kubelet, uncordon nodes
 │   ├── stop-kubernetes.yml    # Drain, stop containers, stop services
+│   ├── verify-kubernetes.yml  # Comprehensive Kubernetes cluster state & DNS verification
 │   └── verify-node-uniqueness.yml # Verify DMI/serial and MAC address uniqueness
 └── tasks/                     # Modular task files grouped by category
     ├── generic/               # Generic utilities (fetch-file, sandbox image parsing)
@@ -41,6 +42,12 @@ ansible all -m ansible.builtin.ping -i ansible-prepare-k8s-cluster/inventory.yml
 ### Verify Node Hardware Uniqueness (MAC & DMI / Serial)
 ```bash
 ansible-playbook -i ansible-prepare-k8s-cluster/inventory.yml ansible-prepare-k8s-cluster/playbooks/verify-node-uniqueness.yml
+```
+
+### Verify Kubernetes Cluster State & Health
+Consolidated cluster health verification: validates node readiness, control-plane static pods (`etcd`, `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`), CoreDNS worker isolation and replica spread, core daemonsets (`flannel`, `kube-proxy`, `metallb`), and cross-node DNS resolution (`10.96.0.10:53`):
+```bash
+ansible-playbook -i ansible-prepare-k8s-cluster/inventory.yml ansible-prepare-k8s-cluster/playbooks/verify-kubernetes.yml
 ```
 
 ---

@@ -1,0 +1,125 @@
+---
+# ==============================================================================
+# Kubernetes Cluster Verification Playbook
+#
+# Consolidates all post-provisioning and cluster stability verification tasks:
+# 1. Cluster node readiness and health conditions across all nodes.
+# 2. Control plane static pods (etcd, apiserver, controller-manager, scheduler).
+# 3. CoreDNS worker node isolation, pod anti-affinity spread, and replica status.
+# 4. Kubelet systemReserved, kubeReserved, and Allocatable resource protection.
+# 5. Critical system daemonsets (Flannel, Kube-Proxy, MetalLB Speaker).
+# 6. Cross-node in-cluster DNS resolution (10.96.0.10:53) from every node.
+# ==============================================================================
+
+- name: Verify Kubernetes cluster state, control plane, and CoreDNS isolation
+  hosts: control_node
+  gather_facts: false
+  tasks:
+    # --------------------------------------------------------------------------
+    # 1. Node Readiness & Health
+    # --------------------------------------------------------------------------
+    - name: Retrieve cluster nodes status
+      ansible.builtin.command: kubectl get nodes -o json
+      register: nodes_raw
+      changed_when: false
+      become: false
+      tags: [nodes, health]
+
+    - name: Parse nodes specification
+      ansible.builtin.set_fact:
+        k8s_cluster_nodes: "{{ (nodes_raw.stdout | from_json)['items'] }}"
+      tags: [nodes, health]
+
+    - name: Verify all expected cluster nodes are in Ready status
+      ansible.builtin.assert:
+        that:
+          - (item.status.conditions | selectattr('type', 'equalto', 'Ready') | map(attribute='status') | first) == 'True'
+          - (item.status.conditions | selectattr('type', 'equalto', 'MemoryPressure') | map(attribute='status') | first) == 'False'
+          - (item.status.conditions | selectattr('type', 'equalto', 'DiskPressure') | map(attribute='status') | first) == 'False'
+          - (item.status.conditions | selectattr('type', 'equalto', 'PIDPressure') | map(attribute='status') | first) == 'False'
+        fail_msg: "Node {{ item.metadata.name }} is not healthy or not in Ready condition!"
+        success_msg: "Node {{ item.metadata.name }} is Ready with no pressure conditions."
+        quiet: true
+      loop: "{{ k8s_cluster_nodes }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+      tags: [nodes, health]
+
+    # --------------------------------------------------------------------------
+    # 2. Control Plane Static Pods
+    # --------------------------------------------------------------------------
+    - name: Retrieve control plane static pods
+      ansible.builtin.command: kubectl get pods -n kube-system -l tier=control-plane -o json
+      register: cp_pods_raw
+      changed_when: false
+      become: false
+      tags: [control-plane, health]
+
+    - name: Parse control plane pods specification
+      ansible.builtin.set_fact:
+        cp_pods: "{{ (cp_pods_raw.stdout | from_json)['items'] }}"
+      tags: [control-plane, health]
+
+    - name: Verify all control plane static pods are Running and Ready
+      ansible.builtin.assert:
+        that:
+          - item.status.phase == 'Running'
+          - (item.status.containerStatuses | selectattr('ready', 'equalto', true) | list | length) == (item.status.containerStatuses | length)
+        fail_msg: "Control plane pod {{ item.metadata.name }} is not Ready/Running!"
+        success_msg: "Control plane pod {{ item.metadata.name }} is healthy and Running."
+        quiet: true
+      loop: "{{ cp_pods }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+      tags: [control-plane, health]
+
+    # --------------------------------------------------------------------------
+    # 3. CoreDNS Worker Node Isolation & Placement
+    # --------------------------------------------------------------------------
+    - name: Verify CoreDNS worker placement and configuration
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/verification/verify-coredns-workers.yml
+      tags: [coredns, dns]
+
+    # --------------------------------------------------------------------------
+    # 4. Kubelet Allocatable & Resource Reservations
+    # --------------------------------------------------------------------------
+    - name: Verify Kubelet systemReserved, kubeReserved, and Allocatable resource protection
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/verification/verify-kubelet-reservations.yml
+      tags: [kubelet, reservations]
+
+    # --------------------------------------------------------------------------
+    # 5. Critical Networking DaemonSets (Flannel, Kube-Proxy & MetalLB)
+    # --------------------------------------------------------------------------
+    - name: Verify Flannel daemonset is fully rolled out and ready
+      ansible.builtin.command: kubectl rollout status daemonset/kube-flannel-ds -n kube-flannel --timeout=10s
+      changed_when: false
+      become: false
+      tags: [network, health]
+
+    - name: Verify Kube-Proxy daemonset is fully rolled out and ready
+      ansible.builtin.command: kubectl rollout status daemonset/kube-proxy -n kube-system --timeout=10s
+      changed_when: false
+      become: false
+      tags: [network, health]
+
+    - name: Verify MetalLB Speaker daemonset is fully rolled out and ready
+      ansible.builtin.command: kubectl rollout status daemonset/speaker -n metallb-system --timeout=10s
+      changed_when: false
+      become: false
+      tags: [network, health]
+
+- name: Verify in-cluster DNS resolution from all Kubernetes nodes
+  hosts: k8s_nodes
+  gather_facts: false
+  tasks:
+    - name: Query Kubernetes API service via CoreDNS cluster IP (10.96.0.10)
+      ansible.builtin.command: dig @10.96.0.10 kubernetes.default.svc.cluster.local +short +time=2 +tries=2
+      register: dig_result
+      changed_when: false
+      failed_when: dig_result.stdout | trim != "10.96.0.1"
+      tags: [dns, connectivity]
+
+    - name: Display DNS resolution verification status
+      ansible.builtin.debug:
+        msg: "DNS lookup on {{ inventory_hostname }} via 10.96.0.10 resolved successfully: {{ dig_result.stdout | trim }}"
+      tags: [dns, connectivity]

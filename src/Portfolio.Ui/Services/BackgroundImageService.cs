@@ -1,4 +1,5 @@
 using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Extensions;
@@ -24,29 +25,34 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
     private const int MaxDimensionPixels = 4096;
 
     private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(23);
+    private static readonly TimeSpan FallbackCacheDuration = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan GrpcTimeout = TimeSpan.FromSeconds(5);
     private static readonly SemaphoreSlim CacheLock = new(1, 1);
     private static readonly SemaphoreSlim DesktopLock = new(1, 1);
     private static readonly SemaphoreSlim MobileLock = new(1, 1);
 
     private static SemaphoreSlim GetLock(string variant) => string.Equals(variant, DeviceTypes.Mobile, StringComparison.OrdinalIgnoreCase) ? MobileLock : DesktopLock;
 
+    private static BackgroundImageModel CreateFallbackImage() => new()
+    {
+        Url = FallbackBackgroundImage,
+        AltText = FallbackAltText,
+        Source = ImageOfTheDaySource.Bing
+    };
+
     private async Task<BackgroundImageModel> GetFromDbAsync(CancellationToken cancellationToken = default)
     {
         if (EnvVars.IsDevelopment())
-            return new() { Url = FallbackBackgroundImage, AltText = FallbackAltText, Source = ImageOfTheDaySource.Bing };
+            return CreateFallbackImage();
 
-        var response = await backgroundImagesClient.GetAsync(new Empty(), cancellationToken: cancellationToken);
+        var deadline = DateTime.UtcNow.Add(GrpcTimeout);
+        var response = await backgroundImagesClient.GetAsync(new Empty(), deadline: deadline, cancellationToken: cancellationToken);
         logger.LogInformation("📨 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(backgroundImagesClient.GetAsync), response.Url);
 
         if (response.Source == ImageOfTheDaySource.None || string.IsNullOrWhiteSpace(response.Url))
         {
             logger.LogError("❌ There is no image of the day available at gRPC, serving default bg img.");
-            return new()
-            {
-                Url = FallbackBackgroundImage,
-                AltText = FallbackAltText,
-                Source = ImageOfTheDaySource.Bing
-            };
+            return CreateFallbackImage();
         }
 
         return new()
@@ -76,10 +82,19 @@ public class BackgroundImageService(BackgroundImages.BackgroundImagesClient back
 
             return await memoryCache.GetOrCreateAsync(CacheKey, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = CacheDuration;
-                var image = await GetFromDbAsync(cancellationToken);
-                logger.LogInformation("💾 Background image added to cache with 23-hour expiration");
-                return image;
+                try
+                {
+                    entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+                    var image = await GetFromDbAsync(cancellationToken);
+                    logger.LogInformation("💾 Background image added to cache with 23-hour expiration");
+                    return image;
+                }
+                catch (RpcException ex) when (!cancellationToken.IsCancellationRequested)
+                {
+                    logger.LogWarning(ex, "⚠️ gRPC backend unavailable when loading background image; serving fallback image");
+                    entry.AbsoluteExpirationRelativeToNow = FallbackCacheDuration;
+                    return CreateFallbackImage();
+                }
             }) ?? throw new InvalidOperationException("Failed to retrieve background image from cache.");
         }
         finally

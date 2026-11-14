@@ -203,7 +203,7 @@ public class BackgroundImageServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task GetFromCacheAsync_WhenGrpcThrowsRpcException_PropagatesException()
+    public async Task GetFromCacheAsync_WhenGrpcThrowsRpcException_ReturnsFallbackImage()
     {
         // Arrange
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
@@ -216,11 +216,40 @@ public class BackgroundImageServiceTests : IDisposable
         var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance, _dummyHttpClient);
 
         // Act
-        var act = async () => await service.GetFromCacheAsync();
+        var result = await service.GetFromCacheAsync();
 
         // Assert
-        await act.Should().ThrowAsync<RpcException>()
-            .WithMessage("*gRPC service down*");
+        result.Should().NotBeNull();
+        result.IsFallback.Should().BeTrue();
+        result.DesktopImageUrl.Should().Be("img/default-bg.webp");
+        result.MobileImageUrl.Should().Be("img/default-bg-mobile.webp");
+        result.Source.Should().Be(ImageOfTheDaySource.Bing);
+        memoryCache.TryGetValue("background_image", out BackgroundImageModel? cached).Should().BeTrue();
+        cached.Should().NotBeNull();
+        cached!.IsFallback.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetFromCacheAsync_WhenCancelledAndGrpcThrowsRpcException_PropagatesException()
+    {
+        // Arrange
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
+        var mockClient = new Mock<BackgroundImages.BackgroundImagesClient>();
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        using var cts = new CancellationTokenSource();
+
+        mockClient.Setup(c => c.GetAsync(It.IsAny<Empty>(), It.IsAny<Metadata>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
+            .Callback(() => cts.Cancel())
+            .Throws(new RpcException(new Status(StatusCode.Cancelled, "Request cancelled")));
+
+        var service = new BackgroundImageService(mockClient.Object, memoryCache, NullLogger<BackgroundImageService>.Instance, _dummyHttpClient);
+
+        // Act
+        var act = async () => await service.GetFromCacheAsync(cts.Token);
+
+        // Assert
+        await act.Should().ThrowAsync<RpcException>();
+        memoryCache.TryGetValue("background_image", out _).Should().BeFalse();
     }
 
     [Fact]

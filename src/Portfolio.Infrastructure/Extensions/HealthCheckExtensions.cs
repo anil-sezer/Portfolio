@@ -35,7 +35,7 @@ public static class HealthCheckExtensions
             builder.InitializeHealthChecks()
                 .AddCheck("LiveCheck", () => HealthCheckResult.Healthy("Live"), tags: ["live"])
                 .AddDbContextCheck<PortfolioDbContext>(
-                    failureStatus: HealthStatus.Degraded,
+                    failureStatus: HealthStatus.Unhealthy,
                     name: ReadinessDbCheckName,
                     tags: ["ready"]);
         }

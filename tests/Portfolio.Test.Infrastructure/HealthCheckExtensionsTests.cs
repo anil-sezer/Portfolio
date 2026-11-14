@@ -1,4 +1,10 @@
 using FluentAssertions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Portfolio.Infrastructure.Extensions;
 
 namespace Portfolio.Test.Infrastructure;
@@ -43,5 +49,59 @@ public class HealthCheckExtensionsTests
 
         // Assert
         result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void AddHealthChecksForEndpointAndDb_RegistersReadinessDbCheckWithUnhealthyFailureStatus()
+    {
+        // Arrange
+        var builder = WebApplication.CreateBuilder();
+
+        // Act
+        builder.AddHealthChecksForEndpointAndDb();
+        using var provider = builder.Services.BuildServiceProvider();
+        var options = provider.GetRequiredService<IOptions<HealthCheckServiceOptions>>().Value;
+
+        // Assert
+        var dbRegistration = options.Registrations.Should()
+            .ContainSingle(r => r.Name == "ReadinessDbCheck")
+            .Subject;
+
+        dbRegistration.FailureStatus.Should().Be(HealthStatus.Unhealthy);
+        dbRegistration.Tags.Should().Contain("ready");
+    }
+
+    [Theory]
+    [InlineData(HealthStatus.Healthy, StatusCodes.Status200OK)]
+    [InlineData(HealthStatus.Unhealthy, StatusCodes.Status503ServiceUnavailable)]
+    public async Task MapReadinessHealthCheck_MapsHealthStatusToExpectedHttpStatusCode(
+        HealthStatus checkStatus,
+        int expectedStatusCode)
+    {
+        // Arrange
+        var builder = WebApplication.CreateBuilder();
+        builder.InitializeHealthChecks()
+            .AddCheck("TestReadyCheck", () => new HealthCheckResult(checkStatus), tags: ["ready"]);
+
+        await using var app = builder.Build();
+        app.MapReadinessHealthCheck();
+
+        var endpoint = ((IEndpointRouteBuilder)app).DataSources
+            .SelectMany(ds => ds.Endpoints)
+            .OfType<RouteEndpoint>()
+            .Should()
+            .ContainSingle(e => e.RoutePattern.RawText == "/readiness")
+            .Subject;
+
+        var httpContext = new DefaultHttpContext
+        {
+            RequestServices = app.Services
+        };
+
+        // Act
+        await endpoint.RequestDelegate!(httpContext);
+
+        // Assert
+        httpContext.Response.StatusCode.Should().Be(expectedStatusCode);
     }
 }

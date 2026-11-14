@@ -32,11 +32,7 @@ builder.Services.AddLocalization();
 
 builder.Services.AddValidation();
 
-builder.InitializeHealthChecks()
-    .AddCheck<Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck>(
-        name: Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck.CheckName,
-        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
-        tags: ["ready"]);
+builder.InitializeHealthChecks();
 
 builder.InitializeGrpcClients();
 

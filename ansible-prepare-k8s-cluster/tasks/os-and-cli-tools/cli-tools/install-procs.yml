@@ -1,0 +1,18 @@
+---
+# A modern replacement for ps
+# https://github.com/dalance/procs
+- name: Check if procs is already installed
+  ansible.builtin.command: procs --version
+  register: procs_rc
+  failed_when: false
+  changed_when: false
+  become: true
+
+- name: Install procs
+  ansible.builtin.unarchive:
+    src: "https://github.com/dalance/procs/releases/download/{{ procsversion }}/procs-{{ procsversion }}-aarch64-linux.zip"
+    dest: /usr/local/bin
+    mode: "0755"
+    remote_src: true
+  become: true
+  when: procs_rc.rc != 0

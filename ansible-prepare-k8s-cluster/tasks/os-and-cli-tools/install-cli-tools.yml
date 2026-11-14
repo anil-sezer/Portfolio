@@ -30,11 +30,7 @@
 # A modern replacement for ps
 # https://github.com/dalance/procs
 - name: Install procs
-  ansible.builtin.package:
-    name: procs
-    state: present
-    use: snap
-  become: true
+  ansible.builtin.import_tasks: ./cli-tools/install-procs.yml
 
 # A line-oriented search tool that recursively searches the current directory for a regex pattern.
 # https://github.com/BurntSushi/ripgrep

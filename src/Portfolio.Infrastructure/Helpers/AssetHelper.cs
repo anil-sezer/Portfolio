@@ -17,6 +17,7 @@ public static class AssetHelper
                path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase) ||
+               path.EndsWith(".avif", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".woff", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".woff2", StringComparison.OrdinalIgnoreCase) ||
                path.EndsWith(".wasm", StringComparison.OrdinalIgnoreCase) ||

@@ -20,6 +20,7 @@ public class AssetHelperTests
 
     [Theory]
     [InlineData("/images/logo.png")]
+    [InlineData("/images/photo.avif")]
     [InlineData("/favicon.ico")]
     [InlineData("/fonts/open-sans.woff2")]
     [InlineData("/scripts/bundle.js.map")]

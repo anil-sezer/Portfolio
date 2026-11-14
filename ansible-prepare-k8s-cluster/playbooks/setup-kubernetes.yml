@@ -65,6 +65,9 @@
     - name: Ensure kubelet systemd unit has containerd dependency override
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-containerd-override.yml
 
+    - name: Configure kubelet systemReserved, kubeReserved, and evictionHard thresholds
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-resource-reservation.yml
+
     - name: Install cri-tools and configure crictl
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cri-tools-install.yml
 

@@ -1,0 +1,130 @@
+---
+# ==============================================================================
+# Kubelet Resource Reservation & Eviction Thresholds
+#
+# Configures kubelet systemReserved, kubeReserved, and hard memory/disk eviction
+# thresholds in /var/lib/kubelet/config.yaml across all cluster nodes.
+# Synchronizes ConfigMap/kubelet-config in namespace kube-system on the control
+# plane so future kubeadm upgrade cycles retain these resource guarantees.
+# ==============================================================================
+
+- name: Configure node kubelet resource reservations and hard eviction thresholds
+  become: true
+  block:
+    - name: Ensure /var/lib/kubelet directory exists
+      ansible.builtin.file:
+        path: /var/lib/kubelet
+        state: directory
+        mode: "0755"
+
+    - name: Check if kubelet config.yaml exists
+      ansible.builtin.stat:
+        path: /var/lib/kubelet/config.yaml
+      register: kubelet_config_stat
+
+    - name: Read existing kubelet configuration
+      ansible.builtin.slurp:
+        src: /var/lib/kubelet/config.yaml
+      register: kubelet_raw_config
+      when: kubelet_config_stat.stat.exists
+
+    - name: Merge resource reservations and eviction thresholds into kubelet configuration
+      ansible.builtin.set_fact:
+        kubelet_updated_config: >-
+          {{ (kubelet_raw_config.content | b64decode | from_yaml)
+             | combine({
+                 'systemReserved': {
+                   'cpu': kubelet_system_reserved_cpu | default('200m'),
+                   'memory': kubelet_system_reserved_memory | default('512Mi')
+                 },
+                 'kubeReserved': {
+                   'cpu': kubelet_kube_reserved_cpu | default('200m'),
+                   'memory': kubelet_kube_reserved_memory | default('512Mi')
+                 },
+                 'evictionHard': {
+                   'imagefs.available': '15%',
+                   'imagefs.inodesFree': '5%',
+                   'memory.available': kubelet_eviction_hard_memory | default('300Mi'),
+                   'nodefs.available': '10%',
+                   'nodefs.inodesFree': '5%'
+                 }
+               }, recursive=True) }}
+      when: kubelet_config_stat.stat.exists
+
+    - name: Write updated kubelet config.yaml
+      ansible.builtin.copy:
+        dest: /var/lib/kubelet/config.yaml
+        content: "{{ kubelet_updated_config | to_nice_yaml(indent=2) }}"
+        mode: "0644"
+      register: kubelet_config_file
+      when: kubelet_config_stat.stat.exists
+
+    - name: Restart kubelet if configuration changed
+      ansible.builtin.systemd:
+        name: kubelet
+        state: restarted
+      when:
+        - kubelet_config_stat.stat.exists
+        - kubelet_config_file.changed
+
+- name: Synchronize kubelet-config ConfigMap in kube-system (control plane only)
+  when: inventory_hostname in groups['control_node']
+  become: false
+  block:
+    - name: Retrieve current kubelet-config ConfigMap from kube-system
+      ansible.builtin.command: kubectl get cm kubelet-config -n kube-system -o json
+      register: kubelet_cm_raw
+      changed_when: false
+
+    - name: Parse kubelet-config ConfigMap JSON
+      ansible.builtin.set_fact:
+        kubelet_cm_json: "{{ kubelet_cm_raw.stdout | from_json }}"
+
+    - name: Parse and merge resource reservations into ConfigMap kubelet configuration
+      ansible.builtin.set_fact:
+        kubelet_cm_desired_config: >-
+          {{ (kubelet_cm_json.data.kubelet | from_yaml)
+             | combine({
+                 'systemReserved': {
+                   'cpu': kubelet_system_reserved_cpu | default('200m'),
+                   'memory': kubelet_system_reserved_memory | default('512Mi')
+                 },
+                 'kubeReserved': {
+                   'cpu': kubelet_kube_reserved_cpu | default('200m'),
+                   'memory': kubelet_kube_reserved_memory | default('512Mi')
+                 },
+                 'evictionHard': {
+                   'imagefs.available': '15%',
+                   'imagefs.inodesFree': '5%',
+                   'memory.available': kubelet_eviction_hard_memory | default('300Mi'),
+                   'nodefs.available': '10%',
+                   'nodefs.inodesFree': '5%'
+                 }
+               }, recursive=True) }}
+
+    - name: Check if ConfigMap kubelet configuration requires update
+      ansible.builtin.set_fact:
+        kubelet_cm_needs_update: >-
+          {{ (kubelet_cm_json.data.kubelet | from_yaml).get('systemReserved') != kubelet_cm_desired_config.systemReserved or
+             (kubelet_cm_json.data.kubelet | from_yaml).get('kubeReserved') != kubelet_cm_desired_config.kubeReserved or
+             (kubelet_cm_json.data.kubelet | from_yaml).get('evictionHard') != kubelet_cm_desired_config.evictionHard }}
+
+    - name: Prepare ConfigMap manifest for declarative apply
+      ansible.builtin.set_fact:
+        kubelet_cm_manifest:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: kubelet-config
+            namespace: kube-system
+          data:
+            kubelet: "{{ kubelet_cm_desired_config | to_nice_yaml(indent=2) }}"
+      when: kubelet_cm_needs_update | bool
+
+    - name: Apply updated kubelet-config ConfigMap to kube-system
+      ansible.builtin.command: kubectl apply -f -
+      args:
+        stdin: "{{ kubelet_cm_manifest | to_nice_yaml(indent=2) }}"
+      register: kubelet_cm_apply
+      changed_when: "'configured' in kubelet_cm_apply.stdout or 'created' in kubelet_cm_apply.stdout"
+      when: kubelet_cm_needs_update | bool

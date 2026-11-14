@@ -10,6 +10,9 @@
 #     3. Ensures --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt and
 #        --service-account-extend-token-expiration=false are set in
 #        /etc/kubernetes/manifests/kube-apiserver.yaml.
+#   - Task 2 (CIS 1.2.15 / 1.3.2 / 1.4.1):
+#     1. Ensures --profiling=false is set in kube-apiserver.yaml,
+#        kube-controller-manager.yaml, and kube-scheduler.yaml.
 # ==============================================================================
 
 - name: Enable kubelet serving TLS bootstrapping on all cluster nodes
@@ -113,50 +116,83 @@
       loop: "{{ cis_pending_kubelet_csrs }}"
       when: cis_pending_kubelet_csrs | length > 0
 
-- name: Harden kube-apiserver static pod manifest (control plane only)
+- name: Harden control plane static pod manifests (control plane only)
   when: inventory_hostname in groups['control_node']
   become: true
   block:
-    - name: Read kube-apiserver static pod manifest
+    - name: Define required CIS flags per control plane static pod manifest
+      ansible.builtin.set_fact:
+        cis_manifests_to_update: []
+        cis_control_plane_manifests:
+          - path: /etc/kubernetes/manifests/kube-apiserver.yaml
+            flags:
+              - "--kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt"
+              - "--profiling=false"
+              - "--service-account-extend-token-expiration=false"
+          - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+            flags:
+              - "--profiling=false"
+          - path: /etc/kubernetes/manifests/kube-scheduler.yaml
+            flags:
+              - "--profiling=false"
+
+    - name: Read control plane static pod manifests
       ansible.builtin.slurp:
-        src: /etc/kubernetes/manifests/kube-apiserver.yaml
-      register: cis_apiserver_raw
+        src: "{{ item.path }}"
+      loop: "{{ cis_control_plane_manifests }}"
+      loop_control:
+        label: "{{ item.path }}"
+      register: cis_manifests_raw
 
-    - name: Parse kube-apiserver static pod manifest
+    - name: Compute control plane manifests requiring CIS flag updates
       ansible.builtin.set_fact:
-        cis_apiserver_manifest: "{{ cis_apiserver_raw.content | b64decode | from_yaml }}"
+        cis_manifests_to_update: >-
+          {{ cis_manifests_to_update + [{
+               'path': item.item.path,
+               'name': item.item.path | basename,
+               'updated_manifest': parsed_manifest | combine({
+                 'spec': {
+                   'containers': [
+                     parsed_manifest.spec.containers[0] | combine({
+                       'command': current_cmd + missing_flags
+                     })
+                   ]
+                 }
+               }, recursive=True)
+             }] }}
+      vars:
+        parsed_manifest: "{{ item.content | b64decode | from_yaml }}"
+        current_cmd: "{{ parsed_manifest.spec.containers[0].command }}"
+        missing_flags: "{{ item.item.flags | difference(current_cmd) }}"
+      loop: "{{ cis_manifests_raw.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+      when: missing_flags | length > 0
 
-    - name: Define required kube-apiserver CIS flags (Task 1)
-      ansible.builtin.set_fact:
-        cis_apiserver_required_flags:
-          - "--kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt"
-          - "--service-account-extend-token-expiration=false"
+    - name: Ensure external manifest backup directory exists
+      ansible.builtin.file:
+        path: /etc/kubernetes/manifests.bak
+        state: directory
+        mode: "0700"
+      when: cis_manifests_to_update | length > 0
 
-    - name: Compute missing kube-apiserver flags
-      ansible.builtin.set_fact:
-        cis_apiserver_current_cmd: "{{ cis_apiserver_manifest.spec.containers[0].command }}"
-        cis_apiserver_missing_flags: >-
-          {{ cis_apiserver_required_flags
-             | difference(cis_apiserver_manifest.spec.containers[0].command) }}
-
-    - name: Update kube-apiserver command list with missing CIS flags
-      ansible.builtin.set_fact:
-        cis_apiserver_updated_manifest: >-
-          {{ cis_apiserver_manifest | combine({
-               'spec': {
-                 'containers': [
-                   cis_apiserver_manifest.spec.containers[0] | combine({
-                     'command': cis_apiserver_current_cmd + cis_apiserver_missing_flags
-                   })
-                 ]
-               }
-             }, recursive=True) }}
-      when: cis_apiserver_missing_flags | length > 0
-
-    - name: Write hardened kube-apiserver.yaml manifest
+    - name: Back up control plane manifests before modification
       ansible.builtin.copy:
-        dest: /etc/kubernetes/manifests/kube-apiserver.yaml
-        content: "{{ cis_apiserver_updated_manifest | to_nice_yaml(indent=2) }}"
+        src: "{{ item.path }}"
+        dest: "/etc/kubernetes/manifests.bak/{{ item.name }}.{{ ansible_facts['date_time']['epoch'] }}"
         mode: "0600"
-        backup: true
-      when: cis_apiserver_missing_flags | length > 0
+        remote_src: true
+      loop: "{{ cis_manifests_to_update }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: cis_manifests_to_update | length > 0
+
+    - name: Write hardened control plane static pod manifests
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.updated_manifest | to_nice_yaml(indent=2) }}"
+        mode: "0600"
+      loop: "{{ cis_manifests_to_update }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: cis_manifests_to_update | length > 0

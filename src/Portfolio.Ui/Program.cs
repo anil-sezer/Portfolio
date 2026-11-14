@@ -30,6 +30,8 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddLocalization();
 
+builder.Services.AddValidation();
+
 builder.InitializeHealthChecks()
     .AddCheck<Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck>(
         name: Portfolio.Ui.HealthChecks.GrpcBackendHealthCheck.CheckName,

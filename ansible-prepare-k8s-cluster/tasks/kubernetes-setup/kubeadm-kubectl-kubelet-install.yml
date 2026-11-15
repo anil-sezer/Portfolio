@@ -1,24 +1,5 @@
 ---
-- name: Check if kubelet is installed
-  ansible.builtin.shell: dpkg -l | grep kubelet
-  register: kubelet_check
-  failed_when: false
-  changed_when: false
-
-- name: Check if kubeadm is installed
-  ansible.builtin.shell: dpkg -l | grep kubeadm
-  register: kubeadm_check
-  failed_when: false
-  changed_when: false
-
-- name: Check if kubectl is installed
-  ansible.builtin.shell: dpkg -l | grep kubectl
-  register: kubectl_check
-  failed_when: false
-  changed_when: false
-
-- name: Install kubeadm kubectl and kubelet if they are not already installed
-  when: "'kubelet' not in kubelet_check.stdout and 'kubeadm' not in kubeadm_check.stdout and 'kubectl' not in kubectl_check.stdout"
+- name: Install and hold kubeadm, kubectl, and kubelet
   become: true
   block:
     - name: Ensure /etc/apt/keyrings directory exists
@@ -34,14 +15,17 @@
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-    - name: This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-      ansible.builtin.shell: >
-        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
-        tee /etc/apt/sources.list.d/kubernetes.list
+    - name: Configure Kubernetes apt repository
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/kubernetes.list
+        mode: "0644"
+        content: |
+          deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /
+      register: k8s_apt_repo
 
-    - name: Install kubelet kubeadm kubectl.
+    - name: Install kubelet, kubeadm, and kubectl
       ansible.builtin.apt:
-        update_cache: true
+        update_cache: "{{ k8s_apt_repo.changed }}"
         state: present
         pkg:
           - kubelet
@@ -49,22 +33,16 @@
           - kubectl
         install_recommends: true
 
-    - name: Prevent kubelet from being upgraded.
+    - name: Prevent kubelet, kubeadm, and kubectl from being upgraded
       ansible.builtin.dpkg_selections:
-        name: kubelet
+        name: "{{ item }}"
         selection: hold
+      loop:
+        - kubelet
+        - kubeadm
+        - kubectl
 
-    - name: Prevent kubeadm from being upgraded.
-      ansible.builtin.dpkg_selections:
-        name: kubeadm
-        selection: hold
-
-    - name: Prevent kubectl from being upgraded.
-      ansible.builtin.dpkg_selections:
-        name: kubectl
-        selection: hold
-
-    - name: Prevent kernel and firmware packages from being upgraded.
+    - name: Prevent kernel and firmware packages from being upgraded
       ansible.builtin.dpkg_selections:
         name: "{{ item }}"
         selection: hold

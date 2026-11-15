@@ -1,51 +1,83 @@
 ---
-# todo: Check if the metal-lb is already installed. This needs to be idempotent. Also only run in control node.
-- name: Get kube-proxy config.
-  ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml
+# ==============================================================================
+# MetalLB Setup (FRR-K8s Mode)
+#
+# Configures kube-proxy for IPVS strictARP mode, installs MetalLB manifests,
+# waits for controller/speaker rollouts, and applies the IPAddressPool and
+# L2Advertisement configuration from the repository.
+# ==============================================================================
+
+- name: Retrieve current kube-proxy ConfigMap from kube-system
+  ansible.builtin.command: kubectl get configmap kube-proxy -n kube-system -o json
+  register: kube_proxy_cm_raw
   changed_when: false
   become: false
 
-- name: Ensure strictARP is set to true in the temp kube-proxy config using sed.
-  ansible.builtin.command: 'sed -i "s/strictARP: false/strictARP: true/" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
+- name: Parse kube-proxy ConfigMap JSON and config.conf
+  ansible.builtin.set_fact:
+    kube_proxy_cm_json: "{{ kube_proxy_cm_raw.stdout | from_json }}"
+    kube_proxy_current_config: "{{ (kube_proxy_cm_raw.stdout | from_json).data['config.conf'] | from_yaml }}"
+
+- name: Merge strictARP and ipvs mode into kube-proxy configuration
+  ansible.builtin.set_fact:
+    kube_proxy_desired_config: >-
+      {{ kube_proxy_current_config
+         | combine({
+             'ipvs': {'strictARP': true},
+             'mode': 'ipvs'
+           }, recursive=True) }}
+
+- name: Check if kube-proxy ConfigMap requires update
+  ansible.builtin.set_fact:
+    kube_proxy_cm_needs_update: >-
+      {{ (kube_proxy_current_config.get('ipvs') or {}).get('strictARP') != true or
+         kube_proxy_current_config.get('mode') != 'ipvs' }}
+
+- name: Prepare kube-proxy ConfigMap manifest for declarative apply
+  ansible.builtin.set_fact:
+    kube_proxy_cm_manifest:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: kube-proxy
+        namespace: kube-system
+      data: "{{ kube_proxy_cm_json.data | combine({'config.conf': kube_proxy_desired_config | to_nice_yaml(indent=2)}) }}"
+  when: kube_proxy_cm_needs_update | bool
+
+- name: Apply updated kube-proxy ConfigMap to kube-system
+  ansible.builtin.command: kubectl apply -f -
+  args:
+    stdin: "{{ kube_proxy_cm_manifest | to_nice_yaml(indent=2) }}"
+  register: kube_proxy_cm_apply
+  changed_when: "'configured' in kube_proxy_cm_apply.stdout or 'created' in kube_proxy_cm_apply.stdout"
   become: false
+  when: kube_proxy_cm_needs_update | bool
 
-- name: Ensure mode is set to ipvs in the temp kube-proxy config using sed.
-  ansible.builtin.command: >-
-    sed -i 's/mode: "[^"]*"/mode: "ipvs"/' /tmp/kube-proxy-temp-config-for-metal-lb.yml
-  become: false
-
-- name: Check if kube-proxy config needs updating (dry run).
-  ansible.builtin.command: kubectl diff -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system
-  register: diff_result
-  failed_when: false
-  changed_when: false
-
-- name: Print differences if any.
-  debug:
-    var: diff_result.stdout_lines
-  when: diff_result.rc != 0
-
-- name: Apply the new config if there is a diff.
-  ansible.builtin.command: kubectl apply -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system
-  failed_when: false
-  changed_when: true
-  when: diff_result.rc != 0
-
-- name: Remove the temp config file.
-  ansible.builtin.file:
-    path: /tmp/kube-proxy-temp-config-for-metal-lb.yml
-    state: absent
-  become: false
-  changed_when: false
-
-- name: Apply metallb configs
-  ansible.builtin.command: kubectl apply -f ../../../metallb-config.yml
-  register: config_apply_result
-  become: false
-
-- name: Install FRR-K8s mode (recommended)
+- name: Install MetalLB (FRR-K8s mode)
   ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/config/manifests/metallb-frr-k8s.yaml
+  register: metallb_install_result
+  changed_when: "'configured' in metallb_install_result.stdout or 'created' in metallb_install_result.stdout"
+  become: false
 
-- name: Print kubectl apply result
-  debug:
-    var: config_apply_result.stdout_lines
+- name: Wait for MetalLB controller deployment to be ready
+  ansible.builtin.command: kubectl rollout status deployment/controller -n metallb-system --timeout=120s
+  changed_when: false
+  become: false
+
+- name: Wait for MetalLB speaker daemonset to be ready
+  ansible.builtin.command: kubectl rollout status daemonset/speaker -n metallb-system --timeout=120s
+  changed_when: false
+  become: false
+
+- name: Apply MetalLB IPAddressPool and L2Advertisement configuration
+  ansible.builtin.command: kubectl apply -f -
+  args:
+    stdin: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/../../kubernetes/metallb-config.yml') }}"
+  register: metallb_config_apply_result
+  changed_when: "'configured' in metallb_config_apply_result.stdout or 'created' in metallb_config_apply_result.stdout"
+  become: false
+
+- name: Print MetalLB config apply result
+  ansible.builtin.debug:
+    var: metallb_config_apply_result.stdout_lines
+  when: metallb_config_apply_result.changed

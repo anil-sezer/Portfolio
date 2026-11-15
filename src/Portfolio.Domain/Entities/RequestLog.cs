@@ -1,4 +1,5 @@
 using Portfolio.Domain.Extensions;
+using Portfolio.Domain.Utilities;
 
 namespace Portfolio.Domain.Entities;
 
@@ -124,7 +125,7 @@ public class RequestLog : EntityBase
     public required string Extras
     {
         get => _extras;
-        init => _extras = value.Truncate(MaxExtrasLength);
+        init => _extras = BoundedJsonSerializer.TruncateJsonOrText(value, MaxExtrasLength);
     }
 
     public void UpdateLocation(string city, string country)

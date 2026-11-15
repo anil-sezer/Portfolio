@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
-using System.Text.Json;
+using Portfolio.Domain.Entities;
+using Portfolio.Domain.Utilities;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Ui.Extensions;
 
@@ -180,7 +181,10 @@ public static class ClientInfoRequestFactory
                     allowedHeaders[key] = value.ToString();
             }
 
-            return JsonSerializer.Serialize(allowedHeaders);
+            return BoundedJsonSerializer.SerializeWithinLimit(
+                allowedHeaders,
+                RequestLog.MaxExtrasLength,
+                keyComparer: StringComparer.OrdinalIgnoreCase);
         }
         catch (Exception e)
         {

@@ -3,6 +3,8 @@ using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Portfolio.Domain.Entities;
+using Portfolio.Domain.Utilities;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Ui.Factories;
 
@@ -264,5 +266,46 @@ public class ClientInfoRequestFactoryTests
 
         // Assert
         result.Referrer.Should().Be("https://duckduckgo.com");
+    }
+
+    [Fact]
+    public void Create_WhenHeaderValueExceedsLimit_TruncatesValueIndividuallyAndProducesValidJson()
+    {
+        // Arrange
+        var (context, mockAccessor) = CreateTestHttpContext();
+        context.Request.Headers.Host = "anilsezer.net";
+        context.Request.Headers["X-Large-Header"] = new string('A', 5000);
+
+        // Act
+        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
+
+        // Assert
+        result.Extras.Length.Should().BeLessThanOrEqualTo(RequestLog.MaxExtrasLength);
+        var parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(result.Extras)!;
+        parsed["Host"].Should().Be("anilsezer.net");
+        parsed["X-Large-Header"].Length.Should().Be(BoundedJsonSerializer.DefaultMaxValueLength);
+        parsed["X-Large-Header"].Should().EndWith(" ...");
+    }
+
+    [Fact]
+    public void Create_WhenTotalHeadersExceedMaxExtrasLength_ProducesValidBoundedJson()
+    {
+        // Arrange
+        var (context, mockAccessor) = CreateTestHttpContext();
+        for (var i = 0; i < 25; i++)
+        {
+            context.Request.Headers[$"X-Custom-{i:D2}"] = new string((char)('a' + (i % 26)), 300);
+        }
+
+        // Act
+        var result = ClientInfoRequestFactory.Create(mockAccessor.Object);
+
+        // Assert
+        result.Extras.Length.Should().BeLessThanOrEqualTo(RequestLog.MaxExtrasLength);
+        var act = () => JsonDocument.Parse(result.Extras);
+        act.Should().NotThrow();
+        var parsed = JsonSerializer.Deserialize<Dictionary<string, string>>(result.Extras)!;
+        parsed.Should().NotBeEmpty();
+        parsed.Count.Should().BeLessThan(25);
     }
 }

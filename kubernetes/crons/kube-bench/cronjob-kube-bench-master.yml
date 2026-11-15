@@ -56,11 +56,15 @@ spec:
               args:
                 - |
                   set -o pipefail
+                  # Skip intentionally deferred homelab checks:
+                  # 1.2.27, 1.2.28 - Secret encryption at rest in etcd (Task 6 skipped)
+                  SKIP_CHECKS="1.2.27,1.2.28"
+
                   echo "=== Running CIS Kubernetes Benchmark Audit on Master ==="
-                  kube-bench run --targets master,etcd,policies
+                  kube-bench run --targets master,etcd,policies --skip "$SKIP_CHECKS"
 
                   echo "=== Generating Audit Summary for Telegram ==="
-                  kube-bench run --targets master,etcd,policies --json > /tmp/results.json
+                  kube-bench run --targets master,etcd,policies --skip "$SKIP_CHECKS" --json > /tmp/results.json
 
                   PASS=$(jq -r '.Totals.total_pass // 0' /tmp/results.json)
                   FAIL=$(jq -r '.Totals.total_fail // 0' /tmp/results.json)

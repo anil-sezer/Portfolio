@@ -1,16 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"strings"
+)
 
+const defaultFlag = "🌐"
+
+// GetFlag returns the emoji flag for an ISO 3166-1 alpha-2 country code, falling back to 🌐 when missing.
 func GetFlag(countryCode string) string {
-	flag := flags[countryCode]
-	if flag == "" {
-		fmt.Println("Flag not found")
-		return flags["XX"]
+	normalized := strings.ToUpper(strings.TrimSpace(countryCode))
+	if flag, ok := flags[normalized]; ok && flag != "" {
+		return flag
 	}
 
-	fmt.Println("Flag:", flag)
-	return flag
+	log.Printf("Flag not found for country code %q, using fallback %s", countryCode, defaultFlag)
+	return defaultFlag
 }
 
 var flags = map[string]string{

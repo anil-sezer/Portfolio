@@ -2,6 +2,7 @@ package third_party
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -12,6 +13,9 @@ import (
 )
 
 const defaultBaseURL = "https://ipwho.is"
+
+// ErrPermanentLookup indicates the IP address cannot be geolocated (e.g., reserved range, invalid IP, or empty location).
+var ErrPermanentLookup = errors.New("permanent geolocation lookup failure")
 
 var httpClient = &http.Client{
 	Timeout: 5 * time.Second,
@@ -53,6 +57,9 @@ func getIPInfoWithClient(client *http.Client, baseURL, ip string) (*IPInfo, erro
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError && resp.StatusCode != http.StatusTooManyRequests {
+			return nil, fmt.Errorf("%w: unexpected HTTP status %d from geolocation API: %s", ErrPermanentLookup, resp.StatusCode, string(body))
+		}
 		return nil, fmt.Errorf("unexpected HTTP status %d from geolocation API: %s", resp.StatusCode, string(body))
 	}
 
@@ -65,7 +72,11 @@ func getIPInfoWithClient(client *http.Client, baseURL, ip string) (*IPInfo, erro
 	}
 
 	if !ipInfo.Success {
-		return nil, fmt.Errorf("geolocation lookup failed for IP %s: %s", ip, ipInfo.Message)
+		return nil, fmt.Errorf("%w: geolocation lookup failed for IP %s: %s", ErrPermanentLookup, ip, ipInfo.Message)
+	}
+
+	if strings.TrimSpace(ipInfo.Country) == "" && strings.TrimSpace(ipInfo.City) == "" {
+		return nil, fmt.Errorf("%w: geolocation API returned empty country and city for IP %s", ErrPermanentLookup, ip)
 	}
 
 	return &ipInfo, nil

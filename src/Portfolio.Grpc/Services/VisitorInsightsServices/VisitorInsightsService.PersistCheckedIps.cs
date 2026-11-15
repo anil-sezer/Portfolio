@@ -4,6 +4,9 @@ namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
 public partial class VisitorInsightsService
 {
+    public const string IgnoredCityMarker = "-";
+    public const string IgnoredCountryMarker = "Ignored";
+
     public override async Task<Empty> PersistCheckedIps(PersistCheckedIpsRequest request, ServerCallContext context)
     {
         logger.LogInformation("✅ Received {IpCount} ips for handling", request.CheckedIps.Count);
@@ -39,25 +42,29 @@ public partial class VisitorInsightsService
     
     private async Task UpdateLocationInfoAsync(PersistCheckedIpsRequest request, CancellationToken cancellationToken = default)
     {
-        var ipsToUpdate = request.CheckedIps.Where(x => x.Operation == DbOperationForThisRow.Update).ToList();
-        if (ipsToUpdate.Count == 0) return;
+        var ipsToPersist = request.CheckedIps
+            .Where(x => x.Operation is DbOperationForThisRow.Update or DbOperationForThisRow.Ignore)
+            .ToList();
+        if (ipsToPersist.Count == 0) return;
 
-        var ids = ipsToUpdate.Select(x => x.EntityId).ToList();
+        var ids = ipsToPersist.Select(x => x.EntityId).ToList();
         var rows = await dbContext.RequestLogs
             .Where(x => ids.Contains(x.Id))
             .ToListAsync(cancellationToken);
 
         var rowLookup = rows.ToDictionary(x => x.Id);
-        foreach (var ip in ipsToUpdate)
+        foreach (var ip in ipsToPersist)
         {
-            if (rowLookup.TryGetValue(ip.EntityId, out var row))
-            {
-                row.UpdateLocation(ip.City, ip.Country);
-            }
-            else
+            if (!rowLookup.TryGetValue(ip.EntityId, out var row))
             {
                 logger.LogWarning("Request log with id {Id} not found to update city country information", ip.EntityId);
+                continue;
             }
+
+            if (ip.Operation == DbOperationForThisRow.Ignore)
+                row.UpdateLocation(IgnoredCityMarker, IgnoredCountryMarker);
+            else
+                row.UpdateLocation(ip.City, ip.Country);
         }
     }
 }

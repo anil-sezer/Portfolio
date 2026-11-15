@@ -27,6 +27,7 @@ enum DbOperationForThisRow {
   UNPROCESSED = 0;
   UPDATE = 1;
   DELETE = 2;
+  IGNORE = 3;
 }
 
 message IpCheckDto {

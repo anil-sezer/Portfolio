@@ -1,6 +1,7 @@
 package third_party
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -53,24 +54,55 @@ func TestGetIPInfoWithClient_APIFailure(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected error for success=false, got info=%+v", info)
 	}
+	if !errors.Is(err, ErrPermanentLookup) {
+		t.Fatalf("expected ErrPermanentLookup for success=false, got %v", err)
+	}
 	if !strings.Contains(err.Error(), "Reserved range") {
 		t.Fatalf("expected error message to include API failure reason, got %v", err)
 	}
 }
 
-func TestGetIPInfoWithClient_Non200Status(t *testing.T) {
+func TestGetIPInfoWithClient_EmptyLocationIsPermanent(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusTooManyRequests)
-		_, _ = w.Write([]byte(`rate limit exceeded`))
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"ip":"203.0.113.1","success":true,"country":"","country_code":"","city":""}`))
 	}))
 	defer srv.Close()
 
-	_, err := getIPInfoWithClient(srv.Client(), srv.URL, "8.8.8.8")
-	if err == nil {
-		t.Fatal("expected error for HTTP 429 response, got nil")
+	_, err := getIPInfoWithClient(srv.Client(), srv.URL, "203.0.113.1")
+	if !errors.Is(err, ErrPermanentLookup) {
+		t.Fatalf("expected ErrPermanentLookup for empty country and city, got %v", err)
 	}
-	if !strings.Contains(err.Error(), "429") {
-		t.Fatalf("expected error to mention status 429, got %v", err)
+}
+
+func TestGetIPInfoWithClient_StatusCodeClassification(t *testing.T) {
+	tests := []struct {
+		name          string
+		statusCode    int
+		wantPermanent bool
+	}{
+		{name: "400 is permanent", statusCode: http.StatusBadRequest, wantPermanent: true},
+		{name: "404 is permanent", statusCode: http.StatusNotFound, wantPermanent: true},
+		{name: "429 is transient", statusCode: http.StatusTooManyRequests, wantPermanent: false},
+		{name: "503 is transient", statusCode: http.StatusServiceUnavailable, wantPermanent: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tt.statusCode)
+				_, _ = w.Write([]byte(`error body`))
+			}))
+			defer srv.Close()
+
+			_, err := getIPInfoWithClient(srv.Client(), srv.URL, "8.8.8.8")
+			if err == nil {
+				t.Fatalf("expected error for HTTP %d, got nil", tt.statusCode)
+			}
+			if got := errors.Is(err, ErrPermanentLookup); got != tt.wantPermanent {
+				t.Fatalf("HTTP %d permanent=%v, want %v (err=%v)", tt.statusCode, got, tt.wantPermanent, err)
+			}
+		})
 	}
 }
 

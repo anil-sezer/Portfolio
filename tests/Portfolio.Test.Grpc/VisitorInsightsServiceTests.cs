@@ -155,6 +155,38 @@ public class VisitorInsightsServiceTests
     }
 
     [Fact]
+    public async Task PersistCheckedIps_WhenIgnoreOperation_MarksRowIgnoredAndExcludesFromFutureGetIpsToCheck()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var service = CreateService(dbContext);
+        var context = TestServerCallContext.Create();
+
+        var poisonLog = CreateRequestLog("192.0.2.1", "", "");
+        dbContext.RequestLogs.Add(poisonLog);
+        await dbContext.SaveChangesAsync();
+
+        var request = new PersistCheckedIpsRequest();
+        request.CheckedIps.Add(new IpCheckDto
+        {
+            EntityId = poisonLog.Id,
+            IpAddress = "192.0.2.1",
+            Operation = DbOperationForThisRow.Ignore
+        });
+
+        // Act
+        await service.PersistCheckedIps(request, context);
+        var nextBatch = await service.GetIpsToCheck(new Empty(), context);
+
+        // Assert
+        var updated = await dbContext.RequestLogs.FindAsync(poisonLog.Id);
+        updated.Should().NotBeNull();
+        updated!.City.Should().Be(VisitorInsightsService.IgnoredCityMarker);
+        updated.Country.Should().Be(VisitorInsightsService.IgnoredCountryMarker);
+        nextBatch.Ips.Should().BeEmpty();
+    }
+
+    [Fact]
     public async Task PersistCheckedIps_WhenNonExistentEntityId_CompletesWithoutError()
     {
         // Arrange

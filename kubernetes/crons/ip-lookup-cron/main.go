@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"ip-lookup-cron/grpc"
@@ -11,6 +13,20 @@ import (
 
 	"github.com/joho/godotenv"
 )
+
+// todo: Redo this main.go. It has too much stuff in it. 
+
+const (
+	lookupSuccessDelay            = 2 * time.Second
+	lookupErrorDelay              = 10 * time.Second
+	maxConsecutiveTransientErrors = 3
+)
+
+type cachedLookup struct {
+	info      *third_party.IPInfo
+	permanent bool
+	transient bool
+}
 
 func main() {
 	loadEnvValues()
@@ -23,7 +39,11 @@ func main() {
 
 	processIPs(ips)
 
-	grpc.SendIpCheckResultsToGrpc(ips)
+	if hasProcessedRows(ips) {
+		grpc.SendIpCheckResultsToGrpc(ips)
+	} else {
+		log.Println("No rows updated, deleted, or ignored; skipping gRPC persistence.")
+	}
 
 	logTheResult(ips)
 }
@@ -35,7 +55,17 @@ func loadEnvValues() {
 }
 
 func processIPs(ips []*proto.IpCheckDto) {
-	ipCache := make(map[string]*third_party.IPInfo)
+	processIPsWithDeps(ips, third_party.GetIPInfo, time.Sleep)
+}
+
+func processIPsWithDeps(
+	ips []*proto.IpCheckDto,
+	lookupFn func(string) (*third_party.IPInfo, error),
+	sleepFn func(time.Duration),
+) {
+	ipCache := make(map[string]cachedLookup)
+	consecutiveTransientErrors := 0
+	circuitOpen := false
 
 	for _, ip := range ips {
 		if isPrivateOrIgnoredIP(ip.IpAddress) {
@@ -44,34 +74,84 @@ func processIPs(ips []*proto.IpCheckDto) {
 			continue
 		}
 
-		var ipInfo *third_party.IPInfo
-		if cachedInfo, found := ipCache[ip.IpAddress]; found {
-			log.Printf("[CACHE HIT] Reusing lookup for IP: %s", ip.IpAddress)
-			ipInfo = cachedInfo
-		} else {
-			var err error
-			ipInfo, err = third_party.GetIPInfo(ip.IpAddress)
-			if err != nil {
-				log.Printf("Error fetching info for IP %s: %v", ip.IpAddress, err)
-				time.Sleep(10 * time.Second)
+		cached, found := ipCache[ip.IpAddress]
+		if !found {
+			if circuitOpen {
 				continue
 			}
-			ipCache[ip.IpAddress] = ipInfo
-			time.Sleep(2 * time.Second)
+
+			ipInfo, err := lookupFn(ip.IpAddress)
+			if err != nil {
+				if errors.Is(err, third_party.ErrPermanentLookup) {
+					log.Printf("Permanent geolocation failure for IP %s, marking IGNORE: %v", ip.IpAddress, err)
+					cached = cachedLookup{permanent: true}
+					ipCache[ip.IpAddress] = cached
+					consecutiveTransientErrors = 0
+					sleepFn(lookupSuccessDelay)
+				} else {
+					log.Printf("Transient error fetching info for IP %s: %v", ip.IpAddress, err)
+					cached = cachedLookup{transient: true}
+					ipCache[ip.IpAddress] = cached
+					consecutiveTransientErrors++
+					if consecutiveTransientErrors >= maxConsecutiveTransientErrors {
+						log.Printf("Reached %d consecutive transient geolocation errors; pausing remaining lookups for this run", consecutiveTransientErrors)
+						circuitOpen = true
+					} else {
+						sleepFn(lookupErrorDelay)
+					}
+					continue
+				}
+			} else {
+				cached = cachedLookup{info: ipInfo}
+				ipCache[ip.IpAddress] = cached
+				consecutiveTransientErrors = 0
+				sleepFn(lookupSuccessDelay)
+			}
+		} else {
+			log.Printf("[CACHE HIT] Reusing lookup for IP: %s", ip.IpAddress)
 		}
 
-		ip.Country = fmt.Sprintf("%s - %s", GetFlag(ipInfo.CountryCode), ipInfo.Country)
-		ip.City = ipInfo.City
-		ip.Operation = proto.DbOperationForThisRow_UPDATE
+		if cached.permanent {
+			ip.Operation = proto.DbOperationForThisRow_IGNORE
+			continue
+		}
+		if cached.transient || cached.info == nil {
+			continue
+		}
+
+		applyLocation(ip, cached.info)
 	}
+}
+
+func applyLocation(ip *proto.IpCheckDto, ipInfo *third_party.IPInfo) {
+	countryName := strings.TrimSpace(ipInfo.Country)
+	if countryName == "" {
+		countryName = "Unknown"
+	}
+
+	ip.Country = fmt.Sprintf("%s - %s", GetFlag(ipInfo.CountryCode), countryName)
+	ip.City = strings.TrimSpace(ipInfo.City)
+	ip.Operation = proto.DbOperationForThisRow_UPDATE
+}
+
+func hasProcessedRows(ips []*proto.IpCheckDto) bool {
+	for _, ip := range ips {
+		if ip.Operation != proto.DbOperationForThisRow_UNPROCESSED {
+			return true
+		}
+	}
+	return false
 }
 
 func logTheResult(ips []*proto.IpCheckDto) {
 	deletedCount := countByOperation(ips, proto.DbOperationForThisRow_DELETE)
 	updatedCount := countByOperation(ips, proto.DbOperationForThisRow_UPDATE)
+	ignoredCount := countByOperation(ips, proto.DbOperationForThisRow_IGNORE)
+	unprocessedCount := countByOperation(ips, proto.DbOperationForThisRow_UNPROCESSED)
 
 	log.Println("ip-lookup-cron completed successfully.")
-	log.Printf("Total rows: %d | Updated: %d | Deleted: %d\n", len(ips), updatedCount, deletedCount)
+	log.Printf("Total rows: %d | Updated: %d | Deleted: %d | Ignored: %d | Unprocessed: %d\n",
+		len(ips), updatedCount, deletedCount, ignoredCount, unprocessedCount)
 }
 
 func countByOperation(ips []*proto.IpCheckDto, op proto.DbOperationForThisRow) int {

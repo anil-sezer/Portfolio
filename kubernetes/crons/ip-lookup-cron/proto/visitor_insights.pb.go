@@ -28,6 +28,7 @@ const (
 	DbOperationForThisRow_UNPROCESSED DbOperationForThisRow = 0
 	DbOperationForThisRow_UPDATE      DbOperationForThisRow = 1
 	DbOperationForThisRow_DELETE      DbOperationForThisRow = 2
+	DbOperationForThisRow_IGNORE      DbOperationForThisRow = 3
 )
 
 // Enum value maps for DbOperationForThisRow.
@@ -36,11 +37,13 @@ var (
 		0: "UNPROCESSED",
 		1: "UPDATE",
 		2: "DELETE",
+		3: "IGNORE",
 	}
 	DbOperationForThisRow_value = map[string]int32{
 		"UNPROCESSED": 0,
 		"UPDATE":      1,
 		"DELETE":      2,
+		"IGNORE":      3,
 	}
 )
 
@@ -441,13 +444,15 @@ const file_visitor_insights_proto_rawDesc = "" +
 	"\n" +
 	"ip_address\x18\x0e \x01(\tR\tipAddress\x12\x16\n" +
 	"\x06extras\x18\x0f \x01(\tR\x06extras\x12#\n" +
-	"\rrequested_url\x18\x10 \x01(\tR\frequestedUrl*@\n" +
+	"\rrequested_url\x18\x10 \x01(\tR\frequestedUrl*L\n" +
 	"\x15DbOperationForThisRow\x12\x0f\n" +
 	"\vUNPROCESSED\x10\x00\x12\n" +
 	"\n" +
 	"\x06UPDATE\x10\x01\x12\n" +
 	"\n" +
-	"\x06DELETE\x10\x022\x84\x02\n" +
+	"\x06DELETE\x10\x02\x12\n" +
+	"\n" +
+	"\x06IGNORE\x10\x032\x84\x02\n" +
 	"\x0fVisitorInsights\x12K\n" +
 	"\rGetIpsToCheck\x12\x16.google.protobuf.Empty\x1a\".client_info.GetIpsToCheckResponse\x12R\n" +
 	"\x11PersistCheckedIps\x12%.client_info.PersistCheckedIpsRequest\x1a\x16.google.protobuf.Empty\x12P\n" +

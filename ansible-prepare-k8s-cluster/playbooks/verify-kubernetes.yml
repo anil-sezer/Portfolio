@@ -15,6 +15,10 @@
   hosts: control_node
   gather_facts: false
   tasks:
+
+    - name: Verify runc & containerd
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/verification/containerd-and-runc.yml
+
     # --------------------------------------------------------------------------
     # 1. Node Readiness & Health
     # --------------------------------------------------------------------------

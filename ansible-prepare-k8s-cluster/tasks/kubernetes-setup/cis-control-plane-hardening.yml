@@ -3,21 +3,24 @@
 # CIS Kubernetes Benchmark Control Plane & Kubelet Hardening
 #
 # Idempotently applies CIS remediation tasks across cluster nodes:
-#   - Task 1 (CIS 1.2.5 / 1.2.30):
+#   - CIS 1.2.5 / 1.2.30:
 #     1. Enables serverTLSBootstrap: true in /var/lib/kubelet/config.yaml and
 #        synchronizes ConfigMap/kubelet-config in kube-system.
 #     2. Approves pending kubernetes.io/kubelet-serving CSRs.
 #     3. Ensures --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt and
 #        --service-account-extend-token-expiration=false are set in
 #        /etc/kubernetes/manifests/kube-apiserver.yaml.
-#   - Task 2 (CIS 1.2.15 / 1.3.2 / 1.4.1):
+#   - CIS 1.2.15 / 1.3.2 / 1.4.1:
 #     1. Ensures --profiling=false is set in kube-apiserver.yaml,
 #        kube-controller-manager.yaml, and kube-scheduler.yaml.
-#   - Task 3 (CIS 1.2.16 / 1.2.17 / 1.2.18 / 1.2.19):
+#   - CIS 1.2.16 / 1.2.17 / 1.2.18 / 1.2.19:
 #     1. Ensures /var/log/kubernetes/audit (0700) and /etc/kubernetes/audit-policy.yaml (0600)
 #        exist on the control plane node.
 #     2. Ensures audit logging flags and hostPath mounts are configured in
 #        /etc/kubernetes/manifests/kube-apiserver.yaml.
+#   - CIS 1.1.12:
+#     1. Ensures system group and user `etcd` exist on the control plane node.
+#     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
 # ==============================================================================
 
 - name: Enable kubelet serving TLS bootstrapping on all cluster nodes
@@ -249,3 +252,38 @@
       loop_control:
         label: "{{ item.path }}"
       when: cis_manifests_to_update | length > 0
+
+- name: Resolve etcd data directory ownership on control plane (CIS 1.1.12)
+  when: inventory_hostname in groups['control_node']
+  become: true
+  block:
+    - name: Ensure etcd system group exists
+      ansible.builtin.group:
+        name: etcd
+        system: true
+        state: present
+
+    - name: Ensure etcd system user exists
+      ansible.builtin.user:
+        name: etcd
+        group: etcd
+        home: /var/lib/etcd
+        create_home: false
+        shell: /usr/sbin/nologin
+        comment: "etcd service user"
+        system: true
+        state: present
+
+    - name: Ensure etcd data directory exists with etcd:etcd ownership and 0700 mode
+      ansible.builtin.file:
+        path: /var/lib/etcd
+        state: directory
+        owner: etcd
+        group: etcd
+        mode: "0700"
+      register: cis_etcd_data_dir
+
+    - name: Recursively align existing etcd data files on initial ownership setup
+      ansible.builtin.command: chown -R etcd:etcd /var/lib/etcd
+      changed_when: true
+      when: cis_etcd_data_dir.changed

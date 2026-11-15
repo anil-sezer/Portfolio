@@ -139,7 +139,7 @@ c:\Repositories\Portfolio\
 │       ├── Components/Pages/               # Home.razor, Error.razor, and IndexPageSections (About, ClusterInfo, etc.)
 │       ├── Endpoints/                      # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
 │       ├── Extensions/                     # ApiEndpointExtensions, Localization, RateLimiter
-│       ├── Services/                       # ClusterStatsService (5-min cache), BackgroundImageService (23-hr cache)
+│       ├── Services/                       # ClusterStatsService (warm cache, 30s+jitter refresh), BackgroundImageService (23-hr cache)
 │       ├── Localization/                   # Localization provider, marker type, and resx files (English and Turkish tr-TR)
 │       └── wwwroot/                        # Static assets, CSS, JS scripts, oneko cat mascot
 ├── tests/                                  # Test projects
@@ -433,5 +433,5 @@ wsl helm upgrade --install grafana grafana-community/grafana -n observability -f
 6. **Telegram MarkdownV2 Escaping**:
    - [NotificationProviderTelegram.cs](file:///c:/Repositories/Portfolio/src/Portfolio.Infrastructure/ThirdPartyServices/NotificationProviderTelegram.cs) explicitly escapes characters `\ _ * [ ] ( ) ~ \` > # + - = | { } . !`. Escape only dynamic input fields via `EscapeMarkdown()` *before* composing the MarkdownV2 template, and keep literal reserved characters (such as `\[` and `\]` in severity prefixes) escaped in static template text.
 7. **Cache Expirations**:
-   - Cluster statistics are cached in memory for **5 minutes** (`ClusterStatsService`).
+   - Cluster statistics are kept warm in memory by `ClusterStatsWarmupService` (30-second base polling interval with up to 10 seconds of random jitter and up to 5 seconds startup jitter) via `ClusterStatsService`; backend `K8sStatsService` caches Kubernetes API queries for **15 seconds**.
    - Daily background image is cached in memory for **23 hours** (`BackgroundImageService`).

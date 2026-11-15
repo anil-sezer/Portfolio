@@ -35,12 +35,6 @@
     -webkit-text-fill-color: transparent;
 }
 
-.stats .stats-item p {
-    color: var(--text-body);
-    margin: 0.2rem 0 0 0;
-}
-
-.stats .stats-item p a,
 .section-title p a {
     text-decoration: underline;
 }

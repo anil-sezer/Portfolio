@@ -28,7 +28,6 @@
                 </div>
                 <div class="stats-text-container">
                     <span class="counter"><span id="pods-count">@_targetPodCount</span> @L["Cluster_Pods"]</span>
-                    <p>@L["Cluster_PodsDesc"]</p>
                 </div>
             </div>
 
@@ -38,9 +37,6 @@
                 </div>
                 <div class="stats-text-container">
                     <span class="counter"><span id="services-count">@_targetServiceCount</span> @L["Cluster_Services"]</span>
-                    <p>
-                        @((MarkupString)L["Cluster_ServicesDesc"].Value)
-                    </p>
                 </div>
             </div>
 
@@ -50,7 +46,6 @@
                 </div>
                 <div class="stats-text-container">
                     <span class="counter"><span id="deployments-count">@_targetDeploymentCount</span> @L["Cluster_Deployments"]</span>
-                    <p>@((MarkupString)L["Cluster_DeploymentsDesc"].Value)</p>
                 </div>
             </div>
 
@@ -60,7 +55,6 @@
                 </div>
                 <div class="stats-text-container">
                     <span class="counter"><span id="cronjobs-count">@_targetCronJobCount</span> @L["Cluster_CronJobs"]</span>
-                    <p>@L["Cluster_CronJobsDesc"]</p>
                 </div>
             </div>
 
@@ -70,7 +64,6 @@
                 </div>
                 <div class="stats-text-container">
                     <span class="counter"><span id="nodes-count">@_targetNodeCount</span> @L["Cluster_Nodes"]</span>
-                    <p>@L["Cluster_NodesDesc"]</p>
                 </div>
             </div>
 

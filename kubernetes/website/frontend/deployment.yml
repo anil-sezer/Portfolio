@@ -47,7 +47,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-            - containerPort: 443  # todo: Remove this
           startupProbe:
             httpGet:
               path: /liveness

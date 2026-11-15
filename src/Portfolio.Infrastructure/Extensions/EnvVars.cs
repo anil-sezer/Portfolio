@@ -54,12 +54,21 @@ public static class EnvVars
     
     // Environment
     public static string ASPNETCORE_ENVIRONMENT => GetValue("ASPNETCORE_ENVIRONMENT");
-    public static bool IsDevelopment() => string.IsNullOrEmpty(ASPNETCORE_ENVIRONMENT) || 
-                                          ASPNETCORE_ENVIRONMENT.Equals("Development", StringComparison.OrdinalIgnoreCase);
 
-    public static string GetShortEnvironmentName() => string.IsNullOrEmpty(ASPNETCORE_ENVIRONMENT) || 
-                                          ASPNETCORE_ENVIRONMENT.Equals("Development", StringComparison.OrdinalIgnoreCase) ? "Dev" : 
-                                          ASPNETCORE_ENVIRONMENT.Equals("Production", StringComparison.OrdinalIgnoreCase) ? "Prod" : ASPNETCORE_ENVIRONMENT;
+    public static bool IsDevelopment() =>
+        ASPNETCORE_ENVIRONMENT.Equals("Development", StringComparison.OrdinalIgnoreCase);
+
+    public static string GetShortEnvironmentName()
+    {
+        var env = ASPNETCORE_ENVIRONMENT;
+        if (env.Equals("Development", StringComparison.OrdinalIgnoreCase))
+            return "Dev";
+
+        if (env.Equals("Production", StringComparison.OrdinalIgnoreCase))
+            return "Prod";
+
+        return env;
+    }
 
     // Helper methods (internal implementation)
     private static string GetValue(string variableName)

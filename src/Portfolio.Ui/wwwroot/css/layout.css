@@ -281,3 +281,65 @@ html:not([data-theme="dark"]) .theme-icon-dark {
         padding-right: 20px;
     }
 }
+
+/*--------------------------------------------------------------
+# Global Left-Edge Scroll Descent Frame
+--------------------------------------------------------------*/
+.page-descent-frame {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: var(--sidebar-width);
+    width: 4px;
+    z-index: 995;
+    pointer-events: none;
+}
+
+.descent-track {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] .descent-track,
+[data-bs-theme="dark"] .descent-track {
+    background: rgba(148, 163, 184, 0.08);
+}
+
+.descent-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--page-scroll-pct, 0%);
+    background: linear-gradient(
+        to bottom,
+        rgba(148, 163, 184, 0.22) 0%,
+        rgba(100, 116, 139, 0.42) 60%,
+        rgba(71, 85, 105, 0.58) 100%
+    );
+    border-radius: 0 0 999px 999px;
+    transition: height 0.06s linear;
+}
+
+[data-theme="dark"] .descent-fill,
+[data-bs-theme="dark"] .descent-fill {
+    background: linear-gradient(
+        to bottom,
+        rgba(148, 163, 184, 0.14) 0%,
+        rgba(148, 163, 184, 0.30) 60%,
+        rgba(148, 163, 184, 0.46) 100%
+    );
+}
+
+@media (max-width: 1199px) {
+    .page-descent-frame {
+        left: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .descent-fill {
+        transition: none;
+    }
+}

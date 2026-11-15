@@ -79,14 +79,6 @@ section {
     overflow: hidden;
 }
 
-#techstack,
-#resume,
-#about,
-#contact {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 1000px;
-}
-
 .section-bg {
     background: var(--bg-section-alt);
 }

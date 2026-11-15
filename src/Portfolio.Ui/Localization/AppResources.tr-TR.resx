@@ -805,4 +805,7 @@
   <data name="NotFound_BackHome" xml:space="preserve">
     <value>Ana Sayfaya Dön</value>
   </data>
+  <data name="Descent_AriaLabel" xml:space="preserve">
+    <value>Sayfa kaydırma ilerlemesi</value>
+  </data>
 </root>

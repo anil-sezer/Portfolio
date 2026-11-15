@@ -807,4 +807,7 @@
   <data name="NotFound_BackHome" xml:space="preserve">
     <value>Back to Home</value>
   </data>
+  <data name="Descent_AriaLabel" xml:space="preserve">
+    <value>Page scroll progress</value>
+  </data>
 </root>

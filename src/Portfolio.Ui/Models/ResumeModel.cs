@@ -31,7 +31,7 @@ public static partial class ResumeModel
     private static string? _enCvFileName;
     private static string? _trCvFileName;
 
-    [GeneratedRegex(@"^Anil Sezer CV v[\d.]+ - (?<lang>EN|TR)\.pdf$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^Anil Sezer CV v[\d.]+(?: - (?<lang>EN))?\.pdf$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     public static partial Regex CvFileNameRegex();
 
     public static void ValidateAndLoadCvFiles(string webRootPath)
@@ -60,7 +60,7 @@ public static partial class ResumeModel
             var lang = match.Groups["lang"].Value;
             if (lang.Equals("EN", StringComparison.OrdinalIgnoreCase))
                 enMatches.Add(fileName);
-            else if (lang.Equals("TR", StringComparison.OrdinalIgnoreCase))
+            else
                 trMatches.Add(fileName);
         }
 

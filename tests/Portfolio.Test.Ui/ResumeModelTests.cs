@@ -7,9 +7,10 @@ public class ResumeModelTests
 {
     [Theory]
     [InlineData("Anil Sezer CV v6.4 - EN.pdf", true, "EN")]
-    [InlineData("Anil Sezer CV v6.4 - TR.pdf", true, "TR")]
+    [InlineData("Anil Sezer CV v6.4.pdf", true, "")]
     [InlineData("Anil Sezer CV v7.0 - EN.pdf", true, "EN")]
-    [InlineData("Anil Sezer CV v10.2.1 - TR.pdf", true, "TR")]
+    [InlineData("Anil Sezer CV v10.2.1.pdf", true, "")]
+    [InlineData("Anil Sezer CV v6.4 - TR.pdf", false, "")]
     [InlineData("Anil Sezer CV - EN.pdf", false, "")]
     [InlineData("Anil Sezer CV v6.4 - DE.pdf", false, "")]
     [InlineData("Anil Sezer CV v6.4 - EN.docx", false, "")]
@@ -34,12 +35,12 @@ public class ResumeModelTests
         try
         {
             File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4 - EN.pdf"), "dummy-en");
-            File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4 - TR.pdf"), "dummy-tr");
+            File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4.pdf"), "dummy-tr");
 
             ResumeModel.ValidateAndLoadCvFiles(tempWebRoot);
 
             ResumeModel.GetCvFileName(isTurkish: false).Should().Be("Anil Sezer CV v6.4 - EN.pdf");
-            ResumeModel.GetCvFileName(isTurkish: true).Should().Be("Anil Sezer CV v6.4 - TR.pdf");
+            ResumeModel.GetCvFileName(isTurkish: true).Should().Be("Anil Sezer CV v6.4.pdf");
         }
         finally
         {
@@ -58,7 +59,7 @@ public class ResumeModelTests
         {
             File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.3 - EN.pdf"), "old-en");
             File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4 - EN.pdf"), "new-en");
-            File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4 - TR.pdf"), "new-tr");
+            File.WriteAllText(Path.Combine(cvDir, "Anil Sezer CV v6.4.pdf"), "new-tr");
 
             var act = () => ResumeModel.ValidateAndLoadCvFiles(tempWebRoot);
 

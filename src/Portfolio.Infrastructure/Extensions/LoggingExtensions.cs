@@ -72,6 +72,8 @@ public static class LoggingExtensions
         catch (Exception ex)
         {
             Log.Fatal(ex, "❌ The app failed to start");
+            Environment.ExitCode = 1;
+            throw;
         }
         finally
         {

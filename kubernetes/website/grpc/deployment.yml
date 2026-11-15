@@ -73,7 +73,7 @@ spec:
               value: "Europe/Istanbul"
 
             - name: OTEL_COLLECTOR_ENDPOINT
-              value: "https://otel.anilsezer.net"
+              value: "http://otel-collector.observability.svc.cluster.local:4318"
 
             - name: SQL_DB_HOST
               valueFrom:

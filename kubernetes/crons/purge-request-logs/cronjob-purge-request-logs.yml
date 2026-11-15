@@ -1,0 +1,100 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: purge-request-logs
+  namespace: portfolio
+spec:
+  schedule: "0 3 * * *"  # Runs daily at 03:00
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: purge-request-logs
+              image: postgres:18
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: RETENTION_DAYS
+                  value: "90"
+
+                - name: BATCH_SIZE
+                  value: "5000"
+
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_HOST
+
+                - name: PGPORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_PORT
+
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_USER
+
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_PASSWORD
+
+                - name: PGDATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: portfolio-secrets
+                      key: SQL_DB_NAME
+              command: ["/bin/sh", "-eu", "-c"]
+              args:
+                - |
+                  echo "Starting request_logs retention cleanup (older than ${RETENTION_DAYS} days, batch size ${BATCH_SIZE})..."
+                  total_deleted=0
+                  while :; do
+                    deleted=$(psql -v ON_ERROR_STOP=1 -t -A -c "
+                      WITH target AS (
+                        SELECT id
+                        FROM request_logs
+                        WHERE created_at < NOW() - make_interval(days => ${RETENTION_DAYS})
+                        ORDER BY id
+                        LIMIT ${BATCH_SIZE}
+                      ),
+                      removed AS (
+                        DELETE FROM request_logs
+                        USING target
+                        WHERE request_logs.id = target.id
+                        RETURNING request_logs.id
+                      )
+                      SELECT count(*) FROM removed;
+                    ")
+                    total_deleted=$((total_deleted + deleted))
+                    echo "Deleted batch: ${deleted} rows (total: ${total_deleted})"
+                    if [ "${deleted}" -lt "${BATCH_SIZE}" ]; then
+                      break
+                    fi
+                  done
+
+                  if [ "${total_deleted}" -gt 0 ]; then
+                    echo "Running VACUUM (ANALYZE) on request_logs..."
+                    psql -v ON_ERROR_STOP=1 -c "VACUUM (ANALYZE) request_logs;"
+                  else
+                    echo "No request_logs rows older than ${RETENTION_DAYS} days found; skipping VACUUM."
+                  fi
+                  echo "Retention cleanup completed. Total rows deleted: ${total_deleted}"
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi

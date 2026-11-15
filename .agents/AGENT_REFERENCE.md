@@ -172,7 +172,8 @@ c:\Repositories\Portfolio\
 │   ├── crons/                              # Microservice CronJobs
 │   │   ├── ip-lookup-cron/                 # Go cron: visitor IP geolocation enrichment
 │   │   ├── get-image-of-the-day-from-bing/ # Go cron: Bing daily image scraper & gRPC persist
-│   │   └── backup-db-v18/                  # Bash cron: automated pg_dump database backups
+│   │   ├── backup-db-v18/                  # Bash cron: automated pg_dump database backups
+│   │   └── purge-request-logs/             # SQL cron: 90-day request_logs retention & VACUUM
 │   └── debug/                              # Diagnostic utilities (netshoot, stress-test, kuard)
 ├── ansible-prepare-k8s-cluster/            # Ansible automation for cluster provisioning & node setup
 │   ├── inventory.yml                       # Cluster hosts, IPs, and node groups

@@ -18,6 +18,9 @@
 #        exist on the control plane node.
 #     2. Ensures audit logging flags and hostPath mounts are configured in
 #        /etc/kubernetes/manifests/kube-apiserver.yaml.
+#   - CIS 1.2.20 / 1.2.29 (Not needed in a homelab but why not):
+#     1. Ensures --request-timeout=300s and strong AEAD --tls-cipher-suites are set
+#        in /etc/kubernetes/manifests/kube-apiserver.yaml.
 #   - CIS 1.1.12:
 #     1. Ensures system group and user `etcd` exist on the control plane node.
 #     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
@@ -145,6 +148,19 @@
         mode: "0600"
 
     - name: Define required CIS flags and mounts per control plane static pod manifest
+      vars:
+        cis_apiserver_tls_cipher_suites:
+          - TLS_AES_128_GCM_SHA256
+          - TLS_AES_256_GCM_SHA384
+          - TLS_CHACHA20_POLY1305_SHA256
+          - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+          - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+          - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+          - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+          - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+          - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
       ansible.builtin.set_fact:
         cis_manifests_to_update: []
         cis_control_plane_manifests:
@@ -157,7 +173,9 @@
               - "--audit-policy-file=/etc/kubernetes/audit-policy.yaml"
               - "--kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt"
               - "--profiling=false"
+              - "--request-timeout=300s"
               - "--service-account-extend-token-expiration=false"
+              - "--tls-cipher-suites={{ cis_apiserver_tls_cipher_suites | join(',') }}"
             volume_mounts:
               - mountPath: /etc/kubernetes/audit-policy.yaml
                 name: audit-policy

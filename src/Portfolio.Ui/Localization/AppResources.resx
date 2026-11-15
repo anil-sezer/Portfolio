@@ -89,10 +89,10 @@
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">
-    <value>Backends, built to last.</value>
+    <value>Clean code, solid infrastructure.</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>Building resilient systems with 7 years of backend and 4 years of Kubernetes experience</value>
+    <value>I build resilient systems with 7 years of backend and 4 years of Kubernetes experience.</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">
     <value>Today's image is by:</value>
@@ -106,7 +106,7 @@
     <value>Kubernetes Cluster</value>
   </data>
   <data name="Cluster_Subtitle" xml:space="preserve">
-    <value>This website runs on a Kubernetes cluster I built using Raspberry Pis. &lt;br/&gt; The stats you see here are fetched live from &lt;a href="https://github.com/kubernetes-client/csharp">the cluster&gt;/a&lt;.</value>
+    <value>This website runs on a Kubernetes cluster I built using Raspberry Pis. &lt;br/&gt; The stats you see here are fetched live from &lt;a href="https://github.com/kubernetes-client/csharp"&gt;the cluster&lt;/a&gt;.</value>
   </data>
   <data name="Cluster_LiveText" xml:space="preserve">
     <value>Live stats</value>

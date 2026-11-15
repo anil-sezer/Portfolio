@@ -68,7 +68,7 @@
     <value>Contact</value>
   </data>
   <data name="Nav_ClusterInfo" xml:space="preserve">
-    <value>Kubernetes Cluster</value>
+    <value>Kubernetes</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background images are from:</value>
@@ -87,19 +87,47 @@
     <value>This system runs on my bare-metal cluster. This project showcases technical expertise. Code is at: www.github.com/anil-sezer/Portfolio</value>
   </data>
 
-
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">
     <value>Backends, built to last.</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>Like this one, served from five Raspberry Pis. &lt;br/&gt; 7 years of backend, 4 years of Kubernetes.</value>
+    <value>Building resilient systems with 7 years of backend and 4 years of Kubernetes experience</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">
-    <value>Todays image is by:</value>
+    <value>Today's image is by:</value>
   </data>
   <data name="Hero_ScrollDown" xml:space="preserve">
     <value>Scroll down to content</value>
+  </data>
+
+  <!-- Cluster Info Section -->
+  <data name="Cluster_Title" xml:space="preserve">
+    <value>Kubernetes Cluster</value>
+  </data>
+  <data name="Cluster_Subtitle" xml:space="preserve">
+    <value>This website runs on a Kubernetes cluster I built using Raspberry Pis. &lt;br/&gt; The stats you see here are fetched live from &lt;a href="https://github.com/kubernetes-client/csharp">the cluster&gt;/a&lt;.</value>
+  </data>
+  <data name="Cluster_LiveText" xml:space="preserve">
+    <value>Live stats</value>
+  </data>
+  <data name="Cluster_LiveTooltip" xml:space="preserve">
+    <value>Live cluster telemetry, refreshed every 30 seconds</value>
+  </data>
+  <data name="Cluster_Pods" xml:space="preserve">
+    <value>Pods</value>
+  </data>
+  <data name="Cluster_Services" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="Cluster_Deployments" xml:space="preserve">
+    <value>Deployments</value>
+  </data>
+  <data name="Cluster_CronJobs" xml:space="preserve">
+    <value>Cron Jobs</value>
+  </data>
+  <data name="Cluster_Nodes" xml:space="preserve">
+    <value>Nodes</value>
   </data>
 
   <!-- Tech Stack Section -->
@@ -107,49 +135,49 @@
     <value>Tech Stack</value>
   </data>
   <data name="TechStack_Subtitle" xml:space="preserve">
-    <value>This is the tech I used to deploy this system. Highlights what I'm proficient at. &lt;br/&gt; You can check the source code at &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;my GitHub!&lt;/a&gt;</value>
+    <value>The technologies powering this system; a summary of my core expertise. &lt;br/&gt; You can find the full source code on &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;my GitHub profile&lt;/a&gt;</value>
   </data>
   <data name="TechStack_Kubernetes_Alt" xml:space="preserve">
     <value>Kubernetes logo. Blue hexagonal that has a white ship helm inside. A minimalist brand design.</value>
   </data>
   <data name="TechStack_Kubernetes_Desc" xml:space="preserve">
-    <value>Proudly self-hosted at my Raspberry Pi 5-4 cluster! Nodes are prepared and cluster deployed with a &lt;strong&gt;single Ansible command&lt;/strong&gt;.</value>
+    <value>Hosted on my Raspberry Pi 5-4 cluster. The cluster is prepared and brought up with a &lt;strong&gt;single Ansible command&lt;/strong&gt;</value>
   </data>
   <data name="TechStack_Ansible_Alt" xml:space="preserve">
     <value>Ansible logo. Black filled circle with an odd A letter in it.</value>
   </data>
   <data name="TechStack_Ansible_Desc" xml:space="preserve">
-    <value>I felt this Kubernetes setup would be incomplete without fully automating nodes. Also encourages experimentation since I can reset the lab rapidly if things break beyond repair.</value>
+    <value>This lab wouldn't be complete without a fully automated setup.</value>
   </data>
   <data name="TechStack_Docker_Alt" xml:space="preserve">
     <value>Docker logo. A cute blue smiling whale with blue containers on it.</value>
   </data>
   <data name="TechStack_Docker_Desc" xml:space="preserve">
-    <value>Deployed with Docker images. Public images are on &lt;a href="https://hub.docker.com/repositories/anilsezer" target="_blank"&gt;my DockerHub account&lt;/a&gt;, while private multi-arch images are managed in this cluster via a private Docker Registry &amp; Web UI.</value>
+    <value>Deployed with Docker images. My container images live in the in-cluster Docker Registry</value>
   </data>
   <data name="TechStack_DotNet_Alt" xml:space="preserve">
     <value>.NET logo. A purple circle that has .NET Core written in it.</value>
   </data>
   <data name="TechStack_DotNet_Desc" xml:space="preserve">
-    <value>This project is created with Domain Driven Design in mind and uses latest .Net + Blazor features.</value>
+    <value>Developed with Domain-Driven Design principles in mind and uses the latest .NET + Blazor features</value>
   </data>
   <data name="TechStack_Go_Alt" xml:space="preserve">
     <value>Blue letters of 'GO'.</value>
   </data>
   <data name="TechStack_Go_Desc" xml:space="preserve">
-    <value>If writing a cron with just yaml is not practical, I write it with Go. For trying out other languages to widen my view.</value>
+    <value>When writing a cronjob with just YAML isn't practical, I write it in Go—to explore different languages and broaden my horizons</value>
   </data>
   <data name="TechStack_Grpc_Alt" xml:space="preserve">
-    <value>gRPC logo. Just a undercase g and uppercase RPC letters. g has something arrow-ish on its top.</value>
+    <value>gRPC logo. Lowercase g and uppercase RPC letters, with an arrow-like icon on top of the g.</value>
   </data>
   <data name="TechStack_Grpc_Desc" xml:space="preserve">
-    <value>Wanted to try something other than REST, used gRPC and liked it.</value>
+    <value>Wanted to try something other than REST, tried gRPC and liked it</value>
   </data>
   <data name="TechStack_PostgreSql_Alt" xml:space="preserve">
     <value>PostgreSql logo. A blue elephant head with blue tusks. It's a minimalist logo.</value>
   </data>
   <data name="TechStack_PostgreSql_Desc" xml:space="preserve">
-    <value>Current database. I like Its features and like to experiment with it.</value>
+    <value>Current database. I love its features and enjoy experimenting with it</value>
   </data>
   <data name="TechStack_OpenTelemetry_Alt" xml:space="preserve">
     <value>OpenTelemetry logo. A minimal, blue and orange colored telescope.</value>
@@ -173,31 +201,31 @@
     <value>Jaeger logo. Blue rabbit with a green robin hood hat inspecting 2 human footprints. Drawing style is original. Lines are good.</value>
   </data>
   <data name="TechStack_Jaeger_Desc" xml:space="preserve">
-    <value>Distributed tracing platform to trace request lifecycles across gRPC microservices and web clients.</value>
+    <value>Platform for tracing request lifecycles across gRPC microservices and web clients</value>
   </data>
   <data name="TechStack_Seq_Alt" xml:space="preserve">
     <value>Seq logo. A minimalist design with a blue and white color scheme.</value>
   </data>
   <data name="TechStack_Seq_Desc" xml:space="preserve">
-    <value>For displaying logs with traces. Has a simple an nice UI.</value>
+    <value>For viewing logs alongside traces. Has a clean and sleek UI</value>
   </data>
   <data name="TechStack_Lens_Alt" xml:space="preserve">
     <value>Lens logo. A minimalist design. It has white aperture blades in a light blue box.</value>
   </data>
   <data name="TechStack_Lens_Desc" xml:space="preserve">
-    <value>Using it to observe the cluster in a more graphical way. Thinking about trying K9s later. Especially for colored logs</value>
+    <value>Ideal for observing the cluster more comfortably</value>
   </data>
   <data name="TechStack_Kubecolor_Alt" xml:space="preserve">
     <value>Kubernetes logo. A blue hexagonal that has a white ship helm inside. Helm is filled with various colors.</value>
   </data>
   <data name="TechStack_Kubecolor_Desc" xml:space="preserve">
-    <value>Mentioning this because it's a must have. It colors all the kubectl output, including logs of the pods!</value>
+    <value>Included here because it's a must-have. Colors all cluster output, including pod logs</value>
   </data>
   <data name="TechStack_Elasticsearch_Alt" xml:space="preserve">
     <value>Elastic Search logo. Looks like colorful bubbles fused together</value>
   </data>
   <data name="TechStack_Elasticsearch_Desc" xml:space="preserve">
-    <value>Using for Jaeger for persistency</value>
+    <value>Essential for keeping Jaeger data persistent</value>
   </data>
   <data name="TechStack_Authentik_Alt" xml:space="preserve">
     <value>It resembles a key and an ethernet port, or an elephant? Honestly its a weird logo. I like its orange though.</value>
@@ -233,31 +261,31 @@
     <value>Flannel logo. Red, white, and black flannel pattern hexagon.</value>
   </data>
   <data name="TechStack_Flannel_Desc" xml:space="preserve">
-    <value>Simple and rock-solid VXLAN overlay network connecting all 5 physical Raspberry Pi nodes seamlessly.</value>
+    <value>Raspberry Pi compatible. A simple and rock-solid VXLAN overlay network connecting the cluster</value>
   </data>
   <data name="TechStack_Containerd_Alt" xml:space="preserve">
     <value>Containerd logo. Blue 3D container cube outline with an inner C symbol.</value>
   </data>
   <data name="TechStack_Containerd_Desc" xml:space="preserve">
-    <value>Industry-standard container runtime running underneath Kubernetes on every node, configured via Ansible.</value>
+    <value>Industry-standard container runtime running underneath Kubernetes, configured via Ansible</value>
   </data>
   <data name="TechStack_UptimeKuma_Alt" xml:space="preserve">
     <value>Uptime Kuma logo. Cute bear icon monitoring service statuses.</value>
   </data>
   <data name="TechStack_UptimeKuma_Desc" xml:space="preserve">
-    <value>Self-hosted status page and health monitoring watching over my sites, APIs, and cluster endpoints.</value>
+    <value>Status page and health monitoring tool watching over my sites and APIs</value>
   </data>
   <data name="TechStack_Kibana_Alt" xml:space="preserve">
     <value>Kibana logo. Colorful Elastic compass symbol.</value>
   </data>
   <data name="TechStack_Kibana_Desc" xml:space="preserve">
-    <value>Used alongside Elasticsearch to visualize, search, and analyze cluster and application log streams.</value>
+    <value>I use it alongside Elasticsearch to visualize, search, and analyze cluster and application log streams</value>
   </data>
   <data name="TechStack_AdminNeo_Alt" xml:space="preserve">
     <value>Admin Neo logo. Blue database cylinders with the orange Neo mark badge.</value>
   </data>
   <data name="TechStack_AdminNeo_Desc" xml:space="preserve">
-    <value>Lightweight, sleek web management GUI for inspecting and maintaining my PostgreSQL databases.</value>
+    <value>Lightweight, sleek web management UI for inspecting and maintaining my prototype projects databases</value>
   </data>
   <data name="TechStack_GitHubActions_Alt" xml:space="preserve">
     <value>GitHub Actions logo. Connected workflow automation nodes.</value>
@@ -295,57 +323,13 @@
     <value>Phone:</value>
   </data>
   <data name="About_Paragraph1" xml:space="preserve">
-    <value>Excellence in any endeavor elevates it to art, and I apply this ethos to my work. With a particular affinity for the elegance of C#, I take pride in the solutions I develop using it.</value>
+    <value>Whatever the work may be, when done with care, it becomes art. I approach my craft with this philosophy. &lt;br/&gt; I believe every problem can be solved elegantly in C#, and I take pride in the solutions I build.</value>
   </data>
   <data name="About_Paragraph2" xml:space="preserve">
-    <value>As an energetic engineer, I prioritize delivering quality results on time. I'm also passionate about crafting clean and optimized code. &lt;br/&gt; Rigorous testing is a staple in my process, ensuring no unexpected issues arise in production.</value>
+    <value>As an energetic engineer, I prioritize delivering quality work on time and have strong experience writing clean, high-performance code. &lt;br/&gt; Tightly engineered CI/CD pipelines are my core safeguard for keeping the systems I build running smoothly in production.</value>
   </data>
   <data name="About_Paragraph3" xml:space="preserve">
-    <value>When the situation demands, I can operate with full autonomy, always aligned with long-term objectives.</value>
-  </data>
-
-  <!-- Cluster Info Section -->
-  <data name="Cluster_Title" xml:space="preserve">
-    <value>My Kubernetes Cluster</value>
-  </data>
-  <data name="Cluster_Subtitle" xml:space="preserve">
-    <value>This website is hosted on a bare metal Kubernetes cluster that I built using Raspberry Pi's. In this cluster I run various experiments and stats you see here are directly taken via &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient.&lt;/a&gt;</value>
-  </data>
-  <data name="Cluster_LiveText" xml:space="preserve">
-    <value>Live stats</value>
-  </data>
-  <data name="Cluster_LiveTooltip" xml:space="preserve">
-    <value>Live cluster telemetry, refreshed every 30 seconds</value>
-  </data>
-  <data name="Cluster_Pods" xml:space="preserve">
-    <value>Pods</value>
-  </data>
-  <data name="Cluster_PodsDesc" xml:space="preserve">
-    <value>Including this UI and gRPC backend pods to present this portfolio</value>
-  </data>
-  <data name="Cluster_Services" xml:space="preserve">
-    <value>Services</value>
-  </data>
-  <data name="Cluster_ServicesDesc" xml:space="preserve">
-    <value>&lt;a href="https://metallb.io/" target="_blank"&gt;MetalLB&lt;/a&gt; as load balancer, &lt;br/&gt; &lt;a href="https://traefik.io/traefik" target="_blank"&gt;Traefik&lt;/a&gt; for ingress controller, &lt;br/&gt; &lt;a href="https://letsencrypt.org/" target="_blank"&gt;Let's Encrypt&lt;/a&gt; for certificates</value>
-  </data>
-  <data name="Cluster_Deployments" xml:space="preserve">
-    <value>Deployments</value>
-  </data>
-  <data name="Cluster_DeploymentsDesc" xml:space="preserve">
-    <value>Including a &lt;a href="https://hub.docker.com/_/registry"&gt;Docker private image registry&lt;/a&gt;</value>
-  </data>
-  <data name="Cluster_CronJobs" xml:space="preserve">
-    <value>Cron Jobs</value>
-  </data>
-  <data name="Cluster_CronJobsDesc" xml:space="preserve">
-    <value>For various tasks like getting image of the day</value>
-  </data>
-  <data name="Cluster_Nodes" xml:space="preserve">
-    <value>Nodes</value>
-  </data>
-  <data name="Cluster_NodesDesc" xml:space="preserve">
-    <value>Used 5 Raspberry Pi's and a NAS. I can easily add new devices when needed</value>
+    <value>When needed, I take end-to-end ownership and work independently, always keeping long-term goals in sight.</value>
   </data>
 
   <!-- Resume Section -->
@@ -353,7 +337,7 @@
     <value>Resume</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>I design and modernize mission-critical systems using .NET, Go, and event-driven architectures—spanning fintech payments, large-scale legacy revamps, and connected IoT hardware. &lt;br/&gt;&lt;br/&gt; On the platform side, I build and operate self-hosted and cloud-native infrastructure with Kubernetes, Docker, and Ansible, keeping production environments secure, observable, and running at 99.9%+ uptime. &lt;br/&gt;&lt;br/&gt; I care deeply about the human side of engineering: leading hiring, patiently mentoring junior colleagues into proficient engineers, and constantly refining our development workflows.</value>
+    <value>From fintech payment systems to legacy code modernizations and IoT hardware integrations, I design and modernize mission-critical systems using .NET and event-driven architectures. &lt;br/&gt;&lt;br/&gt; On the platform side, I build self-hosted and cloud-native infrastructure with Kubernetes, Docker, and Ansible. &lt;br/&gt;I keep production environments secure, observable, and always up (99.9%+). &lt;br/&gt;&lt;br/&gt; I care deeply about the human side of engineering. &lt;br/&gt; I take pride in leading hiring processes and gladly mentoring junior colleagues as they grow into proficient engineers.</value>
   </data>
   <data name="Resume_DownloadCV" xml:space="preserve">
     <value>Download CV</value>
@@ -381,13 +365,13 @@
     <value>Senior Backend &amp; Platform Engineer</value>
   </data>
   <data name="Resume_CurrentJob_Company" xml:space="preserve">
-    <value>DOLAPJET (Smart Locker &amp; Delivery)</value>
+    <value>DolapJet (Smart Locker &amp; Delivery)</value>
   </data>
   <data name="Resume_CurrentJob_Date" xml:space="preserve">
     <value>Oct 2025 – Present</value>
   </data>
   <data name="Resume_CurrentJob_Bullet1" xml:space="preserve">
-    <value>Redesigned the company’s software architecture and infrastructure across 7 code repositories.</value>
+    <value>Redesigned the startup's software architecture and managed 7 separate code repositories.</value>
   </data>
   <data name="Resume_CurrentJob_Bullet2" xml:space="preserve">
     <value>Integrated the backend, smart-locker kiosks, and Flutter applications into a unified system.</value>
@@ -674,7 +658,7 @@
     <value>Business Administration and Management</value>
   </data>
   <data name="Resume_Edu5_Title" xml:space="preserve">
-    <value>CSD C and System Programmers Foundation</value>
+    <value>CSD C and System Programmers Foundation - Necati Ergün</value>
   </data>
   <data name="Resume_CLanguage_OrgName" xml:space="preserve">
     <value>C Programming Language</value>
@@ -721,7 +705,7 @@
     <value>Email:</value>
   </data>
   <data name="Contact_Phone" xml:space="preserve">
-    <value>Gsm &amp; Whatsapp:</value>
+    <value>Gsm &amp; WhatsApp:</value>
   </data>
   <data name="Contact_YourName" xml:space="preserve">
     <value>Your Name</value>
@@ -784,10 +768,10 @@
     <value>Email sent! I will read it soon as I can, thanks!</value>
   </data>
   <data name="Contact_ForbiddenMessage" xml:space="preserve">
-    <value>You already sent this mail. Lets try other methods to reach me eh?</value>
+    <value>You've already sent this email within the last hour. Shall we try another way to reach me?</value>
   </data>
   <data name="Contact_ErrorMessage" xml:space="preserve">
-    <value>It seems there is an error at my side. I sent a notification to myself and will fix this soon as I can, thanks!</value>
+    <value>It seems there is an error on my side. I sent a notification to myself and will fix it as soon as I can, thanks!</value>
   </data>
   <data name="Contact_RateLimitMessage" xml:space="preserve">
     <value>Too many requests. Please wait a moment before trying again.</value>

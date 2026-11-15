@@ -88,10 +88,10 @@
 
   <!-- Hero Section -->
   <data name="Hero_Title" xml:space="preserve">
-    <value>Dayanıklı backend'ler.</value>
+    <value>Anıl Sezer</value>
   </data>
   <data name="Hero_Greeting" xml:space="preserve">
-    <value>Bu site de onlardan biri: beş Raspberry Pi'dan sunuluyor.&lt;br/&gt; 7 yıl backend, 4 yıl Kubernetes.</value>
+    <value>7 yıl backend, 4 yıl Kubernetes tecrübemle dayanıklı sistemler kuruyorum</value>
   </data>
   <data name="Hero_BingCredit" xml:space="preserve">  
     <value>Bugünün görseli:</value>
@@ -100,54 +100,84 @@
     <value>İçeriğe kaydır</value>
   </data>
 
+  <!-- Cluster Info Section -->
+  <data name="Cluster_Title" xml:space="preserve">
+    <value>Kubernetes Cluster</value>
+  </data>
+  <data name="Cluster_Subtitle" xml:space="preserve">
+    <value>Bu web sitesi, Raspberry Pi'lar kullanarak kurduğum Kubernetes cluster üzerinde.  &lt;br/&gt; 
+      Bu alanda gördüğünüz istatistikler &lt;a href="https://github.com/kubernetes-client/csharp"&gt;cluster'dan&lt;/a&gt; canlı olarak çekiliyor.</value>
+  </data>
+  <data name="Cluster_LiveText" xml:space="preserve">
+    <value>Canlı istatistikler</value>
+  </data>
+  <data name="Cluster_LiveTooltip" xml:space="preserve">
+    <value>30 saniyede bir güncellenen canlı cluster verileri</value>
+  </data>
+  <data name="Cluster_Pods" xml:space="preserve">
+    <value>Pod</value>
+  </data>
+  <data name="Cluster_Services" xml:space="preserve">
+    <value>Servis</value>
+  </data>
+  <data name="Cluster_Deployments" xml:space="preserve">
+    <value>Deployment</value>
+  </data>
+  <data name="Cluster_CronJobs" xml:space="preserve">
+    <value>Cron Job</value>
+  </data>
+  <data name="Cluster_Nodes" xml:space="preserve">
+    <value>Node</value>
+  </data>
+
   <!-- Tech Stack Section -->
   <data name="TechStack_Title" xml:space="preserve">
     <value>Tech Stack</value>
   </data>
   <data name="TechStack_Subtitle" xml:space="preserve">
-    <value>Bu sistemde kullandığım teknolojiler. Uzmanlık alanımın özeti sayılır. &lt;br/&gt; Kodun tamamı &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;GitHub profilimde&lt;/a&gt; açık kaynak.</value>
+    <value>Bu sistemde kullandığım teknolojiler; uzmanlık alanımın özeti sayılır. &lt;br/&gt; Kodun tamamı &lt;a href="https://github.com/anil-sezer/Portfolio" style="font-weight: bold;"&gt;GitHub profilimden&lt;/a&gt; ulaşabilirsiniz</value>
   </data>
   <data name="TechStack_Kubernetes_Alt" xml:space="preserve">
     <value>Kubernetes logosu. İçinde beyaz gemi dümeni olan mavi altıgen. Minimalist bir marka tasarımı.</value>
   </data>
   <data name="TechStack_Kubernetes_Desc" xml:space="preserve">
-    <value>Raspberry Pi 5-4 cluster'ımda gururla barındırılmaktadır! Düğümler &lt;strong&gt;tek bir Ansible komutu&lt;/strong&gt; ile hazırlanır ve cluster ayağa kaldırılır</value>
+    <value>Raspberry Pi 5-4 cluster'ımda yer alıyor. Cluster &lt;strong&gt;tek bir Ansible komutu&lt;/strong&gt; ile hazırlanır ve ayağa kaldırılır</value>
   </data>
   <data name="TechStack_Ansible_Alt" xml:space="preserve">
     <value>Ansible logosu. İçinde stilize A harfi bulunan siyah dolu daire.</value>
   </data>
   <data name="TechStack_Ansible_Desc" xml:space="preserve">
-    <value>Tam otomatik Kubernetes cluster kurulumu olmazsa bu lab eksik olurdu. Ansible'ı seviyorum</value>
+    <value>Tam otomatik kurulum olmazsa bu lab eksik olurdu.</value>
   </data>
   <data name="TechStack_Docker_Alt" xml:space="preserve">
     <value>Docker logosu. Üzerinde mavi konteynerlar taşıyan sevimli mavi balina.</value>
   </data>
   <data name="TechStack_Docker_Desc" xml:space="preserve">
-    <value>Docker imajlarıyla yayınlandı. Herkese açık imajlarım DockerHub'da; çoklu mimarili özel imajlarım ise küme içi Docker Registry ve Web UI ile barındırılıyor.</value>
+    <value>Docker imajlarıyla yayınlandı. Container imajlarım cluster içindeki Docker Registry'de</value>
   </data>
   <data name="TechStack_DotNet_Alt" xml:space="preserve">
     <value>.NET logosu. İçinde .NET Core yazan mor bir daire.</value>
   </data>
   <data name="TechStack_DotNet_Desc" xml:space="preserve">
-    <value>Bu proje Domain Driven Design prensipleri göz önünde bulundurularak geliştirildi ve en güncel .Net + Blazor özelliklerini kullanmaktadır.</value>
+    <value>Bu proje Domain Driven Design prensipleri göz önünde bulundurularak geliştirildi ve en güncel .Net + Blazor özelliklerini kullanır</value>
   </data>
   <data name="TechStack_Go_Alt" xml:space="preserve">
     <value>'GO' yazan mavi harfler.</value>
   </data>
   <data name="TechStack_Go_Desc" xml:space="preserve">
-    <value>Sadece YAML ile bir cronjob yazmak pratik olmadığında Go ile yazıyorum. Farklı dilleri deneyip ufkumu genişletmek için.</value>
+    <value>Sadece YAML ile bir cronjob yazmak pratik olmadığında Go ile yazıyorum. Farklı dilleri deneyip ufkumu genişletmek için</value>
   </data>
   <data name="TechStack_Grpc_Alt" xml:space="preserve">
     <value>gRPC logosu. Küçük g ve büyük RPC harfleri; g harfinin üzerinde ok benzeri bir simge.</value>
   </data>
   <data name="TechStack_Grpc_Desc" xml:space="preserve">
-    <value>REST haricinde bir şeyler denemek istedim, gRPC kullandım ve beğendim.</value>
+    <value>REST haricinde bir şeyler denemek istedim, gRPC'yi denedim ve beğendim</value>
   </data>
   <data name="TechStack_PostgreSql_Alt" xml:space="preserve">
     <value>PostgreSQL logosu. Mavi dişleri olan mavi bir fil kafası. Minimalist bir logo.</value>
   </data>
   <data name="TechStack_PostgreSql_Desc" xml:space="preserve">
-    <value>Mevcut veritabanı. Özelliklerini seviyorum ve üzerinde denemeler yapmaktan keyif alıyorum.</value>
+    <value>Mevcut veritabanı. Özelliklerini seviyorum ve üzerinde denemeler yapmaktan keyif alıyorum</value>
   </data>
   <data name="TechStack_OpenTelemetry_Alt" xml:space="preserve">
     <value>OpenTelemetry logosu. Mavi ve turuncu renklerde minimalist bir teleskop.</value>
@@ -159,7 +189,7 @@
     <value>Prometheus ve Alertmanager logosu. Şık bir meşale simgesi.</value>
   </data>
   <data name="TechStack_Prometheus_Desc" xml:space="preserve">
-    <value>4 yıldan uzun süredir kullanıyorum. Alertmanager ile birlikte metrikleri toplamak, küme sağlığını izlemek ve kritik uyarıları yönetmek için kullanıyorum.</value>
+    <value>4 yıldan uzun süredir kullanıyorum. Alertmanager ile birlikte metrikleri toplamak, cluster sağlığını izlemek ve kritik uyarıları yönetmek için kullanıyorum</value>
   </data>
   <data name="TechStack_Grafana_Alt" xml:space="preserve">
     <value>Grafana logosu. Turuncudan sarıya gradyanlı, geniş uçlu bir spiral.</value>
@@ -171,13 +201,13 @@
     <value>Jaeger logosu. Yeşil Robin Hood şapkalı, 2 insan ayak izini inceleyen mavi tavşan. Çizim tarzı özgün, çizgileri gayet iyi.</value>
   </data>
   <data name="TechStack_Jaeger_Desc" xml:space="preserve">
-    <value>gRPC mikroservisleri ve web istemcileri arasındaki istek yaşam döngülerini izleyen dağıtık izleme platformu.</value>
+    <value>gRPC mikroservisleri ve web istemcileri arasındaki istek yaşam döngülerini izleme platformu</value>
   </data>
   <data name="TechStack_Seq_Alt" xml:space="preserve">
     <value>Seq logosu. Mavi ve beyaz renk şemasına sahip minimalist bir tasarım.</value>
   </data>
   <data name="TechStack_Seq_Desc" xml:space="preserve">
-    <value>Logları trace'ler ile birlikte görüntülemek için. Sade ve şık bir arayüze sahip.</value>
+    <value>Logları trace'ler ile birlikte görüntülemek için. Sade ve şık bir arayüze sahip</value>
   </data>
   <data name="TechStack_Lens_Alt" xml:space="preserve">
     <value>Lens logosu. Açık mavi bir kutu içinde beyaz diyafram bıçakları olan minimalist bir tasarım.</value>
@@ -189,7 +219,7 @@
     <value>Kubernetes logosu. Çeşitli renklerle doldurulmuş beyaz gemi dümeni olan mavi altıgen.</value>
   </data>
   <data name="TechStack_Kubecolor_Desc" xml:space="preserve">
-    <value>Olmazsa olmaz olduğu için buraya da ekledim. Pod logları da dahil olmak üzere tüm kubectl çıktılarını renklendirir!</value>
+    <value>Olmazsa olmaz olduğu için buraya da ekledim. Pod logları da dahil olmak üzere tüm cluster çıktılarını renklendirir</value>
   </data>
   <data name="TechStack_Elasticsearch_Alt" xml:space="preserve">
     <value>Elasticsearch logosu. Birbirine kaynaşmış renkli baloncuklar</value>
@@ -207,61 +237,61 @@
     <value>Traefik logosu. Modern geometrik camgöbeği ve mavi akış simgesi.</value>
   </data>
   <data name="TechStack_Traefik_Desc" xml:space="preserve">
-    <value>Cluster'daki tüm ters proxy yönlendirmelerini, SSL sonlandırmasını ve Authentik için Forward-Auth ara yazılımını yönetiyor.</value>
+    <value>Cluster'daki tüm ters proxy yönlendirmelerini, SSL sonlandırmasını ve Authentik için Forward-Auth ara yazılımını yönetiyor</value>
   </data>
   <data name="TechStack_Helm_Alt" xml:space="preserve">
     <value>Helm logosu. Lacivert altıgen zemin üzerine beyaz gemi dümeni.</value>
   </data>
   <data name="TechStack_Helm_Desc" xml:space="preserve">
-    <value>Traefik, Grafana, Authentik ve gözlemlenebilirlik araçlarının şablonlanması ve sürüm yaşam döngüsünün yönetilmesi için vazgeçilmez.</value>
+    <value>Traefik, Grafana, Authentik ve gözlemlenebilirlik araçlarının şablonlanması ve sürüm yaşam döngüsünün yönetilmesi için vazgeçilmez</value>
   </data>
   <data name="TechStack_MetalLB_Alt" xml:space="preserve">
     <value>MetalLB logosu. Camgöbeği ve mavi geometrik yük dengeleyici simgesi.</value>
   </data>
   <data name="TechStack_MetalLB_Desc" xml:space="preserve">
-    <value>Raspberry Pi kümemde bare-metal Katman 2 yük dengelemesi sağlayarak ingress servislerine atanmış VIP'ler sunuyor.</value>
+    <value>Raspberry Pi cluster'ımda bare-metal Katman 2 yük dengelemesi sağlayarak ingress servislerine atanmış VIP'ler sunuyor</value>
   </data>
   <data name="TechStack_CertManager_Alt" xml:space="preserve">
     <value>Cert-Manager logosu. TLS sertifikalarını temsil eden mavi anahtar deliği ve güvenlik kalkanı.</value>
   </data>
   <data name="TechStack_CertManager_Desc" xml:space="preserve">
-    <value>Tüm özel alan adları ve panel alt alan adları için Let's Encrypt SSL/TLS sertifikalarının oluşturulmasını ve yenilenmesini otomatikleştiriyor.</value>
+    <value>Tüm özel alan adları ve panel alt alan adları için Let's Encrypt SSL/TLS sertifikalarının oluşturulmasını ve yenilenmesini otomatikleştiriyor</value>
   </data>
   <data name="TechStack_Flannel_Alt" xml:space="preserve">
     <value>Flannel logosu. Kırmızı, beyaz ve siyah ekose desenli altıgen.</value>
   </data>
   <data name="TechStack_Flannel_Desc" xml:space="preserve">
-    <value>5 fiziksel Raspberry Pi düğümünü sorunsuz bir şekilde birbirine bağlayan sade ve kaya gibi sağlam VXLAN overlay ağı.</value>
+    <value>Raspberry Pi'a uyumlu. Cluster'ı birbirine bağlayan sade ve sağlam VXLAN overlay ağı</value>
   </data>
   <data name="TechStack_Containerd_Alt" xml:space="preserve">
     <value>Containerd logosu. İçinde C harfi bulunan mavi 3 boyutlu konteyner küpü.</value>
   </data>
   <data name="TechStack_Containerd_Desc" xml:space="preserve">
-    <value>Her düğümde Kubernetes'in altında çalışan ve Ansible ile yapılandırılan endüstri standardı konteyner çalışma zamanı.</value>
+    <value>Kubernetes'in altında çalışabilen ve Ansible ile yapılandırılan endüstri standardı konteyner çalışma zamanı</value>
   </data>
   <data name="TechStack_UptimeKuma_Alt" xml:space="preserve">
     <value>Uptime Kuma logosu. Servis durumlarını izleyen sevimli ayı simgesi.</value>
   </data>
   <data name="TechStack_UptimeKuma_Desc" xml:space="preserve">
-    <value>Sitelerimi, API'lerimi ve küme uç noktalarımı takip eden, kendimin barındırdığı durum sayfası ve sağlık izleme aracı.</value>
+    <value>Sitelerimi ve API'larımı takip eden durum sayfası ve sağlık izleme aracı</value>
   </data>
   <data name="TechStack_Kibana_Alt" xml:space="preserve">
     <value>Kibana logosu. Renkli Elastic pusula simgesi.</value>
   </data>
   <data name="TechStack_Kibana_Desc" xml:space="preserve">
-    <value>Küme ve uygulama günlük akışlarını görselleştirmek, aramak ve analiz etmek için Elasticsearch ile birlikte kullanılıyor.</value>
+    <value>Cluster ve uygulama günlük akışlarını görselleştirmek, aramak ve analiz etmek için Elasticsearch ile birlikte kullanıyorum</value>
   </data>
   <data name="TechStack_AdminNeo_Alt" xml:space="preserve">
     <value>Admin Neo logosu. Turuncu Neo rozetiyle birlikte mavi veritabanı simgesi.</value>
   </data>
   <data name="TechStack_AdminNeo_Desc" xml:space="preserve">
-    <value>PostgreSQL veritabanlarımı incelemek ve bakımını yapmak için hafif, şık web yönetim arayüzü.</value>
+    <value>Veritabanlarımı incelemek ve bakımını yapmak için hafif, şık web yönetim arayüzü</value>
   </data>
   <data name="TechStack_GitHubActions_Alt" xml:space="preserve">
     <value>GitHub Actions logosu. Birbirine bağlı iş akışı otomasyon düğümleri.</value>
   </data>
   <data name="TechStack_GitHubActions_Desc" xml:space="preserve">
-    <value>Küme içi self-hosted runner ile birlikte tüm CI/CD iş akışlarını, otomatik testleri ve çoklu mimari imaj derlemelerini yönetiyor.</value>
+    <value>Cluster içi self-hosted runner ile birlikte tüm CI/CD iş akışlarını, otomatik testleri ve çoklu mimari imaj derlemelerini yönetiyor</value>
   </data>
 
   <!-- About Section -->
@@ -293,57 +323,15 @@
     <value>Telefon:</value>
   </data>
   <data name="About_Paragraph1" xml:space="preserve">
-    <value>Herhangi bir alandaki mükemmellik onu sanata dönüştürür; ben de işime bu felsefeyle yaklaşıyorum. Özellikle C#'ın zarafetine duymuş olduğum tutkuyla, geliştirdiğim çözümlerden gurur duyuyorum.</value>
+    <value>Yapılan iş ne olursa olsun, özenle yapıldığında sanat olur. Ben de işime bu felsefeyle yaklaşıyorum. &lt;br/&gt; 
+      C#'de her problemin zarafetle çözülebileceğine inanıyor ve geliştirdiğim çözümlerden gurur duyuyorum.</value>
   </data>
   <data name="About_Paragraph2" xml:space="preserve">
-    <value>Enerjik bir mühendis olarak, kaliteli sonuçları zamanında teslim etmeye öncelik veriyorum. Temiz ve optimize kod yazma konusunda tutkuluyum. &lt;br/&gt; Kapsamlı test süreçleri, canlı ortamda beklenmedik sorunların yaşanmamasını sağlayan temel prensibimdir.</value>
+    <value>Enerjik bir mühendis olarak zamanında, kaliteli iş çıkarmaya öncelik veririm. Temiz ve yüksek performanslı kod yazma konusunda deneyimliyim. 
+      &lt;br/&gt; Sıkı kurguladığım CI/CD süreçleri, geliştirdiğim sistemlerin canlı ortamda sorunsuz çalışmasını sağlayan temel güvencemdir.</value>
   </data>
   <data name="About_Paragraph3" xml:space="preserve">
-    <value>Gerektiğinde tam otonomiyle hareket edebilir, her zaman uzun vadeli hedeflerle uyumlu çalışırım.</value>
-  </data>
-
-  <!-- Cluster Info Section -->
-  <data name="Cluster_Title" xml:space="preserve">
-    <value>Kubernetes Cluster</value>
-  </data>
-  <data name="Cluster_Subtitle" xml:space="preserve">
-    <value>Bu web sitesi, Raspberry Pi'ler kullanarak kurduğum fiziksel (bare metal) bir Kubernetes cluster üzerinde. Bu cihazlar üstünde çeşitli deneyler yürütüyorum ve gördüğünüz istatistikler doğrudan &lt;a href="https://github.com/kubernetes-client/csharp"&gt;KubernetesClient&lt;/a&gt; cluster'dan.</value>
-  </data>
-  <data name="Cluster_LiveText" xml:space="preserve">
-    <value>Canlı istatistikler</value>
-  </data>
-  <data name="Cluster_LiveTooltip" xml:space="preserve">
-    <value>30 saniyede bir güncellenen canlı cluster verileri</value>
-  </data>
-  <data name="Cluster_Pods" xml:space="preserve">
-    <value>Pod</value>
-  </data>
-  <data name="Cluster_PodsDesc" xml:space="preserve">
-    <value>Bu web sitesi, gRPC backend'i ve diğer tüm aktif podlar dahil</value>
-  </data>
-  <data name="Cluster_Services" xml:space="preserve">
-    <value>Servis</value>
-  </data>
-  <data name="Cluster_ServicesDesc" xml:space="preserve">
-    <value>&lt;a href="https://metallb.io/" target="_blank"&gt;MetalLB&lt;/a&gt; load balancer olarak, &lt;br/&gt; &lt;a href="https://traefik.io/traefik" target="_blank"&gt;Traefik&lt;/a&gt; ingress controller olarak, &lt;br/&gt; &lt;a href="https://letsencrypt.org/" target="_blank"&gt;Let's Encrypt&lt;/a&gt; ise SSL sertifikaları için</value>
-  </data>
-  <data name="Cluster_Deployments" xml:space="preserve">
-    <value>Deployment</value>
-  </data>
-  <data name="Cluster_DeploymentsDesc" xml:space="preserve">
-    <value>Özel bir &lt;a href="https://hub.docker.com/_/registry"&gt;Docker image registry&lt;/a&gt; dahil</value>
-  </data>
-  <data name="Cluster_CronJobs" xml:space="preserve">
-    <value>Cron Job</value>
-  </data>
-  <data name="Cluster_CronJobsDesc" xml:space="preserve">
-    <value>Bing'den günün resmini kaydetme gibi çeşitli tekrarlayan görevler için</value>
-  </data>
-  <data name="Cluster_Nodes" xml:space="preserve">
-    <value>Node</value>
-  </data>
-  <data name="Cluster_NodesDesc" xml:space="preserve">
-    <value>5 adet Raspberry Pi ve 1 NAS kullandım. Gerektikçe zahmetsizce yeni cihaz ekleyebilirim</value>
+    <value>Gerektiğinde uçtan uca sorumluluk alarak bağımsız çalışır, her zaman uzun vadeli hedefleri gözeterek hareket ederim.</value>
   </data>
 
   <!-- Resume Section -->
@@ -351,7 +339,10 @@
     <value>Özgeçmiş</value>
   </data>
   <data name="Resume_Subtitle" xml:space="preserve">
-    <value>Fintek ödeme sistemlerinden kapsamlı miras (legacy) dönüşümlerine ve IoT donanım entegrasyonlarına kadar; .NET, Go ve olay güdümlü (event-driven) mimarilerle kritik sistemler tasarlıyor ve modernize ediyorum. &lt;br/&gt;&lt;br/&gt; Platform tarafında Kubernetes, Docker ve Ansible ile kendi barındırdığım (self-hosted) ve bulut-yerel altyapılar kuruyor; canlı ortamları güvenli, gözlemlenebilir ve %99,9+ çalışma süresinde tutuyorum. &lt;br/&gt;&lt;br/&gt; Mühendisliğin insan boyutuna büyük önem veriyorum: işe alım süreçlerine liderlik etmekten, genç meslektaşlarıma sabırla mentorluk yaparak yetkin mühendislere dönüşmelerini izlemekten ve geliştirme süreçlerimizi sürekli iyileştirmekten gurur duyuyorum.</value>
+    <value>Fintek ödeme sistemlerinden legacy kod güncellemelerine ve IoT donanım entegrasyonlarına kadar; .NET ve olay güdümlü (event-driven) mimarilerle kritik sistemler tasarlayarak modernize ediyorum. &lt;br/&gt;&lt;br/&gt; Platform tarafında Kubernetes, Docker ve Ansible ile self-hosted ve cloud-native altyapılar kuruyorum. 
+      &lt;br/&gt;Canlı ortamları güvenli, gözlemlenebilir ve daima çalışır (%99,9+) halde tutuyorum. &lt;br/&gt;&lt;br/&gt;
+      Mühendisliğin insan boyutuna büyük önem veriyorum. &lt;br/&gt;
+      İşe alım süreçlerine liderlik etmekten, genç meslektaşlarıma memnuniyetle mentorluk yaparak yetkin mühendislere dönüşmelerini izlemekten gurur duyuyorum.</value>
   </data>
   <data name="Resume_DownloadCV" xml:space="preserve">
     <value>Özgeçmişi İndir</value>

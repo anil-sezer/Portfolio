@@ -1,7 +1,7 @@
 # Portfolio Repository: AI Agent Reference Guide
 
 > **Target Audience**: Future AI Agents (Antigravity, Cursor, Copilot, Claude Code, etc.) and human maintainers working on this codebase.  
-> **Last Repository Audit**: September 2026
+> **Last Repository Audit**: November 2026
 
 ---
 
@@ -121,25 +121,37 @@ c:\Repositories\Portfolio\
 │   ├── Portfolio.Domain/                   # Clean Architecture: Pure domain models & contracts
 │   │   ├── Entities/                       # EntityBase, DailyImage, NotificationToAdmin, RequestLog
 │   │   ├── Enums/                          # ImageOfTheDaySource, NotificationType
-│   │   └── Interfaces/                     # Repository and service contracts (IRepository, etc.)
+│   │   ├── Extensions/                     # StringExtensions (truncation helpers)
+│   │   ├── Interfaces/                     # Background service & third-party service contracts (IDatabaseOperationQueueWorker, INotificationProvider, etc.)
+│   │   └── Utilities/                      # BotDetector, BoundedJsonSerializer
 │   ├── Portfolio.Infrastructure/           # Persistence, EF Core, external providers, telemetry
-│   │   ├── PortfolioDbContext.cs           # EF Core DbContext with snake_case naming
-│   │   ├── Migrations/                     # EF Core database migration history
-│   │   ├── Repositories/                   # EF Core repository implementations
+│   │   ├── PortfolioDbContext.cs           # EF Core DbContext with snake_case naming (injected directly by gRPC services)
+│   │   ├── Configurations/                 # EF Core IEntityTypeConfiguration<T> mappings
+│   │   ├── Constants/                      # DeviceTypes, HeaderConstants
+│   │   ├── Exceptions/                     # MissingEnvironmentValueException
 │   │   ├── Extensions/                     # EnvVars, DbContextExtensions, HealthChecks, Logging, OTel
+│   │   ├── Helpers/                        # AssemblyHelper, AssetHelper
+│   │   ├── Migrations/                     # EF Core database migration history
 │   │   └── ThirdPartyServices/             # NotificationProviderTelegram (Telegram bot integration)
 │   ├── Portfolio.Grpc/                     # Backend gRPC host service
 │   │   ├── Program.cs                      # Startup configuration, DI, gRPC mappings, auto-migrations
 │   │   ├── Dockerfile                      # Multi-stage build for linux/amd64 & linux/arm64
-│   │   ├── BackgroundServices/             # DatabaseOperationQueueWorker, LogVisitorInfoQueuedOperation
-│   │   └── Services/                       # BackgroundImageServices, K8sStatsService, VisitorInsights
+│   │   ├── BackgroundServices/             # DatabaseOperationQueue, DatabaseOperationQueueWorker, LogVisitorInfoQueuedOperation
+│   │   ├── Interceptors/                   # ServerLoggingAndExceptionInterceptor
+│   │   ├── Security/                       # SafeUrlValidator (SSRF & DNS rebinding protection)
+│   │   └── Services/                       # BackgroundImageServices, K8sStatsService, SendNotificationToAdminService, VisitorInsightsService
 │   └── Portfolio.Ui/                       # Blazor Server (.NET 10) user-facing application
 │       ├── Program.cs                      # Blazor Web App setup, endpoints, middlewares, caching
 │       ├── Dockerfile                      # Multi-stage build for linux/amd64 & linux/arm64
-│       ├── Components/Pages/               # Home.razor, Error.razor, and IndexPageSections (About, ClusterInfo, etc.)
-│       ├── Endpoints/                      # Minimal API endpoints (EmailEndpoints, VisitEndpoints)
-│       ├── Extensions/                     # ApiEndpointExtensions, Localization, RateLimiter
-│       ├── Services/                       # ClusterStatsService (warm cache, 30s+jitter refresh), BackgroundImageService (23-hr cache)
+│       ├── BackgroundServices/             # ClusterStatsWarmupService, HeroImageWarmupService
+│       ├── Components/Pages/               # Home.razor, Error.razor, NotFound.razor, and IndexPageSections (About, ClusterInfo, etc.)
+│       ├── Endpoints/                      # Minimal API endpoints (ClusterStatsEndpoints, EmailEndpoints, HeroImageEndpoints, VisitEndpoints)
+│       ├── Extensions/                     # ApiEndpointExtensions, Localization, RateLimiter, GrpcClientRegistration, HttpContextExtensions
+│       ├── Factories/                      # ClientInfoRequestFactory
+│       ├── HealthChecks/                   # UI health check definitions
+│       ├── Middlewares/                    # LanguageRedirectMiddleware, NotFoundLoggingMiddleware
+│       ├── Models/                         # UI request/view models (e.g., EmailFormModel)
+│       ├── Services/                       # ClusterStatsService (warm cache, 30s+jitter refresh), BackgroundImageService (23-hr cache), LogVisitService
 │       ├── Localization/                   # Localization provider, marker type, and resx files (English and Turkish tr-TR)
 │       └── wwwroot/                        # Static assets, CSS, JS scripts, oneko cat mascot
 ├── tests/                                  # Test projects
@@ -150,11 +162,12 @@ c:\Repositories\Portfolio\
 │   └── Portfolio.Test.Ui/                  # Blazor UI service and endpoint tests
 ├── kubernetes/                             # All Kubernetes manifests and Helm value files
 │   ├── website/                            # Deployments, Services, Ingress, RBAC for Ui & Grpc
-│   ├── database/                           # Postgres 18, Redis, Adminer, Elasticsearch/Kibana
+│   ├── db/                                 # Postgres 18, Redis, Adminer, Elasticsearch/Kibana
 │   ├── observability/                      # Prometheus, Grafana, Jaeger, OpenTelemetry Collector, Seq
 │   ├── traefik-ingress/                    # Traefik v3 Ingress controller, certificates, middlewares
 │   ├── authentik/                          # Authentik Identity Provider & Forward Auth proxy
 │   ├── image-registry/                     # Docker private image registry & web UI
+│   ├── github-runner/                      # Self-hosted ARM64 GitHub Actions runner manifests
 │   ├── uptime/                             # Uptime Kuma monitoring & status page
 │   ├── crons/                              # Microservice CronJobs
 │   │   ├── ip-lookup-cron/                 # Go cron: visitor IP geolocation enrichment
@@ -164,9 +177,9 @@ c:\Repositories\Portfolio\
 ├── ansible-prepare-k8s-cluster/            # Ansible automation for cluster provisioning & node setup
 │   ├── inventory.yml                       # Cluster hosts, IPs, and node groups
 │   ├── variables.yml                       # Versions, CNI configuration, architecture settings
-│   └── setup-kubernetes.yml                # Main cluster setup playbook
+│   └── playbooks/setup-kubernetes.yml      # Main cluster setup playbook
 ├── compose.yml                             # Local development multi-container Docker Compose file
-├── global.json                             # Pinned .NET SDK configuration (10.0.2)
+├── global.json                             # Pinned .NET SDK configuration (10.0.100)
 └── Portfolio.sln                           # Master Visual Studio / .NET Solution
 ```
 
@@ -176,7 +189,7 @@ c:\Repositories\Portfolio\
 
 ### Entity Relationships & Schemas
 
-The database uses PostgreSQL with snake_case naming conventions enforced by `EFCore.NamingConventions`.
+The database uses PostgreSQL with snake_case naming conventions enforced by `EFCore.NamingConventions`. Backend gRPC services and queued workers inject `PortfolioDbContext` directly (there is no separate repository abstraction layer).
 
 1. **`DailyImage`** (Table: `daily_images`):
    - Stores URLs and metadata for daily background images (Bing, NASA, etc.).

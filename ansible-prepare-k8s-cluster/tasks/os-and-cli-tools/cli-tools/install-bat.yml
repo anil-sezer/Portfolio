@@ -4,7 +4,6 @@
   ansible.builtin.apt:
     state: present
     pkg: bat
-  register: bat_install_result
   become: true
 
 - name: Create link bat to batcat
@@ -13,6 +12,4 @@
     dest: /usr/bin/bat
     state: link
   become: true
-  when:
-    - not ansible_check_mode
-    - bat_install_result.changed
+  when: not ansible_check_mode

@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const grpcTimeout = 15 * time.Second
+
 func setupConnection() *grpc.ClientConn {
 	grpcAddress, _ := os.LookupEnv("GRPC_BASE_URL")
 
@@ -21,11 +23,18 @@ func setupConnection() *grpc.ClientConn {
 	return conn
 }
 
-func getClientAndContext() (pb.VisitorInsightsClient, context.Context, context.CancelFunc) {
+func withClient(fn func(ctx context.Context, client pb.VisitorInsightsClient) error) error {
 	conn := setupConnection()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("Failed to close gRPC connection: %v", err)
+		}
+	}()
+
 	client := pb.NewVisitorInsightsClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	ctx, cancel := context.WithTimeout(context.Background(), grpcTimeout)
+	defer cancel()
 
-	return client, ctx, cancel
+	return fn(ctx, client)
 }

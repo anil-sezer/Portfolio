@@ -11,6 +11,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+const persistTimeout = 10 * time.Second
+
 func setupConnection() *grpc.ClientConn {
 	grpcAddress, _ := os.LookupEnv("GRPC_BASE_URL")
 
@@ -22,13 +24,17 @@ func setupConnection() *grpc.ClientConn {
 	return conn
 }
 
-func SendUrlToGrpc(url string, altText string) {
-
+func sendUrlToGrpc(url string, altText string) error {
 	conn := setupConnection()
-	//client := pb.NewBingPersistImageServiceClient(conn)
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("Failed to close gRPC connection: %v", err)
+		}
+	}()
+
 	client := pb.NewBackgroundImagesClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), persistTimeout)
 	defer cancel()
 
 	res, err := client.Persist(ctx, &pb.BackgroundImageDetails{
@@ -37,8 +43,15 @@ func SendUrlToGrpc(url string, altText string) {
 		Source:  pb.ImageOfTheDaySource_Bing,
 	})
 	if err != nil {
-		log.Fatalf("Could not persist URL: %v", err)
+		return err
 	}
 
 	log.Printf("Response: %v", res)
+	return nil
+}
+
+func SendUrlToGrpc(url string, altText string) {
+	if err := sendUrlToGrpc(url, altText); err != nil {
+		log.Fatalf("Could not persist URL: %v", err)
+	}
 }

@@ -51,12 +51,17 @@ public class BotDetectorTests
     [InlineData("Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; anthropic-ai; +https://www.anthropic.com)")]
     [InlineData("Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)")]
     [InlineData("Mozilla/5.0 (compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)")]
+    [InlineData("Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Perplexity-User/1.0; +https://perplexity.ai/perplexity-user)")]
+    [InlineData("Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; MistralAI-User/1.0; +https://mistral.ai/mistralai-user)")]
+    [InlineData("Google-Extended")]
     // CLI / Scripting tools
     [InlineData("curl/8.5.0")]
+    [InlineData("libcurl/8.5.0")]
     [InlineData("Wget/1.21.4")]
     [InlineData("python-requests/2.31.0")]
     [InlineData("Python/3.11 aiohttp/3.9.1")]
     [InlineData("python-urllib/3.10")]
+    [InlineData("Scrapy/2.11.0 (+https://scrapy.org)")]
     [InlineData("Go-http-client/1.1")]
     [InlineData("PostmanRuntime/7.36.0")]
     [InlineData("HTTPie/3.2.2")]
@@ -64,15 +69,20 @@ public class BotDetectorTests
     [InlineData("okhttp/4.12.0")]
     [InlineData("node-fetch/3.3.2")]
     [InlineData("axios/1.6.5")]
+    [InlineData("undici")]
+    [InlineData("Dalvik/2.1.0 (Linux; U; Android 13)")]
     // Headless / Testing
     [InlineData("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/120.0.6099.109 Safari/537.36")]
     [InlineData("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Cypress/13.6.2")]
     [InlineData("Selenium/4.16.1")]
     [InlineData("Playwright/1.40.0")]
-    // Scanners & Probes
+    // Scanners, Probes & Monitors
     [InlineData("Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)")]
     [InlineData("zgrab/0.x")]
     [InlineData("sqlmap/1.7.12#stable")]
+    [InlineData("Nuclei - Open-source project (github.com/projectdiscovery/nuclei)")]
+    [InlineData("gobuster/3.6")]
+    [InlineData("Uptime-Kuma/1.23.11")]
     // Social media scrapers
     [InlineData("facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)")]
     [InlineData("LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)")]
@@ -117,6 +127,16 @@ public class BotDetectorTests
     [InlineData("https://anilsezer.com/actuator/health")]
     [InlineData("https://anilsezer.com/cgi-bin/test.cgi")]
     [InlineData("https://anilsezer.com/.git/config")]
+    [InlineData("https://anilsezer.com/.DS_Store")]
+    [InlineData("https://anilsezer.com/.vscode/settings.json")]
+    [InlineData("https://anilsezer.com/wp-json/wp/v2/users")]
+    [InlineData("https://anilsezer.com/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php")]
+    [InlineData("https://anilsezer.com/_profiler/phpinfo")]
+    [InlineData("https://anilsezer.com/telescope/requests")]
+    [InlineData("https://anilsezer.com/server-status")]
+    [InlineData("https://anilsezer.com/etc/passwd")]
+    [InlineData("https://anilsezer.com/../../etc/passwd")]
+    [InlineData("https://anilsezer.com/%2e%2e/secrets")]
     [InlineData("https://anilsezer.com/config.bak")]
     [InlineData("https://anilsezer.com/backup.sql")]
     public void IsBot_WhenRequestedUrlIsScannerProbe_ReturnsTrue(string requestedUrl)
@@ -202,4 +222,180 @@ public class BotDetectorTests
         BotDetector.IsBot(humanLog).Should().BeFalse();
         BotDetector.IsBot(botLog).Should().BeTrue();
     }
+
+    [Fact]
+    public void Evaluate_WhenJsBeaconSpoofsChromeButHttpHeaderIsScript_ReturnsBot()
+    {
+        const string spoofedChromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = spoofedChromeUa,
+            RequestedUrl = "https://anilsezer.net/api/visits/log",
+            Extras = """{"Host":"anilsezer.net","User-Agent":"python-requests/2.31.0","Accept":"*/*"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeTrue();
+        result.Score.Should().BeGreaterThanOrEqualTo(BotDetector.BotThreshold);
+    }
+
+    [Fact]
+    public void Evaluate_WhenJsBeaconUserAgentDiffersFromHttpHeader_ReturnsBot()
+    {
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            RequestedUrl = "https://anilsezer.net/api/visits/log",
+            Extras = """{"Host":"anilsezer.net","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36","Sec-Fetch-Site":"same-origin","Sec-CH-UA":"\"Chromium\";v=\"130\"","Accept-Language":"en-US","Accept-Encoding":"gzip, deflate, br"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Evaluate_WhenHttpsModernChromeLacksBrowserHeaders_ReturnsBot()
+    {
+        const string chromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = chromeUa,
+            AcceptLanguage = "",
+            RequestedUrl = "https://anilsezer.net/api/visits/log",
+            Extras = $$"""{"Host":"anilsezer.net","User-Agent":"{{chromeUa}}","Accept":"*/*"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeTrue();
+        result.Reasons.Should().Contain(r => r.Contains("Sec-Fetch-*"));
+        result.Reasons.Should().Contain(r => r.Contains("Sec-CH-UA"));
+    }
+
+    [Fact]
+    public void Evaluate_WhenStealthHeadlessHasOsMismatchAnd800x600Resolution_ReturnsBot()
+    {
+        const string windowsChromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = windowsChromeUa,
+            Platform = "Linux x86_64",
+            Resolution = "800x600",
+            RequestedUrl = "https://anilsezer.net/api/visits/log"
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeTrue();
+        result.Reasons.Should().Contain(r => r.Contains("Platform"));
+        result.Reasons.Should().Contain(r => r.Contains("resolution"));
+    }
+
+    [Fact]
+    public void Evaluate_WhenJsBeaconReportsOfflineAndZeroResolution_ReturnsBot()
+    {
+        var log = CreateHumanJsLog() with
+        {
+            OnLine = false,
+            Resolution = "0x0",
+            HardwareConcurrency = "0",
+            RequestedUrl = "https://anilsezer.net/api/visits/log"
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Evaluate_WhenAndroidChromeReportsLinuxPlatform_ReturnsHuman()
+    {
+        const string androidUa = "Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36";
+
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = androidUa,
+            Platform = "Linux aarch64",
+            MaxTouchPoints = 5,
+            Resolution = "412x915",
+            RequestedUrl = "https://anilsezer.net/api/visits/log",
+            Extras = $$"""{"Host":"anilsezer.net","User-Agent":"{{androidUa}}","Sec-Fetch-Site":"same-origin","Sec-CH-UA":"\"Chromium\";v=\"130\"","Sec-CH-UA-Platform":"\"Android\"","Accept-Language":"en-US,en;q=0.9","Accept-Encoding":"gzip, deflate, br"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeFalse();
+        result.Score.Should().Be(0);
+    }
+
+    [Fact]
+    public void Evaluate_WhenSafariOnIphoneWithoutClientHints_ReturnsHuman()
+    {
+        const string safariUa = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+
+        var log = CreateHumanJsLog() with
+        {
+            UserAgent = safariUa,
+            Platform = "iPhone",
+            MaxTouchPoints = 5,
+            Resolution = "390x844",
+            RequestedUrl = "https://anilsezer.net/api/visits/log",
+            Extras = $$"""{"Host":"anilsezer.net","User-Agent":"{{safariUa}}","Sec-Fetch-Site":"same-origin","Accept-Language":"en-US,en;q=0.9","Accept-Encoding":"gzip, deflate, br"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeFalse();
+        result.Score.Should().Be(0);
+    }
+
+    [Fact]
+    public void Evaluate_WhenServerSide404HasEmptyJsFieldsAndBrowserHeaders_ReturnsHuman()
+    {
+        const string chromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+
+        var log = new BotDetectionContext
+        {
+            UserAgent = chromeUa,
+            AcceptLanguage = "en-US,en;q=0.9",
+            Platform = "Windows",
+            Webdriver = false,
+            DeviceMemory = "",
+            HardwareConcurrency = "",
+            MaxTouchPoints = -1,
+            Connection = "",
+            CookieEnabled = false,
+            OnLine = false,
+            Resolution = "",
+            RequestedUrl = "https://anilsezer.net/some-typo-page",
+            Extras = $$"""{"Host":"anilsezer.net","User-Agent":"{{chromeUa}}","Sec-Fetch-Site":"none","Sec-Fetch-Mode":"navigate","Sec-Fetch-Dest":"document","Sec-CH-UA":"\"Chromium\";v=\"130\"","Sec-CH-UA-Platform":"\"Windows\"","Accept-Language":"en-US,en;q=0.9","Accept-Encoding":"gzip, deflate, br"}"""
+        };
+
+        var result = BotDetector.Evaluate(log);
+
+        result.IsBot.Should().BeFalse();
+        result.Score.Should().Be(0);
+    }
+
+    private static BotDetectionContext CreateHumanJsLog() => new()
+    {
+        UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+        AcceptLanguage = "en-US",
+        Platform = "Win32",
+        Webdriver = false,
+        DeviceMemory = "8",
+        HardwareConcurrency = "8",
+        MaxTouchPoints = 0,
+        Connection = "wifi",
+        CookieEnabled = true,
+        OnLine = true,
+        Resolution = "1920x1080",
+        RequestedUrl = "https://anilsezer.net/api/visits/log",
+        Extras = "{}"
+    };
 }

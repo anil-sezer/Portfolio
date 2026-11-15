@@ -111,6 +111,79 @@ public class LogVisitorInfoQueuedOperationTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_WhenSpoofedJsUserAgentContradictsHttpHeaderInExtras_PersistsWithIsBotTrue()
+    {
+        // Arrange
+        var dbName = Guid.NewGuid().ToString("N");
+        var services = new ServiceCollection();
+        services.AddDbContext<PortfolioDbContext>(opt => opt.UseInMemoryDatabase(dbName));
+        var serviceProvider = services.BuildServiceProvider();
+
+        var operation = new LogVisitorInfoQueuedOperation
+        {
+            Request = new StoreVisitorInfoRequest
+            {
+                IpAddress = "198.51.100.101",
+                RequestedUrl = "https://anilsezer.net/api/visits/log",
+                Language = "en-US",
+                Platform = "Win32",
+                UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+                Resolution = "1920x1080",
+                OnLine = true,
+                HardwareConcurrency = "8",
+                CookieEnabled = true,
+                MaxTouchPoints = 0,
+                Extras = """{"Host":"anilsezer.net","User-Agent":"python-requests/2.31.0","Accept":"*/*"}"""
+            }
+        };
+
+        // Act
+        await operation.ExecuteAsync(serviceProvider);
+
+        // Assert
+        using var scope = serviceProvider.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+        var savedLog = await db.RequestLogs.FirstOrDefaultAsync(x => x.ClientIp == "198.51.100.101");
+        savedLog.Should().NotBeNull();
+        savedLog!.IsBot.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_WhenHumanHits404WithBrowserHeaders_PersistsWithIsBotFalse()
+    {
+        // Arrange
+        const string chromeUa = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
+        var dbName = Guid.NewGuid().ToString("N");
+        var services = new ServiceCollection();
+        services.AddDbContext<PortfolioDbContext>(opt => opt.UseInMemoryDatabase(dbName));
+        var serviceProvider = services.BuildServiceProvider();
+
+        var operation = new LogVisitorInfoQueuedOperation
+        {
+            Request = new StoreVisitorInfoRequest
+            {
+                IpAddress = "198.51.100.102",
+                RequestedUrl = "https://anilsezer.net/missing-page",
+                Language = "en-US,en;q=0.9",
+                Platform = "Windows",
+                UserAgent = chromeUa,
+                MaxTouchPoints = -1,
+                Extras = $$"""{"Host":"anilsezer.net","User-Agent":"{{chromeUa}}","Sec-Fetch-Site":"none","Sec-Fetch-Mode":"navigate","Sec-Fetch-Dest":"document","Sec-CH-UA":"\"Chromium\";v=\"130\"","Sec-CH-UA-Platform":"\"Windows\"","Accept-Language":"en-US,en;q=0.9","Accept-Encoding":"gzip, deflate, br"}"""
+            }
+        };
+
+        // Act
+        await operation.ExecuteAsync(serviceProvider);
+
+        // Assert
+        using var scope = serviceProvider.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+        var savedLog = await db.RequestLogs.FirstOrDefaultAsync(x => x.ClientIp == "198.51.100.102");
+        savedLog.Should().NotBeNull();
+        savedLog!.IsBot.Should().BeFalse();
+    }
+
+    [Fact]
     public async Task ExecuteAsync_WhenCancellationTokenCancelled_ThrowsOperationCanceledException()
     {
         // Arrange

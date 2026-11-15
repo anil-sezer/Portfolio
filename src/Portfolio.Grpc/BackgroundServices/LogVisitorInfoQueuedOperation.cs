@@ -15,6 +15,23 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
             return;
 
         var dbContext = serviceProvider.GetRequiredService<PortfolioDbContext>();
+
+        var isBot = BotDetector.IsBot(new BotDetectionContext
+        {
+            UserAgent           = Request.UserAgent,
+            Webdriver           = Request.Webdriver,
+            RequestedUrl        = Request.RequestedUrl,
+            Platform            = Request.Platform,
+            AcceptLanguage      = Request.Language,
+            Resolution          = Request.Resolution,
+            Connection          = Request.Connection,
+            DeviceMemory        = Request.DeviceMemory,
+            HardwareConcurrency = Request.HardwareConcurrency,
+            MaxTouchPoints      = Request.MaxTouchPoints,
+            CookieEnabled       = Request.CookieEnabled,
+            OnLine              = Request.OnLine,
+            Extras              = Request.Extras
+        });
         
         dbContext.RequestLogs.Add(new RequestLog
         {
@@ -31,7 +48,7 @@ public class LogVisitorInfoQueuedOperation : IDatabaseOperationQueueWorker
             CookieEnabled       = Request.CookieEnabled,
             MaxTouchPoints      = Request.MaxTouchPoints,
             HardwareConcurrency = Request.HardwareConcurrency,
-            IsBot               = BotDetector.IsBot(Request.UserAgent, Request.Webdriver, Request.RequestedUrl),
+            IsBot               = isBot,
 
             City         = string.Empty,
             Country      = string.Empty,

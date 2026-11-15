@@ -2,73 +2,106 @@
 # https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 # https://github.com/containerd/containerd/blob/main/docs/man/containerd-config.toml.5.md
 # https://github.com/containerd/containerd/blob/main/docs/managed-opt.md
-# todo: At the next installation, verify how much of it is needed. These might be old.
 
-# todo: Check this, is this still required? Looks like not.
-- name: Check SystemdCgroup is already true
+- name: Ensure /etc/containerd directory exists
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    mode: '0755'
+    owner: root
+  become: true
+
+- name: Check if /etc/containerd/config.toml exists
+  ansible.builtin.stat:
+    path: /etc/containerd/config.toml
+  register: containerd_config_stat
+  become: true
+
+- name: Start with a full configuration of containerd when config.toml is missing or empty
+  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+  register: containerd_default_config
+  changed_when: true
+  when: not containerd_config_stat.stat.exists or containerd_config_stat.stat.size == 0
+  become: true
+
+- name: Get config.toml files previous setting
+  ansible.builtin.import_tasks: ../generic/fetch-file.yml
+  vars:
+    file_path_and_name: /etc/containerd/config.toml
+    new_file_path_and_name: "/etc/containerd/config-{{ ansible_hostname }}-default.toml"
+  when: containerd_default_config is changed
+  become: true
+
+- name: Remove stray unindented SystemdCgroup line from containerd config
+  ansible.builtin.lineinfile:
+    path: /etc/containerd/config.toml
+    regexp: '^SystemdCgroup\s*='
+    state: absent
+  register: containerd_stray_cgroup
+  when: containerd_config_stat.stat.exists or not ansible_check_mode
+  become: true
+
+- name: Ensure SystemdCgroup is set to true in containerd config
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: '^(\s*)SystemdCgroup\s*=\s*false\b'
+    replace: '\1SystemdCgroup = true'
+  register: containerd_systemd_cgroup
+  when: containerd_config_stat.stat.exists or not ansible_check_mode
+  become: true
+
+- name: Check if indented SystemdCgroup = true is present in containerd config
   ansible.builtin.command:
-    cmd: grep -E '^SystemdCgroup\s*=\s*true' /etc/containerd/config.toml
+    cmd: grep -E '^\s*SystemdCgroup\s*=\s*true\b' /etc/containerd/config.toml
   register: check_systemd_cgroup
   failed_when: false
   changed_when: false
+  when: containerd_config_stat.stat.exists or not ansible_check_mode
   become: true
 
-- name: Check cri is not in disabled_plugins
-  ansible.builtin.command:
-    cmd: grep -E '"cri"' /etc/containerd/config.toml
-  register: check_cri_disabled
-  failed_when: false
-  changed_when: false
+- name: Insert SystemdCgroup = true under runc options if missing
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: '^([ \t]*\[plugins\.["'']?(?:io\.containerd\.grpc\.v1\.cri|io\.containerd\.cri\.v1\.runtime)["'']?\.containerd\.runtimes\.runc\.options\])\s*$'
+    replace: '\1\n            SystemdCgroup = true'
+  register: containerd_systemd_cgroup_insert
+  when:
+    - containerd_config_stat.stat.exists or not ansible_check_mode
+    - check_systemd_cgroup.rc is defined and check_systemd_cgroup.rc != 0
   become: true
 
-- name: Apply containerd config fixes
-  when: check_systemd_cgroup.rc != 0 or check_cri_disabled.rc == 0
+- name: Ensure disabled_plugins does not have cri in it
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: '["'']cri["'']\s*,\s*|,\s*["'']cri["'']|["'']cri["'']'
+    replace: ''
+    after: '(?:^|\n)[ \t]*disabled_plugins\s*='
+    before: '\]'
+  register: containerd_cri_enabled
+  when: containerd_config_stat.stat.exists or not ansible_check_mode
   become: true
-  block:
-    - name: Ensure /etc/containerd directory exists
-      ansible.builtin.file:
-        path: /etc/containerd
-        state: directory
-        mode: '0755'
-        owner: root
-      become: true
 
-    - name: Start with a full configuration of containerd
-      ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
-      changed_when: true
+- name: Get config.toml files edited state so we can compare if something goes awry
+  ansible.builtin.import_tasks: ../generic/fetch-file.yml
+  vars:
+    file_path_and_name: /etc/containerd/config.toml
+    new_file_path_and_name: /etc/containerd/config-edited.toml
+  when: >-
+    containerd_default_config is changed or
+    containerd_stray_cgroup is changed or
+    containerd_systemd_cgroup is changed or
+    containerd_systemd_cgroup_insert is changed or
+    containerd_cri_enabled is changed
+  become: true
 
-    - name: Get config.toml files previous setting
-      ansible.builtin.import_tasks: ../generic/fetch-file.yml
-      vars:
-        file_path_and_name: /etc/containerd/config.toml
-        new_file_path_and_name: "/etc/containerd/config-{{ ansible_hostname }}-default.toml"
-
-    - name: Ensure SystemdCgroup is set to true in containerd config
-      ansible.builtin.lineinfile:
-        path: /etc/containerd/config.toml
-        regexp: '^SystemdCgroup\s*=\s*(false|true)'
-        line: 'SystemdCgroup = true'
-        insertafter: '[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]'
-      become: true
-
-    - name: Ensure disabled_plugins does not have cri in it.
-      ansible.builtin.replace:
-        path: /etc/containerd/config.toml
-        regexp: '([\"]cri[\"][,]?)'
-        replace: ''
-        after: 'disabled_plugins ='
-        before: ']'
-      become: true
-
-    - name: Get config.toml files edited state so we can compare if something goes awry
-      ansible.builtin.import_tasks: ../generic/fetch-file.yml
-      vars:
-        file_path_and_name: /etc/containerd/config.toml
-        new_file_path_and_name: /etc/containerd/config-edited.toml
-      become: true
-
-    - name: Restart the containerd service
-      ansible.builtin.systemd:
-        name: containerd
-        state: restarted
-      become: true
+- name: Restart the containerd service
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+  when: >-
+    containerd_default_config is changed or
+    containerd_stray_cgroup is changed or
+    containerd_systemd_cgroup is changed or
+    containerd_systemd_cgroup_insert is changed or
+    containerd_cri_enabled is changed
+  become: true

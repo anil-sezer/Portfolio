@@ -1,94 +1,63 @@
 ---
+- name: Install zsh
+  ansible.builtin.apt:
+    pkg: zsh
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Set user shell to zsh
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    shell: /bin/zsh
+  become: true
+
 - name: Check if oh-my-zsh is installed
   ansible.builtin.stat:
     path: "{{ ansible_facts['env']['HOME'] }}/.oh-my-zsh"
   register: ohmyzsh_installed
 
-- name: Setup Oh My ZSH
-  when: ansible_facts['env']['SHELL'] != '/bin/zsh' and not ohmyzsh_installed.stat.exists
-  block:
-    - name: Install zsh
-      ansible.builtin.apt:
-        pkg: zsh
-        state: present
-        update_cache: true
-      become: true
+- name: Run Oh My ZSH install script
+  ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  when: not ohmyzsh_installed.stat.exists
+  changed_when: true
+  become: false
 
-    - name: Set user shell to zsh
-      ansible.builtin.user:
-        name: "{{ ansible_facts['user_id'] }}"
-        shell: /bin/zsh
-      become: true
-
-    - name: Run Oh My ZSH install script
-      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-      become: false
-
-    - name: 'Set var: the oh_my_zsh_plugins_path variable'
-      ansible.builtin.set_fact:
-        oh_my_zsh_plugins_path: "{{ ansible_facts['env']['HOME'] }}/.oh-my-zsh/custom/plugins/"
-      become: false
-
+- name: Ensure Oh My Zsh custom plugins are installed
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.oh-my-zsh/custom/plugins/{{ item.name }}"
+    depth: 1
+  loop:
     # https://github.com/zsh-users/zsh-autosuggestions
-    - name: Download zsh-autosuggestions plugin
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-autosuggestions
-        dest: "{{ oh_my_zsh_plugins_path }}zsh-autosuggestions"
-        depth: 1
-      become: false
-
+    - name: zsh-autosuggestions
+      repo: https://github.com/zsh-users/zsh-autosuggestions
     # https://github.com/zsh-users/zsh-completions
-    - name: Download zsh-completions plugin
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-completions
-        dest: "{{ oh_my_zsh_plugins_path }}zsh-completions"
-        depth: 1
-      become: false
-
+    - name: zsh-completions
+      repo: https://github.com/zsh-users/zsh-completions
     # https://github.com/zsh-users/zsh-syntax-highlighting
-    - name: Download zsh-syntax-highlighting plugin
-      ansible.builtin.git:
-        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        dest: "{{ oh_my_zsh_plugins_path }}zsh-syntax-highlighting"
-        depth: 1
-      become: false
-
+    - name: zsh-syntax-highlighting
+      repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
     # https://github.com/MichaelAquilina/zsh-you-should-use
-    # todo: UNTESTED with Ansible
-    - name: Download zsh-you-should-use plugin
-      ansible.builtin.git:
-        repo: https://github.com/MichaelAquilina/zsh-you-should-use.git
-        dest: "{{ oh_my_zsh_plugins_path }}/you-should-use"
-        depth: 1
-      become: false
+    - name: you-should-use
+      repo: https://github.com/MichaelAquilina/zsh-you-should-use.git
+    # https://github.com/fdellwing/zsh-bat (requires bat)
+    - name: zsh-bat
+      repo: https://github.com/fdellwing/zsh-bat.git
+  become: false
 
-    # https://github.com/fdellwing/zsh-bat
-    # You need to install bat first
-    # todo: UNTESTED with Ansible
-    - name: Download zsh-bat plugin
-      ansible.builtin.git:
-        repo: https://github.com/fdellwing/zsh-bat.git
-        dest: "{{ oh_my_zsh_plugins_path }}/zsh-bat"
-        depth: 1
-      become: false
+- name: Install PowerLevel10K
+  ansible.builtin.import_tasks: ./oh-my-zsh/install-power-level-10k.yml
 
-    - name: Install PowerLevel10K
-      ansible.builtin.import_tasks: ./oh-my-zsh/install-power-level-10k.yml
-
-    - name: Copy zshrc from repository files to managed node
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../files/.zshrc"
-        dest: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
-        mode: "0644"
-        owner: "{{ ansible_facts['user_id'] }}"
-        group: "{{ ansible_facts['user_id'] }}"
-      become: true
-
-    - name: Copy p10k.zsh from repository files to managed node
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../files/.p10k.zsh"
-        dest: "{{ ansible_facts['env']['HOME'] }}/.p10k.zsh"
-        mode: "0644"
-        owner: "{{ ansible_facts['user_id'] }}"
-        group: "{{ ansible_facts['user_id'] }}"
-      become: true
+- name: Copy Oh My Zsh dotfiles from repository files to managed node
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../files/{{ item }}"
+    dest: "{{ ansible_facts['env']['HOME'] }}/{{ item }}"
+    mode: "0644"
+    owner: "{{ ansible_facts['user_id'] }}"
+    group: "{{ ansible_facts['user_id'] }}"
+  loop:
+    - .zshrc
+    - .p10k.zsh
+  become: true

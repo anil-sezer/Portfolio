@@ -75,20 +75,20 @@
     - name: Install PowerLevel10K
       ansible.builtin.import_tasks: ./oh-my-zsh/install-power-level-10k.yml
 
-    - name: Copy zshrc from control node to managed node
+    - name: Copy zshrc from repository files to managed node
       ansible.builtin.copy:
-        src: "{{ control_node_homepath }}/.zshrc"
+        src: "{{ playbook_dir }}/../files/.zshrc"
         dest: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
         mode: "0644"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
       become: true
 
-    - name: Copy p10k.zsh from control node to managed node
+    - name: Copy p10k.zsh from repository files to managed node
       ansible.builtin.copy:
-        src: "{{ control_node_homepath }}/.p10k.zsh"
+        src: "{{ playbook_dir }}/../files/.p10k.zsh"
         dest: "{{ ansible_facts['env']['HOME'] }}/.p10k.zsh"
         mode: "0644"
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
       become: true

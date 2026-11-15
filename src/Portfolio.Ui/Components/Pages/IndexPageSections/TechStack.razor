@@ -22,28 +22,68 @@
             <h2>@L["TechStack_Title"]</h2>
             <p>@((MarkupString)L["TechStack_Subtitle"].Value)</p>
         </div>
-        
-    <div class="tech-stack-grid">
-        @foreach (var model in TechStackModel.GetTechStack())
-        {
-            <div class="tech-stack-card icon-box">
 
-                <div class="temp-container1">
-                    <div class="icon">
-                        <a href="@model.WebsiteLink" target="_blank" rel="noopener noreferrer">
-                            <img src="@Assets[model.ImageAddress]" width="@model.ImageWidth" height="@model.ImageHeight" alt="@L[model.ImageAltTextKey]" loading="lazy" decoding="async">
-                        </a>
-                    </div>
-                </div>
-
-                <div class="temp-container2">
-                    <h3 class="title"><a href="@model.WebsiteLink" target="_blank" rel="noopener noreferrer" aria-label="@model.AriaLabel">@model.Name</a></h3>
-                    <p class="description">
-                        @((MarkupString)L[model.DescriptionKey].Value)
-                    </p>
-                </div>
-            </div>
+        @{
+            var techItems = TechStackModel.GetTechStack();
         }
-    </div>
+        <div class="tech-stack-grid" id="tech-stack-grid">
+            @for (var i = 0; i < techItems.Count; i++)
+            {
+                var item = techItems[i];
+                var panelId = $"tech-panel-{i}";
+                var triggerId = $"tech-trigger-{i}";
+                var hostLabel = GetHostLabel(item.WebsiteLink);
+
+                <article class="tech-stack-card">
+                    <button type="button"
+                            class="tech-accordion-trigger"
+                            id="@triggerId"
+                            aria-expanded="false"
+                            aria-controls="@panelId">
+                        <span class="icon">
+                            <img src="@Assets[item.ImageAddress]"
+                                 width="22"
+                                 height="22"
+                                 alt="@L[item.ImageAltTextKey]"
+                                 loading="lazy"
+                                 decoding="async" />
+                        </span>
+                        <h3 class="title">@item.Name</h3>
+                        <span class="tech-chevron" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="tech-accordion-panel" id="@panelId" role="region" aria-labelledby="@triggerId">
+                        <div class="tech-accordion-panel-inner">
+                            <div class="tech-accordion-body">
+                                <p class="description">
+                                    @((MarkupString)L[item.DescriptionKey].Value)
+                                </p>
+                                <a class="tech-external-link"
+                                   href="@item.WebsiteLink"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   aria-label="@(item.AriaLabel ?? item.Name)">
+                                    @hostLabel
+                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
     </div>
 </section>
+
+@code {
+    private static string GetHostLabel(string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            ? uri.Host.Replace("www.", string.Empty, StringComparison.OrdinalIgnoreCase)
+            : url;
+}

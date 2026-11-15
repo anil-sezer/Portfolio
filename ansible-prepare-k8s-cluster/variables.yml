@@ -12,7 +12,6 @@ kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
 
 # Tasks that ran on the control & worker planes vary a bit.
 control_plane_ip: 192.168.1.120
-deploy_containers_on_control_node: false
 
 # For Installing some nice to have tools.
 # TODO: Implement these

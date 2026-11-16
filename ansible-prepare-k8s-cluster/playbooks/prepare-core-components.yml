@@ -30,9 +30,6 @@
     - name: Install Cli tools like dust, batcat, fzf and others
       ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/install-cli-tools.yml
 
-    - name: Fully update Ubuntu/Debian
-      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/update-ubuntu-debian.yml
-
     # -----------------
     #  Watchdog
     # -----------------

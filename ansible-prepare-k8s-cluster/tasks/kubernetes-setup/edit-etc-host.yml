@@ -20,7 +20,7 @@
 - name: Replace loopback hostname entry with real IP
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    regexp: "^127\\.0\\.1\\.1\\s+{{ ansible_facts['hostname'] | regex_escape }}(\\s|$)"
+    regexp: "^(127\\.0\\.1\\.1|{{ ansible_facts['default_ipv4']['address'] | regex_escape }})\\s+{{ ansible_facts['hostname'] | regex_escape }}(\\s|$)"
     line: "{{ ansible_facts['default_ipv4']['address'] }} {{ ansible_facts['hostname'] }}"
     state: present
   become: true

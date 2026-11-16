@@ -57,5 +57,7 @@
         - name: Uncordon each node
           ansible.builtin.command:
             cmd: "kubectl uncordon {{ item }}"
+          register: uncordon_result
+          changed_when: "'uncordoned' in uncordon_result.stdout and 'already uncordoned' not in uncordon_result.stdout"
           loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
           when: k8s_nodes is succeeded

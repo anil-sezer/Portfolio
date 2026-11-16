@@ -1,4 +1,3 @@
-# todo: Untested ai code
 ---
 - name: Install cri-tools and configure crictl
   become: true
@@ -17,13 +16,16 @@
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
     - name: Ensure Kubernetes apt repository is configured
-      ansible.builtin.shell: >
-        echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /' |
-        tee /etc/apt/sources.list.d/kubernetes.list
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/kubernetes.list
+        mode: "0644"
+        content: |
+          deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /
+      register: cri_k8s_apt_repo
 
     - name: Install cri-tools
       ansible.builtin.apt:
-        update_cache: true
+        update_cache: "{{ cri_k8s_apt_repo.changed }}"
         state: present
         pkg:
           - cri-tools

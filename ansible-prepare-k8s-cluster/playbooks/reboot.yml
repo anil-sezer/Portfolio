@@ -9,36 +9,8 @@
     # Step 1: Drain all nodes from the control plane
     # -------------------------------------------------------------------------
     - name: Drain Kubernetes nodes
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/drain-cluster.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
-      block:
-        - name: Get list of Kubernetes nodes
-          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
-          register: k8s_nodes
-          changed_when: false
-          failed_when: false
-
-        - name: Notice if Kubernetes API server is already unreachable
-          ansible.builtin.debug:
-            msg: "Kubernetes API server is unreachable. Skipping drain."
-          when: k8s_nodes.rc != 0
-
-        - name: Drain each worker node
-          ansible.builtin.command:
-            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
-          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
-          when:
-            - k8s_nodes.rc == 0
-            - item != ansible_facts['hostname'] and item != ansible_facts['nodename']
-          failed_when: false
-
-        - name: Drain the control node last
-          ansible.builtin.command:
-            cmd: "kubectl drain {{ item }} --ignore-daemonsets --delete-emptydir-data --force"
-          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
-          when:
-            - k8s_nodes.rc == 0
-            - item == ansible_facts['hostname'] or item == ansible_facts['nodename']
-          failed_when: false
 
     # -------------------------------------------------------------------------
     # Step 2: Reboot worker nodes

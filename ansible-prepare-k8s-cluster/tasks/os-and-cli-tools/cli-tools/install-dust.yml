@@ -6,6 +6,7 @@
   register: dust_rc
   failed_when: false
   changed_when: false
+  check_mode: false
   become: true
 
 - name: Install dust
@@ -18,4 +19,4 @@
       - '*/dust'
     remote_src: true
   become: true
-  when: dust_rc.rc != 0
+  when: dust_rc.rc != 0 or (dustversion | regex_replace('^v', '')) not in dust_rc.stdout

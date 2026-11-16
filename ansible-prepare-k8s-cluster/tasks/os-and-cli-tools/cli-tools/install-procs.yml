@@ -6,6 +6,7 @@
   register: procs_rc
   failed_when: false
   changed_when: false
+  check_mode: false
   become: true
 
 - name: Install procs
@@ -15,4 +16,4 @@
     mode: "0755"
     remote_src: true
   become: true
-  when: procs_rc.rc != 0
+  when: procs_rc.rc != 0 or (procsversion | regex_replace('^v', '')) not in procs_rc.stdout

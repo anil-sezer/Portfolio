@@ -97,7 +97,6 @@
           line: '/mnt/nas/ssd/k8s/db *(rw,sync,no_subtree_check,root_squash,anonuid=999,anongid=999,fsid=1)'
       notify:
         - reload exports
-        - restart nfs
 
     - name: Ensure NFS service is enabled and running
       ansible.builtin.systemd:
@@ -105,16 +104,10 @@
         enabled: yes
         state: started
 
-    - name: Re-export NFS shares cleanly
-      ansible.builtin.command:
-        cmd: exportfs -ra
-      changed_when: false
-
   handlers:
     - name: reload exports
       ansible.builtin.command:
         cmd: exportfs -ra
-      listen: "restart nfs"
 
     - name: restart nfs
       ansible.builtin.systemd:

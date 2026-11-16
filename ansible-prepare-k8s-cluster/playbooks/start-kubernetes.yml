@@ -24,13 +24,8 @@
       become: true
       when: ansible_facts["default_ipv4"].address == control_plane_ip
 
-    - name: Wait for Kubernetes API server to become ready on control plane
-      ansible.builtin.command: kubectl get nodes
-      register: api_check
-      until: api_check.rc == 0
-      retries: 30
-      delay: 5
-      changed_when: false
+    - name: Wait for Kubernetes API server to become ready
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/wait-for-api.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
 
     # -------------------------------------------------------------------------

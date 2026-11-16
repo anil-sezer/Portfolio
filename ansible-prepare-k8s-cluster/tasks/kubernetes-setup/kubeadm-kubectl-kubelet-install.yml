@@ -1,5 +1,5 @@
 ---
-- name: Install and hold kubeadm, kubectl, and kubelet
+- name: Install and hold kubeadm, kubectl, kubelet, and cri-tools
   become: true
   block:
     - name: Ensure /etc/apt/keyrings directory exists
@@ -23,7 +23,7 @@
           deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /
       register: k8s_apt_repo
 
-    - name: Install kubelet, kubeadm, and kubectl
+    - name: Install kubelet, kubeadm, kubectl, and cri-tools
       ansible.builtin.apt:
         update_cache: "{{ k8s_apt_repo.changed }}"
         state: present
@@ -31,6 +31,7 @@
           - kubelet
           - kubeadm
           - kubectl
+          - cri-tools
         install_recommends: true
 
     - name: Prevent kubelet, kubeadm, and kubectl from being upgraded

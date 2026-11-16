@@ -59,7 +59,7 @@
     #  Install Kubernetes!
     # -----------------
 
-    - name: Install kubeadm, kubectl and kubelet
+    - name: Install kubeadm, kubectl, kubelet, and cri-tools
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubeadm-kubectl-kubelet-install.yml
 
     - name: Ensure kubelet systemd unit has containerd dependency override
@@ -68,7 +68,7 @@
     - name: Configure kubelet systemReserved, kubeReserved, and evictionHard thresholds
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-resource-reservation.yml
 
-    - name: Install cri-tools and configure crictl
+    - name: Configure crictl
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cri-tools-install.yml
 
     - name: Let's boot the control plane!

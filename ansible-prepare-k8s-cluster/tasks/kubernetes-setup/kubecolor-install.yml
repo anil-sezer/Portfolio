@@ -1,46 +1,49 @@
-﻿# todo: Untested, installed manually
----
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: yes
-  become: yes
-
-- name: Install required packages (apt-transport-https, wget)
-  ansible.builtin.apt:
-    name:
-      - apt-transport-https
-      - wget
-    state: present
-  become: yes
-
+﻿---
 - name: Get latest kubecolor version
   ansible.builtin.uri:
     url: https://kubecolor.github.io/packages/deb/version
-    return_content: yes
+    return_content: true
   register: kubecolor_version_response
 
 - name: Set kubecolor version fact
   ansible.builtin.set_fact:
     kubecolor_version: "{{ kubecolor_version_response.content | trim }}"
 
-- name: Get Debian architecture (dpkg --print-architecture)
-  ansible.builtin.command: dpkg --print-architecture
-  register: debian_arch
+- name: Check installed kubecolor version
+  ansible.builtin.shell: kubecolor --kubecolor-version 2>/dev/null || kubecolor --version 2>/dev/null
+  register: kubecolor_check
+  failed_when: false
   changed_when: false
+  check_mode: false
 
-- name: Download kubecolor .deb package
-  ansible.builtin.get_url:
-    url: "https://kubecolor.github.io/packages/deb/pool/main/k/kubecolor/kubecolor_{{ kubecolor_version }}_{{ debian_arch.stdout }}.deb"
-    dest: /tmp/kubecolor.deb
-    mode: '0644'
-  become: yes
+- name: Install or update kubecolor
+  when: kubecolor_check.rc != 0 or kubecolor_version not in kubecolor_check.stdout
+  become: true
+  block:
+    - name: Install prerequisites for kubecolor installation
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - wget
+        state: present
+        cache_valid_time: 3600
 
-- name: Install kubecolor .deb package
-  ansible.builtin.apt:
-    deb: /tmp/kubecolor.deb
-  become: yes
+    - name: Get Debian architecture (dpkg --print-architecture)
+      ansible.builtin.command: dpkg --print-architecture
+      register: debian_arch
+      changed_when: false
 
-- name: Update apt cache again (as per original commands)
-  ansible.builtin.apt:
-    update_cache: yes
-  become: yes
+    - name: Download kubecolor .deb package
+      ansible.builtin.get_url:
+        url: "https://kubecolor.github.io/packages/deb/pool/main/k/kubecolor/kubecolor_{{ kubecolor_version }}_{{ debian_arch.stdout }}.deb"
+        dest: /tmp/kubecolor.deb
+        mode: "0644"
+
+    - name: Install kubecolor .deb package
+      ansible.builtin.apt:
+        deb: /tmp/kubecolor.deb
+
+    - name: Clean up temporary kubecolor .deb package
+      ansible.builtin.file:
+        path: /tmp/kubecolor.deb
+        state: absent

@@ -42,37 +42,8 @@
       when: ansible_facts["default_ipv4"].address == control_plane_ip
 
     # -------------------------------------------------------------------------
-    # Step 5: Wait for all nodes to become Ready
-    # -------------------------------------------------------------------------
-    - name: Wait for all nodes to become Ready
-      ansible.builtin.command: kubectl wait --for=condition=Ready nodes --all --timeout=300s
-      changed_when: false
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
-
-    # -------------------------------------------------------------------------
-    # Step 6: Uncordon all nodes from the control plane
+    # Step 5: Uncordon all nodes from the control plane
     # -------------------------------------------------------------------------
     - name: Uncordon Kubernetes nodes
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/uncordon-cluster.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
-      block:
-        - name: Get list of Kubernetes nodes
-          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
-          register: rebooted_k8s_nodes
-          changed_when: false
-
-        - name: Uncordon each node
-          ansible.builtin.command:
-            cmd: "kubectl uncordon {{ item }}"
-          register: uncordon_result
-          changed_when: "'uncordoned' in uncordon_result.stdout and 'already uncordoned' not in uncordon_result.stdout"
-          loop: "{{ (rebooted_k8s_nodes.stdout | default('')).split() }}"
-          when: rebooted_k8s_nodes is succeeded
-
-        - name: Get final cluster node status
-          ansible.builtin.command: kubectl get nodes -o wide
-          register: cluster_status
-          changed_when: false
-
-        - name: Display cluster node status
-          ansible.builtin.debug:
-            var: cluster_status.stdout_lines

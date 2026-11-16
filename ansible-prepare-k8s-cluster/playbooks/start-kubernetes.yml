@@ -42,17 +42,5 @@
     # Step 4: Uncordon all nodes from control plane
     # -------------------------------------------------------------------------
     - name: Uncordon Kubernetes nodes
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/uncordon-cluster.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
-      block:
-        - name: Get list of Kubernetes nodes
-          ansible.builtin.command: kubectl get nodes -o jsonpath='{.items[*].metadata.name}'
-          register: k8s_nodes
-          changed_when: false
-
-        - name: Uncordon each node
-          ansible.builtin.command:
-            cmd: "kubectl uncordon {{ item }}"
-          register: uncordon_result
-          changed_when: "'uncordoned' in uncordon_result.stdout and 'already uncordoned' not in uncordon_result.stdout"
-          loop: "{{ (k8s_nodes.stdout | default('')).split() }}"
-          when: k8s_nodes is succeeded

@@ -1,15 +1,13 @@
 ---
 # ==============================================================================
-# CIS Kubernetes Benchmark Control Plane & Kubelet Hardening
+# CIS Kubernetes Benchmark Control Plane Hardening
 #
-# Idempotently applies CIS remediation tasks across cluster nodes:
+# Idempotently applies CIS remediation tasks on the control plane node:
 #   - CIS 1.2.5 / 1.2.30:
-#     1. Enables serverTLSBootstrap: true in /var/lib/kubelet/config.yaml and
-#        synchronizes ConfigMap/kubelet-config in kube-system.
-#     2. Approves pending kubernetes.io/kubelet-serving CSRs.
-#     3. Ensures --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt and
+#     1. Ensures --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt and
 #        --service-account-extend-token-expiration=false are set in
 #        /etc/kubernetes/manifests/kube-apiserver.yaml.
+#     (Note: Kubelet serverTLSBootstrap and CSR approval are handled in kubelet-config.yml)
 #   - CIS 1.2.15 / 1.3.2 / 1.4.1:
 #     1. Ensures --profiling=false is set in kube-apiserver.yaml,
 #        kube-controller-manager.yaml, and kube-scheduler.yaml.
@@ -25,107 +23,6 @@
 #     1. Ensures system group and user `etcd` exist on the control plane node.
 #     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
 # ==============================================================================
-
-- name: Enable kubelet serving TLS bootstrapping on all cluster nodes
-  become: true
-  block:
-    - name: Check if kubelet config.yaml exists
-      ansible.builtin.stat:
-        path: /var/lib/kubelet/config.yaml
-      register: cis_kubelet_config_stat
-
-    - name: Read existing kubelet configuration
-      ansible.builtin.slurp:
-        src: /var/lib/kubelet/config.yaml
-      register: cis_kubelet_raw_config
-      when: cis_kubelet_config_stat.stat.exists
-
-    - name: Merge serverTLSBootstrap into kubelet configuration
-      ansible.builtin.set_fact:
-        cis_kubelet_updated_config: >-
-          {{ (cis_kubelet_raw_config.content | b64decode | from_yaml)
-             | combine({'serverTLSBootstrap': true}, recursive=True) }}
-      when: cis_kubelet_config_stat.stat.exists
-
-    - name: Write updated kubelet config.yaml with serverTLSBootstrap
-      ansible.builtin.copy:
-        dest: /var/lib/kubelet/config.yaml
-        content: "{{ cis_kubelet_updated_config | to_nice_yaml(indent=2) }}"
-        mode: "0644"
-        backup: true
-      register: cis_kubelet_config_file
-      when: cis_kubelet_config_stat.stat.exists
-
-    - name: Restart kubelet if serverTLSBootstrap was added
-      ansible.builtin.systemd:
-        name: kubelet
-        state: restarted
-      when:
-        - cis_kubelet_config_stat.stat.exists
-        - cis_kubelet_config_file.changed
-
-- name: Synchronize kubelet-config ConfigMap and approve kubelet-serving CSRs (control plane only)
-  when: inventory_hostname in groups['control_node']
-  become: false
-  block:
-    - name: Retrieve current kubelet-config ConfigMap from kube-system
-      ansible.builtin.command: kubectl get cm kubelet-config -n kube-system -o json
-      register: cis_kubelet_cm_raw
-      changed_when: false
-
-    - name: Parse kubelet-config ConfigMap JSON
-      ansible.builtin.set_fact:
-        cis_kubelet_cm_json: "{{ cis_kubelet_cm_raw.stdout | from_json }}"
-
-    - name: Merge serverTLSBootstrap into ConfigMap kubelet configuration
-      ansible.builtin.set_fact:
-        cis_kubelet_cm_desired_config: >-
-          {{ (cis_kubelet_cm_json.data.kubelet | from_yaml)
-             | combine({'serverTLSBootstrap': true}, recursive=True) }}
-
-    - name: Check if ConfigMap kubelet configuration requires update
-      ansible.builtin.set_fact:
-        cis_kubelet_cm_needs_update: >-
-          {{ (cis_kubelet_cm_json.data.kubelet | from_yaml).get('serverTLSBootstrap') != true }}
-
-    - name: Prepare ConfigMap manifest for declarative apply
-      ansible.builtin.set_fact:
-        cis_kubelet_cm_manifest:
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: kubelet-config
-            namespace: kube-system
-          data:
-            kubelet: "{{ cis_kubelet_cm_desired_config | to_nice_yaml(indent=2) }}"
-      when: cis_kubelet_cm_needs_update | bool
-
-    - name: Apply updated kubelet-config ConfigMap to kube-system
-      ansible.builtin.command: kubectl apply -f -
-      args:
-        stdin: "{{ cis_kubelet_cm_manifest | to_nice_yaml(indent=2) }}"
-      register: cis_kubelet_cm_apply
-      changed_when: "'configured' in cis_kubelet_cm_apply.stdout or 'created' in cis_kubelet_cm_apply.stdout"
-      when: cis_kubelet_cm_needs_update | bool
-
-    - name: List pending kubernetes.io/kubelet-serving CSRs
-      ansible.builtin.command: kubectl get csr -o json
-      register: cis_csr_list_raw
-      changed_when: false
-
-    - name: Extract pending kubelet-serving CSR names
-      ansible.builtin.set_fact:
-        cis_pending_kubelet_csrs: >-
-          {{ (cis_csr_list_raw.stdout | from_json)['items']
-             | selectattr('spec.signerName', 'equalto', 'kubernetes.io/kubelet-serving')
-             | rejectattr('status.conditions', 'defined')
-             | map(attribute='metadata.name')
-             | list }}
-
-    - name: Approve pending kubernetes.io/kubelet-serving CSRs
-      ansible.builtin.command: "kubectl certificate approve {{ item }}"
-      loop: "{{ cis_pending_kubelet_csrs }}"
-      when: cis_pending_kubelet_csrs | length > 0
 
 - name: Harden control plane static pod manifests (control plane only)
   when: inventory_hostname in groups['control_node']

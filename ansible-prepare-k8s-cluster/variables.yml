@@ -40,7 +40,7 @@ pi4_fan_gpio: 14
 pi4_fan_temp: 60000
 pi4_fan_hyst: 10000
 
-# Kubelet resource reservations and eviction thresholds (used by kubelet-resource-reservation.yml)
+# Kubelet settings, resource reservations, and eviction thresholds (used by kubelet-config.yml)
 kubelet_system_reserved_cpu: "200m"
 kubelet_system_reserved_memory: "512Mi"
 kubelet_kube_reserved_cpu: "200m"

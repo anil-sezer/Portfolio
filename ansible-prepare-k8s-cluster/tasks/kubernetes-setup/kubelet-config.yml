@@ -1,14 +1,33 @@
 ---
 # ==============================================================================
-# Kubelet Resource Reservation & Eviction Thresholds
+# Kubelet Configuration, Resource Reservations, and TLS Bootstrapping
 #
-# Configures kubelet systemReserved, kubeReserved, and hard memory/disk eviction
-# thresholds in /var/lib/kubelet/config.yaml across all cluster nodes.
+# Configures kubelet serverTLSBootstrap, systemReserved, kubeReserved, and hard
+# memory/disk eviction thresholds in /var/lib/kubelet/config.yaml across all
+# cluster nodes.
 # Synchronizes ConfigMap/kubelet-config in namespace kube-system on the control
-# plane so future kubeadm upgrade cycles retain these resource guarantees.
+# plane so future kubeadm upgrade cycles retain these settings.
+# Approves any pending kubernetes.io/kubelet-serving CSRs.
 # ==============================================================================
 
-- name: Configure node kubelet resource reservations and hard eviction thresholds
+- name: Define desired kubelet configuration settings
+  ansible.builtin.set_fact:
+    kubelet_desired_config:
+      serverTLSBootstrap: true
+      systemReserved:
+        cpu: "{{ kubelet_system_reserved_cpu | default('200m') }}"
+        memory: "{{ kubelet_system_reserved_memory | default('512Mi') }}"
+      kubeReserved:
+        cpu: "{{ kubelet_kube_reserved_cpu | default('200m') }}"
+        memory: "{{ kubelet_kube_reserved_memory | default('512Mi') }}"
+      evictionHard:
+        imagefs.available: "15%"
+        imagefs.inodesFree: "5%"
+        memory.available: "{{ kubelet_eviction_hard_memory | default('300Mi') }}"
+        nodefs.available: "10%"
+        nodefs.inodesFree: "5%"
+
+- name: Configure node kubelet settings and restart service if changed
   become: true
   block:
     - name: Ensure /var/lib/kubelet directory exists
@@ -28,27 +47,11 @@
       register: kubelet_raw_config
       when: kubelet_config_stat.stat.exists
 
-    - name: Merge resource reservations and eviction thresholds into kubelet configuration
+    - name: Merge desired settings into kubelet configuration
       ansible.builtin.set_fact:
         kubelet_updated_config: >-
           {{ (kubelet_raw_config.content | b64decode | from_yaml)
-             | combine({
-                 'systemReserved': {
-                   'cpu': kubelet_system_reserved_cpu | default('200m'),
-                   'memory': kubelet_system_reserved_memory | default('512Mi')
-                 },
-                 'kubeReserved': {
-                   'cpu': kubelet_kube_reserved_cpu | default('200m'),
-                   'memory': kubelet_kube_reserved_memory | default('512Mi')
-                 },
-                 'evictionHard': {
-                   'imagefs.available': '15%',
-                   'imagefs.inodesFree': '5%',
-                   'memory.available': kubelet_eviction_hard_memory | default('300Mi'),
-                   'nodefs.available': '10%',
-                   'nodefs.inodesFree': '5%'
-                 }
-               }, recursive=True) }}
+             | combine(kubelet_desired_config, recursive=True) }}
       when: kubelet_config_stat.stat.exists
 
     - name: Write updated kubelet config.yaml
@@ -56,6 +59,7 @@
         dest: /var/lib/kubelet/config.yaml
         content: "{{ kubelet_updated_config | to_nice_yaml(indent=2) }}"
         mode: "0644"
+        backup: true
       register: kubelet_config_file
       when: kubelet_config_stat.stat.exists
 
@@ -67,7 +71,7 @@
         - kubelet_config_stat.stat.exists
         - kubelet_config_file.changed
 
-- name: Synchronize kubelet-config ConfigMap in kube-system (control plane only)
+- name: Synchronize kubelet-config ConfigMap and approve serving CSRs (control plane only)
   when: inventory_hostname in groups['control_node']
   become: false
   block:
@@ -80,34 +84,16 @@
       ansible.builtin.set_fact:
         kubelet_cm_json: "{{ kubelet_cm_raw.stdout | from_json }}"
 
-    - name: Parse and merge resource reservations into ConfigMap kubelet configuration
+    - name: Parse and merge desired settings into ConfigMap kubelet configuration
       ansible.builtin.set_fact:
+        kubelet_cm_current_config: "{{ kubelet_cm_json.data.kubelet | from_yaml }}"
         kubelet_cm_desired_config: >-
           {{ (kubelet_cm_json.data.kubelet | from_yaml)
-             | combine({
-                 'systemReserved': {
-                   'cpu': kubelet_system_reserved_cpu | default('200m'),
-                   'memory': kubelet_system_reserved_memory | default('512Mi')
-                 },
-                 'kubeReserved': {
-                   'cpu': kubelet_kube_reserved_cpu | default('200m'),
-                   'memory': kubelet_kube_reserved_memory | default('512Mi')
-                 },
-                 'evictionHard': {
-                   'imagefs.available': '15%',
-                   'imagefs.inodesFree': '5%',
-                   'memory.available': kubelet_eviction_hard_memory | default('300Mi'),
-                   'nodefs.available': '10%',
-                   'nodefs.inodesFree': '5%'
-                 }
-               }, recursive=True) }}
+             | combine(kubelet_desired_config, recursive=True) }}
 
     - name: Check if ConfigMap kubelet configuration requires update
       ansible.builtin.set_fact:
-        kubelet_cm_needs_update: >-
-          {{ (kubelet_cm_json.data.kubelet | from_yaml).get('systemReserved') != kubelet_cm_desired_config.systemReserved or
-             (kubelet_cm_json.data.kubelet | from_yaml).get('kubeReserved') != kubelet_cm_desired_config.kubeReserved or
-             (kubelet_cm_json.data.kubelet | from_yaml).get('evictionHard') != kubelet_cm_desired_config.evictionHard }}
+        kubelet_cm_needs_update: "{{ kubelet_cm_current_config != kubelet_cm_desired_config }}"
 
     - name: Prepare ConfigMap manifest for declarative apply
       ansible.builtin.set_fact:
@@ -128,3 +114,22 @@
       register: kubelet_cm_apply
       changed_when: "'configured' in kubelet_cm_apply.stdout or 'created' in kubelet_cm_apply.stdout"
       when: kubelet_cm_needs_update | bool
+
+    - name: List pending kubernetes.io/kubelet-serving CSRs
+      ansible.builtin.command: kubectl get csr -o json
+      register: kubelet_csr_list_raw
+      changed_when: false
+
+    - name: Extract pending kubelet-serving CSR names
+      ansible.builtin.set_fact:
+        kubelet_pending_csrs: >-
+          {{ (kubelet_csr_list_raw.stdout | from_json)['items']
+             | selectattr('spec.signerName', 'equalto', 'kubernetes.io/kubelet-serving')
+             | rejectattr('status.conditions', 'defined')
+             | map(attribute='metadata.name')
+             | list }}
+
+    - name: Approve pending kubernetes.io/kubelet-serving CSRs
+      ansible.builtin.command: "kubectl certificate approve {{ item }}"
+      loop: "{{ kubelet_pending_csrs }}"
+      when: kubelet_pending_csrs | length > 0

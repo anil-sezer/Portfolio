@@ -65,9 +65,6 @@
     - name: Ensure kubelet systemd unit has containerd dependency override
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-containerd-override.yml
 
-    - name: Configure kubelet systemReserved, kubeReserved, and evictionHard thresholds
-      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-resource-reservation.yml
-
     - name: Configure crictl
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cri-tools-install.yml
 
@@ -75,8 +72,11 @@
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubeadm-init-control-node.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip
 
-    - name: Apply CIS control plane and kubelet hardening
+    - name: Apply CIS control plane static pod and etcd hardening
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cis-control-plane-hardening.yml
+
+    - name: Configure kubelet settings, resource reservations, and TLS bootstrapping
+      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubelet-config.yml
 
 #    - name: Get join command
 #      ansible.builtin.command: kubeadm token create --print-join-command

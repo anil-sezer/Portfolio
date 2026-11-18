@@ -34,25 +34,13 @@
         - /boot/firmware/cmdline.txt
       when: "'rpi5' in inventory_hostname"
 
-    - name: Deploy eth0-tuning.service on Pi 4 nodes
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../files/systemd/eth0-tuning-pi4.service"
+    - name: Deploy eth0-tuning.service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/eth0-tuning.service.j2"
         dest: /etc/systemd/system/eth0-tuning.service
         mode: "0644"
         owner: root
         group: root
-      when: "'rpi4' in inventory_hostname"
-      register: pi4_eth0_unit
-
-    - name: Deploy eth0-tuning.service on Pi 5 nodes
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../files/systemd/eth0-tuning-pi5.service"
-        dest: /etc/systemd/system/eth0-tuning.service
-        mode: "0644"
-        owner: root
-        group: root
-      when: "'rpi5' in inventory_hostname"
-      register: pi5_eth0_unit
 
     - name: Enable and start eth0-tuning.service
       ansible.builtin.systemd:

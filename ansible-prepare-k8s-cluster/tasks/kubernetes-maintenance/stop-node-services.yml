@@ -1,0 +1,26 @@
+---
+- name: Stop kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    state: stopped
+  become: true
+
+- name: Stop all running containers and pods
+  ansible.builtin.shell: |
+    containers=$(crictl ps -q)
+    if [ -n "$containers" ]; then
+      crictl stop $containers
+    fi
+    pods=$(crictl pods -q)
+    if [ -n "$pods" ]; then
+      crictl stopp $pods
+    fi
+  become: true
+  changed_when: false
+  failed_when: false
+
+- name: Stop containerd
+  ansible.builtin.systemd:
+    name: containerd
+    state: stopped
+  become: true

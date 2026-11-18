@@ -1,5 +1,9 @@
 [Unit]
+{% if 'rpi5' in inventory_hostname %}
+Description=Tune Pi 5 eth0 (macb) - Disable EEE/TSO and increase RX/TX ring buffers
+{% else %}
 Description=Disable EEE on Pi 4 eth0 (bcmgenet)
+{% endif %}
 After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
 Wants=sys-subsystem-net-devices-eth0.device
 
@@ -7,6 +11,10 @@ Wants=sys-subsystem-net-devices-eth0.device
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/bin/sh -c '/usr/sbin/ethtool --set-eee eth0 eee off || true'
+{% if 'rpi5' in inventory_hostname %}
+ExecStart=/usr/sbin/ethtool -G eth0 rx 2048 tx 2048
+ExecStart=/usr/sbin/ethtool -K eth0 tso off
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target

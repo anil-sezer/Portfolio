@@ -15,63 +15,13 @@
     # -------------------------------------------------------------------------
     # Step 2: Stop Kubernetes services & containers on worker nodes
     # -------------------------------------------------------------------------
-    - name: Stop kubelet on worker nodes
-      ansible.builtin.systemd:
-        name: kubelet
-        state: stopped
-      become: true
-      when: ansible_facts["default_ipv4"].address != control_plane_ip
-
-    - name: Stop all running containers and pods on worker nodes
-      ansible.builtin.shell: |
-        containers=$(crictl ps -q)
-        if [ -n "$containers" ]; then
-          crictl stop $containers
-        fi
-        pods=$(crictl pods -q)
-        if [ -n "$pods" ]; then
-          crictl stopp $pods
-        fi
-      become: true
-      when: ansible_facts["default_ipv4"].address != control_plane_ip
-      changed_when: false
-      failed_when: false
-
-    - name: Stop containerd on worker nodes
-      ansible.builtin.systemd:
-        name: containerd
-        state: stopped
-      become: true
+    - name: Stop Kubernetes services & containers on worker nodes
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/stop-node-services.yml
       when: ansible_facts["default_ipv4"].address != control_plane_ip
 
     # -------------------------------------------------------------------------
     # Step 3: Stop Kubernetes services & containers on control plane host
     # -------------------------------------------------------------------------
-    - name: Stop kubelet on control plane host
-      ansible.builtin.systemd:
-        name: kubelet
-        state: stopped
-      become: true
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
-
-    - name: Stop all running containers and pods on control plane host
-      ansible.builtin.shell: |
-        containers=$(crictl ps -q)
-        if [ -n "$containers" ]; then
-          crictl stop $containers
-        fi
-        pods=$(crictl pods -q)
-        if [ -n "$pods" ]; then
-          crictl stopp $pods
-        fi
-      become: true
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
-      changed_when: false
-      failed_when: false
-
-    - name: Stop containerd on control plane host
-      ansible.builtin.systemd:
-        name: containerd
-        state: stopped
-      become: true
+    - name: Stop Kubernetes services & containers on control plane host
+      ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/stop-node-services.yml
       when: ansible_facts["default_ipv4"].address == control_plane_ip

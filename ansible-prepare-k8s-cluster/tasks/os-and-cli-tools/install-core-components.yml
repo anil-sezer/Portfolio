@@ -6,34 +6,18 @@
     mode: "0755"
     owner: root
     group: root
-
-# The GNU Privacy Guard (GPG or gpg) tool is a native/baseos security tool for encrypting files.
-- name: Install gpg
-  ansible.builtin.apt:
-    state: present
-    pkg: gpg
-    update_cache: true
   become: true
 
-- name: Install git
+- name: Install core components and utilities
   ansible.builtin.apt:
-    state: present
-    name: git
-  become: true
-
-- name: Install unzip
-  ansible.builtin.apt:
-    state: present
-    pkg: unzip
-  become: true
-
-- name: Install other dependencies for various apps
-  apt:
     name:
+      - gpg
+      - git
       - curl
       - wget
-      - unzip # unzipping .zip files
+      - unzip
       - ca-certificates
-      - bzip2 # unzipping .bz2 files
+      - bzip2
     state: present
+    update_cache: true
   become: true

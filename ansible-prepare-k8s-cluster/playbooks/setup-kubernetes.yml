@@ -28,13 +28,10 @@
     - name: Nodes need to be able to resolve their own hostname to a non-loopback IP. Lets do that.
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/edit-etc-host.yml
 
-    - name: Install first batch of required packages
+    - name: Install required cluster packages
       ansible.builtin.apt:
         pkg:
           - apt-transport-https
-          - ca-certificates
-          - curl
-          - gpg
           - gnupg
           - lsb-release
           - nfs-common

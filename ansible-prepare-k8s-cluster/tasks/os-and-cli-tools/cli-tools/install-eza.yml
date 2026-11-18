@@ -9,13 +9,6 @@
 - name: Install eza
   when: eza_check.rc != 0
   block:
-    - name: Ensure apt keyrings directory exists
-      ansible.builtin.file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: '0755'
-      become: true
-
     - name: Download and install GPG key for eza repository
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/eza-community/eza/main/deb.asc

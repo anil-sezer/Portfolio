@@ -1,26 +1,21 @@
 ---
 all:
   vars:
+    ansible_user: anilsezer
     ansible_python_interpreter: /usr/bin/python3
   hosts:
     cinema:
       ansible_host: 192.168.1.119
-      ansible_user: anilsezer
     rpi4red:
       ansible_host: 192.168.1.120 # 4GB
-      ansible_user: anilsezer
     rpi4blue:
       ansible_host: 192.168.1.121 # 8GB
-      ansible_user: anilsezer
     rpi5green:
       ansible_host: 192.168.1.122 # 8GB
-      ansible_user: anilsezer
     rpi5gold:
       ansible_host: 192.168.1.123 # 8GB
-      ansible_user: anilsezer
     rpi5purple:
       ansible_host: 192.168.1.124 # 8GB
-      ansible_user: anilsezer
 
 k8s_nodes:
   hosts:

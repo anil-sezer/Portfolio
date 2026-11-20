@@ -8,18 +8,15 @@
     mode: "0644"
     owner: root
     group: root
-  register: k8s_sysctl_conf
   become: true
+  notify: reload sysctl
 
 - name: Check runtime IP forwarding state
   ansible.builtin.command: sysctl -n net.ipv4.ip_forward
   register: ip_forward_status
-  changed_when: false
-  check_mode: false
-
-- name: Reload sysctl settings
-  ansible.builtin.command: sysctl --system
-  when: k8s_sysctl_conf.changed or (ip_forward_status.stdout | trim != '1')
-  register: sysctl_result
   changed_when: ip_forward_status.stdout | trim != '1'
-  become: true
+  check_mode: false
+  notify: reload sysctl
+
+- name: Flush handlers to ensure IP forwarding is active before kubeadm preflight
+  ansible.builtin.meta: flush_handlers

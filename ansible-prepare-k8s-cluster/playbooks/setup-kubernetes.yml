@@ -4,6 +4,9 @@
   gather_facts: true
   vars_files:
     - ../variables.yml
+  handlers:
+    - name: Import sysctl handlers
+      ansible.builtin.import_tasks: ../handlers/sysctl.yml
 
   tasks:
     # -----------------
@@ -17,7 +20,6 @@
 
     - name: Disabling swap is a must for Kubernetes
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/swap-disable.yml
-
 
     - name: Manually enable IPv4 packet forwarding for Kubernetes
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/ipv4-kernel.yml

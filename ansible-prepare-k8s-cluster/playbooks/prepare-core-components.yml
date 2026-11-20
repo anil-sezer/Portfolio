@@ -4,6 +4,9 @@
   gather_facts: true
   vars_files:
     - ../variables.yml
+  handlers:
+    - name: Import sysctl handlers
+      ansible.builtin.import_tasks: ../handlers/sysctl.yml
 
   tasks:
     # -----------------------

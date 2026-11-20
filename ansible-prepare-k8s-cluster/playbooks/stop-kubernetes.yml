@@ -2,26 +2,24 @@
 - name: Stop Kubernetes entirely and enter maintenance mode
   hosts: k8s_nodes
   gather_facts: true
-  vars_files:
-    - ../variables.yml
   tasks:
     # -------------------------------------------------------------------------
     # Step 1: Drain all nodes from the control plane
     # -------------------------------------------------------------------------
     - name: Drain Kubernetes nodes
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/drain-cluster.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     # -------------------------------------------------------------------------
     # Step 2: Stop Kubernetes services & containers on worker nodes
     # -------------------------------------------------------------------------
     - name: Stop Kubernetes services & containers on worker nodes
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/stop-node-services.yml
-      when: ansible_facts["default_ipv4"].address != control_plane_ip
+      when: inventory_hostname in groups['worker_node']
 
     # -------------------------------------------------------------------------
     # Step 3: Stop Kubernetes services & containers on control plane host
     # -------------------------------------------------------------------------
     - name: Stop Kubernetes services & containers on control plane host
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/stop-node-services.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']

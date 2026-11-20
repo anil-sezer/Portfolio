@@ -10,9 +10,6 @@ pod_network_cdr: 10.244.0.0/16 # default for flannel. Calico's default is differ
 # Your folder at the device you run this Ansible playbook. For placing the logs of this Ansible operation.
 kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
 
-# Tasks that ran on the control & worker planes vary a bit.
-control_plane_ip: 192.168.1.120
-
 # For Installing some nice to have tools.
 # TODO: Implement these
 install_nice_to_have_tools: true

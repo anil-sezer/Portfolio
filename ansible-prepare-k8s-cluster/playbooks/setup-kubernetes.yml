@@ -67,7 +67,7 @@
 
     - name: Let's boot the control plane!
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubeadm-init-control-node.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     - name: Apply CIS control plane static pod and etcd hardening
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/cis-control-plane-hardening.yml
@@ -81,14 +81,14 @@
 #
 #    - name: Join worker nodes
 #      ansible.builtin.command: "{{ join_command.stdout }}"
-#      when: ansible_facts["default_ipv4"].address != control_plane_ip
+#      when: inventory_hostname in groups['worker_node']
 
     - name: Install kubecolor
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/kubecolor-install.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     - name: Setup MetalLB
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/setup-metal-lb.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     # todo: Add traefik installation via helm.

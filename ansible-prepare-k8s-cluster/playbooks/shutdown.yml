@@ -2,28 +2,26 @@
 - name: Shut down all the nodes
   hosts: k8s_nodes
   gather_facts: true
-  vars_files:
-    - ../variables.yml
   tasks:
     - name: Drain Kubernetes nodes
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/drain-cluster.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     - name: Shut down non-control-plane hosts
       ansible.builtin.shell: "sleep 2 && shutdown -h now"
       async: 1
       poll: 0
       become: true
-      when: ansible_facts["default_ipv4"].address != control_plane_ip
+      when: inventory_hostname in groups['worker_node']
 
     - name: Pause to allow non-control-plane hosts to shut down
       ansible.builtin.pause:
         seconds: 10
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     - name: Shut down the control plane host
       ansible.builtin.shell: "sleep 2 && shutdown -h now"
       async: 1
       poll: 0
       become: true
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']

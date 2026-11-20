@@ -2,15 +2,13 @@
 - name: Reboot all the Kubernetes nodes
   hosts: k8s_nodes
   gather_facts: true
-  vars_files:
-    - ../variables.yml
   tasks:
     # -------------------------------------------------------------------------
     # Step 1: Drain all nodes from the control plane
     # -------------------------------------------------------------------------
     - name: Drain Kubernetes nodes
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/drain-cluster.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     # -------------------------------------------------------------------------
     # Step 2: Reboot worker nodes
@@ -21,7 +19,7 @@
         reboot_timeout: 600
         post_reboot_delay: 10
       become: true
-      when: ansible_facts["default_ipv4"].address != control_plane_ip
+      when: inventory_hostname in groups['worker_node']
 
     # -------------------------------------------------------------------------
     # Step 3: Reboot the control plane host
@@ -32,18 +30,18 @@
         reboot_timeout: 600
         post_reboot_delay: 15
       become: true
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     # -------------------------------------------------------------------------
     # Step 4: Wait for Kubernetes API server to become ready
     # -------------------------------------------------------------------------
     - name: Wait for Kubernetes API server to become ready
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/wait-for-api.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']
 
     # -------------------------------------------------------------------------
     # Step 5: Uncordon all nodes from the control plane
     # -------------------------------------------------------------------------
     - name: Uncordon Kubernetes nodes
       ansible.builtin.import_tasks: ../tasks/kubernetes-maintenance/uncordon-cluster.yml
-      when: ansible_facts["default_ipv4"].address == control_plane_ip
+      when: inventory_hostname in groups['control_node']

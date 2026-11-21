@@ -1,27 +1,41 @@
 ---
-- name: Check if swap is enabled
-  ansible.builtin.command: swapon --show
-  register: swap_status
-  changed_when: false
-  check_mode: false
-
-- name: Disable swap in /etc/fstab
-  ansible.builtin.replace:
-    path: /etc/fstab
-    regexp: '^([^#\n]*[ \t]+swap[ \t]+.*)$'
-    replace: '#\1'
+- name: Disable and purge swap on Kubernetes nodes
   become: true
-
-- name: Disable active swap and reboot
-  when: swap_status.stdout | trim | length > 0
   block:
-    - name: Disable swap for this session
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Stop and disable dphys-swapfile service
+      ansible.builtin.systemd:
+        name: dphys-swapfile.service
+        state: stopped
+        enabled: false
+      when: "'dphys-swapfile.service' in ansible_facts.services"
+
+    - name: Uninstall and purge dphys-swapfile package
+      ansible.builtin.apt:
+        name: dphys-swapfile
+        state: absent
+        purge: true
+
+    - name: Check if swap is enabled
+      ansible.builtin.command: swapon --show
+      register: swap_status
+      changed_when: false
+      check_mode: false
+
+    - name: Disable active swap for this session
       ansible.builtin.command: swapoff -a
       changed_when: true
-      become: true
+      when: swap_status.stdout | trim | length > 0
 
-    - name: Reboot device
-      ansible.builtin.reboot:
-        reboot_timeout: 3600
-        msg: Rebooting machine in 3600 as timeout
-      become: true
+    - name: Remove /var/swap file
+      ansible.builtin.file:
+        path: /var/swap
+        state: absent
+
+    - name: Disable swap in /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#\n]*[ \t]+swap[ \t]+.*)$'
+        replace: '#\1'

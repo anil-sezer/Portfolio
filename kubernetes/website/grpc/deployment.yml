@@ -37,10 +37,22 @@ spec:
       imagePullSecrets:
         - name: regcred
       serviceAccountName: k8s-stats-service
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: grpc
           image: imgregistry.anil-sezer.com/portfolio-grpc:latest
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
           ports:
             - containerPort: 8080
           startupProbe:

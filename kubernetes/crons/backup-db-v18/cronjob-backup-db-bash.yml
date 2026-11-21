@@ -15,9 +15,18 @@ spec:
           imagePullSecrets:
             - name: regcred
           restartPolicy: OnFailure
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: postgres-backup
               image: imgregistry.anil-sezer.com/pg_dump:v18
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                capabilities:
+                  drop:
+                    - ALL
               env:
                 - name: RETAIN_COUNT
                   value: "4" # Keep this number of backups

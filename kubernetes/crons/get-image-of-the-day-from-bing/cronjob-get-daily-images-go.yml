@@ -14,10 +14,19 @@ spec:
           automountServiceAccountToken: false
           imagePullSecrets:
             - name: regcred
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: get-daily-images
               image: imgregistry.anil-sezer.com/get-daily-images-go-cron:latest
               imagePullPolicy: Always
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
               env:
                 - name: GRPC_BASE_URL
                   value: "grpc.portfolio.svc.cluster.local:8080"

@@ -30,6 +30,9 @@
 #   - CIS 1.1.12:
 #     1. Ensures system group and user `etcd` exist on the control plane node.
 #     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
+#   - CIS 1.1.9 (all cluster nodes):
+#     1. Ensures /etc/cni/net.d has 0700 permissions and all CNI files inside
+#        it (including hidden files) have 0600 permissions and root:root ownership.
 # ==============================================================================
 
 - name: Harden control plane static pod manifests (control plane only)
@@ -243,3 +246,40 @@
       ansible.builtin.command: chown -R etcd:etcd /var/lib/etcd
       changed_when: true
       when: cis_etcd_data_dir.changed
+
+- name: Restrict CNI configuration file permissions on all nodes (CIS 1.1.9)
+  become: true
+  block:
+    - name: Check if CNI configuration directory exists
+      ansible.builtin.stat:
+        path: /etc/cni/net.d
+      register: cis_cni_net_d
+
+    - name: Ensure /etc/cni/net.d directory has 0700 permissions
+      ansible.builtin.file:54 
+        path: /etc/cni/net.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+      when: cis_cni_net_d.stat.exists and cis_cni_net_d.stat.isdir
+
+    - name: Find all CNI configuration files in /etc/cni/net.d
+      ansible.builtin.find:
+        paths: /etc/cni/net.d
+        file_type: file
+        hidden: true
+        recurse: false
+      register: cis_cni_files
+      when: cis_cni_net_d.stat.exists and cis_cni_net_d.stat.isdir
+
+    - name: Ensure CNI configuration files have 0600 permissions
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: root
+        group: root
+        mode: "0600"
+      loop: "{{ cis_cni_files.files | default([]) }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: cis_cni_net_d.stat.exists and cis_cni_net_d.stat.isdir

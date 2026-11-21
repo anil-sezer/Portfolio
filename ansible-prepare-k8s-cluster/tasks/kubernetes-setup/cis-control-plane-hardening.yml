@@ -24,6 +24,9 @@
 #        and event-rate-limit-config.yaml (0600) exist on the control plane node.
 #     2. Enables DenyServiceExternalIPs and EventRateLimit admission plugins
 #        (alongside NodeRestriction) and configures --admission-control-config-file.
+#   - CIS 1.3.1:
+#     1. Ensures --terminated-pod-gc-threshold=100 is set in
+#        /etc/kubernetes/manifests/kube-controller-manager.yaml.
 #   - CIS 1.1.12:
 #     1. Ensures system group and user `etcd` exist on the control plane node.
 #     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
@@ -124,6 +127,7 @@
           - path: /etc/kubernetes/manifests/kube-controller-manager.yaml
             flags:
               - "--profiling=false"
+              - "--terminated-pod-gc-threshold=100"
             volume_mounts: []
             volumes: []
           - path: /etc/kubernetes/manifests/kube-scheduler.yaml

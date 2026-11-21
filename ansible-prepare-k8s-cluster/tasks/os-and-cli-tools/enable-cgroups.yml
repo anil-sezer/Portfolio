@@ -1,0 +1,21 @@
+---
+- name: Enable cpuset and memory cgroups in /boot/firmware/cmdline.txt on Raspberry Pi nodes
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Ensure cgroup kernel parameters are present in /boot/firmware/cmdline.txt
+      ansible.builtin.replace:
+        path: /boot/firmware/cmdline.txt
+        regexp: '^((?!.*\b{{ item | regex_escape }}\b).*\S)[ \t]*$'
+        replace: '\1 {{ item }}'
+      loop:
+        - cgroup_enable=cpuset
+        - cgroup_enable=memory
+        - cgroup_memory=1
+      register: cgroups_cmdline_result
+
+    - name: Reboot node to apply cgroup kernel parameters
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+        msg: "Rebooting to enable cgroups (cpuset, memory) in /boot/firmware/cmdline.txt"
+      when: cgroups_cmdline_result.changed

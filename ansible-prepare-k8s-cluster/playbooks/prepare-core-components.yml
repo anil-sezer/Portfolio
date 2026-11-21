@@ -10,6 +10,12 @@
 
   tasks:
     # -----------------------
+    #  Bootloader / Kernel Prerequisites
+    # -----------------------
+    - name: Enable cpuset and memory cgroups in /boot/firmware/cmdline.txt
+      ansible.builtin.import_tasks: ../tasks/os-and-cli-tools/enable-cgroups.yml
+
+    # -----------------------
     #  Package Holds & Updates
     # -----------------------
     - name: Disable unattended background upgrades and hold kernel/firmware packages

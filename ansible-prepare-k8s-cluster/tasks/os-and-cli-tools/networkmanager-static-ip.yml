@@ -1,0 +1,44 @@
+# Whenever eth0 experiences even a 1-second carrier flap (Lost carrier) or DHCP lease renewal timeout,
+# NetworkManager can drop the node's IPv4 address (192.168.1.12x/24) and default route (192.168.1.1).
+# Configuring a static IPv4 keyfile with ignore-carrier=yes keeps the address and route intact across flaps.
+---
+- name: Configure static IPv4 and ignore-carrier in NetworkManager on Kubernetes nodes
+  become: true
+  when: inventory_hostname in groups['k8s_nodes']
+  block:
+    - name: Configure NetworkManager to ignore carrier loss on eth0
+      ansible.builtin.copy:
+        dest: /etc/NetworkManager/conf.d/99-ignore-carrier.conf
+        mode: "0644"
+        owner: root
+        group: root
+        content: |
+          [device-eth0-ignore-carrier]
+          match-device=interface-name:eth0
+          ignore-carrier=yes
+      register: nm_ignore_carrier_cfg
+
+    - name: Deploy static IPv4 NetworkManager connection profile for eth0
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/eth0.nmconnection.j2"
+        dest: /etc/NetworkManager/system-connections/eth0.nmconnection
+        mode: "0600"
+        owner: root
+        group: root
+      register: nm_static_cfg
+
+    - name: Restart NetworkManager to apply ignore-carrier device configuration
+      ansible.builtin.systemd:
+        name: NetworkManager
+        state: restarted
+      when: nm_ignore_carrier_cfg.changed
+
+    - name: Reload NetworkManager connection profiles
+      ansible.builtin.command: nmcli connection reload
+      changed_when: true
+      when: nm_static_cfg.changed and not nm_ignore_carrier_cfg.changed
+
+    - name: Activate static eth0 NetworkManager connection profile
+      ansible.builtin.command: nmcli connection up eth0
+      changed_when: true
+      when: nm_static_cfg.changed or nm_ignore_carrier_cfg.changed

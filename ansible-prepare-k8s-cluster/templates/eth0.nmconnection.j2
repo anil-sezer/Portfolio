@@ -1,0 +1,19 @@
+[connection]
+id=eth0
+uuid={{ ('eth0-' + inventory_hostname) | to_uuid }}
+type=ethernet
+interface-name=eth0
+autoconnect=true
+autoconnect-priority=100
+autoconnect-retries=0
+
+[ethernet]
+
+[ipv4]
+method=manual
+address1={{ ansible_host }}/24,{{ cluster_lan_gateway }}
+dns={{ cluster_dns_servers | join(';') }};
+never-default=false
+
+[ipv6]
+method=disabled

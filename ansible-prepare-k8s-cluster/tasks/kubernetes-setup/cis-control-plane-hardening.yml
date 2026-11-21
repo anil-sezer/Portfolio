@@ -19,6 +19,11 @@
 #   - CIS 1.2.20 / 1.2.29 (Not needed in a homelab but why not):
 #     1. Ensures --request-timeout=300s and strong AEAD --tls-cipher-suites are set
 #        in /etc/kubernetes/manifests/kube-apiserver.yaml.
+#   - CIS 1.2.3 / 1.2.9:
+#     1. Ensures /etc/kubernetes/admission-control (0700) with admission-config.yaml
+#        and event-rate-limit-config.yaml (0600) exist on the control plane node.
+#     2. Enables DenyServiceExternalIPs and EventRateLimit admission plugins
+#        (alongside NodeRestriction) and configures --admission-control-config-file.
 #   - CIS 1.1.12:
 #     1. Ensures system group and user `etcd` exist on the control plane node.
 #     2. Ensures /var/lib/etcd has etcd:etcd ownership and 0700 permissions.
@@ -44,6 +49,25 @@
         group: root
         mode: "0600"
 
+    - name: Ensure Kubernetes admission control config directory exists
+      ansible.builtin.file:
+        path: /etc/kubernetes/admission-control
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Deploy Kubernetes admission control configuration files
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../files/admission-control/{{ item }}"
+        dest: "/etc/kubernetes/admission-control/{{ item }}"
+        owner: root
+        group: root
+        mode: "0600"
+      loop:
+        - admission-config.yaml
+        - event-rate-limit-config.yaml
+
     - name: Define required CIS flags and mounts per control plane static pod manifest
       vars:
         cis_apiserver_tls_cipher_suites:
@@ -63,23 +87,32 @@
         cis_control_plane_manifests:
           - path: /etc/kubernetes/manifests/kube-apiserver.yaml
             flags:
+              - "--admission-control-config-file=/etc/kubernetes/admission-control/admission-config.yaml"
               - "--audit-log-maxage=30"
               - "--audit-log-maxbackup=10"
               - "--audit-log-maxsize=100"
               - "--audit-log-path=/var/log/kubernetes/audit/audit.log"
               - "--audit-policy-file=/etc/kubernetes/audit-policy.yaml"
+              - "--enable-admission-plugins=NodeRestriction,DenyServiceExternalIPs,EventRateLimit"
               - "--kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt"
               - "--profiling=false"
               - "--request-timeout=300s"
               - "--service-account-extend-token-expiration=false"
               - "--tls-cipher-suites={{ cis_apiserver_tls_cipher_suites | join(',') }}"
             volume_mounts:
+              - mountPath: /etc/kubernetes/admission-control
+                name: admission-control
+                readOnly: true
               - mountPath: /etc/kubernetes/audit-policy.yaml
                 name: audit-policy
                 readOnly: true
               - mountPath: /var/log/kubernetes/audit
                 name: audit-logs
             volumes:
+              - hostPath:
+                  path: /etc/kubernetes/admission-control
+                  type: Directory
+                name: admission-control
               - hostPath:
                   path: /etc/kubernetes/audit-policy.yaml
                   type: File
@@ -117,7 +150,7 @@
                  'spec': {
                    'containers': [
                      parsed_manifest.spec.containers[0] | combine({
-                       'command': current_cmd + missing_flags,
+                       'command': retained_cmd + missing_flags,
                        'volumeMounts': current_mounts + missing_mounts
                      })
                    ],
@@ -129,6 +162,10 @@
         parsed_manifest: "{{ item.content | b64decode | from_yaml }}"
         current_cmd: "{{ parsed_manifest.spec.containers[0].command }}"
         missing_flags: "{{ item.item.flags | difference(current_cmd) }}"
+        missing_flag_prefixes: "{{ missing_flags | map('regex_replace', '^(--[^=]+=).*$', '\\1') | list }}"
+        retained_cmd: >-
+          {{ current_cmd | reject('match', '^(' ~ (missing_flag_prefixes | map('regex_escape') | join('|')) ~ ')') | list
+             if (missing_flags | length > 0) else current_cmd }}
         current_mounts: "{{ parsed_manifest.spec.containers[0].volumeMounts | default([]) }}"
         current_mount_names: "{{ current_mounts | map(attribute='name') | list }}"
         missing_mounts: "{{ item.item.volume_mounts | rejectattr('name', 'in', current_mount_names) | list }}"

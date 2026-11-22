@@ -1,10 +1,11 @@
 ---
 # ==============================================================================
-# MetalLB Setup (FRR-K8s Mode)
+# MetalLB Setup (Native Mode)
 #
-# Configures kube-proxy for IPVS strictARP mode, installs MetalLB manifests,
-# waits for controller/speaker rollouts, and applies the IPAddressPool and
-# L2Advertisement configuration from the repository.
+# Configures kube-proxy for IPVS strictARP mode, installs MetalLB native manifests
+# (L2/native mode without unused FRR-K8s BGP daemons), waits for controller/speaker
+# rollouts, and applies the IPAddressPool and L2Advertisement configuration from
+# the repository.
 # ==============================================================================
 
 - name: Retrieve current kube-proxy ConfigMap from kube-system
@@ -53,8 +54,8 @@
   become: false
   when: kube_proxy_cm_needs_update | bool
 
-- name: Install MetalLB (FRR-K8s mode)
-  ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/config/manifests/metallb-frr-k8s.yaml
+- name: Install MetalLB (Native mode)
+  ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/config/manifests/metallb-native.yaml
   register: metallb_install_result
   changed_when: "'configured' in metallb_install_result.stdout or 'created' in metallb_install_result.stdout"
   become: false

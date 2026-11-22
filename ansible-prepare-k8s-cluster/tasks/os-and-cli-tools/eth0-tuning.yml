@@ -24,14 +24,11 @@
         line: 'dtparam=pciex1_no_l0s=on'
       when: "'rpi5' in inventory_hostname"
 
-    - name: Append pcie_aspm=off to /boot/firmware/current/cmdline.txt and /boot/firmware/cmdline.txt on Pi 5 nodes
+    - name: Append pcie_aspm=off to /boot/firmware/cmdline.txt on Pi 5 nodes
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: /boot/firmware/cmdline.txt
         regexp: '^((?!.*\bpcie_aspm=off\b).*[^\s])\s*$'
         replace: '\1 pcie_aspm=off'
-      loop:
-        - /boot/firmware/current/cmdline.txt
-        - /boot/firmware/cmdline.txt
       when: "'rpi5' in inventory_hostname"
 
     - name: Deploy eth0-tuning.service

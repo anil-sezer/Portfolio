@@ -4,7 +4,7 @@ Description=Tune Pi 5 eth0 (macb) - Disable EEE/TSO and increase RX/TX ring buff
 {% else %}
 Description=Disable EEE on Pi 4 eth0 (bcmgenet)
 {% endif %}
-After=sys-subsystem-net-devices-eth0.device systemd-networkd.service network.target
+After=sys-subsystem-net-devices-eth0.device NetworkManager.service network.target
 Wants=sys-subsystem-net-devices-eth0.device
 
 [Service]

@@ -64,7 +64,7 @@ jobs:
 
       - name: Validate Kustomize Overlays
         run: |
-          for dir in kubernetes/website/frontend kubernetes/website/grpc kubernetes/github-runner kubernetes/uptime kubernetes/image-registry/ui; do
+          for dir in kubernetes/website/frontend kubernetes/website/grpc kubernetes/github-runner kubernetes/uptime kubernetes/image-registry/ui kubernetes/network-policies; do
             echo "::group::Validating Kustomize overlay $dir"
             kubectl kustomize "$dir" | kubeconform -summary -ignore-missing-schemas \
               -schema-location default \

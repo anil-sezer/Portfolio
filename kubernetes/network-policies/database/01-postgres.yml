@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-ingress
+  namespace: database
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    # Portfolio gRPC API and database maintenance CronJobs
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: portfolio
+          podSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - grpc
+                  - postgres-backup
+                  - purge-request-logs
+        # Authentik server and worker
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: authentik
+        # Grafana PostgreSQL datasource
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: observability
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: grafana
+        # Adminer web UI
+        - podSelector:
+            matchLabels:
+              app: adminer
+        # LAN workstations via postgres-nodeport (:30001)
+        # /31 CIDRs cover only each node's flannel.1 (.0) and cni0 (.1) SNAT IPs, excluding all pod IPs (.2-.254)
+        - ipBlock:
+            cidr: 192.168.1.0/24
+        - ipBlock:
+            cidr: 10.244.0.0/31
+        - ipBlock:
+            cidr: 10.244.1.0/31
+        - ipBlock:
+            cidr: 10.244.2.0/31
+        - ipBlock:
+            cidr: 10.244.3.0/31
+        - ipBlock:
+            cidr: 10.244.4.0/31
+      ports:
+        - protocol: TCP
+          port: 5432

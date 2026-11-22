@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: portfolio
+
+resources:
+  - 00-default-deny.yml
+  - 01-allow-dns.yml
+  - 02-frontend.yml
+  - 03-grpc.yml
+  - 04-github-runner.yml
+  - 05-cronjobs.yml

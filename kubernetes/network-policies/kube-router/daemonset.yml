@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-router
+  namespace: kube-system
+  labels:
+    k8s-app: kube-router
+    tier: node
+spec:
+  selector:
+    matchLabels:
+      k8s-app: kube-router
+      tier: node
+  template:
+    metadata:
+      labels:
+        k8s-app: kube-router
+        tier: node
+    spec:
+      priorityClassName: system-node-critical
+      serviceAccountName: kube-router
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      containers:
+        - name: kube-router
+          image: docker.io/cloudnativelabs/kube-router:v2.12.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --run-firewall=true
+            - --run-router=false
+            - --run-service-proxy=false
+            - --v=0
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 20244
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: lib-modules
+              mountPath: /lib/modules
+              readOnly: true
+            - name: xtables-lock
+              mountPath: /run/xtables.lock
+              readOnly: false
+      volumes:
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate

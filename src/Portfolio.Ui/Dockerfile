@@ -15,7 +15,7 @@ COPY src/Portfolio.Domain/Portfolio.Domain.csproj src/Portfolio.Domain/
 COPY src/Portfolio.Infrastructure/Portfolio.Infrastructure.csproj src/Portfolio.Infrastructure/
 COPY src/Portfolio.Ui/Portfolio.Ui.csproj src/Portfolio.Ui/
 
-RUN dotnet restore "src/Portfolio.Ui/Portfolio.Ui.csproj" -a $TARGETARCH
+RUN dotnet restore "src/Portfolio.Ui/Portfolio.Ui.csproj" -a "$TARGETARCH"
 
 # Copy protobufs and project sources after restore
 COPY protos/ protos/
@@ -24,11 +24,11 @@ COPY src/Portfolio.Infrastructure/ src/Portfolio.Infrastructure/
 COPY src/Portfolio.Ui/ src/Portfolio.Ui/
 
 WORKDIR /app/src/Portfolio.Ui
-RUN dotnet build "Portfolio.Ui.csproj" --configuration $BUILD_CONFIGURATION -a $TARGETARCH --no-restore --output /app/build
+RUN dotnet build "Portfolio.Ui.csproj" --configuration "$BUILD_CONFIGURATION" -a "$TARGETARCH" --no-restore --output /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Portfolio.Ui.csproj" -c $BUILD_CONFIGURATION -a $TARGETARCH --no-restore -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Portfolio.Ui.csproj" -c "$BUILD_CONFIGURATION" -a "$TARGETARCH" --no-restore -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

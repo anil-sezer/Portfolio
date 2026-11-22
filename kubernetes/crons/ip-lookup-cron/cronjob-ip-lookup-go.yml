@@ -10,6 +10,9 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: ip-lookup-go
         spec:
           automountServiceAccountToken: false
           imagePullSecrets:
@@ -17,6 +20,26 @@ spec:
           securityContext:
             seccompProfile:
               type: RuntimeDefault
+          initContainers:
+            - name: wait-for-netpol
+              image: busybox:1.37
+              imagePullPolicy: IfNotPresent
+              command: ["sh", "-c", "sleep 3"]
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              resources:
+                requests:
+                  cpu: 5m
+                  memory: 16Mi
+                limits:
+                  cpu: 50m
+                  memory: 32Mi
           containers:
             - name: ip-lookup-go
               image: imgregistry.anil-sezer.com/iplookup-cron-go:latest

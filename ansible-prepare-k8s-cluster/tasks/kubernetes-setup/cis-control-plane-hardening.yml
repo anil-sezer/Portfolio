@@ -256,7 +256,7 @@
       register: cis_cni_net_d
 
     - name: Ensure /etc/cni/net.d directory has 0700 permissions
-      ansible.builtin.file:54 
+      ansible.builtin.file:
         path: /etc/cni/net.d
         state: directory
         owner: root

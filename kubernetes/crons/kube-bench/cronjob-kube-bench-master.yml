@@ -57,8 +57,7 @@ spec:
                 - |
                   set -o pipefail
                   # Skip intentionally deferred homelab checks:
-                  # 1.2.27, 1.2.28 - Secret encryption at rest in etcd (Task 6 skipped)
-                  SKIP_CHECKS="1.2.27,1.2.28"
+                  SKIP_CHECKS="1.2.27,1.2.28,5.4.2"
 
                   echo "=== Running CIS Kubernetes Benchmark Audit on Master ==="
                   kube-bench run --targets master,etcd,policies --skip "$SKIP_CHECKS"

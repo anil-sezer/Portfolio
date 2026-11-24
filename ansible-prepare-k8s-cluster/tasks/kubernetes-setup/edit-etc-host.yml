@@ -1,14 +1,4 @@
 ---
-- name: Prevent cloud-init from managing /etc/hosts
-  ansible.builtin.lineinfile:
-    path: /etc/cloud/cloud.cfg
-    regexp: '^\s*- {{ item }}$'
-    state: absent
-  loop:
-    - update_etc_hosts
-    - manage_etc_hosts
-  become: true
-
 - name: Fail if the node IP address fact is not available
   ansible.builtin.fail:
     msg: >

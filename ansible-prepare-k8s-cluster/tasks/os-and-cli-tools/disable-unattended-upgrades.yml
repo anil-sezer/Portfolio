@@ -18,7 +18,9 @@
         content: |
           Unattended-Upgrade::Package-Blacklist {
               "linux-";
-              "flash-kernel";
+              "raspi-firmware";
+              "raspberrypi-";
+              "rpi-eeprom";
           };
 
     - name: Stop and disable unattended-upgrades service
@@ -33,16 +35,21 @@
         name: "{{ item }}"
         selection: hold
       loop:
-        - linux-image-raspi
-        - linux-headers-raspi
-        - linux-raspi
-        - linux-firmware-raspi
-        - flash-kernel
-        - flash-kernel-piboot
+        - raspi-firmware
+        - raspberrypi-bootloader
+        - raspberrypi-sys-mods
+        - rpi-eeprom
+        - linux-image-rpi-v8
+        - linux-headers-rpi-v8
+        - linux-image-rpi-2712
+        - linux-headers-rpi-2712
       failed_when: false
 
-    - name: Prevent currently installed kernel images and modules from being upgraded
+    - name: Prevent currently installed kernel images, headers, and firmware from being upgraded
       ansible.builtin.shell: |
-        dpkg -l | grep -E "^ii\s+(linux-image|linux-modules|linux-headers|linux-firmware|linux-raspi|flash-kernel)" | awk '{print $2}' | xargs apt-mark hold
-      changed_when: false
-      failed_when: false
+        pkgs=$(dpkg -l | awk '$1 == "ii" && $2 ~ /^(linux-image|linux-modules|linux-headers|raspi-firmware|raspberrypi-bootloader|raspberrypi-sys-mods|rpi-eeprom)/ {print $2}')
+        if [ -n "$pkgs" ]; then
+          apt-mark hold $pkgs
+        fi
+      register: apt_mark_hold
+      changed_when: apt_mark_hold.stdout | length > 0

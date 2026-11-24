@@ -3,6 +3,7 @@ using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using Portfolio.Domain.Entities;
 using Portfolio.Grpc;
@@ -20,16 +21,24 @@ public class BackgroundImageServicesTests
     private static BackgroundImageServices CreateService(
         PortfolioDbContext dbContext,
         HttpClient httpClient,
-        SafeUrlValidator? validator = null)
+        SafeUrlValidator? validator = null,
+        HeroImageProcessor? processor = null)
     {
         var safeValidator = validator ?? new SafeUrlValidator(
             NullLogger<SafeUrlValidator>.Instance,
             (host, ct) => Task.FromResult(new[] { IPAddress.Parse("93.184.215.14") }));
 
+        var heroImageProcessor = processor ?? new HeroImageProcessor(
+            httpClient,
+            safeValidator,
+            new MemoryCache(new MemoryCacheOptions()),
+            NullLogger<HeroImageProcessor>.Instance);
+
         return new BackgroundImageServices(
             dbContext,
             httpClient,
             safeValidator,
+            heroImageProcessor,
             NullLogger<BackgroundImageServices>.Instance);
     }
 
@@ -244,11 +253,8 @@ public class BackgroundImageServicesTests
         await using var dbContext = TestDbContextFactory.Create();
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
-        var service = new BackgroundImageServices(
-            dbContext,
-            httpClient,
-            new SafeUrlValidator(NullLogger<SafeUrlValidator>.Instance),
-            NullLogger<BackgroundImageServices>.Instance);
+        var safeValidator = new SafeUrlValidator(NullLogger<SafeUrlValidator>.Instance);
+        var service = CreateService(dbContext, httpClient, safeValidator);
         var context = TestServerCallContext.Create();
 
         var request = new BackgroundImageDetails
@@ -394,5 +400,69 @@ public class BackgroundImageServicesTests
         var act = () => client.GetAsync("http://rebind.example.com/test");
         var thrown = await act.Should().ThrowAsync<HttpRequestException>();
         thrown.Which.Message.Should().Contain("private or reserved IP");
+    }
+
+    [Fact]
+    public async Task GetImageBytes_WhenNoValidImagesExist_ReturnsEmptyData()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        var handler = new MockHttpMessageHandler(HttpStatusCode.OK);
+        using var httpClient = new HttpClient(handler);
+        var service = CreateService(dbContext, httpClient);
+        var context = TestServerCallContext.Create();
+
+        // Act
+        var response = await service.GetImageBytes(new HeroImageRequest { Variant = "desktop" }, context);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Data.IsEmpty.Should().BeTrue();
+        response.ContentType.Should().BeEmpty();
+        response.Version.Should().Be("default");
+        response.IsStale.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task GetImageBytes_WhenValidImageExists_ReturnsEncodedWebpBytesAndVersion()
+    {
+        // Arrange
+        await using var dbContext = TestDbContextFactory.Create();
+        dbContext.DailyImages.Add(new DailyImage
+        {
+            ImageUrl = "https://example.com/hero.jpg",
+            AltText = "Hero Alt",
+            Source = DomainSource.Bing,
+            UrlWorks = true,
+            DoIPreferToDisplayThis = true
+        });
+        await dbContext.SaveChangesAsync();
+
+        using var bitmap = new SkiaSharp.SKBitmap(64, 64);
+        bitmap.Erase(SkiaSharp.SKColors.Teal);
+        using var image = SkiaSharp.SKImage.FromBitmap(bitmap);
+        using var jpeg = image.Encode(SkiaSharp.SKEncodedImageFormat.Jpeg, 80);
+        var jpegBytes = jpeg.ToArray();
+
+        var handler = new MockHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(jpegBytes)
+            {
+                Headers = { ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg") }
+            }
+        });
+        using var httpClient = new HttpClient(handler);
+        var service = CreateService(dbContext, httpClient);
+        var context = TestServerCallContext.Create();
+
+        // Act
+        var response = await service.GetImageBytes(new HeroImageRequest { Variant = "desktop" }, context);
+
+        // Assert
+        response.Should().NotBeNull();
+        response.Data.IsEmpty.Should().BeFalse();
+        response.ContentType.Should().Be("image/webp");
+        response.Version.Should().Be(Portfolio.Infrastructure.Helpers.ImageVersionHelper.ComputeVersionHash("https://example.com/hero.jpg"));
+        response.IsStale.Should().BeFalse();
     }
 }

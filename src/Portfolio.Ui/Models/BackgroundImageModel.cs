@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using Portfolio.Infrastructure.Helpers;
 
 namespace Portfolio.Ui.Models;
 
@@ -8,10 +7,8 @@ public class BackgroundImageModel
     public required string Url { get; init; }
     public required string AltText { get; init; }
     public required ImageOfTheDaySource Source { get; init; }
-
-    private string? _version;
     
-    public string Version => _version ??= ComputeVersionHash(Url);
+    public string Version => ImageVersionHelper.ComputeVersionHash(Url);
 
     public bool IsFallback => IsLocalFallback(Url);
 
@@ -26,13 +23,4 @@ public class BackgroundImageModel
     private static bool IsLocalFallback(string url) =>
         string.IsNullOrWhiteSpace(url) ||
         !url.StartsWith("http", StringComparison.OrdinalIgnoreCase);
-
-    private static string ComputeVersionHash(string url)
-    {
-        if (string.IsNullOrWhiteSpace(url))
-            return "default";
-
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(url));
-        return Convert.ToHexStringLower(bytes[..6]);
-    }
 }

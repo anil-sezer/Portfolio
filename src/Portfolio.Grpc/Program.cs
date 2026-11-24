@@ -48,7 +48,10 @@ builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFac
 
 // HTTP Clients
 builder.Services.AddHttpClient<BackgroundImageServices>(client => { client.Timeout = TimeSpan.FromSeconds(5); })
-.ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<SafeUrlValidator>().CreateSafeHttpHandler());
+    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<SafeUrlValidator>().CreateSafeHttpHandler());
+
+builder.Services.AddHttpClient<HeroImageProcessor>(client => { client.Timeout = TimeSpan.FromSeconds(15); })
+    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<SafeUrlValidator>().CreateSafeHttpHandler());
 
 // Database Operation Queue & Worker
 builder.Services.AddSingleton<DatabaseOperationQueue>();

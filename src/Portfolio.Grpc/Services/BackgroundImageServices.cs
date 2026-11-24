@@ -1,4 +1,4 @@
-using Grpc.Core;
+using Google.Protobuf;
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Grpc.Security;
 using Portfolio.Infrastructure;
@@ -9,6 +9,7 @@ public partial class BackgroundImageServices(
     PortfolioDbContext dbContext,
     HttpClient httpClient,
     SafeUrlValidator urlValidator,
+    HeroImageProcessor heroImageProcessor,
     ILogger<BackgroundImageServices> logger) : BackgroundImages.BackgroundImagesBase
 {
     [LoggerMessage(EventId = 1001, Level = LogLevel.Information, Message = "Serving this background image: {ImageUrl}")]
@@ -22,6 +23,41 @@ public partial class BackgroundImageServices(
         var img = await GetLatestBackgroundImageDetailsAsync(context.CancellationToken);
         
         return new BackgroundImageDetails { Url = img.ImageUrl, Source = (ImageOfTheDaySource)img.Source, AltText = img.AltText};
+    }
+
+    public override async Task<HeroImageResponse> GetImageBytes(HeroImageRequest request, ServerCallContext context)
+    {
+        var img = await GetLatestBackgroundImageDetailsAsync(context.CancellationToken);
+        if (img.Source == Domain.Enums.ImageOfTheDaySource.None || string.IsNullOrWhiteSpace(img.ImageUrl))
+        {
+            return new HeroImageResponse
+            {
+                Data = ByteString.Empty,
+                ContentType = string.Empty,
+                Version = "default",
+                IsStale = false
+            };
+        }
+
+        var result = await heroImageProcessor.GetEncodedImageAsync(img.ImageUrl, request.Variant, context.CancellationToken);
+        if (result.Bytes is not { Length: > 0 })
+        {
+            return new HeroImageResponse
+            {
+                Data = ByteString.Empty,
+                ContentType = string.Empty,
+                Version = result.Version,
+                IsStale = false
+            };
+        }
+
+        return new HeroImageResponse
+        {
+            Data = ByteString.CopyFrom(result.Bytes),
+            ContentType = "image/webp",
+            Version = result.Version,
+            IsStale = result.IsStale
+        };
     }
 
     public override async Task<Empty> Persist(BackgroundImageDetails request, ServerCallContext context)

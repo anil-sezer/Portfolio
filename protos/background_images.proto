@@ -18,10 +18,22 @@ enum ImageOfTheDaySource {
 service BackgroundImages {
   rpc Persist (BackgroundImageDetails) returns (google.protobuf.Empty);
   rpc Get (google.protobuf.Empty) returns (BackgroundImageDetails);
+  rpc GetImageBytes (HeroImageRequest) returns (HeroImageResponse);
 }
 
 message BackgroundImageDetails {
   string url = 1;
   string alt_text = 2;
   ImageOfTheDaySource source = 3;
+}
+
+message HeroImageRequest {
+  string variant = 1; // "desktop" or "mobile"
+}
+
+message HeroImageResponse {
+  bytes data = 1;
+  string content_type = 2; // "image/webp"
+  string version = 3;      // 12-char SHA-256 hex hash of source URL
+  bool is_stale = 4;
 }

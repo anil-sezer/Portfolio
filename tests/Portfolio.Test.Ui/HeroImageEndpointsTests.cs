@@ -38,8 +38,7 @@ public class HeroImageEndpointsTests : IDisposable
         return new Mock<BackgroundImageService>(
             mockGrpcClient.Object,
             memoryCache,
-            NullLogger<BackgroundImageService>.Instance,
-            new HttpClient());
+            NullLogger<BackgroundImageService>.Instance);
     }
 
     [Fact]

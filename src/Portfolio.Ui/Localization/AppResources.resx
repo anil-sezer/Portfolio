@@ -70,8 +70,11 @@
   <data name="Nav_ClusterInfo" xml:space="preserve">
     <value>Kubernetes</value>
   </data>
+  <data name="Footer_Oneko" xml:space="preserve">
+    <value>Oneko(Cat):</value>
+  </data>
   <data name="Footer_Bing" xml:space="preserve">
-    <value>Background images are from:</value>
+    <value>Background images:</value>
   </data>
 
 

@@ -343,3 +343,20 @@ html:not([data-theme="dark"]) .theme-icon-dark {
         transition: none;
     }
 }
+
+/*--------------------------------------------------------------
+# Oneko Cat (js/oneko.js)
+--------------------------------------------------------------*/
+#oneko {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    /* Below #header (9997), .mobile-nav-toggle (9998) and #footer (9999) */
+    z-index: 9996;
+    pointer-events: none;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    will-change: transform;
+}

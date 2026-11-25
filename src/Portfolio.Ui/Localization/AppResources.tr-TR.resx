@@ -73,6 +73,9 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Arka plan görselleri:</value>
   </data>
+  <data name="Footer_Oneko" xml:space="preserve">
+    <value>Oneko(Kedi):</value>
+  </data>
 
   <data name="My_Title" xml:space="preserve">
     <value>Senior Backend &amp; Platform Engineer</value>

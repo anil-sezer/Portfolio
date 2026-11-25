@@ -74,7 +74,10 @@
     <value>Oneko(Cat):</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
-    <value>Background photos:</value>
+    <value>Background:</value>
+  </data>
+  <data name="Footer_Gradient" xml:space="preserve">
+    <value>Gradient:</value>
   </data>
 
 

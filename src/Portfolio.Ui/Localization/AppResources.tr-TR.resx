@@ -71,10 +71,13 @@
     <value>Kubernetes</value>
   </data>
   <data name="Footer_Bing" xml:space="preserve">
-    <value>Arka plan fotoğrafları:</value>
+    <value>Arkaplan:</value>
   </data>
   <data name="Footer_Oneko" xml:space="preserve">
     <value>Oneko(Kedi):</value>
+  </data>
+  <data name="Footer_Gradient" xml:space="preserve">
+    <value>Gradyan:</value>
   </data>
 
   <data name="My_Title" xml:space="preserve">

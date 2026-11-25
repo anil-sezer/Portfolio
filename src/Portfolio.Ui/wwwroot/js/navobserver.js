@@ -5,8 +5,7 @@
                 const sectionId = entry.target.id;
                 const navLinks = document.querySelectorAll('#navbar .nav-link');
                 navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === `#${sectionId}`) {
+                    if (link.hash === `#${sectionId}`) {
                         link.classList.add('active');
                     } else {
                         link.classList.remove('active');

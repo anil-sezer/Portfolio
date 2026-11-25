@@ -31,9 +31,10 @@
                 var currentCulture = CultureInfo.CurrentUICulture.Name;
                 var isTr = currentCulture.StartsWith("tr", StringComparison.OrdinalIgnoreCase);
                 var isEn = currentCulture.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+                var navBase = isTr ? "/tr" : "/";
             }
 
-            <h1 class="text-light"><a href="@(isTr ? "/tr" : "/")">Anıl Sezer</a></h1>
+            <h1 class="text-light"><a href="@navBase">Anıl Sezer</a></h1>
 
             <div class="d-flex justify-content-center align-items-center gap-2 mt-2 mb-1">
                 <div class="language-switcher btn-group btn-group-sm rounded-pill p-1 bg-dark bg-opacity-50 border border-secondary" role="group" aria-label="Language switcher">
@@ -74,12 +75,12 @@
 
         <nav id="navbar" class="nav-menu navbar">
             <ul>
-                <li><a href="#hero"         class="nav-link active"><BsIcon Name="camera2" /> <span>@L["Nav_Home"]</span></a></li>
-                <li><a href="#clusterInfo"  class="nav-link"><BsIcon Name="diagram-3-fill" /> <span>@L["Nav_ClusterInfo"]</span></a></li>
-                <li><a href="#techstack"    class="nav-link"><BsIcon Name="tools" /> <span>@L["Nav_TechStack"]</span></a></li>
-                <li><a href="#resume"       class="nav-link"><BsIcon Name="file-text-fill" /> <span>@L["Nav_Resume"]</span></a></li>
-                <li><a href="#about"        class="nav-link"><BsIcon Name="person-check-fill" /> <span>@L["Nav_About"]</span></a></li>
-                <li><a href="#contact"      class="nav-link"><BsIcon Name="telephone-fill" /> <span>@L["Nav_Contact"]</span></a></li>
+                <li><a href="@(navBase)#hero"         class="nav-link active"><BsIcon Name="camera2" /> <span>@L["Nav_Home"]</span></a></li>
+                <li><a href="@(navBase)#clusterInfo"  class="nav-link"><BsIcon Name="diagram-3-fill" /> <span>@L["Nav_ClusterInfo"]</span></a></li>
+                <li><a href="@(navBase)#techstack"    class="nav-link"><BsIcon Name="tools" /> <span>@L["Nav_TechStack"]</span></a></li>
+                <li><a href="@(navBase)#resume"       class="nav-link"><BsIcon Name="file-text-fill" /> <span>@L["Nav_Resume"]</span></a></li>
+                <li><a href="@(navBase)#about"        class="nav-link"><BsIcon Name="person-check-fill" /> <span>@L["Nav_About"]</span></a></li>
+                <li><a href="@(navBase)#contact"      class="nav-link"><BsIcon Name="telephone-fill" /> <span>@L["Nav_Contact"]</span></a></li>
             </ul>
         </nav>
     </div>

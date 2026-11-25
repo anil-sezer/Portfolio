@@ -76,6 +76,9 @@
   <data name="Footer_Bing" xml:space="preserve">
     <value>Background photos:</value>
   </data>
+  <data name="Footer_Gradient" xml:space="preserve">
+    <value>Tech stack section Gradient:</value>
+  </data>
 
 
   <data name="My_Title" xml:space="preserve">

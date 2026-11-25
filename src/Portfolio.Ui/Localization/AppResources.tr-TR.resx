@@ -76,6 +76,9 @@
   <data name="Footer_Oneko" xml:space="preserve">
     <value>Oneko(Kedi):</value>
   </data>
+  <data name="Footer_Gradient" xml:space="preserve">
+    <value>Tech stack gradyanı:</value>
+  </data>
 
   <data name="My_Title" xml:space="preserve">
     <value>Senior Backend &amp; Platform Engineer</value>

@@ -48,9 +48,6 @@
     - name: Edit containerd configs so it will behave with kubelet
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/containerd-config.yml
 
-    - name: Fix containerd AppArmor profile for Ubuntu 26.04 stacked userns signals
-      ansible.builtin.import_tasks: ../tasks/kubernetes-setup/apparmor-containerd-profile.yml
-
     - name: Enable some required kernel modules for containerd
       ansible.builtin.import_tasks: ../tasks/kubernetes-setup/containerd-kernel-modules.yml
 

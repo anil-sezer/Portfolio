@@ -1,88 +1,71 @@
 @using System.Globalization
 @inherits LayoutComponentBase
 
-<button type="button" 
-        class="mobile-nav-toggle d-xl-none" 
-        aria-label="Toggle navigation" 
-        aria-expanded="false" 
-        aria-controls="header">
-    <BsIcon Name="list" Class="mobile-nav-icon-list" />
-    <BsIcon Name="x" Class="mobile-nav-icon-close" />
-</button>
+@{
+    var currentCulture = CultureInfo.CurrentUICulture.Name;
+    var isTr = currentCulture.StartsWith("tr", StringComparison.OrdinalIgnoreCase);
+    var isEn = currentCulture.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+    var navBase = isTr ? "/tr" : "/";
+}
 
 <header id="header">
-    <div class="d-flex flex-column">
+    <div class="header-inner">
+        <h1 class="site-brand"><a href="@navBase">Anıl Sezer</a></h1>
 
-        <div class="profile">
-            <picture class="d-block">
-                <source type="image/avif" srcset="@Assets["img/new_pp-240.avif"] 1x, @Assets["img/new_pp-400.avif"] 2x" />
-                <source type="image/webp" srcset="@Assets["img/new_pp-240.webp"] 1x, @Assets["img/new_pp-400.webp"] 2x" />
-                <img src="@Assets["img/new_pp-240.jpg"]"
-                     srcset="@Assets["img/new_pp-240.jpg"] 1x, @Assets["img/new_pp-400.jpg"] 2x"
-                     width="240"
-                     height="240"
-                     class="img-fluid rounded-circle"
-                     alt="Portrait of Anıl Sezer"
-                     loading="lazy"
-                     decoding="async" />
-            </picture>
+        <nav id="navbar" class="nav-menu navbar" aria-label="Primary navigation">
+            <ul>
+                <li><a href="@(navBase)#hero"        class="nav-link active"><BsIcon Name="camera2" /> <span>@L["Nav_Home"]</span></a></li>
+                <li><a href="@(navBase)#clusterInfo" class="nav-link"><BsIcon Name="diagram-3-fill" /> <span>@L["Nav_ClusterInfo"]</span></a></li>
+                <li><a href="@(navBase)#about"       class="nav-link"><BsIcon Name="person-check-fill" /> <span>@L["Nav_About"]</span></a></li>
+                <li><a href="@(navBase)#techstack"   class="nav-link"><BsIcon Name="tools" /> <span>@L["Nav_TechStack"]</span></a></li>
+                <li><a href="@(navBase)#resume"      class="nav-link"><BsIcon Name="file-text-fill" /> <span>@L["Nav_Resume"]</span></a></li>
+                <li><a href="@(navBase)#contact"     class="nav-link"><BsIcon Name="telephone-fill" /> <span>@L["Nav_Contact"]</span></a></li>
+            </ul>
+        </nav>
 
-            @{
-                var currentCulture = CultureInfo.CurrentUICulture.Name;
-                var isTr = currentCulture.StartsWith("tr", StringComparison.OrdinalIgnoreCase);
-                var isEn = currentCulture.StartsWith("en", StringComparison.OrdinalIgnoreCase);
-                var navBase = isTr ? "/tr" : "/";
-            }
-
-            <h1 class="text-light"><a href="@navBase">Anıl Sezer</a></h1>
-
-            <div class="d-flex justify-content-center align-items-center gap-2 mt-2 mb-1">
-                <div class="language-switcher btn-group btn-group-sm rounded-pill p-1 bg-dark bg-opacity-50 border border-secondary" role="group" aria-label="Language switcher">
-                    <a href="/tr" 
-                       class="btn rounded-pill px-2 py-0 border-0 @(isTr ? "btn-light shadow-sm" : "")" 
-                       title="Türkçe" 
-                       lang="tr"
-                       onclick="document.cookie = '.AspNetCore.Culture=c=tr-TR|uic=tr-TR;path=/;max-age=31536000;SameSite=Lax';"
-                       aria-current="@(isTr ? "true" : "false")">
-                        <span class="lang-tr">TR</span>
-                    </a>
-                    <a href="/en" 
-                       class="btn rounded-pill px-2 py-0 border-0 @(isEn ? "btn-light shadow-sm" : "")" 
-                       title="English" 
-                       lang="en"
-                       onclick="document.cookie = '.AspNetCore.Culture=c=en-US|uic=en-US;path=/;max-age=31536000;SameSite=Lax';"
-                       aria-current="@(isEn ? "true" : "false")">
-                        <span class="lang-en">EN</span>
-                    </a>
-                </div>
-
-                <button type="button" 
-                        class="btn rounded-circle theme-toggle-btn bg-dark bg-opacity-50 border border-secondary text-light p-0" 
-                        title="Toggle theme" 
-                        aria-label="Toggle theme"
-                        onclick="if (window.themeManager) { window.themeManager.toggleTheme(); }">
-                    <BsIcon Name="moon-stars-fill" Class="theme-icon-dark" />
-                    <BsIcon Name="sun-fill" Class="theme-icon-light" />
-                </button>
+        <div class="header-actions">
+            <div class="language-switcher btn-group btn-group-sm rounded-pill p-1 bg-dark bg-opacity-50 border border-secondary" role="group" aria-label="Language switcher">
+                <a href="/tr"
+                   class="btn rounded-pill px-2 py-0 border-0 @(isTr ? "btn-light shadow-sm" : "")"
+                   title="Türkçe"
+                   lang="tr"
+                   onclick="document.cookie = '.AspNetCore.Culture=c=tr-TR|uic=tr-TR;path=/;max-age=31536000;SameSite=Lax';"
+                   aria-current="@(isTr ? "true" : "false")">
+                    <span class="lang-tr">TR</span>
+                </a>
+                <a href="/en"
+                   class="btn rounded-pill px-2 py-0 border-0 @(isEn ? "btn-light shadow-sm" : "")"
+                   title="English"
+                   lang="en"
+                   onclick="document.cookie = '.AspNetCore.Culture=c=en-US|uic=en-US;path=/;max-age=31536000;SameSite=Lax';"
+                   aria-current="@(isEn ? "true" : "false")">
+                    <span class="lang-en">EN</span>
+                </a>
             </div>
 
+            <button type="button"
+                    class="btn rounded-circle theme-toggle-btn bg-dark bg-opacity-50 border border-secondary text-light p-0"
+                    title="Toggle theme"
+                    aria-label="Toggle theme"
+                    onclick="if (window.themeManager) { window.themeManager.toggleTheme(); }">
+                <BsIcon Name="moon-stars-fill" Class="theme-icon-dark" />
+                <BsIcon Name="sun-fill" Class="theme-icon-light" />
+            </button>
 
-            <div class="social-links mt-2 text-center">
+            <div class="social-links">
                 <a href="https://github.com/anil-sezer" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><BsIcon Name="github" /></a>
                 <a href="https://www.linkedin.com/in/anil-sezer/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><BsIcon Name="linkedin" /></a>
             </div>
-        </div>
 
-        <nav id="navbar" class="nav-menu navbar">
-            <ul>
-                <li><a href="@(navBase)#hero"         class="nav-link active"><BsIcon Name="camera2" /> <span>@L["Nav_Home"]</span></a></li>
-                <li><a href="@(navBase)#clusterInfo"  class="nav-link"><BsIcon Name="diagram-3-fill" /> <span>@L["Nav_ClusterInfo"]</span></a></li>
-                <li><a href="@(navBase)#techstack"    class="nav-link"><BsIcon Name="tools" /> <span>@L["Nav_TechStack"]</span></a></li>
-                <li><a href="@(navBase)#resume"       class="nav-link"><BsIcon Name="file-text-fill" /> <span>@L["Nav_Resume"]</span></a></li>
-                <li><a href="@(navBase)#about"        class="nav-link"><BsIcon Name="person-check-fill" /> <span>@L["Nav_About"]</span></a></li>
-                <li><a href="@(navBase)#contact"      class="nav-link"><BsIcon Name="telephone-fill" /> <span>@L["Nav_Contact"]</span></a></li>
-            </ul>
-        </nav>
+            <button type="button"
+                    class="mobile-nav-toggle d-xl-none"
+                    aria-label="Toggle navigation"
+                    aria-expanded="false"
+                    aria-controls="navbar">
+                <BsIcon Name="list" Class="mobile-nav-icon-list" />
+                <BsIcon Name="x" Class="mobile-nav-icon-close" />
+            </button>
+        </div>
     </div>
 </header>
 
@@ -91,12 +74,9 @@
 <footer id="footer">
     <div class="container">
         <div class="credits">
-            <b>@L["Footer_Oneko"]
-                <a href="https://en.wikipedia.org/wiki/Neko_(software)" target="_blank" rel="noopener noreferrer"> Wiki</a></b> <br/>
-            <b>@L["Footer_Bing"]
-                <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank" rel="noopener noreferrer">Bing Daily Wallpapers</a></b> <br/>
-            <b>@L["Footer_Gradient"]
-                <a href="https://x.com/POSTWOOK/status/2097037189049925818" target="_blank" rel="noopener noreferrer">Post Wook</a></b>
+            <span class="credit-item"><b>@L["Footer_Oneko"] <a href="https://en.wikipedia.org/wiki/Neko_(software)" target="_blank" rel="noopener noreferrer">Wiki</a></b></span>
+            <span class="credit-item"><b>@L["Footer_Bing"] <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank" rel="noopener noreferrer">Bing Daily Wallpapers</a></b></span>
+            <span class="credit-item"><b>@L["Footer_Gradient"] <a href="https://x.com/POSTWOOK/status/2097037189049925818" target="_blank" rel="noopener noreferrer">Post Wook</a></b></span>
         </div>
     </div>
 </footer>

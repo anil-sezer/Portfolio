@@ -44,10 +44,6 @@ h6 {
     font-family: "Raleway", sans-serif;
 }
 
-#main {
-    margin-left: var(--sidebar-width);
-}
-
 .container,
 .container-fluid {
     padding-left: 30px;
@@ -55,14 +51,6 @@ h6 {
 }
 
 @media (max-width: 1199px) {
-    #header {
-        left: calc(-1 * var(--sidebar-width));
-    }
-
-    #main {
-        margin-left: 0;
-    }
-
     .container,
     .container-fluid {
         padding-left: 12px;
@@ -77,6 +65,7 @@ h6 {
 section {
     padding: 60px 0;
     overflow: hidden;
+    scroll-margin-top: var(--navbar-height);
 }
 
 .section-bg {

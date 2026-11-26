@@ -47,15 +47,15 @@
         const toggle = select('.mobile-nav-toggle')
 
         // Check if click is outside navbar and toggle button
-        if (!navbar.contains(e.target) && !toggle.contains(e.target)) {
+        if (navbar && toggle && !navbar.contains(e.target) && !toggle.contains(e.target)) {
             closeMobileNav()
         }
     })
 
-    // Prevent clicks inside navbar from closing the menu
-    on('click', '#navbar', function(e) {
-        e.stopPropagation()
-    })
+    // Close mobile nav when a navigation link is clicked
+    on('click', '#navbar .nav-link', function() {
+        closeMobileNav()
+    }, true)
 
     // Close mobile nav when ESC key is pressed
     document.addEventListener('keydown', function(e) {

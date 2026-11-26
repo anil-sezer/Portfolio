@@ -60,14 +60,14 @@
         return Math.min(Math.max(value, min), max);
     }
 
-    // Playable area: the viewport minus the scrollbar and the part covered by the sidebar header.
+    // Playable area: the viewport minus the scrollbar and the part covered by the top header.
     function getBounds() {
         const viewport = document.documentElement;
-        const sidebarRight = Math.max(0, header.getBoundingClientRect().right);
+        const headerBottom = Math.max(0, header.getBoundingClientRect().bottom);
         return {
-            minX: sidebarRight + HALF_SPRITE,
+            minX: HALF_SPRITE,
             maxX: viewport.clientWidth - HALF_SPRITE,
-            minY: HALF_SPRITE,
+            minY: headerBottom + HALF_SPRITE,
             maxY: viewport.clientHeight - HALF_SPRITE
         };
     }

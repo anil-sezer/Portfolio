@@ -59,11 +59,11 @@
        ========================================================================== */
 
     /* Layout & Navigation */
-    --sidebar-width: 240px;
+    --navbar-height: 60px;
     --bg-header: var(--color-black-night);
+    --bg-header-glass: rgba(var(--rgb-black-night), 0.82);
     --bg-footer: var(--color-black-night);
     --bg-sidebar-social: var(--color-dark-card);
-    --border-profile-img: var(--color-dark-border);
 
     --text-nav-link: var(--color-nav-link);
     --text-nav-icon: var(--color-nav-icon);

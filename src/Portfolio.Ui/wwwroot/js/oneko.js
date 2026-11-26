@@ -8,6 +8,7 @@
     const TICK_MS = 100;
     const SPEED_PX = 10;
     const REST_DISTANCE_PX = 48;
+    const DIRECTION_THRESHOLD = Math.sin(Math.PI / 8);
     const SETTLE_TICKS = 10;
     const IDLE_ANIMATION_MIN_DELAY_MS = 10000;
     const IDLE_ANIMATION_MAX_DELAY_MS = 30000;
@@ -113,16 +114,16 @@
         idleAnimationTimeoutId = null;
         const bounds = getBounds();
         const candidates = ['sleeping', 'scratchSelf'];
-        if (x - bounds.minX < HALF_SPRITE) {
+        if (x - bounds.minX <= HALF_SPRITE) {
             candidates.push('scratchWallW');
         }
-        if (y - bounds.minY < HALF_SPRITE) {
+        if (y - bounds.minY <= HALF_SPRITE) {
             candidates.push('scratchWallN');
         }
-        if (bounds.maxX - x < HALF_SPRITE) {
+        if (bounds.maxX - x <= HALF_SPRITE) {
             candidates.push('scratchWallE');
         }
-        if (bounds.maxY - y < HALF_SPRITE) {
+        if (bounds.maxY - y <= HALF_SPRITE) {
             candidates.push('scratchWallS');
         }
         idleAnimation = candidates[Math.floor(Math.random() * candidates.length)];
@@ -169,11 +170,14 @@
         x = clamp(x, bounds.minX, bounds.maxX);
         y = clamp(y, bounds.minY, bounds.maxY);
 
-        const diffX = x - clamp(targetX, bounds.minX, bounds.maxX);
-        const diffY = y - clamp(targetY, bounds.minY, bounds.maxY);
+        const clampedTargetX = clamp(targetX, bounds.minX, bounds.maxX);
+        const clampedTargetY = clamp(targetY, bounds.minY, bounds.maxY);
+        const diffX = x - clampedTargetX;
+        const diffY = y - clampedTargetY;
         const distance = Math.hypot(diffX, diffY);
+        const cursorDistance = Math.hypot(x - targetX, y - targetY);
 
-        if (distance < REST_DISTANCE_PX) {
+        if (cursorDistance < REST_DISTANCE_PX || distance < 1) {
             rest();
             render();
             return;
@@ -190,22 +194,24 @@
             render();
             return;
         }
+        idleTicks = 0;
 
         let direction = '';
-        if (diffY / distance > 0.5) {
+        if (diffY / distance > DIRECTION_THRESHOLD) {
             direction += 'N';
-        } else if (diffY / distance < -0.5) {
+        } else if (diffY / distance < -DIRECTION_THRESHOLD) {
             direction += 'S';
         }
-        if (diffX / distance > 0.5) {
+        if (diffX / distance > DIRECTION_THRESHOLD) {
             direction += 'W';
-        } else if (diffX / distance < -0.5) {
+        } else if (diffX / distance < -DIRECTION_THRESHOLD) {
             direction += 'E';
         }
         setSprite(direction, frameCount);
 
-        x = clamp(x - (diffX / distance) * SPEED_PX, bounds.minX, bounds.maxX);
-        y = clamp(y - (diffY / distance) * SPEED_PX, bounds.minY, bounds.maxY);
+        const step = Math.min(SPEED_PX, distance);
+        x = clamp(x - (diffX / distance) * step, bounds.minX, bounds.maxX);
+        y = clamp(y - (diffY / distance) * step, bounds.minY, bounds.maxY);
         render();
     }
 

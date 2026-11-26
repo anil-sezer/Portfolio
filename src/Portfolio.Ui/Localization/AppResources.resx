@@ -79,6 +79,9 @@
   <data name="Footer_Gradient" xml:space="preserve">
     <value>Gradient:</value>
   </data>
+  <data name="Footer_Gradient" xml:space="preserve">
+    <value>Tech stack section Gradient:</value>
+  </data>
 
 
   <data name="My_Title" xml:space="preserve">
